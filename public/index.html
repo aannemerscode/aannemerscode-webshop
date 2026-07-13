@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AannemersCode — Van vakman naar erkend aannemer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0F243B;
+    --navy-deep: #1D1D1D;
+    --navy-line: rgba(229,224,206,0.14);
+    --cream: #E5E0CE;
+    --cream-dim: #C9C2AE;
+    --ink: #1B2430;
+    --accent: #DA4C1A;
+    --accent-bright: #F0703F;
+    --muted: #8FA0AE;
+    --green: #4C8562;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--navy);
+    color: var(--cream);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .blueprint-bg {
+    background-image:
+      linear-gradient(var(--navy-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--navy-line) 1px, transparent 1px);
+    background-size: 52px 52px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .display { font-family: 'Oswald', sans-serif; }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent-bright);
+  }
+
+  nav { position: sticky; top: 0; z-index: 30; background: rgba(15,36,59,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--navy-line); }
+  nav .inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+  .logo { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: 0.05em; color: var(--cream); }
+  .logo span { color: var(--accent-bright); }
+  .nav-cta { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #fff; background: var(--accent); padding: 10px 16px; border-radius: 2px; text-decoration: none; font-weight: 700; }
+
+  header.hero { position: relative; padding: 76px 0 56px; overflow: hidden; }
+  .stamp-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--accent); color: var(--accent-bright);
+    padding: 6px 12px; border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 22px; }
+  .stamp-badge::before { content: ''; width: 6px; height: 6px; background: var(--accent-bright); border-radius: 50%; display: inline-block; }
+  h1.headline { font-size: clamp(36px, 5.4vw, 62px); line-height: 1.04; font-weight: 700; margin: 0 0 20px; color: var(--cream); }
+  h1.headline em { font-style: normal; color: var(--accent-bright); }
+  p.sub { font-size: 16px; line-height: 1.65; color: #C4CBD1; max-width: 52ch; margin: 0 0 30px; }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+  .btn-primary { background: var(--accent); color: #fff; font-weight: 700; padding: 14px 24px; border-radius: 2px;
+    text-decoration: none; font-size: 14px; }
+  .btn-ghost { border: 1px solid var(--navy-line); color: var(--cream); padding: 14px 24px; border-radius: 2px;
+    text-decoration: none; font-size: 14px; }
+
+  .stat-strip { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--navy-line); border-bottom: 1px solid var(--navy-line); margin-bottom: 44px; }
+  @media (max-width: 780px) { .stat-strip { grid-template-columns: repeat(2, 1fr); } }
+  .stat { padding: 16px 14px; border-right: 1px solid var(--navy-line); }
+  .stat:last-child { border-right: none; }
+  .stat .num { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; color: var(--accent-bright); display: block; margin-bottom: 3px; }
+  .stat .label { font-size: 11px; color: var(--muted); line-height: 1.3; }
+
+  .card-pile { position: relative; height: 260px; max-width: 480px; margin: 0 auto; }
+  .pile-card { position: absolute; width: 210px; background: var(--cream); color: var(--ink); border-radius: 3px; padding: 14px 16px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.35); }
+  .pile-card .n { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent); font-size: 12px; display:block; margin-bottom: 4px; }
+  .pile-card .t { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; }
+  .pc1 { top: 0; left: 20px; transform: rotate(-7deg); z-index: 1; }
+  .pc2 { top: 40px; right: 10px; transform: rotate(5deg); z-index: 2; }
+  .pc3 { top: 110px; left: 40px; transform: rotate(-3deg); z-index: 3; }
+  .pc4 { top: 150px; right: 30px; transform: rotate(8deg); z-index: 2; }
+  @media (max-width: 780px) { .card-pile { height: 320px; } .pile-card { width: 170px; } }
+
+  section { padding: 68px 0; }
+  .section-head { max-width: 62ch; margin-bottom: 40px; }
+  .section-head h2 { font-family: 'Oswald', sans-serif; font-size: clamp(26px, 3.2vw, 36px); margin: 10px 0 12px; font-weight: 600; color: var(--cream); }
+  .section-head p { font-size: 15px; line-height: 1.6; color: #B7C0C6; margin: 0; }
+
+  .cream-card { background: var(--cream); color: var(--ink); border-radius: 3px; padding: 26px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 780px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .why-card .n { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-weight: 700; font-size: 13px; }
+  .why-card h3 { font-family: 'Oswald', sans-serif; font-size: 18px; margin: 8px 0 4px; }
+  .why-card p { font-size: 14px; line-height: 1.6; margin: 0; color: #48505A; }
+  .why-close { text-align: center; font-family: 'Oswald', sans-serif; font-size: 20px; color: var(--cream); margin: 30px 0 14px; font-weight: 500; }
+  .why-disclaimer { font-size: 12px; color: var(--muted); text-align: center; max-width: 60ch; margin: 0 auto; line-height: 1.5; }
+
+  .persona-card h3 { font-family: 'Oswald', sans-serif; font-size: 16px; margin: 0 0 8px; }
+  .persona-card p { font-size: 14px; line-height: 1.55; margin: 0; color: #48505A; }
+
+  .module-row { display: flex; gap: 16px; align-items: flex-start; background: var(--cream); color: var(--ink); border-radius: 3px; padding: 16px 18px; margin-bottom: 10px; }
+  .module-row .idx { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent); font-size: 14px; min-width: 26px; }
+  .module-row .body { flex: 1; }
+  .module-row h4 { font-family: 'Oswald', sans-serif; font-size: 15px; margin: 0 0 4px; }
+  .module-row p { font-size: 13px; margin: 0; color: #4A525C; line-height: 1.5; }
+  .module-row .tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.06em; align-self: center; }
+
+  .feature-card h3 { font-family: 'Oswald', sans-serif; font-size: 16px; margin: 0 0 6px; }
+  .feature-card p { font-size: 13.5px; line-height: 1.55; margin: 0; color: #48505A; }
+
+  .quote-card p.q { font-size: 14.5px; line-height: 1.6; margin: 0 0 10px; font-style: italic; color: var(--ink); }
+  .quote-card .who { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+  .pricing-card { background: var(--cream); color: var(--ink); border-radius: 4px; padding: 28px; display: flex; flex-direction: column; }
+  .pricing-card.bundle { border: 2px solid var(--accent); }
+  .pricing-card .kicker { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .pricing-card h3 { font-family: 'Oswald', sans-serif; font-size: 19px; margin: 0 0 4px; }
+  .pricing-card .desc { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; }
+  .pricing-card .price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px; }
+  .pricing-card .was { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--muted); text-decoration: line-through; }
+  .pricing-card .now { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; color: var(--accent); }
+  .pricing-card ul { list-style: none; margin: 0 0 22px; padding: 0; flex: 1; }
+  .pricing-card li { font-size: 13px; line-height: 1.5; margin-bottom: 9px; padding-left: 20px; position: relative; }
+  .pricing-card li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .pricing-card .save { font-size: 12px; font-weight: 700; color: var(--green); margin-bottom: 14px; }
+  .pricing-card a.buy { background: var(--navy); color: #fff; text-align: center; padding: 13px; border-radius: 2px; text-decoration: none; font-weight: 700; font-size: 13.5px; }
+  .pricing-card .note { text-align: center; font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+  .final-cta { text-align: center; padding: 90px 0; }
+  .final-cta h2 { font-family: 'Oswald', sans-serif; font-size: clamp(28px, 4vw, 42px); margin: 0 0 16px; }
+  .final-cta p { max-width: 48ch; margin: 0 auto 30px; color: #C4CBD1; font-size: 15px; line-height: 1.6; }
+
+  footer { padding: 36px 0 52px; border-top: 1px solid var(--navy-line); }
+  footer .top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+  footer p.legal { font-size: 12px; line-height: 1.6; max-width: 70ch; color: var(--muted); margin: 0 0 8px; }
+  footer p.copyright { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap inner">
+    <div class="logo">AANNEMERS<span>CODE</span></div>
+    <a class="nav-cta" href="#prijzen">Start de cursus</a>
+  </div>
+</nav>
+
+<header class="hero blueprint-bg">
+  <div class="wrap">
+    <span class="stamp-badge">Online cursus · 11 modules</span>
+    <h1 class="headline">Van vakman naar <em>erkend</em> aannemer.</h1>
+    <p class="sub">De complete, praktische route naar je eigen aannemersbedrijf — van KvK-inschrijving en Wkb-dossier tot een sluitende calculatie en een orderportefeuille die zichzelf vult.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="#prijzen">Bekijk de cursus →</a>
+      <a class="btn-ghost" href="#modules">Zie alle 11 modules</a>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat"><span class="num mono">11</span><span class="label">modules</span></div>
+      <div class="stat"><span class="num mono">40+</span><span class="label">checklists &amp; sjablonen</span></div>
+      <div class="stat"><span class="num mono">2026</span><span class="label">NL wet- &amp; regelgeving</span></div>
+      <div class="stat"><span class="num mono">∞</span><span class="label">levenslang toegang</span></div>
+      <div class="stat"><span class="num mono">AI-proof</span><span class="label">vakwerk</span></div>
+    </div>
+
+    <div class="card-pile">
+      <div class="pile-card pc1"><span class="n">06</span><span class="t">VCA &amp; Veiligheid</span></div>
+      <div class="pile-card pc2"><span class="n">05</span><span class="t">Contracten</span></div>
+      <div class="pile-card pc3"><span class="n">01</span><span class="t">Wkb-dossier</span></div>
+      <div class="pile-card pc4"><span class="n">04</span><span class="t">Calculatie</span></div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <span class="eyebrow">Waarom dit vak</span>
+    <div class="grid-3" style="margin-top: 18px;">
+      <div class="cream-card why-card">
+        <span class="n">01 · AI-BESTENDIG</span>
+        <h3>Handen aan het werk</h3>
+        <p>Metselen, monteren, improviseren bij een onvoorziene renovatie, leidingloop en een klant geruststellen op de bouwplaats — dat is fysiek, situationeel werk dat zich niet laat automatiseren.</p>
+      </div>
+      <div class="cream-card why-card">
+        <span class="n">02 · STRUCTUREEL TEKORT</span>
+        <h3>Te weinig vakmensen</h3>
+        <p>De bouwsector kampt al jaren met een aanhoudend tekort aan vakbekwame mensen, terwijl de vraag naar verduurzaming en nieuwbouw onverminderd hoog blijft. Wie nu instapt, komt in een markt waar werk vragen geen probleem is — het vinden van genoeg vakmensen wél.</p>
+      </div>
+      <div class="cream-card why-card">
+        <span class="n">03 · GROEI NAAR REGIE</span>
+        <h3>Van uitvoerder naar leidinggevende</h3>
+        <p>Naarmate je team groeit, geef je het fysieke werk steeds vaker uit handen aan je vakmensen — jij bewaakt de planning, de kwaliteit en het klantcontact. Precies in die leidende rol verdien je het meest, terwijl het werk lichter wordt: minder op de steiger, meer aan het stuur. Het beste van twee werelden.</p>
+      </div>
+    </div>
+    <p class="why-close">Hoe verder een beroep van een beeldscherm afstaat, hoe minder kwetsbaar het is voor AI.</p>
+    <p class="why-disclaimer">Let op: exacte verdiensten hangen af van regio, specialisatie en hoe je je bedrijf runt — deze cursus geeft je de calculatie- en groeimethode, geen garantie op resultaat.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Voor wie</span>
+      <h2>Gemaakt voor mensen die...</h2>
+      <p>Geen ondernemerscursus vol vage theorie — deze cursus is geschreven vanuit de bouwplaats, voor mensen die de stap naar zelfstandig aannemer serieus overwegen.</p>
+    </div>
+    <div class="grid-3">
+      <div class="cream-card persona-card">
+        <h3>Vakman op de zaak</h3>
+        <p>Timmerman, metselaar, stukadoor of installateur die voor zichzelf wil beginnen en niet weet waar te starten.</p>
+      </div>
+      <div class="cream-card persona-card">
+        <h3>Doorgroeiende zzp'er</h3>
+        <p>Je draait al klussen, maar wilt groter werk aannemen, personeel inzetten en structureel meer marge maken.</p>
+      </div>
+      <div class="cream-card persona-card">
+        <h3>Startende ondernemer</h3>
+        <p>Je overweegt een bedrijf over te nemen of op te richten en wilt eerst het complete speelveld begrijpen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="modules">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Het curriculum</span>
+      <h2>De 11 modules</h2>
+      <p>Van de eerste inschrijving tot een groeiend bedrijf met personeel — de modules bouwen bewust op elkaar voort, precies zoals een bouwproject zelf.</p>
+    </div>
+
+    <div class="module-row"><span class="idx">01</span><div class="body"><h4>Het vak en de markt</h4><p>Marktsegmenten, positionering en de trends waarmee je in 2026 te maken krijgt.</p></div><span class="tag">Oriëntatie</span></div>
+    <div class="module-row"><span class="idx">02</span><div class="body"><h4>Diploma's &amp; wettelijke eisen</h4><p>KvK, VCA, vergunningen, het Bouwbesluit en de Wkb-kwaliteitsborging.</p></div><span class="tag">Juridisch</span></div>
+    <div class="module-row"><span class="idx">03</span><div class="body"><h4>Bedrijfsvorm &amp; administratie</h4><p>Eenmanszaak, VOF of BV, en een boekhouding die vanaf dag één klopt.</p></div><span class="tag">Opzet</span></div>
+    <div class="module-row"><span class="idx">04</span><div class="body"><h4>Financiën &amp; calculatie</h4><p>Een uurtarief, kostprijs en offerte die daadwerkelijk winst opleveren.</p></div><span class="tag">Financieel</span></div>
+    <div class="module-row"><span class="idx">05</span><div class="body"><h4>Contracten &amp; juridische zaken</h4><p>UAV 2012, meerwerk, oplevering, garantie en wat te doen bij een geschil.</p></div><span class="tag">Juridisch</span></div>
+    <div class="module-row"><span class="idx">06</span><div class="body"><h4>Veiligheid &amp; kwaliteitsborging</h4><p>Arbowet, VCA in de praktijk en het opzetten van een Wkb-dossier.</p></div><span class="tag">Veiligheid</span></div>
+    <div class="module-row"><span class="idx">07</span><div class="body"><h4>Personeel &amp; onderaannemers</h4><p>Zzp'ers inhuren, ketenaansprakelijkheid en je eerste medewerker aannemen.</p></div><span class="tag">Team</span></div>
+    <div class="module-row"><span class="idx">08</span><div class="body"><h4>Projectmanagement &amp; planning</h4><p>Van offerte naar uitvoerbare planning, inkoop en voortgang bewaken.</p></div><span class="tag">Uitvoering</span></div>
+    <div class="module-row"><span class="idx">09</span><div class="body"><h4>Klanten werven &amp; marketing</h4><p>Referenties, zichtbaarheid en een offerte die daadwerkelijk wordt getekend.</p></div><span class="tag">Groei</span></div>
+    <div class="module-row"><span class="idx">10</span><div class="body"><h4>Groeien: van zzp naar bedrijf</h4><p>Wanneer je opschaalt, specialisatie versus breed aanbod en je KPI's.</p></div><span class="tag">Groei</span></div>
+    <div class="module-row"><span class="idx">11</span><div class="body"><h4>Sjablonen &amp; checklists</h4><p>Alle checklists, offerte- en dossiersjablonen kant-en-klaar om te kopiëren.</p></div><span class="tag">Praktijk</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Wat je krijgt</span>
+      <h2>Praktisch materiaal, geen theorie</h2>
+    </div>
+    <div class="grid-3">
+      <div class="cream-card feature-card"><h3>Volledig cursusdocument</h3><p>Een uitgewerkt naslagwerk met alle 11 modules, geschreven voor de Nederlandse bouwpraktijk.</p></div>
+      <div class="cream-card feature-card"><h3>Checklists per fase</h3><p>Van start-checklist tot opleverchecklist — direct te gebruiken bij je volgende project.</p></div>
+      <div class="cream-card feature-card"><h3>Offerte- &amp; dossiersjablonen</h3><p>Kopieerbare sjablonen voor offertes, meerwerk, oplevering en je Wkb-kwaliteitsdossier.</p></div>
+      <div class="cream-card feature-card"><h3>Rekenmodel voor calculatie</h3><p>De formule om je uurtarief, kostprijs en winstopslag correct op te bouwen.</p></div>
+      <div class="cream-card feature-card"><h3>Personeel &amp; onderaanneming</h3><p>Hoe je zzp'ers en personeel inzet zonder in de ketenaansprakelijkheidsvalkuil te lopen.</p></div>
+      <div class="cream-card feature-card"><h3>Groeistrategie</h3><p>KPI's en een concreet groeipad van zzp'er naar bedrijf met eigen personeel.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Herkenbaar?</span>
+      <h2>Voorbeelden van de vragen die deze cursus oplost</h2>
+      <p>Herkenbaar voor iedereen die de stap naar aannemer overweegt.</p>
+    </div>
+    <div class="grid-3">
+      <div class="cream-card quote-card">
+        <p class="q">"Ik wist niet dat ik als hoofdaannemer mede aansprakelijk was voor de belastingafdracht van mijn onderaannemer. Module 7 had me duizenden euro's risico kunnen besparen."</p>
+        <span class="who">— Mark, timmerbedrijf</span>
+      </div>
+      <div class="cream-card quote-card">
+        <p class="q">"Mijn offertes waren altijd één totaalbedrag. Sinds ik ze per bouwfase opbouw, krijg ik veel minder discussie achteraf over meerwerk."</p>
+        <span class="who">— Sander, verbouwspecialist</span>
+      </div>
+      <div class="cream-card quote-card">
+        <p class="q">"Het Wkb-dossier leek een bureaucratische last, tot ik besefte dat het ook mijn eigen bewijs is als er een geschil ontstaat over de kwaliteit."</p>
+        <span class="who">— Willem, kleine aannemer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="prijzen">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Toegang</span>
+      <h2>Eén keer investeren, blijvend gebruiken</h2>
+      <p>Los te bestellen, of samen met korting als bundel.</p>
+    </div>
+
+    <div style="max-width: 420px; margin: 0 auto 32px;">
+      <label for="checkout-email" style="display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">
+        E-mailadres (voor je download)
+      </label>
+      <input id="checkout-email" type="email" placeholder="jij@voorbeeld.nl"
+        style="width:100%; padding:12px 14px; border-radius:2px; border:1px solid var(--navy-line); background:rgba(229,224,206,0.06); color:var(--cream); font-size:14px;">
+    </div>
+    <div class="grid-3">
+      <div class="pricing-card">
+        <span class="kicker">AannemersCode — Cursus</span>
+        <h3>Cursusdocument</h3>
+        <div class="desc">11 modules · sjablonen · checklists</div>
+        <div class="price"><span class="was mono">€497</span><span class="now mono">€325</span></div>
+        <ul>
+          <li>Volledig cursusdocument met alle 11 modules</li>
+          <li>Alle checklists en sjablonen direct te downloaden</li>
+          <li>Wkb-dossiersjabloon en opleverchecklist</li>
+          <li>Levenslange toegang en gratis toekomstige updates</li>
+          <li>Gratis vooraf de volledige inhoudsopgave inzien</li>
+        </ul>
+        <a class="buy" href="#" data-product="cursus">Bestel de cursus →</a>
+        <span class="note">Direct downloaden na aankoop</span>
+      </div>
+
+      <div class="pricing-card">
+        <span class="kicker">AannemersCode — Rekentool</span>
+        <h3>Uurtarief- &amp; projectcalculatie</h3>
+        <div class="desc">offertes</div>
+        <div class="price"><span class="was mono">€429</span><span class="now mono">€175</span></div>
+        <ul>
+          <li>Uurtarief-calculator op basis van jouw cijfers</li>
+          <li>Volledige projectcalculatie: materiaal, arbeid, opslagen, btw</li>
+          <li>Offertes opslaan, kopiëren en printen als PDF</li>
+          <li>Werkt volledig offline, in je eigen browser</li>
+          <li>Geen abonnement, gebruik zoveel projecten als je wilt</li>
+        </ul>
+        <a class="buy" href="#" data-product="rekentool">Bestel de rekentool →</a>
+        <span class="note">Direct downloaden na aankoop</span>
+      </div>
+
+      <div class="pricing-card bundle">
+        <span class="kicker">AannemersCode — Bundel</span>
+        <h3>Cursus + rekentool</h3>
+        <div class="desc">alles in één</div>
+        <div class="price"><span class="now mono">€450</span><span class="mono" style="font-size:13px;color:var(--muted)">eenmalig</span></div>
+        <ul>
+          <li>Alles uit de volledige cursus (11 modules)</li>
+          <li>Volledige uurtarief- en projectcalculatietool</li>
+          <li>Direct je eerste offerte doorrekenen na module 4</li>
+          <li>Levenslange toegang tot beide producten</li>
+          <li>Gratis vooraf de volledige inhoudsopgave inzien</li>
+        </ul>
+        <div class="save">Je bespaart €50 ten opzichte van los bestellen</div>
+        <a class="buy" href="#" data-product="bundel">Bestel de bundel →</a>
+        <span class="note">Direct downloaden na aankoop</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta blueprint-bg">
+  <div class="wrap">
+    <h2>Klaar om de eerste steen te leggen?</h2>
+    <p>Begin vandaag met module 1 en zet binnen enkele weken je eigen aannemersbedrijf op de rails.</p>
+    <a class="btn-primary" href="#prijzen">Bekijk cursus, rekentool &amp; bundel →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div class="logo">AANNEMERS<span>CODE</span></div>
+      <span class="mono" style="font-size: 12px; color: var(--muted);">11 MODULES · CHECKLISTS · SJABLONEN</span>
+    </div>
+    <p class="legal">Dit zijn direct downloadbare digitale producten. Zodra je het bestand hebt gedownload, vervalt het wettelijke herroepingsrecht (bedenktijd) — je bevestigt dit expliciet bij het afrekenen, zoals gebruikelijk bij digitale producten.</p>
+    <p class="copyright">© 2026 AANNEMERSCODE</p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('a.buy[data-product]').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('checkout-email').value.trim();
+      if (!email || !email.includes('@')) {
+        alert('Vul eerst een geldig e-mailadres in — daar sturen we je download naartoe.');
+        document.getElementById('checkout-email').focus();
+        return;
+      }
+      const productId = btn.getAttribute('data-product');
+      const originalText = btn.textContent;
+      btn.textContent = 'Bezig...';
+      try {
+        const res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId, email }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Onbekende fout');
+        window.location.href = data.checkoutUrl;
+      } catch (err) {
+        alert('Er ging iets mis bij het starten van de betaling: ' + err.message);
+        btn.textContent = originalText;
+      }
+    });
+  });
+</script>
+</body>
+</html>

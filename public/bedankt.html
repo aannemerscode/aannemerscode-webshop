@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bedankt — AannemersCode</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:#0F243B; color:#E5E0CE; font-family:'Inter',sans-serif; text-align:center; padding:24px; }
+  .box { max-width: 480px; }
+  h1 { font-family:'Oswald',sans-serif; font-size: 30px; margin-bottom: 14px; }
+  p { line-height:1.6; color:#C4CBD1; }
+  .accent { color:#F0703F; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1 id="title">Even kijken...</h1>
+    <p id="message">We controleren je betaling.</p>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('orderId');
+    const titleEl = document.getElementById('title');
+    const msgEl = document.getElementById('message');
+
+    async function check() {
+      if (!orderId) {
+        titleEl.textContent = 'Geen order gevonden';
+        msgEl.textContent = 'Er ontbreekt een ordernummer in de link.';
+        return;
+      }
+      try {
+        const res = await fetch('/api/order/' + orderId);
+        const data = await res.json();
+        if (data.status === 'fulfilled' || data.status === 'paid') {
+          titleEl.innerHTML = 'Bedankt voor je <span class="accent">bestelling</span>!';
+          msgEl.textContent = 'Check je mail — je download is onderweg.';
+        } else if (data.status === 'open') {
+          titleEl.textContent = 'Betaling wordt nog verwerkt';
+          msgEl.textContent = 'Dit kan een paar seconden duren. Vernieuw deze pagina zo nodig.';
+          setTimeout(check, 3000);
+        } else {
+          titleEl.textContent = 'Betaling niet gelukt';
+          msgEl.textContent = 'Status: ' + data.status + '. Probeer het opnieuw vanaf de website.';
+        }
+      } catch {
+        titleEl.textContent = 'Kon status niet ophalen';
+        msgEl.textContent = 'Neem contact op als dit blijft gebeuren.';
+      }
+    }
+    check();
+  </script>
+</body>
+</html>
