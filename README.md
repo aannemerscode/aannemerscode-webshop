@@ -22,6 +22,24 @@ paar dingen die alleen jij kan doen, omdat ze aan jouw bedrijf en bankrekening h
 Zonder die vier stappen kan niemand écht afrekenen — dat kan ik niet voor je doen, omdat
 het jouw bedrijfsgegevens en bankrekening zijn.
 
+## Facturen
+
+Sinds deze versie genereert de server automatisch een **PDF-factuur** per betaalde
+bestelling (met een doorlopend factuurnummer, jouw bedrijfsgegevens en de btw
+gesplitst) en stuurt die als bijlage mee met de bevestigingsmail — ook naar jezelf,
+via `OWNER_EMAIL`, zodat je een eigen administratiekopie hebt.
+
+Vul hiervoor in `.env` (en in Render → Environment) in elk geval in:
+- `SELLER_NAME`, `SELLER_ADDRESS_LINE1`, `SELLER_ADDRESS_LINE2`
+- `SELLER_KVK`, `SELLER_BTW` — wettelijk verplicht op een factuur
+- `SELLER_IBAN` — optioneel, staat onderaan de factuur
+
+Het factuurnummer loopt automatisch op per kalenderjaar (`2026-0001`, `2026-0002`, ...)
+en wordt bijgehouden in `data/invoice-counter.json`. Bij een klein aantal bestellingen
+per dag is dat prima; bij hoog volume kun je dit later vervangen door een factuurnummer
+uit een echte database of boekhoudpakket (bijvoorbeeld Moneybird), zoals ook al
+genoemd staat bij "Nog te doen voor een echte webshop" hieronder.
+
 ## Hoe het werkt
 
 - De bezoeker klikt op "Bestel" → de server maakt een betaling aan bij Mollie → de
@@ -50,19 +68,64 @@ ngrok http 3000
 # zet de ngrok-URL als BASE_URL in .env
 ```
 
-## In productie zetten
+## In productie zetten: Render (aanbevolen)
 
-De eenvoudigste route:
+Ik heb de map al klaargezet als git-repository (`git init` is al gedaan) en er staat een
+`render.yaml` in, zodat Render de instellingen automatisch herkent. Jij hoeft alleen deze
+stappen te doorlopen — dit vereist je eigen GitHub- en Render-account, dus dat kan ik niet
+voor je invullen:
 
-1. Zet deze map in een git-repository (GitHub).
-2. Maak een gratis/goedkoop account op **Render** of **Railway** (beide draaien een
-   Node-server zoals deze zonder gedoe) — Vercel kan ook, maar is bedoeld voor
-   "serverless" functies, waardoor `orders.json` niet betrouwbaar blijft bestaan tussen
-   requests. Render/Railway houden een normale, altijd-actieve server draaiend.
-3. Koppel je GitHub-repo, zet de `.env`-variabelen in het hosting-dashboard (nooit het
-   `.env`-bestand zelf uploaden), en deploy.
-4. Zet je eigen domein erop (bv. via de DNS-instellingen van je domeinprovider).
-5. Vervang je `MOLLIE_API_KEY` door de **live**-sleutel zodra je live wilt gaan.
+**1. Zet de code op GitHub**
+- Maak (als je die nog niet hebt) een gratis account op github.com
+- Maak daar een nieuw, leeg repository, bijvoorbeeld `aannemerscode-webshop` (zonder
+  README/gitignore aan te vinken — dat heb je al)
+- Voer lokaal in deze map uit (vervang de URL door die van jouw nieuwe repo):
+  ```bash
+  git remote add origin https://github.com/JOUW-GEBRUIKERSNAAM/aannemerscode-webshop.git
+  git branch -M main
+  git push -u origin main
+  ```
+
+**2. Koppel Render aan die repo**
+- Ga naar render.com → maak een gratis account (kan direct met je GitHub-account inloggen)
+- Klik "New" → "Blueprint" → kies je zojuist gepushte repository
+- Render leest `render.yaml` en zet de service meteen goed neer (Node, `npm install`,
+  `npm start`) — je hoeft alleen op "Apply" te klikken
+
+**3. Vul de omgevingsvariabelen in**
+- Render vraagt bij het aanmaken om de variabelen met `sync: false` (dat zijn precies je
+  geheime/persoonlijke waarden): `MOLLIE_API_KEY`, `BASE_URL`, de `DOWNLOAD_URL_*`'s en je
+  SMTP-gegevens — zelfde inhoud als je lokale `.env`
+- Voor `BASE_URL`: vul die pas in ná de eerste deploy, zodra je de door Render toegewezen
+  URL kent (zie stap 4) — je kunt hem later altijd aanpassen in Render → Environment
+
+**4. Eerste deploy en BASE_URL corrigeren**
+- Render deployt automatisch en geeft je een URL zoals
+  `https://aannemerscode-webshop.onrender.com`
+- Zet die exacte URL als waarde van `BASE_URL` in Render → Environment, en klik "Save,
+  rebuild, and deploy" — dit is nodig omdat Mollie de webhook- en bedankt-pagina-links
+  op basis van `BASE_URL` opbouwt
+
+**5. Testen, dan pas live**
+- Test eerst volledig met je Mollie **test**-API-key (gratis, geen echt geld)
+- Werkt alles? Vervang `MOLLIE_API_KEY` in Render door je **live**-sleutel
+
+**6. (Optioneel) eigen domein**
+- Render → Settings → Custom Domain → volg de instructies om bijvoorbeeld
+  `aannemerscode.nl` te koppelen via de DNS-instellingen bij je domeinprovider
+- Vergeet niet `BASE_URL` daarna nogmaals bij te werken naar het eigen domein
+
+Render's gratis laag "slaapt" na een periode zonder bezoekers en heeft dan een paar
+seconden opstarttijd bij de eerstvolgende bezoeker — voor een klein product prima, maar
+iets om te weten. Wil je dat niet, dan is de goedkoopste betaalde Render-laag (~$7/maand)
+altijd actief.
+
+## Alternatief: Railway
+
+Werkt vrijwel hetzelfde (GitHub-repo koppelen, omgevingsvariabelen invullen, geen
+`render.yaml` nodig — Railway herkent Node-projecten automatisch). Kies dit als je Render
+om wat voor reden dan ook niet bevalt; functioneel maakt het voor deze app niet uit.
+
 
 ## Bestandsoverzicht
 
