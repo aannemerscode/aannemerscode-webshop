@@ -42,6 +42,9 @@ genoemd staat bij "Nog te doen voor een echte webshop" hieronder.
 
 ## Projexa: projectportaal met unieke klant-inlog per project
 
+Screenshots van hoe het eruitziet staan in de map [`screenshots/`](screenshots/):
+klant-login, het klantportaal, het bedrijfsoverzicht en de projectdetailpagina.
+
 Naast de webshop zit er nu **Projexa** in, een projectportaal — gebouwd rond de grootste
 frustraties van aannemers: wijzigingen die niet vastliggen, de hele dag
 "hoe-ver-zijn-jullie?"-telefoontjes, en foto's/documenten die overal en nergens staan.
