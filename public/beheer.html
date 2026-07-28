@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Beheer — AannemersCode Projectportaal</title>
+<title>Projexa — Projectbeheer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -114,7 +114,7 @@
 
 <nav>
   <div class="inner">
-    <a class="logo" href="/">AANNEMERS<span>CODE</span></a>
+    <a class="logo" href="/beheer.html">PROJ<span>EXA</span></a>
     <span class="nav-sub">Projectbeheer · bedrijf</span>
     <button class="btn-uitlog" id="btn-uitloggen" style="display:none;">Uitloggen</button>
   </div>
@@ -123,8 +123,8 @@
 <!-- ========== INLOG ========== -->
 <div id="login" class="login-shell blueprint-bg">
   <form class="login-card" id="login-form">
-    <h1>Projectbeheer</h1>
-    <p class="uitleg">Alleen voor het bedrijf. Klanten loggen in via <a href="/portaal.html">het klantportaal</a>.</p>
+    <h1>Projexa — Projectbeheer</h1>
+    <p class="uitleg">Alleen voor het bedrijf. Klanten loggen in via <a href="/portaal.html">het Projexa-klantportaal</a>.</p>
     <div class="foutmelding" id="login-fout"></div>
     <label for="login-wachtwoord">Beheerwachtwoord</label>
     <input type="password" id="login-wachtwoord" autocomplete="current-password">
@@ -269,7 +269,7 @@
     </div>
   </div>
 
-  <footer><div class="wrap"><p>© <span id="jaar"></span> AANNEMERSCODE · PROJECTBEHEER</p></div></footer>
+  <footer><div class="wrap"><p>© <span id="jaar"></span> PROJEXA · PROJECTBEHEER</p></div></footer>
 </div>
 
 <script>
@@ -302,7 +302,7 @@
   }
   window.kopieerInlog = (code, wachtwoord) => {
     const url = location.origin + '/portaal.html';
-    const tekst = `Beste klant,\n\nVia ons klantportaal volgt u uw project: planning, foto's, updates en goedkeuring van meerwerk — alles op één plek.\n\nInloggen: ${url}\nProjectcode: ${code}\nWachtwoord: ${wachtwoord}\n\nDeze inlog is uniek voor uw project; alleen u kunt uw project inzien.`;
+    const tekst = `Beste klant,\n\nVia Projexa, ons klantportaal, volgt u uw project: planning, foto's, updates en goedkeuring van meerwerk — alles op één plek.\n\nInloggen: ${url}\nProjectcode: ${code}\nWachtwoord: ${wachtwoord}\n\nDeze inlog is uniek voor uw project; alleen u kunt uw project inzien.`;
     navigator.clipboard.writeText(tekst).then(() => alert('Gekopieerd! Plak het bericht in WhatsApp of e-mail.'));
   };
 

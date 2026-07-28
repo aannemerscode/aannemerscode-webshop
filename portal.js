@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// AannemersCode Projectportaal
+// Projexa — projectportaal van AannemersCode
 //
 // Eén overzichtelijke plek per bouwproject, voor klant én bedrijf:
 //  - Het bedrijf maakt per project een unieke inlog aan (projectcode + wachtwoord).

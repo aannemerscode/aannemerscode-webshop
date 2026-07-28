@@ -40,9 +40,9 @@ per dag is dat prima; bij hoog volume kun je dit later vervangen door een factuu
 uit een echte database of boekhoudpakket (bijvoorbeeld Moneybird), zoals ook al
 genoemd staat bij "Nog te doen voor een echte webshop" hieronder.
 
-## Projectportaal: unieke klant-inlog per project
+## Projexa: projectportaal met unieke klant-inlog per project
 
-Naast de webshop zit er nu een **projectportaal** in — gebouwd rond de grootste
+Naast de webshop zit er nu **Projexa** in, een projectportaal — gebouwd rond de grootste
 frustraties van aannemers: wijzigingen die niet vastliggen, de hele dag
 "hoe-ver-zijn-jullie?"-telefoontjes, en foto's/documenten die overal en nergens staan.
 
@@ -170,12 +170,12 @@ om wat voor reden dan ook niet bevalt; functioneel maakt het voor deze app niet 
 
 ```
 server.js           — webshop-backend: checkout, webhook, orderstatus
-portal.js           — projectportaal-backend: klant-inlog per project, meerwerk,
+portal.js           — Projexa-backend: klant-inlog per project, meerwerk,
                        fases, updates, documenten/uploads, berichten
 public/index.html   — de landingspagina (nu gekoppeld aan de checkout-knoppen)
 public/bedankt.html — bedankpagina die de betaalstatus toont
-public/portaal.html — klantportaal (inloggen met projectcode + wachtwoord)
-public/beheer.html  — bedrijfsdashboard (projecten aanmaken en beheren)
+public/portaal.html — Projexa-klantportaal (inloggen met projectcode + wachtwoord)
+public/beheer.html  — Projexa-bedrijfsdashboard (projecten aanmaken en beheren)
 data/orders.json    — simpele bestelhistorie (vervang door een echte database
                        zodra je op een platform met tijdelijke opslag draait)
 data/portal.json    — projectportaal-data (wordt automatisch aangemaakt)
