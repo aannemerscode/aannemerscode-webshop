@@ -306,6 +306,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Mollie webhook stuurt form-encoded data
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Projectportaal: unieke klant-inlog per project + bedrijfsdashboard.
+// Zie portal.js — klanten loggen in op /portaal.html, het bedrijf op /beheer.html.
+app.use(require('./portal'));
+
 // Checkout starten
 app.post('/api/checkout', async (req, res) => {
   try {

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beheer — AannemersCode Projectportaal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0F243B;
+    --navy-line: rgba(229,224,206,0.14);
+    --cream: #E5E0CE;
+    --ink: #1B2430;
+    --accent: #DA4C1A;
+    --accent-bright: #F0703F;
+    --muted: #8FA0AE;
+    --green: #4C8562;
+    --red: #B23A3A;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--navy); color: var(--cream); font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .blueprint-bg { background-image: linear-gradient(var(--navy-line) 1px, transparent 1px), linear-gradient(90deg, var(--navy-line) 1px, transparent 1px); background-size: 52px 52px; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  nav { position: sticky; top: 0; z-index: 30; background: rgba(15,36,59,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--navy-line); }
+  nav .inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; max-width: 900px; margin: 0 auto; }
+  .logo { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.05em; color: var(--cream); text-decoration: none; }
+  .logo span { color: var(--accent-bright); }
+  .nav-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .btn-uitlog { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); background: none; border: 1px solid var(--navy-line); border-radius: 2px; padding: 7px 12px; cursor: pointer; }
+  .btn-uitlog:hover { color: var(--cream); }
+
+  .login-shell { min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .login-card { background: var(--cream); color: var(--ink); border-radius: 4px; padding: 34px 30px; width: 100%; max-width: 400px; box-shadow: 0 18px 44px rgba(0,0,0,0.4); }
+  .login-card h1 { font-family: 'Oswald', sans-serif; font-size: 22px; margin: 0 0 6px; }
+  .login-card .uitleg { font-size: 13px; color: #48505A; margin: 0 0 20px; line-height: 1.55; }
+
+  label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6B7580; margin: 0 0 6px; }
+  input[type=text], input[type=password], input[type=email], input[type=number], input[type=date], select, textarea {
+    width: 100%; padding: 11px 13px; border-radius: 2px; border: 1px solid #C9C2AE; background: #fff;
+    color: var(--ink); font-size: 14px; font-family: 'Inter', sans-serif; margin-bottom: 14px;
+  }
+  textarea { resize: vertical; }
+  .btn { display: inline-block; background: var(--accent); color: #fff; font-weight: 700; font-size: 13.5px; padding: 12px 20px; border: none; border-radius: 2px; cursor: pointer; font-family: 'Inter', sans-serif; }
+  .btn:hover { background: var(--accent-bright); }
+  .btn.vol { width: 100%; }
+  .btn-klein { font-size: 12px; padding: 8px 14px; }
+  .btn-stil { background: none; border: 1px solid #C9C2AE; color: #48505A; }
+  .btn-stil:hover { background: #ddd8c6; }
+  .btn-rood { background: var(--red); }
+  .foutmelding { background: #F7E3DC; color: #8A2F10; border: 1px solid #E4B4A0; border-radius: 2px; padding: 10px 12px; font-size: 13px; margin-bottom: 14px; display: none; }
+
+  header.pagehead { padding: 30px 0 22px; }
+  header.pagehead h1 { font-family: 'Oswald', sans-serif; font-size: 28px; margin: 6px 0 4px; }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-bright); }
+  .pagehead .sub { font-size: 13.5px; color: var(--muted); margin: 0; }
+  .kop-rij { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+
+  .kaart { background: var(--cream); color: var(--ink); border-radius: 3px; padding: 20px 22px; margin-bottom: 14px; }
+  .kaart h2 { font-family: 'Oswald', sans-serif; font-size: 18px; margin: 0 0 12px; }
+  .kaart h3 { font-family: 'Oswald', sans-serif; font-size: 15px; margin: 0 0 8px; }
+  .leeg { font-size: 13px; color: var(--muted); border: 1px dashed var(--navy-line); border-radius: 3px; padding: 16px 18px; margin-bottom: 14px; }
+
+  /* Projectenlijst */
+  .prj-rij { display: flex; align-items: center; gap: 14px; background: var(--cream); color: var(--ink); border-radius: 3px; padding: 16px 20px; margin-bottom: 10px; cursor: pointer; }
+  .prj-rij:hover { outline: 2px solid var(--accent-bright); }
+  .prj-rij .code { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--accent); min-width: 84px; }
+  .prj-rij .naam { font-family: 'Oswald', sans-serif; font-size: 16px; flex: 1; }
+  .prj-rij .naam small { display: block; font-family: 'Inter', sans-serif; font-size: 12px; color: #6B7580; font-weight: 400; }
+  .badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .badge.voorbereiding { background: #E4E0D0; color: #6B6347; }
+  .badge.in_uitvoering { background: #F5DccC; color: #9C3B10; }
+  .badge.opgeleverd { background: #DDEAE2; color: #2E5A42; }
+  .badge.alert { background: var(--accent); color: #fff; }
+
+  /* Inloggegevens-blok (eenmalig tonen) */
+  .inlogblok { border: 2px solid var(--green); border-radius: 4px; background: #F2F7F4; color: var(--ink); padding: 20px 22px; margin-bottom: 14px; }
+  .inlogblok h3 { margin-top: 0; }
+  .inlogblok .cred { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; background: #fff; border: 1px dashed #9BB3A5; border-radius: 3px; padding: 10px 14px; margin: 6px 0 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .inlogblok .cred small { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400; color: #6B7580; text-transform: uppercase; letter-spacing: 0.06em; }
+  .inlogblok p { font-size: 13px; color: #48505A; margin: 0 0 10px; line-height: 1.55; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* Projectdetail */
+  .terug { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); text-decoration: none; cursor: pointer; background: none; border: none; padding: 0; }
+  .terug:hover { color: var(--cream); }
+  .rijtje { display: flex; align-items: center; gap: 10px; border-top: 1px solid #DDD8C6; padding: 10px 0; font-size: 13.5px; }
+  .rijtje:first-of-type { border-top: none; }
+  .rijtje .hoofd { flex: 1; }
+  .rijtje .hoofd small { display: block; color: #6B7580; font-size: 12px; }
+  .rijtje select { width: auto; margin: 0; padding: 6px 8px; font-size: 12px; }
+  .rijtje .x { background: none; border: none; color: var(--red); cursor: pointer; font-size: 15px; padding: 4px 8px; }
+  .sectie-uitleg { font-size: 12.5px; color: #6B7580; margin: -6px 0 12px; line-height: 1.5; }
+  .status-select { display: flex; gap: 8px; flex-wrap: wrap; }
+  .status-select button { flex: 1; min-width: 130px; padding: 10px; border-radius: 2px; border: 1px solid #C9C2AE; background: #fff; color: #48505A; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .status-select button.actief { border-color: var(--accent); background: var(--accent); color: #fff; }
+
+  .bericht-lijst { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; max-height: 320px; overflow-y: auto; }
+  .bericht { max-width: 85%; padding: 8px 12px; border-radius: 6px; font-size: 13.5px; line-height: 1.5; white-space: pre-wrap; }
+  .bericht.van-bedrijf { align-self: flex-end; background: var(--navy); color: var(--cream); }
+  .bericht.van-klant { align-self: flex-start; background: #fff; border: 1px solid #DDD8C6; color: var(--ink); }
+  .bericht .tijd { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.65; margin-top: 3px; }
+
+  #overzicht, #detail, #dashboard-shell { display: none; }
+  footer { padding: 36px 0 48px; text-align: center; }
+  footer p { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a class="logo" href="/">AANNEMERS<span>CODE</span></a>
+    <span class="nav-sub">Projectbeheer · bedrijf</span>
+    <button class="btn-uitlog" id="btn-uitloggen" style="display:none;">Uitloggen</button>
+  </div>
+</nav>
+
+<!-- ========== INLOG ========== -->
+<div id="login" class="login-shell blueprint-bg">
+  <form class="login-card" id="login-form">
+    <h1>Projectbeheer</h1>
+    <p class="uitleg">Alleen voor het bedrijf. Klanten loggen in via <a href="/portaal.html">het klantportaal</a>.</p>
+    <div class="foutmelding" id="login-fout"></div>
+    <label for="login-wachtwoord">Beheerwachtwoord</label>
+    <input type="password" id="login-wachtwoord" autocomplete="current-password">
+    <button class="btn vol" type="submit">Inloggen →</button>
+  </form>
+</div>
+
+<div id="dashboard-shell">
+  <!-- ========== OVERZICHT ========== -->
+  <div id="overzicht">
+    <header class="pagehead blueprint-bg">
+      <div class="wrap kop-rij">
+        <div>
+          <span class="eyebrow">Bedrijfsdashboard</span>
+          <h1>Alle projecten</h1>
+          <p class="sub">Eén overzicht: status per project, openstaand meerwerk en klantvragen.</p>
+        </div>
+        <button class="btn" id="btn-nieuw">+ Nieuw project</button>
+      </div>
+    </header>
+    <div class="wrap">
+      <div class="kaart" id="nieuw-form-kaart" style="display:none;">
+        <h2>Nieuw project starten</h2>
+        <p class="sectie-uitleg">Bij het aanmaken wordt automatisch een <strong>unieke inlog voor de klant</strong> gegenereerd (projectcode + wachtwoord). Die geef je daarna aan de klant — daarmee ziet die alléén dit project.</p>
+        <div class="foutmelding" id="nieuw-fout"></div>
+        <form id="nieuw-form">
+          <div class="grid-2">
+            <div><label>Projectnaam *</label><input type="text" id="n-naam" placeholder="Aanbouw + keuken"></div>
+            <div><label>Klantnaam *</label><input type="text" id="n-klantNaam" placeholder="Fam. Jansen"></div>
+            <div><label>Adres bouwplaats</label><input type="text" id="n-adres" placeholder="Straatnaam 1, Plaats"></div>
+            <div><label>E-mail klant</label><input type="email" id="n-klantEmail" placeholder="klant@voorbeeld.nl"></div>
+            <div><label>Telefoon klant</label><input type="text" id="n-klantTelefoon" placeholder="06-12345678"></div>
+            <div><label>Geplande start</label><input type="date" id="n-startDatum"></div>
+          </div>
+          <label>Korte omschrijving (ziet de klant)</label>
+          <textarea id="n-omschrijving" rows="2" placeholder="Wat gaan we doen?"></textarea>
+          <button class="btn" type="submit">Project aanmaken + inlog genereren →</button>
+        </form>
+      </div>
+
+      <div id="nieuw-inlog"></div>
+      <div id="projectenlijst"></div>
+    </div>
+  </div>
+
+  <!-- ========== PROJECTDETAIL ========== -->
+  <div id="detail">
+    <header class="pagehead blueprint-bg">
+      <div class="wrap">
+        <button class="terug" id="btn-terug">← Terug naar alle projecten</button>
+        <h1 id="d-naam" style="margin-top:12px;"></h1>
+        <p class="sub"><span class="mono" id="d-code"></span> · <span id="d-klant"></span></p>
+      </div>
+    </header>
+    <div class="wrap">
+      <div id="d-inlogblok"></div>
+
+      <div class="kaart">
+        <h2>Projectstatus</h2>
+        <p class="sectie-uitleg">Dit is de grote stappenbalk die de klant bovenaan ziet.</p>
+        <div class="status-select" id="d-status"></div>
+      </div>
+
+      <div class="kaart">
+        <h2>Planning (fases)</h2>
+        <p class="sectie-uitleg">Zet de fases erin en werk de status bij — de klant ziet direct wat afgerond is, wat nu loopt en wat gepland staat. Dat scheelt "hoe ver zijn jullie?"-telefoontjes.</p>
+        <div id="d-fases"></div>
+        <form id="fase-form">
+          <div class="grid-2">
+            <div><label>Fasenaam</label><input type="text" id="f-naam" placeholder="Fundering"></div>
+            <div><label>Periode (vrij invulbaar)</label><input type="text" id="f-start" placeholder="Week 12 of 3 t/m 7 maart"></div>
+          </div>
+          <button class="btn btn-klein" type="submit">+ Fase toevoegen</button>
+        </form>
+      </div>
+
+      <div class="kaart">
+        <h2>Meerwerk vastleggen</h2>
+        <p class="sectie-uitleg">"Doe de wand toch maar 20 cm verder"? Leg het hier direct vast met een bedrag. De klant krijgt het bovenaan het portaal te zien en keurt digitaal goed vóór je begint — vastgelegd met datum en tijd, dus geen discussie achteraf.</p>
+        <div id="d-meerwerk"></div>
+        <form id="mw-form">
+          <div class="grid-2">
+            <div><label>Titel *</label><input type="text" id="m-titel" placeholder="Wand 20 cm verplaatsen"></div>
+            <div><label>Bedrag incl. btw (€) *</label><input type="number" id="m-bedrag" step="0.01" min="0" placeholder="450.00"></div>
+          </div>
+          <label>Toelichting voor de klant</label>
+          <textarea id="m-omschrijving" rows="2" placeholder="Wat houdt het in, en wat betekent het voor planning en prijs?"></textarea>
+          <button class="btn btn-klein" type="submit">+ Ter goedkeuring naar klant</button>
+        </form>
+      </div>
+
+      <div class="kaart">
+        <h2>Voortgangsupdate plaatsen</h2>
+        <p class="sectie-uitleg">Eén zin met een foto erbij is genoeg. De klant blijft op de hoogte zonder te bellen.</p>
+        <form id="update-form">
+          <textarea id="u-tekst" rows="2" placeholder="Vandaag de fundering gestort. Morgen start het metselwerk."></textarea>
+          <button class="btn btn-klein" type="submit">+ Update plaatsen</button>
+        </form>
+        <div id="d-updates" style="margin-top:14px;"></div>
+      </div>
+
+      <div class="kaart">
+        <h2>Documenten &amp; foto's</h2>
+        <p class="sectie-uitleg">Alles in één dossier: offerte, tekeningen, foto's van de bouwplaats. Upload een bestand of plak een link (bv. Google Drive).</p>
+        <div id="d-documenten"></div>
+        <div class="grid-2">
+          <form id="doc-upload-form">
+            <label>Bestand uploaden (foto/PDF, max 15 MB)</label>
+            <input type="file" id="doc-bestand" style="margin-bottom:10px; font-size:13px;">
+            <select id="doc-upload-cat">
+              <option value="foto">Foto</option>
+              <option value="offerte">Offerte</option>
+              <option value="tekening">Tekening</option>
+              <option value="overig">Overig</option>
+            </select>
+            <button class="btn btn-klein" type="submit">↑ Uploaden</button>
+          </form>
+          <form id="doc-link-form">
+            <label>Of een link toevoegen</label>
+            <input type="text" id="doc-naam" placeholder="Naam, bv. Offerte aanbouw">
+            <input type="text" id="doc-url" placeholder="https://...">
+            <button class="btn btn-klein" type="submit">+ Link toevoegen</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="kaart">
+        <h2>Berichten met de klant</h2>
+        <div class="bericht-lijst" id="d-berichten"></div>
+        <form id="bericht-form">
+          <textarea id="b-tekst" rows="2" placeholder="Antwoord aan de klant..."></textarea>
+          <button class="btn btn-klein" type="submit">Versturen</button>
+        </form>
+      </div>
+
+      <div class="kaart">
+        <h2>Klant-inlog</h2>
+        <p class="sectie-uitleg">Wachtwoord kwijt bij de klant? Genereer hier een nieuw wachtwoord (het oude vervalt direct). De projectcode blijft hetzelfde.</p>
+        <button class="btn btn-klein btn-stil" id="btn-reset">Nieuw klantwachtwoord genereren</button>
+        <button class="btn btn-klein btn-rood" id="btn-verwijder" style="float:right;">Project verwijderen</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><div class="wrap"><p>© <span id="jaar"></span> AANNEMERSCODE · PROJECTBEHEER</p></div></footer>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  $('jaar').textContent = new Date().getFullYear();
+  let huidigProject = null;
+
+  function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+  function fmtEuro(n) { return '€ ' + Number(n).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function fmtTijd(iso) { return new Date(iso).toLocaleString('nl-NL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+  function fmtDatum(iso) { return iso ? new Date(iso).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }) : ''; }
+
+  async function api(url, opts = {}) {
+    const res = await fetch(url, { headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', ...opts });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Er ging iets mis.');
+    return data;
+  }
+
+  function inlogBlokHtml(inlog, kop) {
+    return `
+      <div class="inlogblok">
+        <h3>${kop}</h3>
+        <p><strong>Geef deze gegevens aan de klant</strong> (bv. via WhatsApp of e-mail). Het wachtwoord wordt om veiligheidsredenen maar één keer getoond — daarna kun je alleen een nieuw wachtwoord genereren.</p>
+        <div class="cred"><span>${esc(inlog.code)}</span><small>Projectcode</small></div>
+        <div class="cred"><span>${esc(inlog.wachtwoord)}</span><small>Wachtwoord</small></div>
+        <p>Inloggen kan op: <strong>${esc((inlog.url || '') || location.origin + '/portaal.html')}</strong></p>
+        <button class="btn btn-klein" onclick="kopieerInlog('${esc(inlog.code)}','${esc(inlog.wachtwoord)}')">📋 Kopieer bericht voor de klant</button>
+      </div>`;
+  }
+  window.kopieerInlog = (code, wachtwoord) => {
+    const url = location.origin + '/portaal.html';
+    const tekst = `Beste klant,\n\nVia ons klantportaal volgt u uw project: planning, foto's, updates en goedkeuring van meerwerk — alles op één plek.\n\nInloggen: ${url}\nProjectcode: ${code}\nWachtwoord: ${wachtwoord}\n\nDeze inlog is uniek voor uw project; alleen u kunt uw project inzien.`;
+    navigator.clipboard.writeText(tekst).then(() => alert('Gekopieerd! Plak het bericht in WhatsApp of e-mail.'));
+  };
+
+  // ---------- Inloggen ----------
+  $('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fout = $('login-fout'); fout.style.display = 'none';
+    try {
+      await api('/api/portaal/beheer/login', { method: 'POST', body: JSON.stringify({ wachtwoord: $('login-wachtwoord').value }) });
+      await toonOverzicht();
+    } catch (err) { fout.textContent = err.message; fout.style.display = 'block'; }
+  });
+  $('btn-uitloggen').addEventListener('click', async () => {
+    await api('/api/portaal/beheer/logout', { method: 'POST' }).catch(() => {});
+    location.reload();
+  });
+
+  // ---------- Overzicht ----------
+  async function toonOverzicht() {
+    const { projecten } = await api('/api/portaal/beheer/projecten');
+    $('login').style.display = 'none';
+    $('dashboard-shell').style.display = 'block';
+    $('detail').style.display = 'none';
+    $('overzicht').style.display = 'block';
+    $('btn-uitloggen').style.display = 'inline-block';
+
+    const statusNaam = { voorbereiding: 'Voorbereiding', in_uitvoering: 'In uitvoering', opgeleverd: 'Opgeleverd' };
+    $('projectenlijst').innerHTML = projecten.length === 0
+      ? '<div class="leeg">Nog geen projecten. Klik op "+ Nieuw project" om te starten — de klant-inlog wordt automatisch aangemaakt.</div>'
+      : projecten.map((p) => `
+        <div class="prj-rij" onclick="openProject('${p.id}')">
+          <span class="code">${esc(p.code)}</span>
+          <span class="naam">${esc(p.naam)}<small>${esc(p.klantNaam)}${p.adres ? ' · ' + esc(p.adres) : ''}</small></span>
+          ${p.openMeerwerk > 0 ? `<span class="badge alert">${p.openMeerwerk}× wacht op klant</span>` : ''}
+          <span class="badge ${p.status}">${statusNaam[p.status] || p.status}</span>
+        </div>`).join('');
+  }
+
+  $('btn-nieuw').addEventListener('click', () => {
+    const kaart = $('nieuw-form-kaart');
+    kaart.style.display = kaart.style.display === 'none' ? 'block' : 'none';
+  });
+
+  $('nieuw-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fout = $('nieuw-fout'); fout.style.display = 'none';
+    try {
+      const data = await api('/api/portaal/beheer/projecten', {
+        method: 'POST',
+        body: JSON.stringify({
+          naam: $('n-naam').value, klantNaam: $('n-klantNaam').value, adres: $('n-adres').value,
+          klantEmail: $('n-klantEmail').value, klantTelefoon: $('n-klantTelefoon').value,
+          startDatum: $('n-startDatum').value, omschrijving: $('n-omschrijving').value,
+        }),
+      });
+      $('nieuw-form').reset();
+      $('nieuw-form-kaart').style.display = 'none';
+      $('nieuw-inlog').innerHTML = inlogBlokHtml(data.inlog, `✓ Project "${esc(data.project.naam)}" aangemaakt — dit is de unieke klant-inlog`);
+      await toonOverzicht();
+      $('overzicht').scrollIntoView();
+    } catch (err) { fout.textContent = err.message; fout.style.display = 'block'; }
+  });
+
+  // ---------- Detail ----------
+  window.openProject = async (id) => {
+    const { project } = await api(`/api/portaal/beheer/projecten/${id}`);
+    huidigProject = project;
+    $('nieuw-inlog').innerHTML = '';
+    $('overzicht').style.display = 'none';
+    $('detail').style.display = 'block';
+    $('d-inlogblok').innerHTML = '';
+    renderDetail(project);
+    window.scrollTo(0, 0);
+  };
+  $('btn-terug').addEventListener('click', toonOverzicht);
+
+  async function herlaad() {
+    const { project } = await api(`/api/portaal/beheer/projecten/${huidigProject.id}`);
+    huidigProject = project;
+    renderDetail(project);
+  }
+
+  function renderDetail(p) {
+    $('d-naam').textContent = p.naam;
+    $('d-code').textContent = p.code;
+    $('d-klant').textContent = [p.klantNaam, p.klantTelefoon, p.klantEmail, p.adres].filter(Boolean).join(' · ');
+
+    const statussen = [['voorbereiding', '1 · Voorbereiding'], ['in_uitvoering', '2 · In uitvoering'], ['opgeleverd', '3 · Opgeleverd']];
+    $('d-status').innerHTML = statussen.map(([key, naam]) =>
+      `<button type="button" class="${p.status === key ? 'actief' : ''}" onclick="zetStatus('${key}')">${naam}</button>`).join('');
+
+    const faseStatus = { gepland: 'Gepland', bezig: 'Bezig', afgerond: 'Afgerond' };
+    $('d-fases').innerHTML = (p.fases || []).length === 0 ? '' : p.fases.map((f) => `
+      <div class="rijtje">
+        <span class="hoofd">${esc(f.naam)}<small>${esc(f.start)}${f.eind ? ' t/m ' + esc(f.eind) : ''}</small></span>
+        <select onchange="zetFaseStatus('${f.id}', this.value)">
+          ${Object.entries(faseStatus).map(([k, v]) => `<option value="${k}" ${f.status === k ? 'selected' : ''}>${v}</option>`).join('')}
+        </select>
+        <button class="x" title="Fase verwijderen" onclick="verwijderFase('${f.id}')">✕</button>
+      </div>`).join('');
+
+    $('d-meerwerk').innerHTML = (p.meerwerk || []).length === 0 ? '' : p.meerwerk.map((m) => {
+      const status = m.status === 'wacht_op_klant' ? '⏳ wacht op klant'
+        : m.status === 'goedgekeurd' ? `✓ goedgekeurd ${fmtDatum(m.besluitOp)}` : `✕ afgewezen ${fmtDatum(m.besluitOp)}`;
+      return `<div class="rijtje">
+        <span class="hoofd">${esc(m.titel)} — <strong>${fmtEuro(m.bedrag)}</strong><small>${status}</small></span>
+        ${m.status === 'wacht_op_klant' ? `<button class="x" title="Intrekken" onclick="verwijderMeerwerk('${m.id}')">✕</button>` : ''}
+      </div>`;
+    }).join('');
+
+    $('d-updates').innerHTML = (p.updates || []).map((u) =>
+      `<div class="rijtje"><span class="hoofd">${esc(u.tekst)}<small>${fmtTijd(u.op)}</small></span></div>`).join('');
+
+    $('d-documenten').innerHTML = (p.documenten || []).length === 0 ? '' : p.documenten.map((d) => {
+      const href = d.bestand ? `/api/portaal/bestand/${p.id}/${d.bestand.fileId}` : d.url;
+      return `<div class="rijtje">
+        <span class="hoofd"><a href="${esc(href)}" target="_blank" rel="noopener" style="color:var(--ink);">${esc(d.naam)}</a><small>${esc(d.categorie)}${d.bestand ? ' · upload' : ' · link'}</small></span>
+        <button class="x" title="Verwijderen" onclick="verwijderDoc('${d.id}')">✕</button>
+      </div>`;
+    }).join('');
+
+    const lijst = $('d-berichten');
+    lijst.innerHTML = (p.berichten || []).length === 0
+      ? '<span style="font-size:12.5px;color:#6B7580;">Nog geen berichten. Vragen van de klant verschijnen hier.</span>'
+      : p.berichten.map((b) => `<div class="bericht van-${b.van}">${esc(b.tekst)}<span class="tijd">${b.van === 'klant' ? 'Klant' : 'Jij'} · ${fmtTijd(b.op)}</span></div>`).join('');
+    lijst.scrollTop = lijst.scrollHeight;
+  }
+
+  window.zetStatus = async (status) => {
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+    await herlaad();
+  };
+  window.zetFaseStatus = async (faseId, status) => {
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/fases/${faseId}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+    await herlaad();
+  };
+  window.verwijderFase = async (faseId) => {
+    if (!confirm('Fase verwijderen?')) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/fases/${faseId}`, { method: 'DELETE' });
+    await herlaad();
+  };
+  window.verwijderMeerwerk = async (id) => {
+    if (!confirm('Dit meerwerkvoorstel intrekken?')) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/meerwerk/${id}`, { method: 'DELETE' });
+    await herlaad();
+  };
+  window.verwijderDoc = async (id) => {
+    if (!confirm('Document verwijderen?')) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/documenten/${id}`, { method: 'DELETE' });
+    await herlaad();
+  };
+
+  $('fase-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('f-naam').value.trim()) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/fases`, {
+      method: 'POST', body: JSON.stringify({ naam: $('f-naam').value, start: $('f-start').value }),
+    }).catch((err) => alert(err.message));
+    $('fase-form').reset();
+    await herlaad();
+  });
+
+  $('mw-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await api(`/api/portaal/beheer/projecten/${huidigProject.id}/meerwerk`, {
+        method: 'POST',
+        body: JSON.stringify({ titel: $('m-titel').value, bedrag: $('m-bedrag').value, omschrijving: $('m-omschrijving').value }),
+      });
+      $('mw-form').reset();
+      await herlaad();
+    } catch (err) { alert(err.message); }
+  });
+
+  $('update-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('u-tekst').value.trim()) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/updates`, {
+      method: 'POST', body: JSON.stringify({ tekst: $('u-tekst').value }),
+    }).catch((err) => alert(err.message));
+    $('update-form').reset();
+    await herlaad();
+  });
+
+  $('doc-link-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await api(`/api/portaal/beheer/projecten/${huidigProject.id}/documenten`, {
+        method: 'POST', body: JSON.stringify({ naam: $('doc-naam').value, url: $('doc-url').value, categorie: 'overig' }),
+      });
+      $('doc-link-form').reset();
+      await herlaad();
+    } catch (err) { alert(err.message); }
+  });
+
+  $('doc-upload-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const bestand = $('doc-bestand').files[0];
+    if (!bestand) return alert('Kies eerst een bestand.');
+    if (bestand.size > 15 * 1024 * 1024) return alert('Bestand is groter dan 15 MB.');
+    const params = new URLSearchParams({ filename: bestand.name, categorie: $('doc-upload-cat').value });
+    const res = await fetch(`/api/portaal/beheer/projecten/${huidigProject.id}/upload?${params}`, {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': bestand.type || 'application/octet-stream' },
+      body: bestand,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return alert(data.error || 'Upload mislukt.');
+    $('doc-upload-form').reset();
+    await herlaad();
+  });
+
+  $('bericht-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('b-tekst').value.trim()) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/bericht`, {
+      method: 'POST', body: JSON.stringify({ tekst: $('b-tekst').value }),
+    }).catch((err) => alert(err.message));
+    $('bericht-form').reset();
+    await herlaad();
+  });
+
+  $('btn-reset').addEventListener('click', async () => {
+    if (!confirm('Nieuw klantwachtwoord genereren? Het oude wachtwoord werkt daarna niet meer.')) return;
+    const data = await api(`/api/portaal/beheer/projecten/${huidigProject.id}/reset-wachtwoord`, { method: 'POST' });
+    $('d-inlogblok').innerHTML = inlogBlokHtml({ ...data.inlog, url: location.origin + '/portaal.html' }, '✓ Nieuw wachtwoord aangemaakt');
+    window.scrollTo(0, 0);
+  });
+
+  $('btn-verwijder').addEventListener('click', async () => {
+    if (!confirm(`Project "${huidigProject.naam}" definitief verwijderen, inclusief documenten en berichten? Dit kan niet ongedaan worden gemaakt.`)) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}`, { method: 'DELETE' });
+    await toonOverzicht();
+  });
+
+  // Al ingelogd? Direct het overzicht tonen.
+  toonOverzicht().catch(() => { /* niet ingelogd */ });
+</script>
+</body>
+</html>

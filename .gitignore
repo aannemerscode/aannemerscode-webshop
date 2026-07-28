@@ -1,0 +1,7 @@
+node_modules/
+.env
+
+# Runtime-data van het projectportaal (wordt automatisch aangemaakt)
+data/portal.json
+data/uploads/
+data/invoice-counter.json

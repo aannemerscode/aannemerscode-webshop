@@ -40,6 +40,45 @@ per dag is dat prima; bij hoog volume kun je dit later vervangen door een factuu
 uit een echte database of boekhoudpakket (bijvoorbeeld Moneybird), zoals ook al
 genoemd staat bij "Nog te doen voor een echte webshop" hieronder.
 
+## Projectportaal: unieke klant-inlog per project
+
+Naast de webshop zit er nu een **projectportaal** in — gebouwd rond de grootste
+frustraties van aannemers: wijzigingen die niet vastliggen, de hele dag
+"hoe-ver-zijn-jullie?"-telefoontjes, en foto's/documenten die overal en nergens staan.
+
+**Hoe het werkt, in het kort:**
+
+1. Jij logt in op **`/beheer.html`** met je `ADMIN_WACHTWOORD` (zie `.env.example`).
+2. Bij **"Nieuw project"** genereert de server automatisch een **unieke inlog voor de
+   klant**: een projectcode (bv. `PRJ-K7M4`) en een wachtwoord. Die geef je door via
+   WhatsApp of e-mail (er zit een kant-en-klare kopieerknop bij).
+3. De klant logt in op **`/portaal.html`** en ziet **uitsluitend zijn eigen project** —
+   het wachtwoord wordt gehasht opgeslagen, de sessie is aan precies één project
+   gekoppeld en elk verzoek wordt daarop gecontroleerd.
+
+**Wat de klant ziet (extreem overzichtelijk, één pagina):**
+
+- Grote stappenbalk: Voorbereiding → In uitvoering → Opgeleverd
+- **Meerwerk ter goedkeuring bovenaan**: elke wijziging leg jij vast met omschrijving
+  en bedrag; de klant keurt digitaal goed (met datum/tijd vastgelegd) vóórdat je
+  begint. Geen discussie meer achteraf over "dat zat toch in de offerte?"
+- De planning per fase (afgerond / nu bezig / gepland)
+- Voortgangsupdates, documenten en foto's in één projectdossier
+- Een berichtenvak voor vragen — in plaats van bellen
+
+**Wat jij als bedrijf hebt:**
+
+- Eén overzicht van alle projecten, met per project de status, openstaand meerwerk
+  en klantvragen
+- Per project: status en fases bijwerken, updates plaatsen, meerwerk klaarzetten,
+  bestanden uploaden (foto's/PDF, max 15 MB) of links toevoegen, berichten beantwoorden
+- Klantwachtwoord opnieuw genereren als de klant het kwijt is
+
+De portaaldata staat in `data/portal.json` en uploads in `data/uploads/` (bewust
+búiten `public/`, zodat bestanden alleen met een geldige sessie op te vragen zijn).
+Zelfde advies als bij de orders: prima voor de start, vervang door een echte database
+zodra je op een platform met tijdelijke opslag draait of het volume groeit.
+
 ## Hoe het werkt
 
 - De bezoeker klikt op "Bestel" → de server maakt een betaling aan bij Mollie → de
@@ -130,11 +169,17 @@ om wat voor reden dan ook niet bevalt; functioneel maakt het voor deze app niet 
 ## Bestandsoverzicht
 
 ```
-server.js          — de hele backend: checkout, webhook, orderstatus
+server.js           — webshop-backend: checkout, webhook, orderstatus
+portal.js           — projectportaal-backend: klant-inlog per project, meerwerk,
+                       fases, updates, documenten/uploads, berichten
 public/index.html   — de landingspagina (nu gekoppeld aan de checkout-knoppen)
 public/bedankt.html — bedankpagina die de betaalstatus toont
+public/portaal.html — klantportaal (inloggen met projectcode + wachtwoord)
+public/beheer.html  — bedrijfsdashboard (projecten aanmaken en beheren)
 data/orders.json    — simpele bestelhistorie (vervang door een echte database
                        zodra je op een platform met tijdelijke opslag draait)
+data/portal.json    — projectportaal-data (wordt automatisch aangemaakt)
+data/uploads/       — geüploade foto's/documenten, alleen bereikbaar met sessie
 .env.example        — alle instelbare variabelen, met uitleg
 ```
 

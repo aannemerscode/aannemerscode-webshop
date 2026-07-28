@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klantportaal — AannemersCode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0F243B;
+    --navy-line: rgba(229,224,206,0.14);
+    --cream: #E5E0CE;
+    --ink: #1B2430;
+    --accent: #DA4C1A;
+    --accent-bright: #F0703F;
+    --muted: #8FA0AE;
+    --green: #4C8562;
+    --red: #B23A3A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--navy); color: var(--cream);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .blueprint-bg {
+    background-image:
+      linear-gradient(var(--navy-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--navy-line) 1px, transparent 1px);
+    background-size: 52px 52px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  nav { position: sticky; top: 0; z-index: 30; background: rgba(15,36,59,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--navy-line); }
+  nav .inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; max-width: 760px; margin: 0 auto; }
+  .logo { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.05em; color: var(--cream); text-decoration: none; }
+  .logo span { color: var(--accent-bright); }
+  .nav-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .btn-uitlog { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); background: none; border: 1px solid var(--navy-line); border-radius: 2px; padding: 7px 12px; cursor: pointer; }
+  .btn-uitlog:hover { color: var(--cream); }
+
+  /* ---------- Login ---------- */
+  .login-shell { min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .login-card { background: var(--cream); color: var(--ink); border-radius: 4px; padding: 34px 30px; width: 100%; max-width: 420px; box-shadow: 0 18px 44px rgba(0,0,0,0.4); }
+  .login-card h1 { font-family: 'Oswald', sans-serif; font-size: 24px; margin: 0 0 6px; }
+  .login-card .uitleg { font-size: 13.5px; line-height: 1.6; color: #48505A; margin: 0 0 22px; }
+  label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #6B7580; margin: 0 0 6px; }
+  input[type=text], input[type=password], textarea {
+    width: 100%; padding: 12px 14px; border-radius: 2px; border: 1px solid #C9C2AE; background: #fff;
+    color: var(--ink); font-size: 15px; font-family: 'JetBrains Mono', monospace; margin-bottom: 16px;
+  }
+  textarea { font-family: 'Inter', sans-serif; resize: vertical; }
+  .btn { display: inline-block; width: 100%; background: var(--accent); color: #fff; font-weight: 700; font-size: 14px;
+    padding: 14px; border: none; border-radius: 2px; cursor: pointer; font-family: 'Inter', sans-serif; }
+  .btn:hover { background: var(--accent-bright); }
+  .foutmelding { background: #F7E3DC; color: #8A2F10; border: 1px solid #E4B4A0; border-radius: 2px; padding: 10px 12px; font-size: 13px; margin-bottom: 16px; display: none; }
+  .login-hint { font-size: 12px; color: #6B7580; margin-top: 14px; line-height: 1.55; }
+
+  /* ---------- Dashboard ---------- */
+  header.projecthead { padding: 34px 0 26px; border-bottom: 1px solid var(--navy-line); }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-bright); }
+  h1.projectnaam { font-family: 'Oswald', sans-serif; font-size: clamp(26px, 5vw, 38px); margin: 8px 0 4px; color: var(--cream); }
+  .projectadres { font-size: 14px; color: var(--muted); margin: 0; }
+
+  /* Stappenbalk: waar staat het project? */
+  .stappen { display: flex; gap: 8px; margin: 22px 0 0; }
+  .stap { flex: 1; text-align: center; padding: 10px 6px 12px; border: 1px solid var(--navy-line); border-radius: 2px; }
+  .stap .nr { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); display: block; margin-bottom: 3px; }
+  .stap .naam { font-family: 'Oswald', sans-serif; font-size: 13px; color: var(--muted); }
+  .stap.actief { border-color: var(--accent); background: rgba(218,76,26,0.12); }
+  .stap.actief .nr, .stap.actief .naam { color: var(--accent-bright); }
+  .stap.klaar { border-color: var(--green); }
+  .stap.klaar .naam { color: var(--cream); }
+  .stap.klaar .nr::after { content: ' ✓'; color: var(--green); }
+
+  section.blok { padding: 30px 0 6px; }
+  .blok h2 { font-family: 'Oswald', sans-serif; font-size: 20px; margin: 0 0 4px; color: var(--cream); }
+  .blok .blok-sub { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+
+  .kaart { background: var(--cream); color: var(--ink); border-radius: 3px; padding: 18px 20px; margin-bottom: 12px; }
+  .kaart h3 { font-family: 'Oswald', sans-serif; font-size: 16px; margin: 0 0 4px; }
+  .kaart p { font-size: 13.5px; line-height: 1.55; margin: 0; color: #48505A; }
+  .leeg { font-size: 13px; color: var(--muted); border: 1px dashed var(--navy-line); border-radius: 3px; padding: 16px 18px; }
+
+  /* Actieblok meerwerk */
+  .actieblok { border: 2px solid var(--accent); border-radius: 4px; padding: 20px; margin-top: 26px; background: rgba(218,76,26,0.08); }
+  .actieblok .kop { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-bright); margin-bottom: 10px; }
+  .mw-kaart { background: var(--cream); color: var(--ink); border-radius: 3px; padding: 18px 20px; margin-bottom: 10px; }
+  .mw-kaart .mw-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .mw-kaart .bedrag { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 18px; color: var(--accent); white-space: nowrap; }
+  .mw-knoppen { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .mw-knoppen button { flex: 1; min-width: 140px; padding: 12px; border: none; border-radius: 2px; font-weight: 700; font-size: 13.5px; cursor: pointer; font-family: 'Inter', sans-serif; }
+  .btn-akkoord { background: var(--green); color: #fff; }
+  .btn-afwijzen { background: #fff; color: var(--red); border: 1px solid var(--red) !important; }
+  .mw-status { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 4px 10px; border-radius: 999px; margin-top: 8px; }
+  .mw-status.goedgekeurd { background: #DDEAE2; color: #2E5A42; }
+  .mw-status.afgewezen { background: #F3DBDB; color: #7C2626; }
+  .mw-status.wacht { background: #F3E4C8; color: #7A5A17; }
+
+  /* Fases */
+  .fase-rij { display: flex; align-items: flex-start; gap: 14px; background: var(--cream); color: var(--ink); border-radius: 3px; padding: 14px 18px; margin-bottom: 8px; }
+  .fase-bol { width: 14px; height: 14px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; border: 3px solid #C9C2AE; }
+  .fase-rij.bezig .fase-bol { border-color: var(--accent); background: var(--accent-bright); }
+  .fase-rij.afgerond .fase-bol { border-color: var(--green); background: var(--green); }
+  .fase-rij .fase-body { flex: 1; }
+  .fase-rij h4 { font-family: 'Oswald', sans-serif; font-size: 15px; margin: 0; }
+  .fase-rij .datums { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6B7580; margin-top: 2px; }
+  .fase-rij .notitie { font-size: 13px; color: #48505A; margin-top: 4px; }
+  .fase-rij .fase-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B7580; white-space: nowrap; align-self: center; }
+  .fase-rij.bezig .fase-label { color: var(--accent); font-weight: 700; }
+  .fase-rij.afgerond .fase-label { color: var(--green); }
+
+  /* Updates */
+  .update-rij { border-left: 2px solid var(--navy-line); padding: 0 0 18px 18px; position: relative; }
+  .update-rij::before { content: ''; position: absolute; left: -6px; top: 3px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-bright); }
+  .update-rij .datum { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .update-rij .tekst { font-size: 14px; line-height: 1.6; color: var(--cream); white-space: pre-wrap; }
+
+  /* Documenten */
+  .doc-rij { display: flex; align-items: center; gap: 12px; background: var(--cream); color: var(--ink); border-radius: 3px; padding: 12px 16px; margin-bottom: 8px; text-decoration: none; }
+  .doc-rij:hover { outline: 2px solid var(--accent-bright); }
+  .doc-icoon { font-size: 18px; }
+  .doc-rij .doc-naam { font-size: 14px; font-weight: 600; color: var(--ink); flex: 1; }
+  .doc-rij .doc-cat { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B7580; }
+
+  /* Berichten */
+  .berichten-lijst { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .bericht { max-width: 85%; padding: 10px 14px; border-radius: 6px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
+  .bericht.van-klant { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 2px; }
+  .bericht.van-bedrijf { align-self: flex-start; background: var(--cream); color: var(--ink); border-bottom-left-radius: 2px; }
+  .bericht .tijd { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.7; margin-top: 4px; }
+  .bericht-form { display: flex; gap: 8px; }
+  .bericht-form textarea { flex: 1; margin: 0; min-height: 52px; }
+  .bericht-form button { width: auto; padding: 0 22px; }
+
+  footer { padding: 40px 0 50px; border-top: 1px solid var(--navy-line); margin-top: 40px; text-align: center; }
+  footer p { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+  #dashboard { display: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a class="logo" href="/">AANNEMERS<span>CODE</span></a>
+    <span class="nav-sub">Klantportaal</span>
+    <button class="btn-uitlog" id="btn-uitloggen" style="display:none;">Uitloggen</button>
+  </div>
+</nav>
+
+<!-- ========== INLOGSCHERM ========== -->
+<div id="login" class="login-shell blueprint-bg">
+  <form class="login-card" id="login-form">
+    <h1>Inloggen op uw project</h1>
+    <p class="uitleg">U heeft van uw aannemer een <strong>projectcode</strong> en een <strong>wachtwoord</strong> gekregen. Hiermee ziet u alléén uw eigen project — niemand anders kan erbij.</p>
+    <div class="foutmelding" id="login-fout"></div>
+    <label for="login-code">Projectcode</label>
+    <input type="text" id="login-code" placeholder="PRJ-XXXX" autocomplete="username" autocapitalize="characters">
+    <label for="login-wachtwoord">Wachtwoord</label>
+    <input type="password" id="login-wachtwoord" placeholder="XXXX-XXXX-XXXX" autocomplete="current-password">
+    <button class="btn" type="submit">Inloggen →</button>
+    <p class="login-hint">Code of wachtwoord kwijt? Bel of mail uw aannemer — die kan direct een nieuw wachtwoord voor u aanmaken.</p>
+  </form>
+</div>
+
+<!-- ========== PROJECTDASHBOARD ========== -->
+<div id="dashboard">
+  <header class="projecthead blueprint-bg">
+    <div class="wrap">
+      <span class="eyebrow mono" id="p-code"></span>
+      <h1 class="projectnaam" id="p-naam"></h1>
+      <p class="projectadres" id="p-adres"></p>
+      <div class="stappen" id="p-stappen"></div>
+      <div id="p-actie"></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="blok" id="blok-omschrijving" style="display:none;">
+      <h2>Over dit project</h2>
+      <div class="kaart"><p id="p-omschrijving"></p></div>
+    </section>
+
+    <section class="blok">
+      <h2>Planning</h2>
+      <p class="blok-sub">De fases van uw project. Zo ziet u in één oogopslag wat er klaar is, waar we nu mee bezig zijn en wat er nog komt.</p>
+      <div id="p-fases"></div>
+    </section>
+
+    <section class="blok">
+      <h2>Meerwerk &amp; wijzigingen</h2>
+      <p class="blok-sub">Elke wijziging wordt hier vastgelegd met een prijs, en pas uitgevoerd nadat ú akkoord heeft gegeven. Zo weet iedereen waar hij aan toe is — geen discussie achteraf.</p>
+      <div id="p-meerwerk"></div>
+    </section>
+
+    <section class="blok">
+      <h2>Laatste updates</h2>
+      <p class="blok-sub">Zo blijft u op de hoogte zonder te hoeven bellen.</p>
+      <div id="p-updates"></div>
+    </section>
+
+    <section class="blok">
+      <h2>Documenten &amp; foto's</h2>
+      <p class="blok-sub">Offerte, tekeningen en foto's van de voortgang — alles in één dossier.</p>
+      <div id="p-documenten"></div>
+    </section>
+
+    <section class="blok">
+      <h2>Vraag stellen</h2>
+      <p class="blok-sub">Stel uw vraag hier — u krijgt antwoord in dit portaal, en de aannemer wordt niet uit het werk gebeld.</p>
+      <div class="berichten-lijst" id="p-berichten"></div>
+      <form class="bericht-form" id="bericht-form">
+        <textarea id="bericht-tekst" placeholder="Typ hier uw vraag of opmerking..."></textarea>
+        <button class="btn" type="submit">Versturen</button>
+      </form>
+    </section>
+  </div>
+
+  <footer>
+    <div class="wrap"><p>© <span id="jaar"></span> AANNEMERSCODE · KLANTPORTAAL</p></div>
+  </footer>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  $('jaar').textContent = new Date().getFullYear();
+
+  function fmtDatum(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  function fmtTijd(iso) {
+    return new Date(iso).toLocaleString('nl-NL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  }
+  function fmtEuro(n) {
+    return '€ ' + Number(n).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+  }
+
+  async function api(url, opts = {}) {
+    const res = await fetch(url, {
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      ...opts,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Er ging iets mis.');
+    return data;
+  }
+
+  // ---------- Inloggen ----------
+  $('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fout = $('login-fout');
+    fout.style.display = 'none';
+    try {
+      await api('/api/portaal/klant/login', {
+        method: 'POST',
+        body: JSON.stringify({ code: $('login-code').value, wachtwoord: $('login-wachtwoord').value }),
+      });
+      await laadProject();
+    } catch (err) {
+      fout.textContent = err.message;
+      fout.style.display = 'block';
+    }
+  });
+
+  $('btn-uitloggen').addEventListener('click', async () => {
+    await api('/api/portaal/klant/logout', { method: 'POST' }).catch(() => {});
+    location.reload();
+  });
+
+  // ---------- Project laden en tekenen ----------
+  async function laadProject() {
+    const { project } = await api('/api/portaal/klant/project');
+    $('login').style.display = 'none';
+    $('dashboard').style.display = 'block';
+    $('btn-uitloggen').style.display = 'inline-block';
+    render(project);
+  }
+
+  function render(p) {
+    $('p-code').textContent = p.code;
+    $('p-naam').textContent = p.naam;
+    $('p-adres').textContent = [p.adres, p.klantNaam ? 'voor ' + p.klantNaam : ''].filter(Boolean).join(' · ');
+
+    if (p.omschrijving) {
+      $('blok-omschrijving').style.display = 'block';
+      $('p-omschrijving').textContent = p.omschrijving;
+    }
+
+    // Stappenbalk
+    const stappen = [
+      { key: 'voorbereiding', naam: 'Voorbereiding' },
+      { key: 'in_uitvoering', naam: 'In uitvoering' },
+      { key: 'opgeleverd', naam: 'Opgeleverd' },
+    ];
+    const actiefIdx = Math.max(0, stappen.findIndex((s) => s.key === p.status));
+    $('p-stappen').innerHTML = stappen.map((s, i) => {
+      const cls = i < actiefIdx ? 'stap klaar' : i === actiefIdx ? 'stap actief' : 'stap';
+      return `<div class="${cls}"><span class="nr">Stap ${i + 1}</span><span class="naam">${s.naam}</span></div>`;
+    }).join('');
+
+    // Actieblok: meerwerk dat op de klant wacht — bovenaan, niet te missen.
+    const openMw = (p.meerwerk || []).filter((m) => m.status === 'wacht_op_klant');
+    $('p-actie').innerHTML = openMw.length === 0 ? '' : `
+      <div class="actieblok">
+        <div class="kop">⚠ Uw akkoord nodig · ${openMw.length} openstaand${openMw.length > 1 ? 'e wijzigingen' : 'e wijziging'}</div>
+        ${openMw.map(mwKaart).join('')}
+      </div>`;
+
+    // Fases
+    const faseLabel = { gepland: 'Gepland', bezig: 'Nu bezig', afgerond: 'Afgerond' };
+    $('p-fases').innerHTML = (p.fases || []).length === 0
+      ? '<div class="leeg">De planning wordt binnenkort ingevuld door uw aannemer.</div>'
+      : p.fases.map((f) => `
+        <div class="fase-rij ${f.status}">
+          <div class="fase-bol"></div>
+          <div class="fase-body">
+            <h4>${esc(f.naam)}</h4>
+            ${f.start || f.eind ? `<div class="datums">${esc(f.start)}${f.eind ? ' t/m ' + esc(f.eind) : ''}</div>` : ''}
+            ${f.notitie ? `<div class="notitie">${esc(f.notitie)}</div>` : ''}
+          </div>
+          <span class="fase-label">${faseLabel[f.status] || ''}</span>
+        </div>`).join('');
+
+    // Meerwerk (volledige historie, incl. al beoordeelde items)
+    const beoordeeld = (p.meerwerk || []).filter((m) => m.status !== 'wacht_op_klant');
+    const alleMw = [...openMw, ...beoordeeld];
+    $('p-meerwerk').innerHTML = alleMw.length === 0
+      ? '<div class="leeg">Er is (nog) geen meerwerk vastgelegd. Als er iets wijzigt, verschijnt het hier eerst ter goedkeuring.</div>'
+      : alleMw.map(mwKaart).join('');
+
+    // Updates
+    $('p-updates').innerHTML = (p.updates || []).length === 0
+      ? '<div class="leeg">Nog geen updates. Zodra er nieuws is over uw project, leest u het hier.</div>'
+      : p.updates.map((u) => `
+        <div class="update-rij">
+          <span class="datum">${fmtDatum(u.op)}</span>
+          <span class="tekst">${esc(u.tekst)}</span>
+        </div>`).join('');
+
+    // Documenten
+    $('p-documenten').innerHTML = (p.documenten || []).length === 0
+      ? '<div class="leeg">Nog geen documenten. Offerte, tekeningen en foto\'s verschijnen hier zodra ze zijn toegevoegd.</div>'
+      : p.documenten.map((d) => {
+          const href = d.bestand ? `/api/portaal/bestand/${p.id}/${d.bestand.fileId}` : d.url;
+          const icoon = d.categorie === 'foto' ? '📷' : d.categorie === 'offerte' ? '💶' : d.categorie === 'tekening' ? '📐' : '📄';
+          return `<a class="doc-rij" href="${esc(href)}" target="_blank" rel="noopener">
+            <span class="doc-icoon">${icoon}</span>
+            <span class="doc-naam">${esc(d.naam)}</span>
+            <span class="doc-cat">${esc(d.categorie)}</span>
+          </a>`;
+        }).join('');
+
+    // Berichten
+    const lijst = $('p-berichten');
+    lijst.innerHTML = (p.berichten || []).map((b) => `
+      <div class="bericht van-${b.van}">${esc(b.tekst)}<span class="tijd">${b.van === 'klant' ? 'U' : 'Aannemer'} · ${fmtTijd(b.op)}</span></div>
+    `).join('');
+  }
+
+  function mwKaart(m) {
+    const status = m.status === 'wacht_op_klant'
+      ? '<span class="mw-status wacht">Wacht op uw akkoord</span>'
+      : m.status === 'goedgekeurd'
+        ? `<span class="mw-status goedgekeurd">✓ Goedgekeurd op ${fmtDatum(m.besluitOp)}</span>`
+        : `<span class="mw-status afgewezen">✕ Afgewezen op ${fmtDatum(m.besluitOp)}</span>`;
+    const knoppen = m.status !== 'wacht_op_klant' ? '' : `
+      <div class="mw-knoppen">
+        <button class="btn-akkoord" onclick="besluit('${m.id}','goedgekeurd')">✓ Akkoord, voer uit</button>
+        <button class="btn-afwijzen" onclick="besluit('${m.id}','afgewezen')">✕ Niet akkoord</button>
+      </div>`;
+    return `<div class="mw-kaart">
+      <div class="mw-top"><h3>${esc(m.titel)}</h3><span class="bedrag">${fmtEuro(m.bedrag)}</span></div>
+      ${m.omschrijving ? `<p>${esc(m.omschrijving)}</p>` : ''}
+      ${status}
+      ${knoppen}
+    </div>`;
+  }
+
+  window.besluit = async (id, keuze) => {
+    const vraag = keuze === 'goedgekeurd'
+      ? 'Weet u het zeker? Met uw akkoord wordt dit meerwerk uitgevoerd en in rekening gebracht.'
+      : 'Weet u het zeker? Dit meerwerk wordt dan niet uitgevoerd.';
+    if (!confirm(vraag)) return;
+    try {
+      await api(`/api/portaal/klant/meerwerk/${id}/besluit`, { method: 'POST', body: JSON.stringify({ besluit: keuze }) });
+      await laadProject();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  $('bericht-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const tekst = $('bericht-tekst').value.trim();
+    if (!tekst) return;
+    try {
+      await api('/api/portaal/klant/bericht', { method: 'POST', body: JSON.stringify({ tekst }) });
+      $('bericht-tekst').value = '';
+      await laadProject();
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+
+  // Al ingelogd? Dan direct het project tonen.
+  laadProject().catch(() => { /* niet ingelogd — loginscherm blijft staan */ });
+</script>
+</body>
+</html>
