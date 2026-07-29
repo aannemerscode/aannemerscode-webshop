@@ -1,0 +1,39 @@
+# Render Blueprint — zet Projexa (+ webshop) live in een paar klikken.
+# Koppel deze repository op render.com via "New" → "Blueprint"; Render leest dit
+# bestand en zet de service automatisch goed neer. Zie de README voor de stappen.
+services:
+  - type: web
+    name: projexa
+    runtime: node
+    plan: starter # kleinste betaalde laag: altijd aan + persistente schijf voor je data
+    buildCommand: npm install
+    startCommand: npm start
+    # Persistente schijf: hier staan projecten, uren, uploads en facturen in
+    # data/. Zonder schijf verdwijnt die data bij elke deploy of herstart.
+    disk:
+      name: projexa-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
+    envVars:
+      # Deze waarden vul je zelf in bij het aanmaken (sync: false = geheim,
+      # wordt niet in git bewaard). Zie .env.example voor uitleg per variabele.
+      - key: BASE_URL
+        sync: false
+      - key: ADMIN_WACHTWOORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true # Render genereert zelf een sterke willekeurige waarde
+      - key: MOLLIE_API_KEY
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: OWNER_EMAIL
+        sync: false

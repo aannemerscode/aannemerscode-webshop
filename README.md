@@ -42,45 +42,71 @@ genoemd staat bij "Nog te doen voor een echte webshop" hieronder.
 
 ## Projexa: projectportaal met unieke klant-inlog per project
 
-Screenshots van hoe het eruitziet staan in de map [`screenshots/`](screenshots/):
-klant-login, het klantportaal, het bedrijfsoverzicht en de projectdetailpagina.
-
-Naast de webshop zit er nu **Projexa** in, een projectportaal — gebouwd rond de grootste
+Naast de webshop zit er **Projexa** in, een projectportaal — gebouwd rond de grootste
 frustraties van aannemers: wijzigingen die niet vastliggen, de hele dag
 "hoe-ver-zijn-jullie?"-telefoontjes, en foto's/documenten die overal en nergens staan.
+Screenshots staan in de map [`screenshots/`](screenshots/).
 
-**Hoe het werkt, in het kort:**
+**In het kort:** jij logt in op `/beheer.html` met je `ADMIN_WACHTWOORD`. Bij "Nieuw
+project" genereert de server automatisch een **unieke inlog voor de klant**
+(projectcode + wachtwoord, gehasht opgeslagen); de klant ziet op `/portaal.html`
+uitsluitend zijn eigen project: stappenbalk, planning per fase, **meerwerk dat hij
+digitaal goedkeurt vóór uitvoering** (met datum/tijd vastgelegd), updates, documenten,
+foto's en een berichtenvak. Jij beheert alles per project, uploadt bestanden (max
+15 MB, of direct via de "Foto maken"-knop) en kunt klantwachtwoorden opnieuw
+genereren. Portaaldata staat in `data/portal.json`, uploads in `data/uploads/`
+(bewust búiten `public/`, alleen met een geldige sessie op te vragen).
 
-1. Jij logt in op **`/beheer.html`** met je `ADMIN_WACHTWOORD` (zie `.env.example`).
-2. Bij **"Nieuw project"** genereert de server automatisch een **unieke inlog voor de
-   klant**: een projectcode (bv. `PRJ-K7M4`) en een wachtwoord. Die geef je door via
-   WhatsApp of e-mail (er zit een kant-en-klare kopieerknop bij).
-3. De klant logt in op **`/portaal.html`** en ziet **uitsluitend zijn eigen project** —
-   het wachtwoord wordt gehasht opgeslagen, de sessie is aan precies één project
-   gekoppeld en elk verzoek wordt daarop gecontroleerd.
+### De vier ingangen
 
-**Wat de klant ziet (extreem overzichtelijk, één pagina):**
+| Wie | URL | Inlog |
+|---|---|---|
+| Bedrijf | `/beheer.html` | `ADMIN_WACHTWOORD` uit de omgeving |
+| Klant | `/portaal.html` | unieke projectcode + wachtwoord, per project gegenereerd |
+| Werknemer | `/werknemer.html` | persoonlijke code + wachtwoord, per werknemer gegenereerd |
+| Opleverdossier | `/dossier.html` | via de klant-inlog (of als bedrijf met `?projectId=...`) |
 
-- Grote stappenbalk: Voorbereiding → In uitvoering → Opgeleverd
-- **Meerwerk ter goedkeuring bovenaan**: elke wijziging leg jij vast met omschrijving
-  en bedrag; de klant keurt digitaal goed (met datum/tijd vastgelegd) vóórdat je
-  begint. Geen discussie meer achteraf over "dat zat toch in de offerte?"
-- De planning per fase (afgerond / nu bezig / gepland)
-- Voortgangsupdates, documenten en foto's in één projectdossier
-- Een berichtenvak voor vragen — in plaats van bellen
+### Werknemers: urenstaat + herinnering om 16:30
 
-**Wat jij als bedrijf hebt:**
+Op het bedrijfsdashboard maak je werknemers aan; net als bij klanten wordt er
+automatisch een unieke inlog gegenereerd. De werknemer vult per dag uren in —
+**meerwerkuren apart**, zodat de facturatie richting de klant meteen klopt — en
+het bedrijf ziet per week alle uren bij elkaar.
 
-- Eén overzicht van alle projecten, met per project de status, openstaand meerwerk
-  en klantvragen
-- Per project: status en fases bijwerken, updates plaatsen, meerwerk klaarzetten,
-  bestanden uploaden (foto's/PDF, max 15 MB) of links toevoegen, berichten beantwoorden
-- Klantwachtwoord opnieuw genereren als de klant het kwijt is
+Op werkdagen (ma t/m vr) om **16:30** controleert de server wie zijn uren van die
+dag nog niet heeft ingevuld, en stuurt die werknemers een **pushmelding** (web-push;
+de werknemer zet dit met één knop aan in de urenstaat) en — als SMTP is ingesteld
+en de werknemer een e-mailadres heeft — ook een **herinneringsmail**. Op iPhone
+werken pushmeldingen nadat de werknemer de site via "Zet op beginscherm" heeft
+toegevoegd; op Android werkt het direct in de browser.
 
-De portaaldata staat in `data/portal.json` en uploads in `data/uploads/` (bewust
-búiten `public/`, zodat bestanden alleen met een geldige sessie op te vragen zijn).
-Zelfde advies als bij de orders: prima voor de start, vervang door een echte database
-zodra je op een platform met tijdelijke opslag draait of het volume groeit.
+### Opleverdossier voor de klant
+
+Per project vul je op de detailpagina het opleverdossier: **garanties**,
+**onderhoudsplan**, **cv/warmtepomp-onderhoud** en **dakinspectie**. Facturen en
+handleidingen voeg je toe via de documenten (categorieën "Factuur" en
+"Handleiding"). Zodra het project op **Opgeleverd** staat, ziet de klant bovenaan
+het portaal "Uw opleverdossier staat klaar": één compleet document met daarin ook
+de **volledige verbouwgeschiedenis** (fases, goedgekeurd meerwerk met datums,
+voortgangsverslag en fotodocumentatie) — direct af te drukken of als PDF op te
+slaan via de printknop.
+
+## Live zetten (Render, ± 15 minuten)
+
+Er staat een `render.yaml` in de repo, dus Render zet alles automatisch goed neer:
+
+1. Maak een account op [render.com](https://render.com) (kan met je GitHub-login).
+2. Klik **New → Blueprint** en kies deze repository (branch `main` na het mergen).
+3. Render leest `render.yaml`. Vul de gevraagde geheime variabelen in — minimaal
+   `ADMIN_WACHTWOORD` (verzin een sterk wachtwoord); de rest mag later.
+4. Na de eerste deploy krijg je een URL zoals `https://projexa.onrender.com`.
+   Zet die als `BASE_URL` in Render → Environment en klik "Save, rebuild, deploy".
+5. Klaar: `https://jouw-url/beheer.html` is je dashboard. HTTPS is automatisch
+   geregeld — nodig voor de camera-knop en pushmeldingen.
+
+Let op: het `starter`-plan (± $7/maand) is hier bewust gekozen omdat er een
+**persistente schijf** aan hangt voor de map `data/` (projecten, uren, uploads).
+Op de gratis laag gaat die data bij elke herstart verloren.
 
 ## Hoe het werkt
 
@@ -178,7 +204,11 @@ portal.js           — Projexa-backend: klant-inlog per project, meerwerk,
 public/index.html   — de landingspagina (nu gekoppeld aan de checkout-knoppen)
 public/bedankt.html — bedankpagina die de betaalstatus toont
 public/portaal.html — Projexa-klantportaal (inloggen met projectcode + wachtwoord)
-public/beheer.html  — Projexa-bedrijfsdashboard (projecten aanmaken en beheren)
+public/beheer.html  — Projexa-bedrijfsdashboard (projecten, werknemers, uren, dossier)
+public/werknemer.html — urenstaat voor werknemers (incl. meerwerkuren + meldingen)
+public/dossier.html — printbaar opleverdossier voor de klant
+public/sw.js        — service worker voor pushmeldingen
+render.yaml         — Render Blueprint: hiermee zet je alles in een paar klikken live
 data/orders.json    — simpele bestelhistorie (vervang door een echte database
                        zodra je op een platform met tijdelijke opslag draait)
 data/portal.json    — projectportaal-data (wordt automatisch aangemaakt)

@@ -195,6 +195,33 @@
 
       <div id="nieuw-inlog"></div>
       <div id="projectenlijst"></div>
+
+      <div class="kaart" style="margin-top:34px;">
+        <h2>Werknemers</h2>
+        <p class="sectie-uitleg">Iedere werknemer krijgt een eigen inlog voor de urenstaat op <strong>/werknemer.html</strong> — met aparte meerwerkuren, en op werkdagen om 16:30 automatisch een melding als de uren nog niet zijn ingevuld.</p>
+        <div id="wrk-inlog"></div>
+        <div id="wrk-lijst"></div>
+        <form id="wrk-form" style="margin-top:14px;">
+          <div class="grid-2">
+            <div><label>Naam *</label><input type="text" id="wn-naam" placeholder="Piet de Vries"></div>
+            <div><label>E-mail (voor herinnering, optioneel)</label><input type="email" id="wn-email" placeholder="piet@voorbeeld.nl"></div>
+          </div>
+          <button class="btn btn-klein" type="submit">+ Werknemer toevoegen + inlog genereren</button>
+        </form>
+      </div>
+
+      <div class="kaart">
+        <div class="kop-rij" style="margin-bottom:8px;">
+          <h2 style="margin:0;">Urenstaten</h2>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button class="btn btn-klein btn-stil" id="uren-vorige" type="button">←</button>
+            <span id="uren-periode" style="font-size:13px; font-weight:600;"></span>
+            <button class="btn btn-klein btn-stil" id="uren-volgende" type="button">→</button>
+          </div>
+        </div>
+        <p class="sectie-uitleg">Alle ingevulde uren per week, met meerwerkuren apart — handig voor de facturatie.</p>
+        <div id="uren-overzicht"></div>
+      </div>
     </div>
   </div>
 
@@ -270,6 +297,8 @@
             <select id="doc-upload-cat">
               <option value="foto">Foto</option>
               <option value="offerte">Offerte</option>
+              <option value="factuur">Factuur</option>
+              <option value="handleiding">Handleiding</option>
               <option value="tekening">Tekening</option>
               <option value="overig">Overig</option>
             </select>
@@ -279,6 +308,13 @@
             <label>Of een link toevoegen</label>
             <input type="text" id="doc-naam" placeholder="Naam, bv. Offerte aanbouw">
             <input type="text" id="doc-url" placeholder="https://...">
+            <select id="doc-link-cat">
+              <option value="overig">Overig</option>
+              <option value="offerte">Offerte</option>
+              <option value="factuur">Factuur</option>
+              <option value="handleiding">Handleiding</option>
+              <option value="tekening">Tekening</option>
+            </select>
             <button class="btn btn-klein" type="submit">+ Link toevoegen</button>
           </form>
         </div>
@@ -291,6 +327,59 @@
           <textarea id="b-tekst" rows="2" placeholder="Antwoord aan de klant..."></textarea>
           <button class="btn btn-klein" type="submit">Versturen</button>
         </form>
+      </div>
+
+      <div class="kaart">
+        <div class="kop-rij" style="margin-bottom:8px;">
+          <h2 style="margin:0;">Opleverdossier</h2>
+          <a class="btn btn-klein btn-stil" id="link-dossier" href="#" target="_blank" rel="noopener" style="text-decoration:none;">Bekijk / print dossier</a>
+        </div>
+        <p class="sectie-uitleg">Het complete document dat de klant na oplevering krijgt: garanties, facturen en handleidingen (via de documenten hierboven, categorieën "Factuur" en "Handleiding"), onderhoudsplan, cv/warmtepomp, dakinspectie en de volledige verbouwgeschiedenis. Printbaar via de knop rechtsboven.</p>
+
+        <h3 style="margin-top:16px;">Garanties</h3>
+        <div id="ds-garanties"></div>
+        <form id="garantie-form">
+          <div class="grid-2">
+            <div><label>Onderdeel</label><input type="text" id="g-onderdeel" placeholder="Kozijnen"></div>
+            <div><label>Garantie</label><input type="text" id="g-duur" placeholder="10 jaar, tot 03-2036"></div>
+          </div>
+          <label>Toelichting (optioneel)</label>
+          <input type="text" id="g-toelichting" placeholder="Fabrieksgarantie via leverancier X">
+          <button class="btn btn-klein" type="submit">+ Garantie toevoegen</button>
+        </form>
+
+        <h3 style="margin-top:22px;">Onderhoudsplan</h3>
+        <div id="ds-onderhoud"></div>
+        <form id="onderhoud-form">
+          <div class="grid-2">
+            <div><label>Onderhoudstaak</label><input type="text" id="o-taak" placeholder="Kitranden badkamer controleren"></div>
+            <div><label>Frequentie</label><input type="text" id="o-frequentie" placeholder="Jaarlijks"></div>
+          </div>
+          <label>Toelichting (optioneel)</label>
+          <input type="text" id="o-toelichting" placeholder="Bij loslaten direct bijwerken om lekkage te voorkomen">
+          <button class="btn btn-klein" type="submit">+ Taak toevoegen</button>
+        </form>
+
+        <h3 style="margin-top:22px;">Cv- / warmtepompinstallatie</h3>
+        <div class="grid-2">
+          <div><label>Installatie (merk/type)</label><input type="text" id="cv-installatie" placeholder="Warmtepomp — merk, type"></div>
+          <div><label>Laatste onderhoud</label><input type="text" id="cv-laatste" placeholder="maart 2026"></div>
+          <div><label>Volgend onderhoud</label><input type="text" id="cv-volgende" placeholder="maart 2027 (jaarlijks)"></div>
+          <div><label>Toelichting</label><input type="text" id="cv-toelichting" placeholder="Onderhoudscontract via installateur Y"></div>
+        </div>
+
+        <h3 style="margin-top:10px;">Dakinspectie</h3>
+        <div class="grid-2">
+          <div><label>Laatste inspectie</label><input type="text" id="dak-laatste" placeholder="bij oplevering, juli 2026"></div>
+          <div><label>Volgende inspectie</label><input type="text" id="dak-volgende" placeholder="advies: elke 2 jaar"></div>
+        </div>
+        <label>Bevindingen</label>
+        <textarea id="dak-bevindingen" rows="2" placeholder="Dakbedekking en aansluitingen in goede staat opgeleverd."></textarea>
+
+        <h3 style="margin-top:10px;">Slotwoord voor de klant (optioneel)</h3>
+        <textarea id="ds-slotwoord" rows="2" placeholder="Bedankt voor het vertrouwen — bij vragen weet u ons te vinden."></textarea>
+
+        <button class="btn btn-klein" id="btn-dossier-opslaan" type="button" style="margin-top:6px;">Dossiergegevens opslaan</button>
       </div>
 
       <div class="kaart">
@@ -361,6 +450,8 @@
     $('detail').style.display = 'none';
     $('overzicht').style.display = 'block';
     $('btn-uitloggen').style.display = 'inline-block';
+    laadWerknemers().catch(() => {});
+    laadUren().catch(() => {});
 
     const statusNaam = { voorbereiding: 'Voorbereiding', in_uitvoering: 'In uitvoering', opgeleverd: 'Opgeleverd' };
     $('projectenlijst').innerHTML = projecten.length === 0
@@ -398,6 +489,87 @@
       $('overzicht').scrollIntoView();
     } catch (err) { fout.textContent = err.message; fout.style.display = 'block'; }
   });
+
+  // ---------- Werknemers ----------
+  async function laadWerknemers() {
+    const { werknemers } = await api('/api/portaal/beheer/werknemers');
+    $('wrk-lijst').innerHTML = werknemers.length === 0
+      ? '<div class="leeg">Nog geen werknemers. Voeg hieronder de eerste toe — de inlog wordt automatisch aangemaakt.</div>'
+      : werknemers.map((w) => `
+        <div class="rijtje">
+          <span class="code mono" style="font-size:12px; font-weight:700; color:var(--accent); min-width:84px;">${esc(w.code)}</span>
+          <span class="hoofd">${esc(w.naam)}<small>${esc(w.email || 'geen e-mail')} · meldingen ${w.pushActief ? 'aan' : 'uit'}</small></span>
+          <span class="badge ${w.urenVandaagIngevuld ? 'opgeleverd' : 'voorbereiding'}">${w.urenVandaagIngevuld ? 'uren vandaag ✓' : 'vandaag nog leeg'}</span>
+          <button class="x" title="Nieuw wachtwoord" onclick="resetWerknemerWw('${w.id}')">🔑</button>
+          <button class="x" title="Verwijderen" onclick="verwijderWerknemer('${w.id}', '${esc(w.naam)}')">✕</button>
+        </div>`).join('');
+  }
+
+  $('wrk-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      const data = await api('/api/portaal/beheer/werknemers', {
+        method: 'POST',
+        body: JSON.stringify({ naam: $('wn-naam').value, email: $('wn-email').value }),
+      });
+      $('wrk-form').reset();
+      $('wrk-inlog').innerHTML = werknemerInlogHtml(data.inlog, `✓ Inlog voor ${esc(data.werknemer.naam)}`);
+      await laadWerknemers();
+    } catch (err) { alert(err.message); }
+  });
+
+  function werknemerInlogHtml(inlog, kop) {
+    const url = location.origin + '/werknemer.html';
+    return `
+      <div class="inlogblok">
+        <h3>${kop}</h3>
+        <p><strong>Geef deze gegevens aan de werknemer.</strong> Het wachtwoord wordt maar één keer getoond. Inloggen op: <strong>${url}</strong> — daar kan hij/zij ook de meldingen (werkdagen 16:30) aanzetten.</p>
+        <div class="cred"><span>${esc(inlog.code)}</span><small>Persoonlijke code</small></div>
+        <div class="cred"><span>${esc(inlog.wachtwoord)}</span><small>Wachtwoord</small></div>
+      </div>`;
+  }
+
+  window.resetWerknemerWw = async (id) => {
+    if (!confirm('Nieuw wachtwoord voor deze werknemer genereren? Het oude vervalt direct.')) return;
+    const data = await api(`/api/portaal/beheer/werknemers/${id}/reset-wachtwoord`, { method: 'POST' });
+    $('wrk-inlog').innerHTML = werknemerInlogHtml(data.inlog, '✓ Nieuw wachtwoord aangemaakt');
+  };
+  window.verwijderWerknemer = async (id, naam) => {
+    if (!confirm(`Werknemer "${naam}" verwijderen? De al ingevulde uren blijven bewaard.`)) return;
+    await api(`/api/portaal/beheer/werknemers/${id}`, { method: 'DELETE' });
+    await laadWerknemers();
+  };
+
+  // ---------- Urenoverzicht ----------
+  let urenMaandag = (() => {
+    const d = new Date(); d.setHours(12, 0, 0, 0);
+    d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    return d;
+  })();
+  const isoDag = (d) => d.toISOString().slice(0, 10);
+
+  $('uren-vorige').addEventListener('click', () => { urenMaandag.setDate(urenMaandag.getDate() - 7); laadUren(); });
+  $('uren-volgende').addEventListener('click', () => { urenMaandag.setDate(urenMaandag.getDate() + 7); laadUren(); });
+
+  async function laadUren() {
+    const eind = new Date(urenMaandag); eind.setDate(eind.getDate() + 6);
+    $('uren-periode').textContent = `${urenMaandag.getDate()}/${urenMaandag.getMonth() + 1} – ${eind.getDate()}/${eind.getMonth() + 1}`;
+    const { uren } = await api(`/api/portaal/beheer/uren?van=${isoDag(urenMaandag)}&tot=${isoDag(eind)}`);
+    if (uren.length === 0) {
+      $('uren-overzicht').innerHTML = '<div class="leeg">Geen uren ingevuld in deze week.</div>';
+      return;
+    }
+    const totUren = uren.reduce((s, u) => s + u.uren, 0);
+    const totMw = uren.reduce((s, u) => s + u.meerwerkUren, 0);
+    $('uren-overzicht').innerHTML = uren.map((u) => `
+      <div class="rijtje">
+        <span class="hoofd"><strong>${esc(u.werknemerNaam)}</strong> · ${new Date(u.datum + 'T12:00').toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' })}
+          <small>${esc(u.projectNaam || 'Algemeen')}${u.omschrijving ? ' · ' + esc(u.omschrijving) : ''}</small></span>
+        <span style="font-weight:700; white-space:nowrap;">${u.uren} u${u.meerwerkUren > 0 ? ` <span style="color:var(--accent); font-weight:600; font-size:12px;">+ ${u.meerwerkUren} mw</span>` : ''}</span>
+      </div>`).join('') +
+      `<div class="rijtje" style="border-top:2px solid #D6D0BD;"><span class="hoofd"><strong>Weektotaal</strong></span>
+        <span style="font-weight:700;">${totUren} u${totMw > 0 ? ` <span style="color:var(--accent); font-size:12px;">+ ${totMw} meerwerk</span>` : ''}</span></div>`;
+  }
 
   // ---------- Detail ----------
   window.openProject = async (id) => {
@@ -462,7 +634,95 @@
       ? '<span style="font-size:12.5px;color:var(--ink-soft);">Nog geen berichten. Vragen van de klant verschijnen hier.</span>'
       : p.berichten.map((b) => `<div class="bericht van-${b.van}">${esc(b.tekst)}<span class="tijd">${b.van === 'klant' ? 'Klant' : 'Jij'} · ${fmtTijd(b.op)}</span></div>`).join('');
     lijst.scrollTop = lijst.scrollHeight;
+
+    renderDossier(p);
   }
+
+  // ---------- Opleverdossier ----------
+  function renderDossier(p) {
+    const d = p.dossier || {};
+    $('link-dossier').href = `/dossier.html?projectId=${p.id}`;
+
+    $('ds-garanties').innerHTML = (d.garanties || []).map((g, i) => `
+      <div class="rijtje">
+        <span class="hoofd">${esc(g.onderdeel)} — ${esc(g.duur)}${g.toelichting ? `<small>${esc(g.toelichting)}</small>` : ''}</span>
+        <button class="x" title="Verwijderen" onclick="verwijderDossierRij('garanties', ${i})">✕</button>
+      </div>`).join('');
+
+    $('ds-onderhoud').innerHTML = (d.onderhoud || []).map((o, i) => `
+      <div class="rijtje">
+        <span class="hoofd">${esc(o.taak)} — ${esc(o.frequentie)}${o.toelichting ? `<small>${esc(o.toelichting)}</small>` : ''}</span>
+        <button class="x" title="Verwijderen" onclick="verwijderDossierRij('onderhoud', ${i})">✕</button>
+      </div>`).join('');
+
+    const cv = d.cvWarmtepomp || {};
+    $('cv-installatie').value = cv.installatie || '';
+    $('cv-laatste').value = cv.laatsteOnderhoud || '';
+    $('cv-volgende').value = cv.volgendeOnderhoud || '';
+    $('cv-toelichting').value = cv.toelichting || '';
+    const dak = d.dakinspectie || {};
+    $('dak-laatste').value = dak.laatsteInspectie || '';
+    $('dak-volgende').value = dak.volgendeInspectie || '';
+    $('dak-bevindingen').value = dak.bevindingen || '';
+    $('ds-slotwoord').value = d.slotwoord || '';
+  }
+
+  async function bewaarDossier(extra = {}) {
+    const d = huidigProject.dossier || {};
+    const body = {
+      garanties: d.garanties || [],
+      onderhoud: d.onderhoud || [],
+      cvWarmtepomp: {
+        installatie: $('cv-installatie').value,
+        laatsteOnderhoud: $('cv-laatste').value,
+        volgendeOnderhoud: $('cv-volgende').value,
+        toelichting: $('cv-toelichting').value,
+      },
+      dakinspectie: {
+        laatsteInspectie: $('dak-laatste').value,
+        volgendeInspectie: $('dak-volgende').value,
+        bevindingen: $('dak-bevindingen').value,
+      },
+      slotwoord: $('ds-slotwoord').value,
+      ...extra,
+    };
+    const res = await api(`/api/portaal/beheer/projecten/${huidigProject.id}/dossier`, {
+      method: 'PATCH', body: JSON.stringify(body),
+    });
+    huidigProject.dossier = res.dossier;
+    renderDossier(huidigProject);
+  }
+
+  window.verwijderDossierRij = async (soort, index) => {
+    const lijst = [...((huidigProject.dossier || {})[soort] || [])];
+    lijst.splice(index, 1);
+    await bewaarDossier({ [soort]: lijst });
+  };
+
+  $('garantie-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('g-onderdeel').value.trim()) return;
+    const lijst = [...((huidigProject.dossier || {}).garanties || []),
+      { onderdeel: $('g-onderdeel').value, duur: $('g-duur').value, toelichting: $('g-toelichting').value }];
+    await bewaarDossier({ garanties: lijst }).catch((err) => alert(err.message));
+    $('garantie-form').reset();
+  });
+
+  $('onderhoud-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('o-taak').value.trim()) return;
+    const lijst = [...((huidigProject.dossier || {}).onderhoud || []),
+      { taak: $('o-taak').value, frequentie: $('o-frequentie').value, toelichting: $('o-toelichting').value }];
+    await bewaarDossier({ onderhoud: lijst }).catch((err) => alert(err.message));
+    $('onderhoud-form').reset();
+  });
+
+  $('btn-dossier-opslaan').addEventListener('click', async () => {
+    try {
+      await bewaarDossier();
+      alert('Dossiergegevens opgeslagen.');
+    } catch (err) { alert(err.message); }
+  });
 
   window.zetStatus = async (status) => {
     await api(`/api/portaal/beheer/projecten/${huidigProject.id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
@@ -524,7 +784,7 @@
     e.preventDefault();
     try {
       await api(`/api/portaal/beheer/projecten/${huidigProject.id}/documenten`, {
-        method: 'POST', body: JSON.stringify({ naam: $('doc-naam').value, url: $('doc-url').value, categorie: 'overig' }),
+        method: 'POST', body: JSON.stringify({ naam: $('doc-naam').value, url: $('doc-url').value, categorie: $('doc-link-cat').value }),
       });
       $('doc-link-form').reset();
       await herlaad();

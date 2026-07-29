@@ -210,8 +210,22 @@
   .doc-icoon { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .doc-icoon.foto { background: rgba(71,121,91,0.14); color: var(--green-deep); }
   .doc-icoon.offerte { background: var(--accent-soft); color: #A93A12; }
+  .doc-icoon.factuur { background: var(--accent-soft); color: #A93A12; }
+  .doc-icoon.handleiding { background: rgba(15,36,59,0.09); color: var(--navy); }
   .doc-icoon.tekening { background: rgba(15,36,59,0.09); color: var(--navy); }
   .doc-icoon.overig { background: rgba(34,43,54,0.07); color: var(--ink-soft); }
+
+  /* Opleverdossier-kaart (verschijnt na oplevering) */
+  .dossier-kaart {
+    display: flex; align-items: center; gap: 18px; background: linear-gradient(135deg, #F3EFE3 0%, #EAE4D0 100%);
+    color: var(--ink); border-radius: 16px; padding: 22px 24px; margin-top: 26px;
+    box-shadow: var(--shadow-card); text-decoration: none; transition: transform .15s;
+  }
+  .dossier-kaart:hover { transform: translateY(-1px); }
+  .dossier-kaart .dk-icoon { width: 48px; height: 48px; border-radius: 13px; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 16px rgba(71,121,91,0.35); }
+  .dossier-kaart h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 19px; margin: 0 0 3px; }
+  .dossier-kaart p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.5; }
+  .dossier-kaart .pijl { margin-left: auto; color: var(--green-deep); font-size: 20px; }
   .doc-rij .doc-naam { font-size: 14px; font-weight: 600; color: var(--ink); flex: 1; }
   .doc-rij .doc-cat { font-size: 12px; color: var(--ink-soft); }
 
@@ -359,6 +373,8 @@
     foto: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.2-2h4.6l1.2 2"/></svg>',
     offerte: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h9l4 4V21a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1z"/><path d="M14.5 10.5c-.5-.8-1.4-1.2-2.3-1.2-1.4 0-2.4.9-2.4 2s1 1.7 2.4 2 2.4.9 2.4 2-1 2-2.4 2c-1 0-1.9-.4-2.4-1.2"/><path d="M12 8v10"/></svg>',
     tekening: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 7l-7 13.5M12 7l7 13.5M7.8 15h8.4"/><circle cx="12" cy="5" r="2"/></svg>',
+    factuur: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14v18l-2.3-1.5L14.4 21l-2.4-1.5L9.6 21l-2.3-1.5L5 21V3z"/><path d="M9 8h6M9 12h6"/></svg>',
+    handleiding: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17.5H6.5A2.5 2.5 0 0 0 4 22V4.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg>',
     overig: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h9l4 4V21a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6"/></svg>',
   };
 
@@ -428,11 +444,20 @@
 
     // Actieblok: meerwerk dat op de klant wacht — bovenaan, niet te missen.
     const openMw = (p.meerwerk || []).filter((m) => m.status === 'wacht_op_klant');
-    $('p-actie').innerHTML = openMw.length === 0 ? '' : `
+    const dossierKaart = p.status !== 'opgeleverd' ? '' : `
+      <a class="dossier-kaart" href="/dossier.html">
+        <span class="dk-icoon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h9l4 4V21a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1z"/><path d="M9 13l2 2 4-4.5"/></svg></span>
+        <span>
+          <h3>Uw opleverdossier staat klaar</h3>
+          <p>Garanties, facturen, handleidingen, onderhoudsplan en de volledige verbouwgeschiedenis — in één printbaar document.</p>
+        </span>
+        <span class="pijl">→</span>
+      </a>`;
+    $('p-actie').innerHTML = dossierKaart + (openMw.length === 0 ? '' : `
       <div class="actieblok">
         <div class="actie-kop"><span class="puls"></span><span>Uw akkoord wordt gevraagd</span></div>
         ${openMw.map(mwKaart).join('')}
-      </div>`;
+      </div>`);
 
     // Fases
     const faseLabel = { gepland: 'Gepland', bezig: 'Nu bezig', afgerond: 'Afgerond' };
@@ -471,7 +496,7 @@
       : p.documenten.map((d) => {
           const href = d.bestand ? `/api/portaal/bestand/${p.id}/${d.bestand.fileId}` : d.url;
           const cat = DOC_ICONS[d.categorie] ? d.categorie : 'overig';
-          const catNaam = { foto: 'Foto', offerte: 'Offerte', tekening: 'Tekening', overig: 'Document' }[cat];
+          const catNaam = { foto: 'Foto', offerte: 'Offerte', factuur: 'Factuur', handleiding: 'Handleiding', tekening: 'Tekening', overig: 'Document' }[cat];
           return `<a class="doc-rij" href="${esc(href)}" target="_blank" rel="noopener">
             <span class="doc-icoon ${cat}">${DOC_ICONS[cat]}</span>
             <span class="doc-naam">${esc(d.naam)}</span>

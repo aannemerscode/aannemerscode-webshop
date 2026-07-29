@@ -16,11 +16,14 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const express = require('express');
+const webpush = require('web-push');
+const nodemailer = require('nodemailer');
 
 const router = express.Router();
 
 const PORTAL_FILE = path.join(__dirname, 'data', 'portal.json');
 const UPLOADS_DIR = path.join(__dirname, 'data', 'uploads');
+const VAPID_FILE = path.join(__dirname, 'data', 'vapid.json');
 
 // ---------- Opslag ----------
 function ensurePortalFiles() {
@@ -32,13 +35,17 @@ function ensurePortalFiles() {
 ensurePortalFiles();
 
 function readPortal() {
+  let data;
   try {
-    const data = JSON.parse(fs.readFileSync(PORTAL_FILE, 'utf8'));
-    if (!data.projects) data.projects = {};
-    return data;
+    data = JSON.parse(fs.readFileSync(PORTAL_FILE, 'utf8'));
   } catch {
-    return { projects: {} };
+    data = {};
   }
+  if (!data.projects) data.projects = {};
+  if (!data.werknemers) data.werknemers = {};
+  if (!data.uren) data.uren = {};
+  if (!data.meta) data.meta = {};
+  return data;
 }
 function writePortal(data) {
   fs.writeFileSync(PORTAL_FILE, JSON.stringify(data, null, 2));
@@ -89,6 +96,14 @@ function newProjectCode(projects) {
     if (!taken) return code;
   }
   return `PRJ-${randomFromAlphabet(8)}`; // vrijwel onbereikbaar, maar altijd uniek
+}
+function newWerknemerCode(werknemers) {
+  for (let i = 0; i < 50; i++) {
+    const code = `WRK-${randomFromAlphabet(4)}`;
+    const taken = Object.values(werknemers).some((w) => w.code === code);
+    if (!taken) return code;
+  }
+  return `WRK-${randomFromAlphabet(8)}`;
 }
 function newClientPassword() {
   // Formaat XXXX-XXXX-XXXX: goed voor te lezen aan de telefoon, sterk genoeg (32^12).
@@ -165,6 +180,21 @@ function requireKlant(req, res, next) {
   req.session = session;
   req.portalData = data;
   req.project = project;
+  next();
+}
+
+// Middleware: alleen een ingelogde werknemer.
+function requireWerknemer(req, res, next) {
+  const session = getSession(req);
+  if (!session || session.rol !== 'werknemer' || !session.werknemerId) {
+    return res.status(401).json({ error: 'Niet ingelogd.' });
+  }
+  const data = readPortal();
+  const werknemer = data.werknemers[session.werknemerId];
+  if (!werknemer) return res.status(401).json({ error: 'Account bestaat niet meer.' });
+  req.session = session;
+  req.portalData = data;
+  req.werknemer = werknemer;
   next();
 }
 
@@ -610,5 +640,384 @@ router.get('/api/portaal/sessie', (req, res) => {
   if (!session) return res.json({ ingelogd: false });
   res.json({ ingelogd: true, rol: session.rol });
 });
+
+// ===========================================================================
+// OPLEVERDOSSIER
+// Het bedrijf vult per project de dossiergegevens in (garanties, onderhoud,
+// cv/warmtepomp, dakinspectie); de klant krijgt na oplevering één compleet,
+// printbaar document met daarbij de hele verbouwgeschiedenis.
+// ===========================================================================
+router.patch('/api/portaal/beheer/projecten/:projectId/dossier', requireAdmin, (req, res) => {
+  const found = findProject(req, res);
+  if (!found) return;
+  const { data, project } = found;
+  project.dossier = project.dossier || {};
+  const d = project.dossier;
+
+  if (Array.isArray(req.body.garanties)) {
+    d.garanties = req.body.garanties.slice(0, 100).map((g) => ({
+      onderdeel: String(g.onderdeel || '').trim().slice(0, 200),
+      duur: String(g.duur || '').trim().slice(0, 100),
+      toelichting: String(g.toelichting || '').trim().slice(0, 1000),
+    })).filter((g) => g.onderdeel);
+  }
+  if (Array.isArray(req.body.onderhoud)) {
+    d.onderhoud = req.body.onderhoud.slice(0, 100).map((o) => ({
+      taak: String(o.taak || '').trim().slice(0, 200),
+      frequentie: String(o.frequentie || '').trim().slice(0, 100),
+      toelichting: String(o.toelichting || '').trim().slice(0, 1000),
+    })).filter((o) => o.taak);
+  }
+  if (req.body.cvWarmtepomp && typeof req.body.cvWarmtepomp === 'object') {
+    const c = req.body.cvWarmtepomp;
+    d.cvWarmtepomp = {
+      installatie: String(c.installatie || '').trim().slice(0, 200),
+      laatsteOnderhoud: String(c.laatsteOnderhoud || '').trim().slice(0, 100),
+      volgendeOnderhoud: String(c.volgendeOnderhoud || '').trim().slice(0, 100),
+      toelichting: String(c.toelichting || '').trim().slice(0, 1000),
+    };
+  }
+  if (req.body.dakinspectie && typeof req.body.dakinspectie === 'object') {
+    const c = req.body.dakinspectie;
+    d.dakinspectie = {
+      laatsteInspectie: String(c.laatsteInspectie || '').trim().slice(0, 100),
+      volgendeInspectie: String(c.volgendeInspectie || '').trim().slice(0, 100),
+      bevindingen: String(c.bevindingen || '').trim().slice(0, 2000),
+    };
+  }
+  if ('slotwoord' in req.body) d.slotwoord = String(req.body.slotwoord || '').trim().slice(0, 2000);
+
+  writePortal(data);
+  res.json({ ok: true, dossier: d });
+});
+
+// ===========================================================================
+// WERKNEMERS  — apart inlogportaal met urenstaat (incl. meerwerkuren)
+// ===========================================================================
+
+// --- Beheer: werknemers aanmaken en overzien ---
+router.get('/api/portaal/beheer/werknemers', requireAdmin, (req, res) => {
+  const data = readPortal();
+  const vandaag = amsterdamDatum();
+  const werknemers = Object.values(data.werknemers).map((w) => ({
+    id: w.id,
+    code: w.code,
+    naam: w.naam,
+    email: w.email,
+    aangemaaktOp: w.aangemaaktOp,
+    pushActief: (w.pushSubs || []).length > 0,
+    urenVandaagIngevuld: Object.values(data.uren).some((u) => u.werknemerId === w.id && u.datum === vandaag),
+  })).sort((a, b) => a.naam.localeCompare(b.naam));
+  res.json({ werknemers });
+});
+
+router.post('/api/portaal/beheer/werknemers', requireAdmin, (req, res) => {
+  const naam = String(req.body.naam || '').trim();
+  if (!naam) return res.status(400).json({ error: 'Naam is verplicht.' });
+  const data = readPortal();
+  const code = newWerknemerCode(data.werknemers);
+  const wachtwoord = newClientPassword();
+  const salt = crypto.randomBytes(16).toString('hex');
+  const werknemer = {
+    id: newId('wrk'),
+    code,
+    naam,
+    email: String(req.body.email || '').trim(),
+    wachtwoordSalt: salt,
+    wachtwoordHash: hashPassword(wachtwoord, salt),
+    aangemaaktOp: new Date().toISOString(),
+    pushSubs: [],
+  };
+  data.werknemers[werknemer.id] = werknemer;
+  writePortal(data);
+  res.json({
+    ok: true,
+    werknemer: { id: werknemer.id, code, naam: werknemer.naam, email: werknemer.email },
+    inlog: { code, wachtwoord, url: `${process.env.BASE_URL || ''}/werknemer.html` },
+  });
+});
+
+router.post('/api/portaal/beheer/werknemers/:werknemerId/reset-wachtwoord', requireAdmin, (req, res) => {
+  const data = readPortal();
+  const werknemer = data.werknemers[req.params.werknemerId];
+  if (!werknemer) return res.status(404).json({ error: 'Werknemer niet gevonden.' });
+  const wachtwoord = newClientPassword();
+  werknemer.wachtwoordSalt = crypto.randomBytes(16).toString('hex');
+  werknemer.wachtwoordHash = hashPassword(wachtwoord, werknemer.wachtwoordSalt);
+  writePortal(data);
+  res.json({ ok: true, inlog: { code: werknemer.code, wachtwoord } });
+});
+
+router.delete('/api/portaal/beheer/werknemers/:werknemerId', requireAdmin, (req, res) => {
+  const data = readPortal();
+  if (!data.werknemers[req.params.werknemerId]) return res.status(404).json({ error: 'Werknemer niet gevonden.' });
+  delete data.werknemers[req.params.werknemerId];
+  // Urenregels bewaren we (administratie), maar zonder account kan er niets meer bij.
+  writePortal(data);
+  res.json({ ok: true });
+});
+
+// Urenoverzicht voor het bedrijf (periode instelbaar, incl. meerwerkuren)
+router.get('/api/portaal/beheer/uren', requireAdmin, (req, res) => {
+  const data = readPortal();
+  const van = String(req.query.van || '0000-00-00');
+  const tot = String(req.query.tot || '9999-99-99');
+  const regels = Object.values(data.uren)
+    .filter((u) => u.datum >= van && u.datum <= tot)
+    .map((u) => ({
+      ...u,
+      werknemerNaam: (data.werknemers[u.werknemerId] || {}).naam || 'Oud-medewerker',
+      projectNaam: u.projectId ? ((data.projects[u.projectId] || {}).naam || 'Verwijderd project') : '',
+    }))
+    .sort((a, b) => b.datum.localeCompare(a.datum) || a.werknemerNaam.localeCompare(b.werknemerNaam));
+  res.json({ uren: regels });
+});
+
+// --- Werknemer: inloggen en urenstaat bijhouden ---
+router.post('/api/portaal/werknemer/login', (req, res) => {
+  const code = String(req.body.code || '').trim().toUpperCase();
+  const wachtwoord = String(req.body.wachtwoord || '').trim().toUpperCase();
+  if (!code || !wachtwoord) return res.status(400).json({ error: 'Vul code én wachtwoord in.' });
+  const attemptKey = `werknemer:${req.ip}:${code}`;
+  if (tooManyAttempts(attemptKey)) {
+    return res.status(429).json({ error: 'Te veel inlogpogingen. Probeer het over een kwartier opnieuw.' });
+  }
+  const data = readPortal();
+  const werknemer = Object.values(data.werknemers).find((w) => w.code === code);
+  if (!werknemer || !verifyPassword(wachtwoord, werknemer.wachtwoordSalt, werknemer.wachtwoordHash)) {
+    registerAttempt(attemptKey);
+    return res.status(401).json({ error: 'Code of wachtwoord klopt niet.' });
+  }
+  loginAttempts.delete(attemptKey);
+  setSessionCookie(res, { rol: 'werknemer', werknemerId: werknemer.id });
+  res.json({ ok: true });
+});
+
+router.post('/api/portaal/werknemer/logout', (req, res) => {
+  clearSessionCookie(res);
+  res.json({ ok: true });
+});
+
+router.get('/api/portaal/werknemer/mij', requireWerknemer, (req, res) => {
+  const projecten = Object.values(req.portalData.projects)
+    .filter((p) => p.status !== 'opgeleverd')
+    .map((p) => ({ id: p.id, naam: p.naam }))
+    .sort((a, b) => a.naam.localeCompare(b.naam));
+  res.json({
+    werknemer: { naam: req.werknemer.naam, code: req.werknemer.code },
+    projecten,
+    pushActief: (req.werknemer.pushSubs || []).length > 0,
+  });
+});
+
+router.get('/api/portaal/werknemer/uren', requireWerknemer, (req, res) => {
+  const van = String(req.query.van || '0000-00-00');
+  const tot = String(req.query.tot || '9999-99-99');
+  const regels = Object.values(req.portalData.uren)
+    .filter((u) => u.werknemerId === req.werknemer.id && u.datum >= van && u.datum <= tot)
+    .map((u) => ({
+      ...u,
+      projectNaam: u.projectId ? ((req.portalData.projects[u.projectId] || {}).naam || '') : '',
+    }))
+    .sort((a, b) => a.datum.localeCompare(b.datum));
+  res.json({ uren: regels });
+});
+
+function valideerUrenInvoer(body) {
+  const datum = String(body.datum || '').trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(datum)) return { error: 'Ongeldige datum.' };
+  const uren = Number(body.uren || 0);
+  const meerwerkUren = Number(body.meerwerkUren || 0);
+  if (!Number.isFinite(uren) || uren < 0 || uren > 24) return { error: 'Uren moeten tussen 0 en 24 liggen.' };
+  if (!Number.isFinite(meerwerkUren) || meerwerkUren < 0 || meerwerkUren > 24) return { error: 'Meerwerkuren moeten tussen 0 en 24 liggen.' };
+  if (uren + meerwerkUren === 0) return { error: 'Vul minimaal uren of meerwerkuren in.' };
+  return {
+    datum,
+    uren: Math.round(uren * 4) / 4,
+    meerwerkUren: Math.round(meerwerkUren * 4) / 4,
+    omschrijving: String(body.omschrijving || '').trim().slice(0, 500),
+  };
+}
+
+router.post('/api/portaal/werknemer/uren', requireWerknemer, (req, res) => {
+  const invoer = valideerUrenInvoer(req.body);
+  if (invoer.error) return res.status(400).json({ error: invoer.error });
+  const projectId = String(req.body.projectId || '').trim();
+  if (projectId && !req.portalData.projects[projectId]) {
+    return res.status(400).json({ error: 'Onbekend project.' });
+  }
+  const regel = {
+    id: newId('uur'),
+    werknemerId: req.werknemer.id,
+    projectId: projectId || null,
+    ...invoer,
+    ingevuldOp: new Date().toISOString(),
+  };
+  req.portalData.uren[regel.id] = regel;
+  writePortal(req.portalData);
+  res.json({ ok: true, regel });
+});
+
+router.patch('/api/portaal/werknemer/uren/:urenId', requireWerknemer, (req, res) => {
+  const regel = req.portalData.uren[req.params.urenId];
+  if (!regel || regel.werknemerId !== req.werknemer.id) {
+    return res.status(404).json({ error: 'Urenregel niet gevonden.' });
+  }
+  const invoer = valideerUrenInvoer({ ...regel, ...req.body });
+  if (invoer.error) return res.status(400).json({ error: invoer.error });
+  if ('projectId' in req.body) {
+    const projectId = String(req.body.projectId || '').trim();
+    if (projectId && !req.portalData.projects[projectId]) return res.status(400).json({ error: 'Onbekend project.' });
+    regel.projectId = projectId || null;
+  }
+  Object.assign(regel, invoer);
+  writePortal(req.portalData);
+  res.json({ ok: true, regel });
+});
+
+router.delete('/api/portaal/werknemer/uren/:urenId', requireWerknemer, (req, res) => {
+  const regel = req.portalData.uren[req.params.urenId];
+  if (!regel || regel.werknemerId !== req.werknemer.id) {
+    return res.status(404).json({ error: 'Urenregel niet gevonden.' });
+  }
+  delete req.portalData.uren[req.params.urenId];
+  writePortal(req.portalData);
+  res.json({ ok: true });
+});
+
+// ===========================================================================
+// PUSHMELDINGEN  — "vergeet je uren niet" op ma t/m vr om 16:30
+// Web-push met VAPID: werkt in de browser (Android direct; iPhone nadat de
+// werknemer de site via "Zet op beginscherm" heeft geïnstalleerd).
+// ===========================================================================
+function loadVapidKeys() {
+  if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    return { publicKey: process.env.VAPID_PUBLIC_KEY, privateKey: process.env.VAPID_PRIVATE_KEY };
+  }
+  try {
+    return JSON.parse(fs.readFileSync(VAPID_FILE, 'utf8'));
+  } catch {
+    const keys = webpush.generateVAPIDKeys();
+    fs.writeFileSync(VAPID_FILE, JSON.stringify(keys, null, 2));
+    return keys;
+  }
+}
+const vapidKeys = loadVapidKeys();
+webpush.setVapidDetails(
+  `mailto:${process.env.MAIL_FROM_ADDRESS || process.env.SMTP_USER || 'beheer@projexa.local'}`,
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
+);
+
+router.get('/api/portaal/push/publieke-sleutel', (req, res) => {
+  res.json({ publicKey: vapidKeys.publicKey });
+});
+
+router.post('/api/portaal/werknemer/push', requireWerknemer, (req, res) => {
+  const sub = req.body.subscription;
+  if (!sub || !sub.endpoint) return res.status(400).json({ error: 'Geen geldig push-abonnement.' });
+  req.werknemer.pushSubs = req.werknemer.pushSubs || [];
+  if (!req.werknemer.pushSubs.some((s) => s.endpoint === sub.endpoint)) {
+    req.werknemer.pushSubs.push(sub);
+    writePortal(req.portalData);
+  }
+  res.json({ ok: true });
+});
+
+router.delete('/api/portaal/werknemer/push', requireWerknemer, (req, res) => {
+  const endpoint = (req.body.subscription || {}).endpoint;
+  req.werknemer.pushSubs = (req.werknemer.pushSubs || []).filter((s) => endpoint && s.endpoint !== endpoint);
+  writePortal(req.portalData);
+  res.json({ ok: true });
+});
+
+// Amsterdamse datum/tijd, onafhankelijk van de server-tijdzone.
+function amsterdamNu() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Amsterdam',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short',
+  }).formatToParts(new Date());
+  const get = (t) => (parts.find((p) => p.type === t) || {}).value || '';
+  return {
+    datum: `${get('year')}-${get('month')}-${get('day')}`,
+    minuten: Number(get('hour')) * 60 + Number(get('minute')),
+    weekdag: get('weekday'), // Mon, Tue, ...
+  };
+}
+function amsterdamDatum() {
+  return amsterdamNu().datum;
+}
+
+function buildReminderTransporter() {
+  if (!process.env.SMTP_HOST) return null;
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+}
+
+async function stuurUrenHerinneringen() {
+  const data = readPortal();
+  const vandaag = amsterdamDatum();
+  const transporter = buildReminderTransporter();
+  const payload = JSON.stringify({
+    title: 'Urenstaat invullen',
+    body: 'Vergeet niet je uren van vandaag in te vullen — ook eventuele meerwerkuren.',
+    url: '/werknemer.html',
+  });
+
+  let dirty = false;
+  for (const werknemer of Object.values(data.werknemers)) {
+    const alIngevuld = Object.values(data.uren).some((u) => u.werknemerId === werknemer.id && u.datum === vandaag);
+    if (alIngevuld) continue;
+
+    // Push naar alle geregistreerde apparaten; dode abonnementen opruimen.
+    const subs = werknemer.pushSubs || [];
+    const nogGeldig = [];
+    for (const sub of subs) {
+      try {
+        await webpush.sendNotification(sub, payload);
+        nogGeldig.push(sub);
+      } catch (err) {
+        if (err.statusCode === 404 || err.statusCode === 410) {
+          dirty = true; // abonnement vervallen → weglaten
+        } else {
+          nogGeldig.push(sub);
+          console.error(`[portaal] pushfout voor ${werknemer.naam}:`, err.statusCode || err.message);
+        }
+      }
+    }
+    if (nogGeldig.length !== subs.length) werknemer.pushSubs = nogGeldig;
+
+    // E-mail als reservekanaal, als er SMTP én een e-mailadres is.
+    if (transporter && werknemer.email) {
+      transporter.sendMail({
+        from: process.env.MAIL_FROM || 'Projexa <no-reply@aannemerscode.nl>',
+        to: werknemer.email,
+        subject: 'Herinnering: vul je uren van vandaag in',
+        text: `Hoi ${werknemer.naam},\n\nJe uren van vandaag staan nog niet in Projexa. Vul ze even in — ook eventuele meerwerkuren:\n${process.env.BASE_URL || ''}/werknemer.html\n\nGroet,\nProjexa`,
+      }).catch((err) => console.error('[portaal] herinneringsmail mislukt:', err.message));
+    }
+  }
+  if (dirty) writePortal(data);
+}
+
+// Elke minuut kijken of het ma-vr tussen 16:30 en 16:40 Amsterdamse tijd is;
+// per dag maximaal één herinneringsronde (bijgehouden in data/portal.json).
+const WERKDAGEN = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+function checkHerinnering() {
+  const nu = amsterdamNu();
+  if (!WERKDAGEN.includes(nu.weekdag)) return;
+  if (nu.minuten < 16 * 60 + 30 || nu.minuten >= 16 * 60 + 40) return;
+  const data = readPortal();
+  if (data.meta.laatsteHerinnering === nu.datum) return;
+  data.meta.laatsteHerinnering = nu.datum;
+  writePortal(data);
+  stuurUrenHerinneringen().catch((err) => console.error('[portaal] herinneringsronde mislukt:', err));
+}
+setInterval(checkHerinnering, 60 * 1000);
 
 module.exports = router;

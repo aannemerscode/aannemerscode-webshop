@@ -5,3 +5,4 @@ node_modules/
 data/portal.json
 data/uploads/
 data/invoice-counter.json
+data/vapid.json
