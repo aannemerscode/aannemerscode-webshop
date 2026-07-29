@@ -86,6 +86,21 @@
   main.inhoud { flex: 1; min-width: 0; padding: 0 26px 60px; }
   .inhoud-smal { max-width: 860px; }
 
+  @media (max-width: 620px) {
+    /* Projectregels stapelen op een telefoon, zodat naam en badges niet
+       van het scherm af lopen. */
+    .prj-rij { flex-wrap: wrap; gap: 8px 12px; padding: 16px 18px; }
+    .prj-rij .code { min-width: 0; }
+    .prj-rij .naam { flex: 1 1 100%; order: 2; font-size: 16px; }
+    .prj-rij .badge { order: 3; }
+    .rijtje { flex-wrap: wrap; }
+    .rijtje .hoofd { flex: 1 1 100%; }
+    .rijtje select { flex: 1; }
+    .signaal { flex-direction: column; gap: 8px; }
+    .kaart { padding: 20px 18px; }
+    header.pagehead h1 { font-size: 26px; }
+  }
+
   @media (max-width: 880px) {
     .hamburger { display: block; }
     aside.menu { position: fixed; left: 0; top: 0; bottom: 0; height: auto; z-index: 60; background: #0C1E32; transform: translateX(-100%); transition: transform .25s ease; box-shadow: 20px 0 60px rgba(0,0,0,0.4); padding-top: 70px; }

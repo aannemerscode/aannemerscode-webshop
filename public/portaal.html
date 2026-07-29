@@ -513,12 +513,14 @@
           <span class="fase-label">${faseLabel[f.status] || ''}</span>
         </div>`).join('');
 
-    // Meerwerk (volledige historie, incl. al beoordeelde items)
+    // Meerwerk-historie. Openstaande punten staan al bovenaan in het actieblok,
+    // dus hier alleen wat al beoordeeld is — met een verwijzing naar boven.
     const beoordeeld = (p.meerwerk || []).filter((m) => m.status !== 'wacht_op_klant');
-    const alleMw = [...openMw, ...beoordeeld];
-    $('p-meerwerk').innerHTML = alleMw.length === 0
-      ? '<div class="leeg">Er is (nog) geen meerwerk vastgelegd. Als er iets wijzigt, verschijnt het hier eerst ter goedkeuring.</div>'
-      : alleMw.map(mwKaart).join('');
+    const verwijzing = openMw.length === 0 ? '' :
+      `<div class="leeg" style="margin-bottom:12px;">${openMw.length === 1 ? 'Er staat 1 wijziging' : `Er staan ${openMw.length} wijzigingen`} op uw akkoord te wachten — u vindt ${openMw.length === 1 ? 'die' : 'ze'} bovenaan deze pagina.</div>`;
+    $('p-meerwerk').innerHTML = beoordeeld.length === 0
+      ? (verwijzing || '<div class="leeg">Er is (nog) geen meerwerk vastgelegd. Als er iets wijzigt, verschijnt het hier eerst ter goedkeuring.</div>')
+      : verwijzing + beoordeeld.map(mwKaart).join('');
 
     // Updates
     $('p-updates').innerHTML = (p.updates || []).length === 0
