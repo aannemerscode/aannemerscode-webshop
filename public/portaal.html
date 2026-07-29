@@ -42,7 +42,8 @@
   }
   .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px; }
 
-  nav { position: sticky; top: 0; z-index: 30; background: rgba(15,36,59,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--navy-line); }
+  nav { position: sticky; top: 0; z-index: 30; background: rgba(15,36,59,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--navy-line); transition: transform .25s ease; }
+  nav.nav-verborgen { transform: translateY(-100%); }
   nav .inner { display: flex; align-items: center; justify-content: space-between; padding: 15px 22px; max-width: 760px; margin: 0 auto; }
   .logo { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 21px; color: var(--cream); text-decoration: none; letter-spacing: 0.01em; }
   .logo span { color: var(--accent); }
@@ -268,7 +269,13 @@
       <label for="login-wachtwoord">Wachtwoord</label>
       <input type="password" id="login-wachtwoord" class="code-input" placeholder="XXXX-XXXX-XXXX" autocomplete="current-password">
       <button class="btn" type="submit">Naar mijn project</button>
-      <p class="login-hint">Gegevens kwijt? Uw aannemer maakt in een oogwenk een nieuw wachtwoord voor u aan.</p>
+      <p class="login-hint"><a href="#" id="link-vergeten" style="color:var(--accent);">Wachtwoord vergeten?</a> — of vraag uw aannemer om een nieuw wachtwoord.</p>
+      <div id="vergeten-form" style="display:none; margin-top:14px; border-top:1px solid #E2DCC9; padding-top:16px;">
+        <p style="font-size:12.5px; color:var(--ink-soft); margin:0 0 12px; line-height:1.5;">Vul uw projectcode (hierboven) en uw e-mailadres in — u krijgt dan een nieuw wachtwoord gemaild.</p>
+        <label for="vergeten-email">E-mailadres</label>
+        <input type="email" id="vergeten-email" placeholder="u@voorbeeld.nl">
+        <button class="btn" type="button" id="btn-vergeten" style="box-shadow:none; background:transparent; border:1px solid #CFC9B6; color:var(--ink-soft);">Stuur nieuw wachtwoord</button>
+      </div>
     </form>
     <aside class="login-rechts">
       <div class="aannemer-blok">
@@ -353,6 +360,19 @@
   const $ = (id) => document.getElementById(id);
   $('jaar').textContent = new Date().getFullYear();
 
+  // Verdwijnende header bij scrollen en bij invullen (toetsenbord op mobiel)
+  (function () {
+    const bar = document.querySelector('nav');
+    let vorige = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      bar.classList.toggle('nav-verborgen', y > 90 && y > vorige);
+      vorige = y;
+    }, { passive: true });
+    document.addEventListener('focusin', (e) => { if (e.target.matches('input, textarea, select')) bar.classList.add('nav-verborgen'); });
+    document.addEventListener('focusout', () => bar.classList.remove('nav-verborgen'));
+  })();
+
   function fmtDatum(iso) {
     if (!iso) return '';
     return new Date(iso).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -409,6 +429,22 @@
   $('btn-uitloggen').addEventListener('click', async () => {
     await api('/api/portaal/klant/logout', { method: 'POST' }).catch(() => {});
     location.reload();
+  });
+
+  // Wachtwoord vergeten
+  $('link-vergeten').addEventListener('click', (e) => {
+    e.preventDefault();
+    const f = $('vergeten-form');
+    f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  });
+  $('btn-vergeten').addEventListener('click', async () => {
+    try {
+      const data = await api('/api/portaal/klant/wachtwoord-vergeten', {
+        method: 'POST',
+        body: JSON.stringify({ code: $('login-code').value, email: $('vergeten-email').value }),
+      });
+      alert(data.melding || 'Verstuurd.');
+    } catch (err) { alert(err.message); }
   });
 
   // ---------- Project laden en tekenen ----------
@@ -499,7 +535,7 @@
           const catNaam = { foto: 'Foto', offerte: 'Offerte', factuur: 'Factuur', handleiding: 'Handleiding', tekening: 'Tekening', overig: 'Document' }[cat];
           return `<a class="doc-rij" href="${esc(href)}" target="_blank" rel="noopener">
             <span class="doc-icoon ${cat}">${DOC_ICONS[cat]}</span>
-            <span class="doc-naam">${esc(d.naam)}</span>
+            <span class="doc-naam">${esc(d.naam)}${d.aiSamenvatting ? `<span style="display:block; font-size:12px; font-weight:400; color:var(--ink-soft); margin-top:2px;">${esc(d.aiSamenvatting)}</span>` : ''}</span>
             <span class="doc-cat">${catNaam}</span>
           </a>`;
         }).join('');

@@ -32,7 +32,8 @@
   .blueprint-bg { background-image: linear-gradient(var(--navy-line) 1px, transparent 1px), linear-gradient(90deg, var(--navy-line) 1px, transparent 1px); background-size: 64px 64px; }
   .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px; }
   .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
-  nav { position: sticky; top: 0; z-index: 30; background: rgba(15,36,59,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--navy-line); }
+  nav { position: sticky; top: 0; z-index: 30; background: rgba(15,36,59,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--navy-line); transition: transform .25s ease; }
+  nav.nav-verborgen { transform: translateY(-100%); }
   nav .inner { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; max-width: 680px; margin: 0 auto; }
   .logo { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 21px; color: var(--cream); text-decoration: none; }
   .logo span { color: var(--accent); }
@@ -131,6 +132,13 @@
     <label for="login-wachtwoord">Wachtwoord</label>
     <input type="password" id="login-wachtwoord" class="code-input" placeholder="XXXX-XXXX-XXXX" autocomplete="current-password">
     <button class="btn vol" type="submit">Inloggen</button>
+    <p style="font-size:12.5px; color:var(--ink-soft); margin:16px 0 0;"><a href="#" id="link-vergeten" style="color:var(--accent);">Wachtwoord vergeten?</a></p>
+    <div id="vergeten-form" style="display:none; margin-top:16px; border-top:1px solid #E2DCC9; padding-top:16px;">
+      <p style="font-size:12.5px; color:var(--ink-soft); margin:0 0 12px; line-height:1.5;">Vul je code en het e-mailadres in dat kantoor van je heeft — je krijgt dan een nieuw wachtwoord gemaild.</p>
+      <label>E-mailadres</label>
+      <input type="email" id="vergeten-email" placeholder="jij@voorbeeld.nl">
+      <button class="btn vol btn-stil" type="button" id="btn-vergeten">Stuur nieuw wachtwoord</button>
+    </div>
   </form>
 </div>
 
@@ -147,6 +155,21 @@
       </div>
     </div>
   </header>
+
+  <div class="wrap">
+    <div class="dag-kaart" style="margin-top:22px;">
+      <div class="dag-kop"><h3 style="text-transform:none;">✦ Dagrapport inspreken</h3></div>
+      <p style="font-size:12.5px; color:var(--ink-soft); margin:4px 0 12px; line-height:1.5;">Vertel in 30 seconden wat je gedaan hebt (of typ het). De AI maakt er een net dagrapport van voor in het projectdossier — scheelt kantoor een hoop administratie.</p>
+      <label>Project</label>
+      <select id="dr-project"></select>
+      <div style="display:flex; gap:8px;">
+        <textarea id="dr-invoer" rows="2" placeholder="Bijv.: kozijnen gesteld, glaszetter komt morgen, extra stopcontact besproken" style="flex:1; margin:0;"></textarea>
+        <button type="button" id="dr-mic" title="Spreek in" style="width:52px; border-radius:11px; border:1px solid #D6D0BD; background:#FBF9F2; cursor:pointer; font-size:19px;">🎤</button>
+      </div>
+      <button class="btn" id="dr-verstuur" style="margin-top:12px;">✦ Maak dagrapport</button>
+      <div id="dr-resultaat" style="display:none; background:#FBF9F2; border:1px solid #D6D0BD; border-radius:11px; padding:14px 16px; font-size:13.5px; line-height:1.6; white-space:pre-wrap; margin-top:12px;"></div>
+    </div>
+  </div>
 
   <div class="wrap">
     <div class="week-nav">
@@ -167,6 +190,19 @@
 <script>
   const $ = (id) => document.getElementById(id);
   $('jaar').textContent = new Date().getFullYear();
+
+  // Verdwijnende header bij scrollen en bij invullen (toetsenbord op mobiel)
+  (function () {
+    const bar = document.querySelector('nav');
+    let vorige = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      bar.classList.toggle('nav-verborgen', y > 90 && y > vorige);
+      vorige = y;
+    }, { passive: true });
+    document.addEventListener('focusin', (e) => { if (e.target.matches('input, textarea, select')) bar.classList.add('nav-verborgen'); });
+    document.addEventListener('focusout', () => bar.classList.remove('nav-verborgen'));
+  })();
 
   let projecten = [];
   let maandag = startVanWeek(new Date());
@@ -214,9 +250,62 @@
     $('btn-uitloggen').style.display = 'inline-block';
     $('w-naam').textContent = mij.werknemer.naam;
     $('w-code').textContent = mij.werknemer.code;
+    $('dr-project').innerHTML = projecten.map((p) => `<option value="${p.id}">${esc(p.naam)}</option>`).join('') || '<option value="">Geen actieve projecten</option>';
     initPush(mij.pushActief);
     await laadWeek();
   }
+
+  // ---------- Wachtwoord vergeten ----------
+  $('link-vergeten').addEventListener('click', (e) => {
+    e.preventDefault();
+    const f = $('vergeten-form');
+    f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  });
+  $('btn-vergeten').addEventListener('click', async () => {
+    try {
+      const data = await api('/api/portaal/werknemer/wachtwoord-vergeten', {
+        method: 'POST',
+        body: JSON.stringify({ code: $('login-code').value, email: $('vergeten-email').value }),
+      });
+      alert(data.melding || 'Verstuurd.');
+    } catch (err) { alert(err.message); }
+  });
+
+  // ---------- Dagrapport (inspreken → AI) ----------
+  let drDicteerder = null;
+  $('dr-mic').addEventListener('click', () => {
+    const Spraak = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Spraak) return alert('Dicteren wordt niet ondersteund in deze browser — typ je aantekeningen.');
+    if (drDicteerder) { drDicteerder.stop(); return; }
+    drDicteerder = new Spraak();
+    drDicteerder.lang = 'nl-NL';
+    drDicteerder.continuous = true;
+    $('dr-mic').style.background = 'var(--red)';
+    $('dr-mic').style.color = '#fff';
+    drDicteerder.onresult = (e) => {
+      const stuk = [...e.results].slice(e.resultIndex).map((r) => r[0].transcript).join(' ');
+      $('dr-invoer').value = ($('dr-invoer').value + ' ' + stuk).trim();
+    };
+    const reset = () => { $('dr-mic').style.background = ''; $('dr-mic').style.color = ''; drDicteerder = null; };
+    drDicteerder.onend = reset;
+    drDicteerder.onerror = reset;
+    drDicteerder.start();
+  });
+
+  $('dr-verstuur').addEventListener('click', async () => {
+    const knop = $('dr-verstuur');
+    knop.disabled = true; knop.textContent = '✦ AI schrijft...';
+    try {
+      const data = await api('/api/portaal/werknemer/dagrapport', {
+        method: 'POST',
+        body: JSON.stringify({ projectId: $('dr-project').value, invoer: $('dr-invoer').value }),
+      });
+      $('dr-resultaat').style.display = 'block';
+      $('dr-resultaat').textContent = '✓ In het projectdossier gezet:\n\n' + data.tekst;
+      $('dr-invoer').value = '';
+    } catch (err) { alert(err.message); }
+    finally { knop.disabled = false; knop.textContent = '✦ Maak dagrapport'; }
+  });
 
   $('btn-vorige').addEventListener('click', () => { maandag.setDate(maandag.getDate() - 7); laadWeek(); });
   $('btn-volgende').addEventListener('click', () => { maandag.setDate(maandag.getDate() + 7); laadWeek(); });
@@ -234,7 +323,7 @@
     const dagNamen = ['maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag'];
     const vandaag = iso(startVanDag(new Date()));
     const eind = new Date(maandag); eind.setDate(eind.getDate() + 6);
-    $('week-titel').textContent = `${maandag.getDate()} ${maandNaam(maandag)} – ${eind.getDate()} ${maandNaam(eind)}`;
+    $('week-titel').textContent = `Week ${weekNummer(maandag)} · ${maandag.getDate()} ${maandNaam(maandag)} – ${eind.getDate()} ${maandNaam(eind)}`;
 
     let totUren = 0, totMw = 0;
     let html = '';
@@ -269,6 +358,12 @@
 
   function startVanDag(d) { const k = new Date(d); k.setHours(12, 0, 0, 0); return k; }
   function maandNaam(d) { return d.toLocaleDateString('nl-NL', { month: 'short' }); }
+  function weekNummer(d) {
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+    const jaarStart = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+    return Math.ceil((((t - jaarStart) / 86400000) + 1) / 7);
+  }
 
   function urenFormHtml(datum) {
     return `<form class="uur-form" onsubmit="return bewaarUren(event, '${datum}')">

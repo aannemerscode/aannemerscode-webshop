@@ -18,6 +18,30 @@ const crypto = require('crypto');
 const express = require('express');
 const webpush = require('web-push');
 const nodemailer = require('nodemailer');
+const Anthropic = require('@anthropic-ai/sdk');
+
+// ---------- AI (Claude) ----------
+// Zet ANTHROPIC_API_KEY in .env om de AI-functies te activeren: automatische
+// fotosamenvattingen, de AI-schrijfhulp (dagrapport/klantupdate/werkbon/
+// conceptfactuur/opleverrapport) en dagrapporten van werknemers.
+const AI_MODEL = 'claude-opus-5';
+const aiClient = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null;
+if (!aiClient) {
+  console.warn('[portaal] ANTHROPIC_API_KEY ontbreekt — AI-functies (fotosamenvatting, schrijfhulp) staan uit.');
+}
+
+async function aiTekst({ system, prompt, maxTokens = 2048, effort }) {
+  if (!aiClient) throw new Error('AI is niet ingesteld. Zet ANTHROPIC_API_KEY in de omgeving.');
+  const response = await aiClient.messages.create({
+    model: AI_MODEL,
+    max_tokens: maxTokens,
+    ...(effort ? { output_config: { effort } } : {}),
+    system,
+    messages: [{ role: 'user', content: prompt }],
+  });
+  if (response.stop_reason === 'refusal') throw new Error('De AI kon dit verzoek niet verwerken.');
+  return response.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
+}
 
 const router = express.Router();
 
@@ -44,6 +68,7 @@ function readPortal() {
   if (!data.projects) data.projects = {};
   if (!data.werknemers) data.werknemers = {};
   if (!data.uren) data.uren = {};
+  if (!data.taken) data.taken = {};
   if (!data.meta) data.meta = {};
   return data;
 }
@@ -581,8 +606,52 @@ router.post(
     found.project.documenten.unshift(doc);
     writePortal(found.data);
     res.json({ ok: true, document: doc });
+
+    // AI-samenvatting van foto's en bonnetjes: draait op de achtergrond en wordt
+    // bij het document opgeslagen zodra hij klaar is (zichtbaar na verversen).
+    beschrijfFotoMetAi(found.project.id, doc).catch((err) =>
+      console.error('[portaal] fotosamenvatting mislukt:', err.message)
+    );
   }
 );
+
+async function beschrijfFotoMetAi(projectId, doc) {
+  if (!aiClient) return;
+  const mime = (doc.bestand && doc.bestand.mime) || '';
+  if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(mime)) return;
+  const pad = path.join(UPLOADS_DIR, projectId, `${doc.bestand.fileId}__${doc.bestand.naam}`);
+  if (!fs.existsSync(pad)) return;
+
+  const isBonnetje = doc.categorie === 'bonnetje';
+  const response = await aiClient.messages.create({
+    model: AI_MODEL,
+    max_tokens: 1024,
+    output_config: { effort: 'low' },
+    system: isBonnetje
+      ? 'Je leest bonnetjes voor de administratie van een Nederlands aannemersbedrijf. Antwoord in het Nederlands, kort en zakelijk.'
+      : 'Je beschrijft bouwplaatsfoto\'s voor het projectdossier van een Nederlands aannemersbedrijf. Antwoord in het Nederlands, in één of twee zinnen, zakelijk en concreet (wat is er te zien, welke werkzaamheden of staat van het werk).',
+    messages: [{
+      role: 'user',
+      content: [
+        { type: 'image', source: { type: 'base64', media_type: mime, data: fs.readFileSync(pad).toString('base64') } },
+        { type: 'text', text: isBonnetje
+            ? 'Lees dit bonnetje en geef terug: leverancier, datum en totaalbedrag (en btw als zichtbaar). Formaat: "Leverancier · datum · € bedrag". Als iets onleesbaar is, zeg dat.'
+            : 'Beschrijf deze bouwfoto kort voor het projectdossier.' },
+      ],
+    }],
+  });
+  if (response.stop_reason === 'refusal') return;
+  const tekst = response.content.filter((b) => b.type === 'text').map((b) => b.text).join(' ').trim();
+  if (!tekst) return;
+
+  const data = readPortal();
+  const project = data.projects[projectId];
+  if (!project) return;
+  const bewaard = (project.documenten || []).find((d) => d.id === doc.id);
+  if (!bewaard) return;
+  bewaard.aiSamenvatting = tekst.slice(0, 600);
+  writePortal(data);
+}
 
 router.delete('/api/portaal/beheer/projecten/:projectId/documenten/:docId', requireAdmin, (req, res) => {
   const found = findProject(req, res);
@@ -1004,6 +1073,395 @@ async function stuurUrenHerinneringen() {
   }
   if (dirty) writePortal(data);
 }
+
+// ===========================================================================
+// WACHTWOORD VERGETEN  (klant + werknemer)
+// Werkt via e-mail: klopt de combinatie code + e-mailadres, dan wordt er een
+// nieuw wachtwoord gegenereerd en gemaild. Het antwoord is altijd neutraal,
+// zodat er niet te raden valt welke codes/e-mailadressen bestaan.
+// ===========================================================================
+function wachtwoordVergeten({ req, res, zoek, urlPad }) {
+  const attemptKey = `vergeten:${req.ip}`;
+  if (tooManyAttempts(attemptKey)) {
+    return res.status(429).json({ error: 'Te veel pogingen. Probeer het over een kwartier opnieuw.' });
+  }
+  registerAttempt(attemptKey);
+
+  const transporter = buildReminderTransporter();
+  if (!transporter) {
+    return res.status(503).json({ error: 'E-mail is op deze server nog niet ingesteld. Neem contact op met je aannemer voor een nieuw wachtwoord.' });
+  }
+
+  const code = String(req.body.code || '').trim().toUpperCase();
+  const email = String(req.body.email || '').trim().toLowerCase();
+  const neutraal = { ok: true, melding: 'Als de gegevens kloppen, is er zojuist een nieuw wachtwoord gemaild.' };
+  if (!code || !email) return res.json(neutraal);
+
+  const data = readPortal();
+  const record = zoek(data, code, email);
+  if (!record) return res.json(neutraal);
+
+  const wachtwoord = newClientPassword();
+  record.wachtwoordSalt = crypto.randomBytes(16).toString('hex');
+  record.wachtwoordHash = hashPassword(wachtwoord, record.wachtwoordSalt);
+  writePortal(data);
+
+  transporter.sendMail({
+    from: process.env.MAIL_FROM || 'Projexa <no-reply@aannemerscode.nl>',
+    to: email,
+    subject: 'Uw nieuwe Projexa-wachtwoord',
+    text: `Er is een nieuw wachtwoord aangevraagd voor code ${record.code}.\n\nNieuw wachtwoord: ${wachtwoord}\n\nInloggen: ${process.env.BASE_URL || ''}${urlPad}\n\nHeeft u dit niet aangevraagd? Neem dan contact op met uw aannemer.`,
+  }).catch((err) => console.error('[portaal] wachtwoord-mail mislukt:', err.message));
+
+  res.json(neutraal);
+}
+
+router.post('/api/portaal/klant/wachtwoord-vergeten', (req, res) => {
+  wachtwoordVergeten({
+    req, res, urlPad: '/portaal.html',
+    zoek: (data, code, email) => Object.values(data.projects).find(
+      (p) => p.code === code && p.klantEmail && p.klantEmail.toLowerCase() === email
+    ),
+  });
+});
+
+router.post('/api/portaal/werknemer/wachtwoord-vergeten', (req, res) => {
+  wachtwoordVergeten({
+    req, res, urlPad: '/werknemer.html',
+    zoek: (data, code, email) => Object.values(data.werknemers).find(
+      (w) => w.code === code && w.email && w.email.toLowerCase() === email
+    ),
+  });
+});
+
+// ===========================================================================
+// AI-PROJECTMANAGER — signalen
+// Kijkt elke keer vers naar alle data en waarschuwt voor dingen die aandacht
+// nodig hebben. De checks zijn bewust regelgebaseerd (betrouwbaar en gratis);
+// de AI-schrijfhulp hieronder gebruikt Claude voor het schrijfwerk.
+// ===========================================================================
+router.get('/api/portaal/beheer/signalen', requireAdmin, (req, res) => {
+  const data = readPortal();
+  const nu = Date.now();
+  const dagen = (iso) => Math.floor((nu - new Date(iso).getTime()) / 86400000);
+  const signalen = [];
+
+  for (const p of Object.values(data.projects)) {
+    if (p.status === 'opgeleverd') continue;
+
+    for (const m of p.meerwerk || []) {
+      if (m.status === 'wacht_op_klant' && dagen(m.aangemaaktOp) >= 3) {
+        signalen.push({ ernst: 'hoog', projectId: p.id, projectNaam: p.naam, soort: 'meerwerk',
+          tekst: `Meerwerk "${m.titel}" (€ ${m.bedrag}) wacht al ${dagen(m.aangemaaktOp)} dagen op akkoord van ${p.klantNaam}.`,
+          actie: 'Bel of stuur de klant even een herinnering.' });
+      }
+      if (m.status === 'goedgekeurd') {
+        const gefactureerd = (p.documenten || []).some((d) => d.categorie === 'factuur' && d.toegevoegdOp > m.besluitOp);
+        if (!gefactureerd && dagen(m.besluitOp) >= 7) {
+          signalen.push({ ernst: 'middel', projectId: p.id, projectNaam: p.naam, soort: 'facturatie',
+            tekst: `Goedgekeurd meerwerk "${m.titel}" (€ ${m.bedrag}) is ${dagen(m.besluitOp)} dagen geleden akkoord gegeven, maar er staat nog geen factuur in het dossier.`,
+            actie: 'Maak de factuur (de AI-schrijfhulp kan een concept opstellen).' });
+        }
+      }
+    }
+
+    const berichten = p.berichten || [];
+    const laatste = berichten[berichten.length - 1];
+    if (laatste && laatste.van === 'klant' && dagen(laatste.op) >= 1) {
+      signalen.push({ ernst: 'hoog', projectId: p.id, projectNaam: p.naam, soort: 'klantvraag',
+        tekst: `${p.klantNaam} wacht al ${dagen(laatste.op)} dag(en) op antwoord: "${laatste.tekst.slice(0, 80)}${laatste.tekst.length > 80 ? '…' : ''}"`,
+        actie: 'Beantwoord het bericht in het project.' });
+    }
+
+    if (p.status === 'in_uitvoering') {
+      const fotos = (p.documenten || []).filter((d) => d.categorie === 'foto');
+      const laatsteFoto = fotos[0];
+      if (!laatsteFoto || dagen(laatsteFoto.toegevoegdOp) >= 5) {
+        signalen.push({ ernst: 'laag', projectId: p.id, projectNaam: p.naam, soort: 'fotos',
+          tekst: laatsteFoto
+            ? `Al ${dagen(laatsteFoto.toegevoegdOp)} dagen geen nieuwe foto's van "${p.naam}".`
+            : `Er staan nog helemaal geen foto's in het dossier van "${p.naam}".`,
+          actie: 'Maak even een paar foto\'s — goed voor klant én dossier.' });
+      }
+      if (!(p.fases || []).some((f) => f.status === 'bezig')) {
+        signalen.push({ ernst: 'middel', projectId: p.id, projectNaam: p.naam, soort: 'planning',
+          tekst: `"${p.naam}" staat op "in uitvoering", maar geen enkele fase staat op "bezig".`,
+          actie: 'Werk de planning bij, dan klopt het beeld voor de klant weer.' });
+      }
+    }
+
+    for (const mat of p.materialen || []) {
+      if (mat.status === 'bijna_op') {
+        signalen.push({ ernst: 'middel', projectId: p.id, projectNaam: p.naam, soort: 'materiaal',
+          tekst: `Materiaal bijna op bij "${p.naam}": ${mat.naam}${mat.aantal ? ` (${mat.aantal})` : ''}.`,
+          actie: 'Bestel bij of zet op "besteld".' });
+      }
+    }
+  }
+
+  // Uren: welke werknemer heeft de vorige werkdag niets ingevuld?
+  const gisterenWerkdag = (() => {
+    const d = new Date();
+    do { d.setDate(d.getDate() - 1); } while ([0, 6].includes(d.getDay()));
+    return d.toISOString().slice(0, 10);
+  })();
+  for (const w of Object.values(data.werknemers)) {
+    const heeft = Object.values(data.uren).some((u) => u.werknemerId === w.id && u.datum === gisterenWerkdag);
+    if (!heeft && dagen(w.aangemaaktOp) >= 2) {
+      signalen.push({ ernst: 'middel', soort: 'uren',
+        tekst: `${w.naam} heeft de uren van de vorige werkdag (${gisterenWerkdag}) nog niet ingevuld.`,
+        actie: 'De automatische herinnering gaat om 16:30 — of stuur zelf even een berichtje.' });
+    }
+  }
+
+  // Taken over deadline
+  for (const t of Object.values(data.taken || {})) {
+    if (!t.klaar && t.deadline && t.deadline < amsterdamDatum()) {
+      signalen.push({ ernst: 'middel', soort: 'taak',
+        tekst: `Taak over de deadline (${t.deadline}): ${t.tekst}`,
+        actie: 'Afronden of de deadline bijwerken.' });
+    }
+  }
+
+  const volgorde = { hoog: 0, middel: 1, laag: 2 };
+  signalen.sort((a, b) => volgorde[a.ernst] - volgorde[b.ernst]);
+  res.json({ signalen });
+});
+
+// ===========================================================================
+// AI-SCHRIJFHULP — Claude schrijft concepten op basis van de projectdata
+// (dagrapport, klantupdate, werkbon, conceptfactuur, opleverrapport, logboek).
+// De invoer kan getypt óf ingesproken zijn (dicteren gebeurt in de browser).
+// ===========================================================================
+function projectContext(data, p) {
+  const vandaag = amsterdamDatum();
+  const urenVandaag = Object.values(data.uren)
+    .filter((u) => u.projectId === p.id && u.datum >= vandaag)
+    .map((u) => `${(data.werknemers[u.werknemerId] || {}).naam || 'medewerker'}: ${u.uren} uur${u.meerwerkUren ? ` + ${u.meerwerkUren} meerwerkuur` : ''}${u.omschrijving ? ` (${u.omschrijving})` : ''}`);
+  return [
+    `Project: ${p.naam} — klant: ${p.klantNaam}${p.adres ? `, ${p.adres}` : ''}. Status: ${p.status}.`,
+    p.omschrijving ? `Omschrijving: ${p.omschrijving}` : '',
+    (p.fases || []).length ? `Fases: ${p.fases.map((f) => `${f.naam} [${f.status}]`).join('; ')}` : '',
+    (p.meerwerk || []).length ? `Meerwerk: ${p.meerwerk.map((m) => `${m.titel} € ${m.bedrag} [${m.status}]`).join('; ')}` : '',
+    (p.updates || []).slice(0, 3).length ? `Laatste updates: ${p.updates.slice(0, 3).map((u) => u.tekst).join(' | ')}` : '',
+    (p.documenten || []).filter((d) => d.aiSamenvatting).slice(0, 5).length
+      ? `Recente foto's (AI-beschrijving): ${p.documenten.filter((d) => d.aiSamenvatting).slice(0, 5).map((d) => d.aiSamenvatting).join(' | ')}` : '',
+    urenVandaag.length ? `Uren van vandaag: ${urenVandaag.join('; ')}` : '',
+  ].filter(Boolean).join('\n');
+}
+
+const SCHRIJF_TYPES = {
+  dagrapport: 'Schrijf een kort dagrapport (voor het projectdossier): wat is er vandaag gedaan, door wie, bijzonderheden. Zakelijk, puntsgewijs waar dat helpt.',
+  klantupdate: 'Schrijf een vriendelijke, korte voortgangsupdate aan de klant (u-vorm): wat is er gedaan, wat is de volgende stap. Geen jargon.',
+  werkbon: 'Schrijf een werkbon: datum, uitgevoerde werkzaamheden, gebruikte materialen (indien bekend), uren. Strak en zakelijk, geschikt om te printen.',
+  conceptfactuur: 'Stel een CONCEPT-factuurspecificatie op: regels met omschrijving en bedrag op basis van goedgekeurd meerwerk en gemaakte uren (als bedragen onbekend zijn: "p.m."). Sluit af met de zin dat dit een concept is dat het bedrijf nog controleert.',
+  opleverrapport: 'Schrijf een oplevertekst voor in het opleverdossier: wat is er opgeleverd, in welke staat, eventuele afspraken. Warm maar zakelijk, u-vorm.',
+  logboek: 'Schrijf een korte logboeknotitie voor het projectdossier op basis van de invoer. Feitelijk, met datum-context.',
+};
+
+router.post('/api/portaal/beheer/projecten/:projectId/ai/schrijf', requireAdmin, async (req, res) => {
+  const found = findProject(req, res);
+  if (!found) return;
+  const type = String(req.body.type || '');
+  if (!SCHRIJF_TYPES[type]) return res.status(400).json({ error: 'Onbekend teksttype.' });
+  const invoer = String(req.body.invoer || '').trim().slice(0, 4000);
+  try {
+    const tekst = await aiTekst({
+      system: 'Je bent de administratieve rechterhand van een Nederlands aannemersbedrijf. Je schrijft in het Nederlands. Wees concreet en beknopt; verzin geen feiten die niet in de context staan.',
+      prompt: `${SCHRIJF_TYPES[type]}\n\nProjectcontext:\n${projectContext(found.data, found.project)}\n\n${invoer ? `Aantekeningen van de aannemer (getypt of ingesproken):\n${invoer}` : 'Er zijn geen extra aantekeningen; baseer je op de projectcontext.'}\n\nDatum vandaag: ${amsterdamDatum()}.`,
+    });
+    res.json({ ok: true, tekst });
+  } catch (err) {
+    res.status(503).json({ error: err.message });
+  }
+});
+
+// Werknemer spreekt/typt kort in wat er gedaan is → AI maakt er een net
+// dagrapport van dat als update in het projectdossier komt.
+router.post('/api/portaal/werknemer/dagrapport', requireWerknemer, async (req, res) => {
+  const projectId = String(req.body.projectId || '');
+  const project = req.portalData.projects[projectId];
+  if (!project) return res.status(400).json({ error: 'Kies een project.' });
+  const invoer = String(req.body.invoer || '').trim().slice(0, 4000);
+  if (!invoer) return res.status(400).json({ error: 'Vertel eerst kort wat je gedaan hebt.' });
+  try {
+    const tekst = await aiTekst({
+      system: 'Je zet ruwe (vaak ingesproken) aantekeningen van een bouwvakker om in een net, kort dagrapport in het Nederlands. Feitelijk, geen verzinsels.',
+      prompt: `Aantekeningen van ${req.werknemer.naam} over project "${project.naam}" (${amsterdamDatum()}):\n${invoer}\n\nMaak hier een dagrapport van (3-6 zinnen of punten).`,
+      maxTokens: 1024,
+    });
+    project.updates = project.updates || [];
+    const update = { id: newId('upd'), tekst: `Dagrapport ${req.werknemer.naam}:\n${tekst}`, op: new Date().toISOString() };
+    project.updates.unshift(update);
+    writePortal(req.portalData);
+    res.json({ ok: true, tekst, update });
+  } catch (err) {
+    res.status(503).json({ error: err.message });
+  }
+});
+
+// ===========================================================================
+// ADMINISTRATIE — materialen, taken, klanten, werkbonnen, urenexport
+// ===========================================================================
+
+// --- Materialen per project (voedt ook het signaal "materiaal bijna op") ---
+router.post('/api/portaal/beheer/projecten/:projectId/materialen', requireAdmin, (req, res) => {
+  const found = findProject(req, res);
+  if (!found) return;
+  const naam = String(req.body.naam || '').trim();
+  if (!naam) return res.status(400).json({ error: 'Naam van het materiaal is verplicht.' });
+  const mat = {
+    id: newId('mat'), naam,
+    aantal: String(req.body.aantal || '').trim(),
+    status: ['op_voorraad', 'bijna_op', 'besteld'].includes(req.body.status) ? req.body.status : 'op_voorraad',
+    notitie: String(req.body.notitie || '').trim(),
+  };
+  found.project.materialen = found.project.materialen || [];
+  found.project.materialen.push(mat);
+  writePortal(found.data);
+  res.json({ ok: true, materiaal: mat });
+});
+
+router.patch('/api/portaal/beheer/projecten/:projectId/materialen/:matId', requireAdmin, (req, res) => {
+  const found = findProject(req, res);
+  if (!found) return;
+  const mat = (found.project.materialen || []).find((m) => m.id === req.params.matId);
+  if (!mat) return res.status(404).json({ error: 'Materiaal niet gevonden.' });
+  for (const v of ['naam', 'aantal', 'notitie']) if (v in req.body) mat[v] = String(req.body[v] || '').trim();
+  if ('status' in req.body && ['op_voorraad', 'bijna_op', 'besteld'].includes(req.body.status)) mat.status = req.body.status;
+  writePortal(found.data);
+  res.json({ ok: true, materiaal: mat });
+});
+
+router.delete('/api/portaal/beheer/projecten/:projectId/materialen/:matId', requireAdmin, (req, res) => {
+  const found = findProject(req, res);
+  if (!found) return;
+  found.project.materialen = (found.project.materialen || []).filter((m) => m.id !== req.params.matId);
+  writePortal(found.data);
+  res.json({ ok: true });
+});
+
+// --- Werkbonnen per project (handmatig of via de AI-schrijfhulp) ---
+router.post('/api/portaal/beheer/projecten/:projectId/werkbonnen', requireAdmin, (req, res) => {
+  const found = findProject(req, res);
+  if (!found) return;
+  const tekst = String(req.body.tekst || '').trim();
+  if (!tekst) return res.status(400).json({ error: 'Werkbon is leeg.' });
+  const bon = { id: newId('bon'), titel: String(req.body.titel || `Werkbon ${amsterdamDatum()}`).trim(), tekst, op: new Date().toISOString() };
+  found.project.werkbonnen = found.project.werkbonnen || [];
+  found.project.werkbonnen.unshift(bon);
+  writePortal(found.data);
+  res.json({ ok: true, werkbon: bon });
+});
+
+router.delete('/api/portaal/beheer/projecten/:projectId/werkbonnen/:bonId', requireAdmin, (req, res) => {
+  const found = findProject(req, res);
+  if (!found) return;
+  found.project.werkbonnen = (found.project.werkbonnen || []).filter((b) => b.id !== req.params.bonId);
+  writePortal(found.data);
+  res.json({ ok: true });
+});
+
+// --- Taken (algemeen of per project) ---
+router.get('/api/portaal/beheer/taken', requireAdmin, (req, res) => {
+  const data = readPortal();
+  const taken = Object.values(data.taken || {})
+    .map((t) => ({ ...t, projectNaam: t.projectId ? ((data.projects[t.projectId] || {}).naam || '') : '' }))
+    .sort((a, b) => (a.klaar === b.klaar ? (a.deadline || '9999').localeCompare(b.deadline || '9999') : a.klaar ? 1 : -1));
+  res.json({ taken });
+});
+
+router.post('/api/portaal/beheer/taken', requireAdmin, (req, res) => {
+  const tekst = String(req.body.tekst || '').trim();
+  if (!tekst) return res.status(400).json({ error: 'Taak is leeg.' });
+  const data = readPortal();
+  data.taken = data.taken || {};
+  const taak = {
+    id: newId('taak'), tekst,
+    projectId: String(req.body.projectId || '') || null,
+    deadline: /^\d{4}-\d{2}-\d{2}$/.test(req.body.deadline || '') ? req.body.deadline : '',
+    klaar: false, aangemaaktOp: new Date().toISOString(),
+  };
+  data.taken[taak.id] = taak;
+  writePortal(data);
+  res.json({ ok: true, taak });
+});
+
+router.patch('/api/portaal/beheer/taken/:taakId', requireAdmin, (req, res) => {
+  const data = readPortal();
+  const taak = (data.taken || {})[req.params.taakId];
+  if (!taak) return res.status(404).json({ error: 'Taak niet gevonden.' });
+  if ('klaar' in req.body) taak.klaar = Boolean(req.body.klaar);
+  if ('tekst' in req.body) taak.tekst = String(req.body.tekst || '').trim();
+  if ('deadline' in req.body) taak.deadline = /^\d{4}-\d{2}-\d{2}$/.test(req.body.deadline || '') ? req.body.deadline : '';
+  writePortal(data);
+  res.json({ ok: true, taak });
+});
+
+router.delete('/api/portaal/beheer/taken/:taakId', requireAdmin, (req, res) => {
+  const data = readPortal();
+  if (!(data.taken || {})[req.params.taakId]) return res.status(404).json({ error: 'Taak niet gevonden.' });
+  delete data.taken[req.params.taakId];
+  writePortal(data);
+  res.json({ ok: true });
+});
+
+// --- Klantenbestand (afgeleid uit de projecten) ---
+router.get('/api/portaal/beheer/klanten', requireAdmin, (req, res) => {
+  const data = readPortal();
+  const perKlant = new Map();
+  for (const p of Object.values(data.projects)) {
+    const sleutel = `${p.klantNaam}|${(p.klantEmail || '').toLowerCase()}`;
+    if (!perKlant.has(sleutel)) {
+      perKlant.set(sleutel, { naam: p.klantNaam, email: p.klantEmail || '', telefoon: p.klantTelefoon || '', projecten: [] });
+    }
+    const klant = perKlant.get(sleutel);
+    if (!klant.telefoon && p.klantTelefoon) klant.telefoon = p.klantTelefoon;
+    klant.projecten.push({ id: p.id, naam: p.naam, status: p.status, adres: p.adres });
+  }
+  res.json({ klanten: [...perKlant.values()].sort((a, b) => a.naam.localeCompare(b.naam)) });
+});
+
+// --- Urenexport (CSV) voor de boekhouding — te openen in Excel of te
+//     importeren in Exact/Moneybird/AFAS. Meerwerk-export idem. ---
+function csvVeld(s) { return `"${String(s == null ? '' : s).replace(/"/g, '""')}"`; }
+
+router.get('/api/portaal/beheer/export/uren.csv', requireAdmin, (req, res) => {
+  const data = readPortal();
+  const van = String(req.query.van || '0000-00-00');
+  const tot = String(req.query.tot || '9999-99-99');
+  const regels = Object.values(data.uren)
+    .filter((u) => u.datum >= van && u.datum <= tot)
+    .sort((a, b) => a.datum.localeCompare(b.datum));
+  const csv = ['datum;werknemer;project;uren;meerwerkuren;omschrijving']
+    .concat(regels.map((u) => [
+      u.datum,
+      (data.werknemers[u.werknemerId] || {}).naam || 'oud-medewerker',
+      u.projectId ? ((data.projects[u.projectId] || {}).naam || '') : 'algemeen',
+      String(u.uren).replace('.', ','),
+      String(u.meerwerkUren).replace('.', ','),
+      u.omschrijving || '',
+    ].map(csvVeld).join(';')))
+    .join('\r\n');
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="projexa-uren-${van}-tm-${tot}.csv"`);
+  res.send('﻿' + csv);
+});
+
+router.get('/api/portaal/beheer/export/meerwerk.csv', requireAdmin, (req, res) => {
+  const data = readPortal();
+  const rijen = [];
+  for (const p of Object.values(data.projects)) {
+    for (const m of p.meerwerk || []) {
+      rijen.push([p.naam, p.klantNaam, m.titel, String(m.bedrag).replace('.', ','), m.status, (m.besluitOp || '').slice(0, 10)]);
+    }
+  }
+  const csv = ['project;klant;omschrijving;bedrag;status;besluitdatum']
+    .concat(rijen.map((r) => r.map(csvVeld).join(';'))).join('\r\n');
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', 'attachment; filename="projexa-meerwerk.csv"');
+  res.send('﻿' + csv);
+});
 
 // Elke minuut kijken of het ma-vr tussen 16:30 en 16:40 Amsterdamse tijd is;
 // per dag maximaal één herinneringsronde (bijgehouden in data/portal.json).
