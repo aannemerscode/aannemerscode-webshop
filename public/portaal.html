@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Projexa — Klantportaal</title>
+<link rel="manifest" href="/manifest-klant.json">
+<meta name="theme-color" content="#0F243B">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -594,6 +597,9 @@
       alert(err.message);
     }
   });
+
+  // Service worker registreren zodat de site als app installeerbaar is.
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 
   // Al ingelogd? Dan direct het project tonen.
   laadProject().catch(() => { /* niet ingelogd — loginscherm blijft staan */ });
