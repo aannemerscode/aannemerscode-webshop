@@ -5,63 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Projexa — Urenstaat</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0F243B">
+<meta name="theme-color" content="#1B1A17">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-serif-400.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  :root {
-    --navy: #0F243B;
-    --navy-line: rgba(229,224,206,0.10);
-    --cream: #F3EFE3;
-    --cream-deep: #E5E0CE;
-    --ink: #222B36;
-    --ink-soft: #56606C;
-    --accent: #DA4C1A;
-    --accent-soft: rgba(218,76,26,0.10);
-    --muted: #92A2B0;
-    --green: #47795B;
-    --green-deep: #3B644C;
-    --red: #A64444;
-    --shadow-card: 0 14px 40px rgba(3,10,18,0.28), 0 2px 8px rgba(3,10,18,0.14);
-    --shadow-soft: 0 8px 24px rgba(3,10,18,0.18);
-  }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--navy); color: var(--cream); font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 15px; -webkit-font-smoothing: antialiased; }
+  body { margin: 0; background: var(--navy); color: var(--cream); font-family: var(--font-ui); font-size: 15px; -webkit-font-smoothing: antialiased; }
   .blueprint-bg { background-image: linear-gradient(var(--navy-line) 1px, transparent 1px), linear-gradient(90deg, var(--navy-line) 1px, transparent 1px); background-size: 64px 64px; }
   .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px; }
-  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
-  nav { position: sticky; top: 0; z-index: 30; background: rgba(15,36,59,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--navy-line); transition: transform .25s ease; }
+  .mono { font-family: var(--font-mono); }
+  nav { position: sticky; top: 0; z-index: 30; background: rgba(27,26,23,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--navy-line); transition: transform .25s ease; }
   nav.nav-verborgen { transform: translateY(-100%); }
   nav .inner { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; max-width: 680px; margin: 0 auto; }
-  .logo { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 21px; color: var(--cream); text-decoration: none; }
-  .logo span { color: var(--accent); }
+  .logo { font-family: var(--font-display); font-weight: 600; font-size: 21px; color: var(--cream); text-decoration: none; }
+  .logo span { color: var(--messing); }
   .nav-sub { font-size: 12.5px; color: var(--muted); font-weight: 500; }
-  .btn-uitlog { font-size: 12.5px; font-weight: 500; color: var(--muted); background: none; border: 1px solid var(--navy-line); border-radius: 999px; padding: 8px 16px; cursor: pointer; font-family: 'Inter', sans-serif; }
+  .btn-uitlog { font-size: 12.5px; font-weight: 500; color: var(--muted); background: none; border: 1px solid var(--navy-line); border-radius: 999px; padding: 8px 16px; cursor: pointer; font-family: var(--font-ui); }
   .btn-uitlog:hover { color: var(--cream); }
 
   .login-shell { min-height: calc(100vh - 62px); display: flex; align-items: center; justify-content: center; padding: 48px 20px; }
-  .login-card { background: var(--cream); color: var(--ink); border-radius: 20px; padding: 38px 34px; width: 100%; max-width: 400px; box-shadow: 0 30px 80px rgba(2,8,15,0.5); }
-  .login-card h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 26px; margin: 0 0 8px; }
+  .login-card { background: var(--cream); color: var(--ink); border-radius: 20px; padding: 38px 34px; width: 100%; max-width: 400px; box-shadow: 0 30px 80px rgba(8,7,5,0.42); }
+  .login-card h1 { font-family: var(--font-display); font-weight: 500; font-size: 26px; margin: 0 0 8px; }
   .login-card .uitleg { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 22px; line-height: 1.6; }
 
   label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); margin: 0 0 7px; }
   input, select, textarea {
-    width: 100%; padding: 12px 15px; border-radius: 11px; border: 1px solid #D6D0BD; background: #FBF9F2;
-    color: var(--ink); font-size: 15px; font-family: 'Inter', sans-serif; margin-bottom: 15px;
+    width: 100%; padding: 12px 15px; border-radius: 11px; border: 1px solid #D9D3C5; background: #F5F2EA;
+    color: var(--ink); font-size: 15px; font-family: var(--font-ui); margin-bottom: 15px;
   }
-  input.code-input { font-family: 'JetBrains Mono', monospace; }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(218,76,26,0.12); }
-  .btn { display: inline-block; background: var(--accent); color: #fff; font-weight: 600; font-size: 14.5px; padding: 13px 24px; border: none; border-radius: 11px; cursor: pointer; font-family: 'Inter', sans-serif; box-shadow: 0 6px 16px rgba(218,76,26,0.3), inset 0 1px 0 rgba(255,255,255,0.18); transition: transform .15s, background .15s; }
-  .btn:hover { background: #E5591F; transform: translateY(-1px); }
+  input.code-input { font-family: var(--font-mono); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(126,97,52,0.14); }
+  .btn { display: inline-block; background: var(--accent); color: #fff; font-weight: 600; font-size: 14.5px; padding: 13px 24px; border: none; border-radius: 11px; cursor: pointer; font-family: var(--font-ui); box-shadow: 0 6px 16px rgba(126,97,52,0.22), inset 0 1px 0 rgba(255,255,255,0.18); transition: transform .15s, background .15s; }
+  .btn:hover { background: var(--brons-diep); transform: translateY(-1px); }
   .btn.vol { width: 100%; }
-  .btn-stil { background: transparent; border: 1px solid #CFC9B6; color: var(--ink-soft); box-shadow: none; }
-  .btn-stil:hover { background: #EAE5D5; transform: none; }
-  .foutmelding { background: #F6E4DD; color: #8A2F10; border-radius: 10px; padding: 11px 14px; font-size: 13px; margin-bottom: 14px; display: none; }
+  .btn-stil { background: transparent; border: 1px solid #CFC8B7; color: var(--ink-soft); box-shadow: none; }
+  .btn-stil:hover { background: #EBE6DA; transform: none; }
+  .foutmelding { background: #F2E4E1; color: #7C332C; border-radius: 10px; padding: 11px 14px; font-size: 13px; margin-bottom: 14px; display: none; }
 
   header.pagehead { padding: 34px 0 24px; }
-  header.pagehead h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 30px; margin: 4px 0 4px; }
+  header.pagehead h1 { font-family: var(--font-display); font-weight: 500; font-size: 30px; margin: 4px 0 4px; }
   .pagehead .sub { font-size: 13.5px; color: var(--muted); margin: 0; }
 
   /* Meldingen-banner */
@@ -73,36 +56,40 @@
 
   /* Weeknavigatie */
   .week-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 16px; }
-  .week-nav h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 20px; margin: 0; }
-  .week-nav button { background: none; border: 1px solid var(--navy-line); color: var(--cream-deep); border-radius: 999px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif; }
-  .week-nav button:hover { border-color: rgba(229,224,206,0.35); }
+  .week-nav h2 { font-family: var(--font-display); font-weight: 500; font-size: 20px; margin: 0; }
+  .week-nav button { background: none; border: 1px solid var(--navy-line); color: var(--cream-deep); border-radius: 999px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: var(--font-ui); }
+  .week-nav button:hover { border-color: rgba(237,232,220,0.35); }
 
+  @media (max-width: 520px) {
+    .week-nav { flex-wrap: wrap; justify-content: space-between; }
+    .week-nav h2 { flex: 1 1 100%; order: -1; text-align: center; margin-bottom: 4px; }
+  }
   .dag-kaart { background: var(--cream); color: var(--ink); border-radius: 15px; padding: 16px 20px; margin-bottom: 10px; box-shadow: var(--shadow-soft); }
   .dag-kaart.vandaag { outline: 2px solid var(--accent); }
   .dag-kop { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
   .dag-kop h3 { font-size: 15px; font-weight: 600; margin: 0; text-transform: capitalize; }
   .dag-kop .totaal { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
   .dag-kop .totaal .mw { color: var(--accent); }
-  .uur-regel { display: flex; align-items: center; gap: 10px; border-top: 1px solid #E2DCC9; padding: 9px 0; font-size: 13.5px; flex-wrap: wrap; }
+  .uur-regel { display: flex; align-items: center; gap: 10px; border-top: 1px solid #E4DFD2; padding: 9px 0; font-size: 13.5px; flex-wrap: wrap; }
   .uur-regel .hoofd { flex: 1; min-width: 160px; }
   .uur-regel .hoofd small { display: block; color: var(--ink-soft); font-size: 12px; }
   .uur-regel .uren-badge { font-weight: 700; white-space: nowrap; }
   .uur-regel .uren-badge .mw { color: var(--accent); font-weight: 600; font-size: 12px; }
-  .uur-regel .x { background: none; border: none; color: #B98F8F; cursor: pointer; font-size: 15px; padding: 4px 8px; border-radius: 8px; }
-  .uur-regel .x:hover { color: var(--red); background: #F3E4E4; }
-  .dag-leeg { font-size: 13px; color: #9A937E; padding: 8px 0 2px; }
-  .btn-dag-toevoegen { margin-top: 8px; background: none; border: 1px dashed #C9C2AE; color: var(--ink-soft); border-radius: 10px; padding: 9px 16px; font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif; width: 100%; }
+  .uur-regel .x { background: none; border: none; color: #B08A85; cursor: pointer; font-size: 15px; padding: 4px 8px; border-radius: 8px; }
+  .uur-regel .x:hover { color: var(--red); background: #F1E3E1; }
+  .dag-leeg { font-size: 13px; color: #9C9482; padding: 8px 0 2px; }
+  .btn-dag-toevoegen { margin-top: 8px; background: none; border: 1px dashed #CDC6B4; color: var(--ink-soft); border-radius: 10px; padding: 9px 16px; font-size: 13px; cursor: pointer; font-family: var(--font-ui); width: 100%; }
   .btn-dag-toevoegen:hover { border-color: var(--accent); color: var(--accent); }
 
   /* Invulformulier (per dag) */
-  .uur-form { border-top: 1px solid #E2DCC9; padding-top: 14px; margin-top: 10px; }
+  .uur-form { border-top: 1px solid #E4DFD2; padding-top: 14px; margin-top: 10px; }
   .uur-form .rij { display: grid; grid-template-columns: 1fr 110px 110px; gap: 10px; }
   @media (max-width: 560px) { .uur-form .rij { grid-template-columns: 1fr; gap: 0; } }
   .uur-form .knoppen { display: flex; gap: 8px; }
   .uur-form .knoppen .btn { flex: 1; }
 
   .week-totaal { background: var(--cream); color: var(--ink); border-radius: 15px; padding: 18px 22px; margin: 18px 0 40px; box-shadow: var(--shadow-card); display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
-  .week-totaal .label { font-family: 'Fraunces', Georgia, serif; font-size: 17px; font-weight: 500; }
+  .week-totaal .label { font-family: var(--font-display); font-size: 17px; font-weight: 500; }
   .week-totaal .cijfers { font-size: 14px; font-weight: 600; }
   .week-totaal .cijfers .mw { color: var(--accent); }
 
@@ -110,6 +97,7 @@
   footer p { font-size: 12px; color: var(--muted); margin: 0; }
   #dashboard { display: none; }
 </style>
+<link rel="stylesheet" href="/projexa-tokens.css">
 </head>
 <body>
 
@@ -133,7 +121,7 @@
     <input type="password" id="login-wachtwoord" class="code-input" placeholder="XXXX-XXXX-XXXX" autocomplete="current-password">
     <button class="btn vol" type="submit">Inloggen</button>
     <p style="font-size:12.5px; color:var(--ink-soft); margin:16px 0 0;"><a href="#" id="link-vergeten" style="color:var(--accent);">Wachtwoord vergeten?</a></p>
-    <div id="vergeten-form" style="display:none; margin-top:16px; border-top:1px solid #E2DCC9; padding-top:16px;">
+    <div id="vergeten-form" style="display:none; margin-top:16px; border-top:1px solid #E4DFD2; padding-top:16px;">
       <p style="font-size:12.5px; color:var(--ink-soft); margin:0 0 12px; line-height:1.5;">Vul je code en het e-mailadres in dat kantoor van je heeft — je krijgt dan een nieuw wachtwoord gemaild.</p>
       <label>E-mailadres</label>
       <input type="email" id="vergeten-email" placeholder="jij@voorbeeld.nl">
@@ -163,11 +151,11 @@
       <label>Project</label>
       <select id="dr-project"></select>
       <div style="display:flex; gap:8px;">
-        <textarea id="dr-invoer" rows="2" placeholder="Bijv.: kozijnen gesteld, glaszetter komt morgen, extra stopcontact besproken" style="flex:1; margin:0;"></textarea>
-        <button type="button" id="dr-mic" title="Spreek in" style="width:52px; border-radius:11px; border:1px solid #D6D0BD; background:#FBF9F2; cursor:pointer; font-size:19px;">🎤</button>
+        <textarea id="dr-invoer" rows="2" placeholder="Bijv.: kozijnen gesteld, glaszetter komt morgen" style="flex:1; margin:0;"></textarea>
+        <button type="button" id="dr-mic" title="Spreek in" aria-label="Spreek in" style="width:52px; border-radius:7px; border:1px solid #D9D3C5; background:#F5F2EA; color:var(--ink-soft); cursor:pointer; display:flex; align-items:center; justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3.5a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0v-5a3 3 0 0 1 3-3z"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
       </div>
       <button class="btn" id="dr-verstuur" style="margin-top:12px;">✦ Maak dagrapport</button>
-      <div id="dr-resultaat" style="display:none; background:#FBF9F2; border:1px solid #D6D0BD; border-radius:11px; padding:14px 16px; font-size:13.5px; line-height:1.6; white-space:pre-wrap; margin-top:12px;"></div>
+      <div id="dr-resultaat" style="display:none; background:#F5F2EA; border:1px solid #D9D3C5; border-radius:11px; padding:14px 16px; font-size:13.5px; line-height:1.6; white-space:pre-wrap; margin-top:12px;"></div>
     </div>
   </div>
 
