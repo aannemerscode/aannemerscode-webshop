@@ -1,0 +1,247 @@
+/* ===========================================================================
+   Projexa — ontwerpsysteem "Atelier"
+   ---------------------------------------------------------------------------
+   Eén bron voor kleur, typografie, radii en schaduwen. Alle portalen laden dit
+   bestand, dus een aanpassing hier verandert de hele app.
+
+   Palet: warm grafiet als grond (geen blauw), kalksteen en papier voor de
+   oppervlakken, brons/messing als enige merkkleur. Semantische kleuren
+   (groen/leisteen/oxblood) staan bewust los van de merkkleur, zodat "afgerond"
+   en "actie nodig" nooit met een knop te verwarren zijn.
+
+   Typografie: Instrument Serif voor koppen (editorial, hoog contrast),
+   Schibsted Grotesk voor de interface, IBM Plex Mono uitsluitend voor codes.
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   Lettertypen worden zelf gehost (public/fonts/). Dat is sneller dan Google
+   Fonts, werkt offline in de geïnstalleerde app, en er gaat geen bezoekersdata
+   naar een externe partij — fijn voor een klantportaal.
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/instrument-serif-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic; font-weight: 400; font-display: swap;
+  src: url('/fonts/instrument-serif-400-italic.woff2') format('woff2');
+}
+@font-face {
+  /* Variabel bestand: één download voor alle gewichten. */
+  font-family: 'Schibsted Grotesk';
+  font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url('/fonts/schibsted-grotesk.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal; font-weight: 500; font-display: swap;
+  src: url('/fonts/ibm-plex-mono-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal; font-weight: 600; font-display: swap;
+  src: url('/fonts/ibm-plex-mono-600.woff2') format('woff2');
+}
+
+:root {
+  /* --- Gronden --------------------------------------------------------- */
+  --grafiet:        #1B1A17;  /* hoofdgrond: warm bijna-zwart */
+  --grafiet-diep:   #121110;  /* verlopen, voetteksten */
+  --grafiet-op:     #24231F;  /* iets lichter vlak op de grond */
+  --kalksteen:      #E7E4DC;  /* lichte grond (print, dossier) */
+  --papier:         #FAF8F4;  /* kaarten en oppervlakken */
+  --papier-warm:    #F2EFE8;  /* tweede oppervlak, invulvelden */
+
+  /* --- Lijnen ---------------------------------------------------------- */
+  --lijn:           #DAD5C9;  /* haarlijn op licht */
+  --lijn-op-donker: rgba(233,226,210,0.11);
+
+  /* --- Tekst ----------------------------------------------------------- */
+  --ink:            #221F1A;  /* tekst op licht */
+  --ink-zacht:      #6B6459;  /* bijtekst op licht */
+  --ink-licht:      #97907F;  /* labels, tertiair */
+  --op-donker:      #EDE8DC;  /* tekst op grafiet */
+  --op-donker-zacht:#9B9483;  /* bijtekst op grafiet */
+
+  /* --- Merkkleur ------------------------------------------------------- */
+  --brons:          #7E6134;  /* knoppen en links op licht */
+  --brons-diep:     #674E28;  /* hover */
+  --brons-zacht:    rgba(126,97,52,0.10);
+  --messing:        #C9A55E;  /* accenten op grafiet: logo, labels, actief */
+  --messing-zacht:  rgba(201,165,94,0.14);
+
+  /* --- Semantiek (los van de merkkleur) -------------------------------- */
+  --pijn:           #35604C;  /* goed, afgerond */
+  --pijn-zacht:     rgba(53,96,76,0.12);
+  --leisteen:       #45566A;  /* let op, informatief */
+  --leisteen-zacht: rgba(69,86,106,0.12);
+  --oxblood:        #8A3A32;  /* actie nodig, verwijderen */
+  --oxblood-zacht:  rgba(138,58,50,0.10);
+
+  /* --- Vorm ------------------------------------------------------------ */
+  --radius-kaart:   8px;      /* strak en architectonisch, niet bollig */
+  --radius-veld:    7px;
+  --radius-klein:   5px;
+  --radius-pil:     999px;
+
+  /* --- Diepte: fijne haarlijn + zachte schaduw, nooit zwaar ----------- */
+  --schaduw-rust:   0 1px 2px rgba(12,10,7,0.10), 0 10px 26px rgba(12,10,7,0.14);
+  --schaduw-op:     0 2px 4px rgba(12,10,7,0.12), 0 18px 44px rgba(12,10,7,0.20);
+  --schaduw-diep:   0 30px 80px rgba(8,7,5,0.42), 0 3px 10px rgba(8,7,5,0.22);
+
+  /* --- Typografie ------------------------------------------------------ */
+  --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --font-ui: 'Schibsted Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* --- Aliassen -------------------------------------------------------- */
+  /* De portalen zijn gebouwd met de eerdere namen; die verwijzen nu naar de
+     nieuwe rollen, zodat kleur op één plek wordt bepaald. */
+  --navy:        var(--grafiet);
+  --navy-soft:   var(--grafiet-op);
+  --navy-line:   var(--lijn-op-donker);
+  --cream:       var(--papier);
+  --cream-deep:  var(--papier-warm);
+  --ink-soft:    var(--ink-zacht);
+  --accent:      var(--brons);
+  --accent-soft: var(--brons-zacht);
+  --muted:       var(--op-donker-zacht);
+  --green:       var(--pijn);
+  --green-deep:  var(--pijn);
+  --red:         var(--oxblood);
+  --amber:       var(--leisteen);
+  --lijn-print:  var(--lijn);
+  --shadow-card: var(--schaduw-op);
+  --shadow-soft: var(--schaduw-rust);
+}
+
+/* ---------------------------------------------------------------------------
+   Basis
+   --------------------------------------------------------------------------- */
+/* Mobiele browsers vergroten losse tekstblokken soms eigenhandig, waardoor de
+   verhouding tussen kop en tekst wegvalt. Wij bepalen de schaal zelf. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-ui);
+  font-feature-settings: 'ss01' 1;
+  letter-spacing: -0.003em;
+}
+
+/* Koppen: hoog contrast, strak gespatieerd. Instrument Serif heeft één
+   gewicht, dus hiërarchie komt uit grootte en ruimte — niet uit vet.
+   De display-letter is een titelletter: alleen vanaf ongeveer 18px. Kleinere
+   kopjes (rij- en veldtitels) blijven in de grotesk, daar leest die beter. */
+.display, .serif,
+h1, h2,
+.logo, .kaart h2, .mw-kaart h3, .dossier-kaart h3, .inlogblok h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+/* Kleine kopjes expliciet in de interfaceletter houden. */
+.dag-kop h3, .uur-regel h4, .fase-rij h4, .rijtje h4 {
+  font-family: var(--font-ui);
+  letter-spacing: -0.003em;
+}
+
+.mono, .code-input, input.code-input {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cijferkolommen (uren, bedragen) netjes onder elkaar. */
+.bedrag, .uren-badge, .totaal, .cijfers, .week-totaal, td, th {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------------
+   Materiaal: een fijne haarlijn rond elk oppervlak geeft de "gedrukte"
+   precisie die zware schaduwen niet geven.
+   --------------------------------------------------------------------------- */
+.kaart, .prj-rij, .fase-rij, .doc-rij, .dag-kaart, .signaal,
+.mw-kaart, .week-totaal, .inlogblok, .login-card, .push-banner {
+  box-shadow: var(--schaduw-rust), inset 0 0 0 1px rgba(34,31,26,0.06);
+}
+
+/* Knoppen: bronzen vlak, geen glans, subtiele verdieping bij hover. */
+.btn {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  border-radius: var(--radius-veld);
+  box-shadow: 0 1px 2px rgba(12,10,7,0.16);
+  transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.btn:hover { background: var(--brons-diep); box-shadow: 0 2px 6px rgba(12,10,7,0.22); transform: none; }
+.btn:active { background: var(--brons-diep); box-shadow: inset 0 1px 3px rgba(12,10,7,0.28); }
+
+/* Invulvelden: rustig papier met een duidelijke maar zachte focusrand. */
+input, select, textarea { border-radius: var(--radius-veld); }
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--brons);
+  box-shadow: 0 0 0 3px var(--brons-zacht);
+}
+
+/* Toetsenbordfocus blijft altijd zichtbaar. */
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--messing);
+  outline-offset: 2px;
+}
+
+/* Labels: klein, rustig, licht gespatieerd — geen schreeuwende kapitalen. */
+label { font-weight: 600; letter-spacing: 0.01em; }
+
+/* Vormtaal gelijktrekken over de portalen. */
+.kaart, .prj-rij, .fase-rij, .doc-rij, .dag-kaart, .mw-kaart,
+.signaal, .week-totaal, .inlogblok, .ai-resultaat, .leeg, .push-banner {
+  border-radius: var(--radius-kaart);
+}
+.login-card { border-radius: 10px; }
+.badge, .chip, .code-chip, .mw-badge, .status-mat, .ernst-chip, .ai-chip { border-radius: var(--radius-pil); }
+
+/* ---------------------------------------------------------------------------
+   Grond: in plaats van een opvallend blauwdrukraster een fluisterfijn
+   maatraster met een zachte vignettering — je ziet het pas als je erop let,
+   maar het vlak voelt niet leeg.
+   --------------------------------------------------------------------------- */
+body { background-color: var(--grafiet); background-image: none; }
+/* Alleen de kopvlakken krijgen textuur: een fluisterfijn maatraster met een
+   warme gloed erboven. De rest van de pagina blijft vlak grafiet, zodat er
+   geen zichtbare naad ontstaat waar het vlak ophoudt. */
+.blueprint-bg {
+  background-image:
+    radial-gradient(120% 80% at 50% 0%, rgba(201,165,94,0.06) 0%, transparent 70%),
+    linear-gradient(rgba(237,232,220,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(237,232,220,0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 104px 104px, 104px 104px;
+}
+
+/* Navigatie: dun, rustig, met een haarlijn in messing als merkdetail. */
+nav, nav.topbar { border-bottom: 1px solid var(--lijn-op-donker); }
+nav::after, nav.topbar::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,165,94,0.30), transparent);
+}
+nav, nav.topbar { position: sticky; }
+
+/* Logo: het merk zit in de serif en de messing punt — niet in vet. */
+.logo { font-weight: 400; letter-spacing: 0.005em; }
+
+/* Koppen krijgen lucht; Instrument Serif staat mooi iets groter. */
+h1.projectnaam, header.pagehead h1, .login-links h1, .voorblad h1 { line-height: 1.06; }
+.kaart h2, .blok h2, .week-nav h2 { letter-spacing: -0.01em; }
+
+/* Secundaire knop: rustige omlijning, geen vlak. */
+.btn-stil { box-shadow: none; }
+.btn-stil:hover { box-shadow: none; }
+.btn-rood { box-shadow: none; }
+.btn-rood:hover { box-shadow: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projexa — Opleverdossier</title>
+<link rel="preload" href="/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-serif-400.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--kalksteen); color: var(--ink); font-family: var(--font-ui); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  .serif { font-family: var(--font-display); }
+
+  .werkbalk { position: sticky; top: 0; z-index: 20; background: var(--navy); color: var(--cream); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .werkbalk .logo { font-family: var(--font-display); font-weight: 600; font-size: 19px; }
+  .werkbalk .logo span { color: var(--messing); }
+  .werkbalk .knoppen { display: flex; gap: 10px; }
+  .werkbalk button, .werkbalk a { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 10px 20px; font-weight: 600; font-size: 13.5px; cursor: pointer; font-family: var(--font-ui); text-decoration: none; }
+  .werkbalk a.terug { background: transparent; border: 1px solid rgba(237,232,220,0.25); color: var(--cream); }
+
+  .pagina { max-width: 800px; margin: 30px auto 60px; background: #fff; box-shadow: 0 20px 60px rgba(8,7,5,0.18); border-radius: 6px; overflow: hidden; }
+  .voorblad { background: var(--navy); color: var(--cream); padding: 70px 60px 60px; }
+  .voorblad .kicker { font-size: 13px; color: #9B9483; margin-bottom: 14px; }
+  .voorblad h1 { font-family: var(--font-display); font-weight: 500; font-size: 40px; margin: 0 0 8px; line-height: 1.1; }
+  .voorblad .projectnaam { font-family: var(--font-display); font-size: 22px; color: var(--papier-warm); font-style: italic; margin: 0 0 30px; }
+  .voorblad .gegevens { border-top: 1px solid rgba(237,232,220,0.2); padding-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px; font-size: 13.5px; }
+  .voorblad .gegevens .label { color: #9B9483; font-size: 11.5px; margin-bottom: 2px; }
+
+  .inhoud { padding: 50px 60px; }
+  @media (max-width: 640px) { .voorblad { padding: 44px 30px; } .inhoud { padding: 34px 26px; } }
+  section { margin-bottom: 44px; }
+  h2 { font-family: var(--font-display); font-weight: 500; font-size: 24px; margin: 0 0 4px; }
+  .sectie-sub { font-size: 13px; color: var(--ink-soft); margin: 0 0 16px; }
+  h2 .nr { color: var(--accent); margin-right: 10px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { text-align: left; font-size: 12px; color: var(--ink-soft); font-weight: 600; padding: 8px 10px 8px 0; border-bottom: 2px solid var(--lijn); }
+  td { padding: 10px 10px 10px 0; border-bottom: 1px solid var(--lijn); vertical-align: top; line-height: 1.5; }
+  td.sterk { font-weight: 600; white-space: nowrap; }
+  .leeg-notitie { font-size: 13px; color: var(--ink-soft); font-style: italic; border: 1px dashed var(--lijn); border-radius: 8px; padding: 14px 16px; }
+
+  .info-kaart { border: 1px solid var(--lijn); border-radius: 10px; padding: 18px 20px; margin-bottom: 12px; }
+  .info-kaart h3 { font-family: var(--font-display); font-weight: 500; font-size: 17px; margin: 0 0 10px; }
+  .info-rij { display: flex; gap: 16px; font-size: 13.5px; padding: 4px 0; }
+  .info-rij .k { width: 170px; flex-shrink: 0; color: var(--ink-soft); }
+
+  /* Geschiedenis-tijdlijn */
+  .tijdlijn-item { border-left: 2px solid var(--lijn); padding: 0 0 18px 18px; position: relative; }
+  .tijdlijn-item::before { content: ''; position: absolute; left: -5.5px; top: 3px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+  .tijdlijn-item .datum { font-size: 11.5px; font-weight: 600; color: var(--ink-soft); display: block; margin-bottom: 2px; }
+  .tijdlijn-item .tekst { font-size: 13.5px; line-height: 1.6; }
+  .tijdlijn-item .mw-tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: rgba(126,97,52,0.12); color: var(--brons); margin-left: 6px; }
+  .tijdlijn-item .mw-tag.ok { background: var(--pijn-zacht); color: var(--green-deep); }
+
+  .foto-raster { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  @media (max-width: 640px) { .foto-raster { grid-template-columns: repeat(2, 1fr); } }
+  .foto-raster figure { margin: 0; }
+  .foto-raster img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--lijn); }
+  .foto-raster figcaption { font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+
+  .doc-lijst { list-style: none; margin: 0; padding: 0; }
+  .doc-lijst li { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--lijn); font-size: 13.5px; }
+  .doc-lijst .cat { color: var(--ink-soft); font-size: 12px; white-space: nowrap; }
+  .doc-lijst a { color: var(--ink); }
+
+  .slot { background: var(--cream); border-radius: 10px; padding: 22px 24px; font-size: 14px; line-height: 1.7; }
+  .slot .serif { font-size: 17px; margin-bottom: 6px; display: block; }
+
+  .dossier-voet { border-top: 1px solid var(--lijn); margin-top: 10px; padding: 22px 60px 34px; font-size: 12px; color: var(--ink-soft); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+  #melding { max-width: 800px; margin: 60px auto; background: #fff; border-radius: 10px; padding: 40px; text-align: center; font-size: 15px; color: var(--ink-soft); display: none; }
+
+  @media print {
+    body { background: #fff; }
+    .werkbalk { display: none; }
+    .pagina { box-shadow: none; border-radius: 0; max-width: none; margin: 0; }
+    section { break-inside: avoid-page; }
+    .voorblad { break-after: page; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .foto-raster img { height: 120px; }
+    a { text-decoration: none; color: inherit; }
+  }
+</style>
+<link rel="stylesheet" href="/projexa-tokens.css">
+</head>
+<body>
+
+<div class="werkbalk">
+  <span class="logo">Projexa<span>.</span></span>
+  <div class="knoppen">
+    <a class="terug" id="link-terug" href="/portaal.html">← Terug</a>
+    <button onclick="window.print()">Afdrukken / opslaan als PDF</button>
+  </div>
+</div>
+
+<div id="melding">Dossier laden…</div>
+<div class="pagina" id="pagina" style="display:none;">
+  <div class="voorblad">
+    <div class="kicker">Opleverdossier · <span id="v-datum"></span></div>
+    <h1>Uw woning,<br>volledig gedocumenteerd.</h1>
+    <p class="projectnaam" id="v-project"></p>
+    <div class="gegevens">
+      <div><div class="label">Opdrachtgever</div><div id="v-klant"></div></div>
+      <div><div class="label">Adres</div><div id="v-adres"></div></div>
+      <div><div class="label">Projectcode</div><div id="v-code"></div></div>
+      <div><div class="label">Aannemer</div><div>AannemersCode</div></div>
+    </div>
+  </div>
+
+  <div class="inhoud" id="inhoud"></div>
+
+  <div class="dossier-voet">
+    <span>Opleverdossier · gegenereerd met Projexa</span>
+    <span id="voet-datum"></span>
+  </div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+  function fmtDatum(iso) { return iso ? new Date(iso).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }) : ''; }
+  function fmtEuro(n) { return '€ ' + Number(n).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+  async function api(url) {
+    const res = await fetch(url, { credentials: 'same-origin' });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Er ging iets mis.');
+    return data;
+  }
+
+  async function laad() {
+    $('melding').style.display = 'block';
+    const params = new URLSearchParams(location.search);
+    const beheerId = params.get('projectId');
+    let project;
+    if (beheerId) {
+      ({ project } = await api(`/api/portaal/beheer/projecten/${beheerId}`));
+      $('link-terug').href = '/beheer.html';
+    } else {
+      ({ project } = await api('/api/portaal/klant/project'));
+    }
+    render(project);
+    $('melding').style.display = 'none';
+    $('pagina').style.display = 'block';
+  }
+
+  function render(p) {
+    const d = p.dossier || {};
+    $('v-datum').textContent = fmtDatum(new Date().toISOString());
+    $('v-project').textContent = p.naam;
+    $('v-klant').textContent = p.klantNaam || '—';
+    $('v-adres').textContent = p.adres || '—';
+    $('v-code').textContent = p.code;
+    $('voet-datum').textContent = `${p.code} · ${fmtDatum(new Date().toISOString())}`;
+
+    const docs = p.documenten || [];
+    const perCat = (cat) => docs.filter((x) => x.categorie === cat);
+    const docLink = (x) => x.bestand ? `/api/portaal/bestand/${p.id}/${x.bestand.fileId}` : x.url;
+    const docLijst = (lijst, leegTekst) => lijst.length === 0
+      ? `<div class="leeg-notitie">${leegTekst}</div>`
+      : `<ul class="doc-lijst">${lijst.map((x) => `<li><a href="${esc(docLink(x))}" target="_blank" rel="noopener">${esc(x.naam)}</a><span class="cat">${fmtDatum(x.toegevoegdOp)}</span></li>`).join('')}</ul>`;
+
+    let nr = 0;
+    const sectie = (titel, sub, body) => `<section><h2><span class="nr">${String(++nr).padStart(2, '0')}</span>${titel}</h2><p class="sectie-sub">${sub}</p>${body}</section>`;
+
+    let html = '';
+
+    // 1. Garanties
+    html += sectie('Garanties', 'De garanties die op dit werk van toepassing zijn.',
+      (d.garanties || []).length === 0
+        ? '<div class="leeg-notitie">Er zijn (nog) geen garanties vastgelegd.</div>'
+        : `<table><tr><th>Onderdeel</th><th>Garantie</th><th>Toelichting</th></tr>
+           ${d.garanties.map((g) => `<tr><td class="sterk">${esc(g.onderdeel)}</td><td>${esc(g.duur)}</td><td>${esc(g.toelichting)}</td></tr>`).join('')}</table>`);
+
+    // 2. Facturen
+    html += sectie('Facturen', 'Alle facturen die bij dit project horen.', docLijst(perCat('factuur'), 'Er zijn geen facturen aan het dossier toegevoegd.'));
+
+    // 3. Handleidingen
+    html += sectie('Handleidingen', 'Handleidingen van geplaatste apparatuur en installaties.', docLijst(perCat('handleiding'), 'Er zijn geen handleidingen aan het dossier toegevoegd.'));
+
+    // 4. Onderhoudsplan
+    html += sectie('Onderhoudsplan', 'Zo houdt u het opgeleverde werk in topconditie.',
+      (d.onderhoud || []).length === 0
+        ? '<div class="leeg-notitie">Er is (nog) geen onderhoudsplan vastgelegd.</div>'
+        : `<table><tr><th>Onderhoudstaak</th><th>Frequentie</th><th>Toelichting</th></tr>
+           ${d.onderhoud.map((o) => `<tr><td class="sterk">${esc(o.taak)}</td><td>${esc(o.frequentie)}</td><td>${esc(o.toelichting)}</td></tr>`).join('')}</table>`);
+
+    // 5. Cv / warmtepomp
+    const cv = d.cvWarmtepomp || {};
+    html += sectie('Cv- / warmtepompinstallatie', 'Onderhoudsgegevens van uw verwarmingsinstallatie.',
+      !cv.installatie && !cv.toelichting
+        ? '<div class="leeg-notitie">Niet van toepassing op dit project, of nog niet ingevuld.</div>'
+        : `<div class="info-kaart">
+             ${cv.installatie ? `<div class="info-rij"><span class="k">Installatie</span><span>${esc(cv.installatie)}</span></div>` : ''}
+             ${cv.laatsteOnderhoud ? `<div class="info-rij"><span class="k">Laatste onderhoud</span><span>${esc(cv.laatsteOnderhoud)}</span></div>` : ''}
+             ${cv.volgendeOnderhoud ? `<div class="info-rij"><span class="k">Volgend onderhoud</span><span>${esc(cv.volgendeOnderhoud)}</span></div>` : ''}
+             ${cv.toelichting ? `<div class="info-rij"><span class="k">Toelichting</span><span>${esc(cv.toelichting)}</span></div>` : ''}
+           </div>`);
+
+    // 6. Dakinspectie
+    const dak = d.dakinspectie || {};
+    html += sectie('Dakinspectie', 'De staat van het dak bij oplevering en het inspectie-advies.',
+      !dak.laatsteInspectie && !dak.bevindingen
+        ? '<div class="leeg-notitie">Niet van toepassing op dit project, of nog niet ingevuld.</div>'
+        : `<div class="info-kaart">
+             ${dak.laatsteInspectie ? `<div class="info-rij"><span class="k">Laatste inspectie</span><span>${esc(dak.laatsteInspectie)}</span></div>` : ''}
+             ${dak.volgendeInspectie ? `<div class="info-rij"><span class="k">Volgende inspectie</span><span>${esc(dak.volgendeInspectie)}</span></div>` : ''}
+             ${dak.bevindingen ? `<div class="info-rij"><span class="k">Bevindingen</span><span>${esc(dak.bevindingen)}</span></div>` : ''}
+           </div>`);
+
+    // 7. Verbouwgeschiedenis: fases, meerwerk, updates, foto's en overige documentatie
+    const fases = (p.fases || []).map((f) => `<tr><td class="sterk">${esc(f.naam)}</td><td>${esc(f.start)}${f.eind ? ' t/m ' + esc(f.eind) : ''}</td><td>${f.status === 'afgerond' ? 'Afgerond' : f.status === 'bezig' ? 'In uitvoering' : 'Gepland'}</td></tr>`).join('');
+    const meerwerk = (p.meerwerk || []).map((m) => `
+      <div class="tijdlijn-item">
+        <span class="datum">${fmtDatum(m.aangemaaktOp)}</span>
+        <span class="tekst"><strong>${esc(m.titel)}</strong> — ${fmtEuro(m.bedrag)}
+          ${m.status === 'goedgekeurd' ? `<span class="mw-tag ok">Goedgekeurd door klant op ${fmtDatum(m.besluitOp)}</span>` : m.status === 'afgewezen' ? `<span class="mw-tag">Afgewezen op ${fmtDatum(m.besluitOp)}</span>` : '<span class="mw-tag">Nog open</span>'}
+          ${m.omschrijving ? `<br>${esc(m.omschrijving)}` : ''}</span>
+      </div>`).join('');
+    const updates = [...(p.updates || [])].reverse().map((u) => `
+      <div class="tijdlijn-item"><span class="datum">${fmtDatum(u.op)}</span><span class="tekst">${esc(u.tekst)}</span></div>`).join('');
+    const fotos = perCat('foto').filter((x) => x.bestand);
+    const overigeDocs = docs.filter((x) => !['factuur', 'handleiding', 'foto'].includes(x.categorie));
+
+    html += sectie('Verbouwgeschiedenis', 'Het volledige verloop van het project: planning, wijzigingen, voortgang en documentatie.', `
+      ${fases ? `<h3 class="serif" style="font-size:16px; margin:14px 0 8px;">Uitgevoerde fases</h3><table><tr><th>Fase</th><th>Periode</th><th>Status</th></tr>${fases}</table>` : ''}
+      ${meerwerk ? `<h3 class="serif" style="font-size:16px; margin:22px 0 10px;">Meerwerk &amp; wijzigingen</h3>${meerwerk}` : ''}
+      ${updates ? `<h3 class="serif" style="font-size:16px; margin:22px 0 10px;">Voortgangsverslag</h3>${updates}` : ''}
+      ${fotos.length ? `<h3 class="serif" style="font-size:16px; margin:22px 0 4px;">Fotodocumentatie</h3>
+        <div class="foto-raster">${fotos.map((f) => `<figure><img src="${esc(docLink(f))}" alt="${esc(f.naam)}" loading="lazy" onerror="this.closest('figure').remove()"><figcaption>${fmtDatum(f.toegevoegdOp)}</figcaption></figure>`).join('')}</div>` : ''}
+      ${overigeDocs.length ? `<h3 class="serif" style="font-size:16px; margin:22px 0 8px;">Overige documentatie</h3>${docLijst(overigeDocs, '')}` : ''}
+      ${!fases && !meerwerk && !updates && !fotos.length && !overigeDocs.length ? '<div class="leeg-notitie">Er is nog geen geschiedenis vastgelegd.</div>' : ''}
+    `);
+
+    // Slotwoord
+    if (d.slotwoord) {
+      html += `<section class="slot"><span class="serif">Tot slot</span>${esc(d.slotwoord).replace(/\n/g, '<br>')}</section>`;
+    }
+
+    $('inhoud').innerHTML = html;
+  }
+
+  laad().catch((err) => {
+    $('melding').style.display = 'block';
+    $('melding').textContent = err.message === 'Niet ingelogd.'
+      ? 'U bent niet ingelogd. Ga naar het klantportaal en log eerst in.'
+      : 'Dossier laden mislukt: ' + err.message;
+  });
+</script>
+</body>
+</html>

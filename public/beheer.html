@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projexa — Projectbeheer</title>
+<link rel="manifest" href="/manifest-beheer.json">
+<meta name="theme-color" content="#1B1A17">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preload" href="/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-serif-400.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--navy); color: var(--cream); font-family: var(--font-ui); font-size: 14.5px; -webkit-font-smoothing: antialiased; }
+  .blueprint-bg { background-image: linear-gradient(var(--navy-line) 1px, transparent 1px), linear-gradient(90deg, var(--navy-line) 1px, transparent 1px); background-size: 64px 64px; }
+  .mono { font-family: var(--font-mono); }
+
+  nav.topbar { position: sticky; top: 0; z-index: 40; background: rgba(27,26,23,0.93); backdrop-filter: blur(10px); border-bottom: 1px solid var(--navy-line); transition: transform .25s ease; }
+  nav.topbar.nav-verborgen { transform: translateY(-100%); }
+  nav.topbar .inner { display: flex; align-items: center; gap: 14px; padding: 13px 20px; }
+  .logo { font-family: var(--font-display); font-weight: 600; font-size: 21px; color: var(--cream); text-decoration: none; }
+  .logo span { color: var(--messing); }
+  .nav-sub { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+  .btn-uitlog { margin-left: auto; font-size: 12.5px; font-weight: 500; color: var(--muted); background: none; border: 1px solid var(--navy-line); border-radius: 999px; padding: 8px 16px; cursor: pointer; font-family: var(--font-ui); }
+  .btn-uitlog:hover { color: var(--cream); }
+  .hamburger { display: none; background: none; border: 1px solid var(--navy-line); border-radius: 10px; color: var(--cream); padding: 8px 10px; cursor: pointer; }
+
+  /* ---------- Login ---------- */
+  .login-shell { min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 48px 22px; }
+  .login-card { background: var(--cream); color: var(--ink); border-radius: 20px; padding: 40px 38px; width: 100%; max-width: 420px; box-shadow: 0 30px 80px rgba(8,7,5,0.42); }
+  .login-card h1 { font-family: var(--font-display); font-weight: 500; font-size: 26px; margin: 0 0 8px; }
+  .login-card .uitleg { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 22px; line-height: 1.6; }
+  .login-card .uitleg a { color: var(--accent); }
+
+  label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); margin: 0 0 7px; }
+  input[type=text], input[type=password], input[type=email], input[type=number], input[type=date], select, textarea {
+    width: 100%; padding: 12px 15px; border-radius: 11px; border: 1px solid #D9D3C5; background: #F5F2EA;
+    color: var(--ink); font-size: 14px; font-family: var(--font-ui); margin-bottom: 15px;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(126,97,52,0.14); }
+  textarea { resize: vertical; }
+  .btn { display: inline-block; background: var(--accent); color: #fff; font-weight: 600; font-size: 14px; padding: 13px 24px; border: none; border-radius: 11px; cursor: pointer; font-family: var(--font-ui); box-shadow: 0 6px 16px rgba(126,97,52,0.22), inset 0 1px 0 rgba(255,255,255,0.18); transition: transform .15s, background .15s; text-decoration: none; text-align: center; }
+  .btn:hover { background: var(--brons-diep); transform: translateY(-1px); }
+  .btn.vol { width: 100%; }
+  .btn-klein { font-size: 13px; padding: 10px 18px; }
+  .btn-stil { background: transparent; border: 1px solid #CFC8B7; color: var(--ink-soft); box-shadow: none; }
+  .btn-stil:hover { background: #EBE6DA; transform: none; }
+  .btn-rood { background: transparent; border: 1px solid #D7BCB9; color: var(--red); box-shadow: none; }
+  .btn-rood:hover { background: #F1E3E1; transform: none; }
+  .foutmelding { background: #F2E4E1; color: #7C332C; border-radius: 10px; padding: 11px 14px; font-size: 13px; margin-bottom: 14px; display: none; }
+
+  /* ---------- Layout: zijbalk + inhoud ---------- */
+  .layout { display: flex; min-height: calc(100vh - 60px); }
+  aside.menu {
+    width: 232px; flex-shrink: 0; border-right: 1px solid var(--navy-line); padding: 20px 12px 30px;
+    position: sticky; top: 60px; align-self: flex-start; height: calc(100vh - 60px); overflow-y: auto;
+  }
+  .menu .groep { font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: rgba(155,148,131,0.75); margin: 20px 12px 7px; }
+  .menu .groep:first-child { margin-top: 4px; }
+  .menu button {
+    display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: none;
+    color: var(--muted); font-family: var(--font-ui); font-size: 13.5px; font-weight: 600;
+    padding: 10px 12px; border-radius: 10px; cursor: pointer; transition: background .15s, color .15s;
+  }
+  .menu button:hover { color: var(--cream); background: rgba(237,232,220,0.05); }
+  .menu button.actief { background: var(--messing-zacht); color: var(--op-donker); box-shadow: inset 2px 0 0 var(--messing); }
+  .menu button .teller { margin-left: auto; font-size: 11px; font-weight: 700; background: var(--messing); color: var(--grafiet); border-radius: 999px; padding: 2px 8px; }
+  main.inhoud { flex: 1; min-width: 0; padding: 0 26px 60px; }
+  .inhoud-smal { max-width: 860px; }
+
+  @media (max-width: 620px) {
+    /* Projectregels stapelen op een telefoon, zodat naam en badges niet
+       van het scherm af lopen. */
+    .prj-rij { flex-wrap: wrap; gap: 8px 12px; padding: 16px 18px; }
+    .prj-rij .code { min-width: 0; }
+    .prj-rij .naam { flex: 1 1 100%; order: 2; font-size: 16px; }
+    .prj-rij .badge { order: 3; }
+    .rijtje { flex-wrap: wrap; }
+    .rijtje .hoofd { flex: 1 1 100%; }
+    .rijtje select { flex: 1; }
+    .signaal { flex-direction: column; gap: 8px; }
+    .kaart { padding: 20px 18px; }
+    header.pagehead h1 { font-size: 26px; }
+  }
+
+  @media (max-width: 880px) {
+    .hamburger { display: block; }
+    aside.menu { position: fixed; left: 0; top: 0; bottom: 0; height: auto; z-index: 60; background: #141310; transform: translateX(-100%); transition: transform .25s ease; box-shadow: 20px 0 60px rgba(0,0,0,0.4); padding-top: 70px; }
+    body.menu-open aside.menu { transform: translateX(0); }
+    .menu-achtergrond { display: none; position: fixed; inset: 0; z-index: 55; background: rgba(8,7,5,0.5); }
+    body.menu-open .menu-achtergrond { display: block; }
+    main.inhoud { padding: 0 18px 60px; }
+  }
+
+  header.pagehead { padding: 30px 0 22px; }
+  header.pagehead h1 { font-family: var(--font-display); font-weight: 500; font-size: 30px; margin: 4px 0 6px; letter-spacing: -0.01em; }
+  .eyebrow { font-size: 12px; font-weight: 600; color: var(--messing); letter-spacing: 0.06em; text-transform: uppercase; }
+  .pagehead .sub { font-size: 13.5px; color: var(--muted); margin: 0; max-width: 62ch; line-height: 1.55; }
+  .kop-rij { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+
+  .kaart { background: var(--cream); color: var(--ink); border-radius: 16px; padding: 24px 26px; margin-bottom: 16px; box-shadow: var(--shadow-soft); }
+  .kaart h2 { font-family: var(--font-display); font-weight: 500; font-size: 20px; margin: 0 0 10px; }
+  .kaart h3 { font-family: var(--font-display); font-weight: 500; font-size: 17px; margin: 0 0 8px; }
+  .leeg { font-size: 13.5px; color: var(--muted); border: 1px dashed rgba(237,232,220,0.22); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; }
+
+  .prj-rij { display: flex; align-items: center; gap: 16px; background: var(--cream); color: var(--ink); border-radius: 15px; padding: 18px 22px; margin-bottom: 10px; cursor: pointer; box-shadow: var(--shadow-soft); transition: transform .15s, box-shadow .15s; }
+  .prj-rij:hover { transform: translateY(-1px); box-shadow: var(--shadow-card); }
+  .prj-rij .code { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--accent); min-width: 84px; }
+  .prj-rij .naam { font-family: var(--font-display); font-weight: 500; font-size: 17px; flex: 1; }
+  .prj-rij .naam small { display: block; font-family: var(--font-ui); font-size: 12.5px; color: var(--ink-soft); font-weight: 400; margin-top: 2px; }
+  .badge { font-size: 11.5px; font-weight: 600; padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
+  .badge.voorbereiding { background: rgba(34,31,26,0.07); color: var(--ink-soft); }
+  .badge.in_uitvoering { background: var(--accent-soft); color: var(--brons); }
+  .badge.opgeleverd { background: var(--pijn-zacht); color: var(--green-deep); }
+  .badge.alert { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(126,97,52,0.22); }
+
+  /* Signalen (AI-projectmanager) */
+  .signaal { display: flex; gap: 14px; background: var(--cream); color: var(--ink); border-radius: 14px; padding: 16px 20px; margin-bottom: 10px; box-shadow: var(--shadow-soft); border-left: 4px solid #CFC8B7; }
+  .signaal.hoog { border-left-color: var(--red); }
+  .signaal.middel { border-left-color: var(--amber); }
+  .signaal.laag { border-left-color: #9FAFA4; }
+  .signaal .ernst-chip { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 999px; align-self: flex-start; white-space: nowrap; margin-top: 2px; }
+  .signaal.hoog .ernst-chip { background: var(--oxblood-zacht); color: var(--red); }
+  .signaal.middel .ernst-chip { background: var(--leisteen-zacht); color: var(--amber); }
+  .signaal.laag .ernst-chip { background: var(--pijn-zacht); color: var(--green-deep); }
+  .signaal .s-body { flex: 1; }
+  .signaal .s-tekst { font-size: 14px; line-height: 1.5; font-weight: 600; }
+  .signaal .s-actie { font-size: 12.5px; color: var(--ink-soft); margin-top: 3px; }
+  .signaal .s-project { font-size: 11.5px; color: var(--accent); font-weight: 600; margin-top: 5px; cursor: pointer; }
+
+  .inlogblok { border-radius: 16px; background: #EDF1E9; color: var(--ink); padding: 24px 26px; margin-bottom: 16px; box-shadow: var(--shadow-card); border-left: 4px solid var(--green); }
+  .inlogblok h3 { margin-top: 0; }
+  .inlogblok .cred { font-family: var(--font-mono); font-size: 18px; font-weight: 700; background: #fff; border-radius: 11px; padding: 12px 16px; margin: 6px 0 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: inset 0 0 0 1px #DEE3D9; }
+  .inlogblok .cred small { font-family: var(--font-ui); font-size: 11.5px; font-weight: 500; color: var(--ink-soft); }
+  .inlogblok p { font-size: 13px; color: var(--ink-soft); margin: 0 0 10px; line-height: 1.6; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .terug { font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; background: none; border: none; padding: 0; font-family: var(--font-ui); }
+  .terug:hover { color: var(--cream); }
+  .rijtje { display: flex; align-items: center; gap: 10px; border-top: 1px solid #E4DFD2; padding: 11px 0; font-size: 13.5px; }
+  .rijtje:first-of-type { border-top: none; }
+  .rijtje .hoofd { flex: 1; min-width: 0; }
+  .rijtje .hoofd small { display: block; color: var(--ink-soft); font-size: 12.5px; margin-top: 1px; }
+  .rijtje select { width: auto; margin: 0; padding: 7px 10px; font-size: 12.5px; border-radius: 9px; }
+  .rijtje .x { background: none; border: none; color: #B08A85; cursor: pointer; font-size: 15px; padding: 4px 8px; border-radius: 8px; }
+  .rijtje .x:hover { color: var(--red); background: #F1E3E1; }
+  .sectie-uitleg { font-size: 13px; color: var(--ink-soft); margin: -4px 0 14px; line-height: 1.6; }
+  .status-select { display: flex; gap: 10px; flex-wrap: wrap; }
+  .status-select button { flex: 1; min-width: 140px; padding: 12px; border-radius: 11px; border: 1px solid #D9D3C5; background: #F5F2EA; color: var(--ink-soft); font-family: var(--font-ui); font-size: 13.5px; font-weight: 600; cursor: pointer; }
+  .status-select button.actief { border-color: var(--accent); background: var(--accent); color: #fff; box-shadow: 0 6px 16px rgba(126,97,52,0.2); }
+
+  .bericht-lijst { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; max-height: 320px; overflow-y: auto; }
+  .bericht { max-width: 84%; padding: 10px 14px; border-radius: 14px; font-size: 13.5px; line-height: 1.55; white-space: pre-wrap; }
+  .bericht.van-bedrijf { align-self: flex-end; background: var(--navy); color: var(--cream); border-bottom-right-radius: 5px; }
+  .bericht.van-klant { align-self: flex-start; background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px #E4DFD2; border-bottom-left-radius: 5px; }
+  .bericht .tijd { display: block; font-size: 10.5px; opacity: 0.65; margin-top: 4px; }
+
+  .foto-knop { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 18px; padding: 15px; }
+  .foto-knop:disabled { opacity: 0.65; cursor: wait; transform: none; }
+
+  /* AI-schrijfhulp */
+  .ai-chip { display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 700; color: var(--leisteen); background: var(--leisteen-zacht); border-radius: 999px; padding: 4px 12px; margin-bottom: 10px; }
+  .dicteer { display: flex; gap: 8px; align-items: stretch; }
+  .dicteer textarea { flex: 1; margin: 0; }
+  .dicteer .mic { width: 52px; border-radius: var(--radius-veld); border: 1px solid #D9D3C5; background: #F5F2EA; color: var(--ink-soft); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .dicteer .mic.actief { background: var(--red); border-color: var(--red); color: #fff; animation: puls 1.2s infinite; }
+  @keyframes puls { 50% { opacity: 0.7; } }
+  .ai-resultaat { background: #F5F2EA; border: 1px solid #D9D3C5; border-radius: 11px; padding: 14px 16px; font-size: 13.5px; line-height: 1.6; white-space: pre-wrap; margin: 12px 0; }
+  .ai-acties { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .status-mat { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+  .status-mat.op_voorraad { background: var(--pijn-zacht); color: var(--green-deep); }
+  .status-mat.bijna_op { background: var(--oxblood-zacht); color: var(--red); }
+  .status-mat.besteld { background: var(--leisteen-zacht); color: var(--amber); }
+
+  .taak-rij input[type=checkbox] { width: 18px; height: 18px; margin: 0; accent-color: var(--green); }
+  .taak-rij.klaar .hoofd { text-decoration: line-through; opacity: 0.5; }
+
+  .pagina { display: none; }
+  .pagina.actief { display: block; }
+  #login, #dashboard-shell, #detail { display: none; }
+
+  footer { padding: 30px 0 40px; text-align: center; }
+  footer p { font-size: 12px; color: var(--muted); margin: 0; }
+
+  /* Print (werkbon) */
+  #print-gebied { display: none; }
+  @media print {
+    body * { visibility: hidden; }
+    #print-gebied, #print-gebied * { visibility: visible; }
+    #print-gebied { display: block; position: absolute; inset: 0; background: #fff; color: #000; padding: 40px; font-size: 14px; line-height: 1.7; }
+    #print-gebied h1 { font-family: var(--font-display); font-size: 24px; }
+    #print-gebied .pk { color: #666; font-size: 12px; margin-bottom: 20px; }
+    #print-gebied pre { font-family: var(--font-ui); white-space: pre-wrap; }
+  }
+</style>
+<link rel="stylesheet" href="/projexa-tokens.css">
+</head>
+<body>
+
+<nav class="topbar" id="topbar">
+  <div class="inner">
+    <button class="hamburger" id="btn-menu" aria-label="Menu">☰</button>
+    <a class="logo" href="/beheer.html">Projexa<span>.</span></a>
+    <span class="nav-sub" id="nav-sub">Projectbeheer</span>
+    <button class="btn-uitlog" id="btn-uitloggen" style="display:none;">Uitloggen</button>
+  </div>
+</nav>
+
+<!-- ========== INLOG ========== -->
+<div id="login" class="login-shell blueprint-bg" style="display:flex;">
+  <form class="login-card" id="login-form">
+    <h1>Projectbeheer</h1>
+    <p class="uitleg">Alleen voor het bedrijf. Klanten loggen in via <a href="/portaal.html">het klantportaal</a>, medewerkers via <a href="/werknemer.html">de urenstaat</a>.</p>
+    <div class="foutmelding" id="login-fout"></div>
+    <label for="login-wachtwoord">Beheerwachtwoord</label>
+    <input type="password" id="login-wachtwoord" autocomplete="current-password">
+    <button class="btn vol" type="submit">Inloggen</button>
+  </form>
+</div>
+
+<div id="dashboard-shell">
+  <div class="menu-achtergrond" id="menu-achtergrond"></div>
+  <div class="layout">
+    <aside class="menu" id="menu">
+      <div class="groep">Werk</div>
+      <button data-pagina="projecten" class="actief">Projecten</button>
+      <button data-pagina="signalen">AI-projectmanager <span class="teller" id="signaal-teller" style="display:none;"></span></button>
+      <button data-pagina="taken">Taken</button>
+      <div class="groep">Administratie</div>
+      <button data-pagina="uren">Urenstaten</button>
+      <button data-pagina="werknemers">Werknemers</button>
+      <button data-pagina="klanten">Klanten</button>
+      <button data-pagina="admin">Export &amp; koppelingen</button>
+    </aside>
+
+    <main class="inhoud">
+      <!-- ===== PROJECTEN ===== -->
+      <div class="pagina actief" id="pagina-projecten">
+        <header class="pagehead">
+          <div class="kop-rij inhoud-smal">
+            <div>
+              <span class="eyebrow">Bedrijfsdashboard</span>
+              <h1>Projecten</h1>
+              <p class="sub">Status per project, openstaand meerwerk en klantvragen — in één oogopslag.</p>
+            </div>
+            <button class="btn" id="btn-nieuw">+ Nieuw project</button>
+          </div>
+        </header>
+        <div class="inhoud-smal">
+          <div class="kaart" id="nieuw-form-kaart" style="display:none;">
+            <h2>Nieuw project starten</h2>
+            <p class="sectie-uitleg">Bij het aanmaken wordt automatisch een <strong>unieke inlog voor de klant</strong> gegenereerd (projectcode + wachtwoord).</p>
+            <div class="foutmelding" id="nieuw-fout"></div>
+            <form id="nieuw-form">
+              <div class="grid-2">
+                <div><label>Projectnaam *</label><input type="text" id="n-naam" placeholder="Aanbouw + keuken"></div>
+                <div><label>Klantnaam *</label><input type="text" id="n-klantNaam" placeholder="Fam. Jansen"></div>
+                <div><label>Adres bouwplaats</label><input type="text" id="n-adres" placeholder="Straatnaam 1, Plaats"></div>
+                <div><label>E-mail klant</label><input type="email" id="n-klantEmail" placeholder="klant@voorbeeld.nl"></div>
+                <div><label>Telefoon klant</label><input type="text" id="n-klantTelefoon" placeholder="06-12345678"></div>
+                <div><label>Geplande start</label><input type="date" id="n-startDatum"></div>
+              </div>
+              <label>Korte omschrijving (ziet de klant)</label>
+              <textarea id="n-omschrijving" rows="2" placeholder="Wat gaan we doen?"></textarea>
+              <button class="btn" type="submit">Project aanmaken + inlog genereren</button>
+            </form>
+          </div>
+          <div id="nieuw-inlog"></div>
+          <div id="projectenlijst"></div>
+        </div>
+      </div>
+
+      <!-- ===== AI-PROJECTMANAGER ===== -->
+      <div class="pagina" id="pagina-signalen">
+        <header class="pagehead">
+          <div class="inhoud-smal">
+            <span class="eyebrow">AI-projectmanager</span>
+            <h1>Wat vraagt vandaag je aandacht?</h1>
+            <p class="sub">Projexa kijkt continu mee: planning, onbeantwoorde klantvragen, ontbrekende foto's en uren, materiaal dat bijna op is en meerwerk dat nog gefactureerd moet worden.</p>
+          </div>
+        </header>
+        <div class="inhoud-smal" id="signalen-lijst"></div>
+      </div>
+
+      <!-- ===== TAKEN ===== -->
+      <div class="pagina" id="pagina-taken">
+        <header class="pagehead">
+          <div class="inhoud-smal">
+            <span class="eyebrow">Werk</span>
+            <h1>Taken</h1>
+            <p class="sub">Losse actiepunten — algemeen of gekoppeld aan een project.</p>
+          </div>
+        </header>
+        <div class="inhoud-smal">
+          <div class="kaart">
+            <form id="taak-form">
+              <div class="grid-2">
+                <div><label>Taak *</label><input type="text" id="t-tekst" placeholder="Kozijnen bestellen bij leverancier"></div>
+                <div><label>Deadline (optioneel)</label><input type="date" id="t-deadline"></div>
+              </div>
+              <label>Project (optioneel)</label>
+              <select id="t-project"><option value="">Algemeen</option></select>
+              <button class="btn btn-klein" type="submit">+ Taak toevoegen</button>
+            </form>
+          </div>
+          <div class="kaart"><div id="taken-lijst"></div></div>
+        </div>
+      </div>
+
+      <!-- ===== URENSTATEN ===== -->
+      <div class="pagina" id="pagina-uren">
+        <header class="pagehead">
+          <div class="inhoud-smal">
+            <span class="eyebrow">Administratie</span>
+            <h1>Urenstaten</h1>
+            <p class="sub">Alle ingevulde uren per week, met meerwerkuren apart — handig voor de facturatie.</p>
+          </div>
+        </header>
+        <div class="inhoud-smal">
+          <div class="kaart">
+            <div class="kop-rij" style="margin-bottom:8px;">
+              <h2 style="margin:0;">Week <span id="uren-weeknr"></span></h2>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <button class="btn btn-klein btn-stil" id="uren-vorige" type="button">←</button>
+                <span id="uren-periode" style="font-size:13px; font-weight:600;"></span>
+                <button class="btn btn-klein btn-stil" id="uren-volgende" type="button">→</button>
+              </div>
+            </div>
+            <div id="uren-overzicht"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== WERKNEMERS ===== -->
+      <div class="pagina" id="pagina-werknemers">
+        <header class="pagehead">
+          <div class="inhoud-smal">
+            <span class="eyebrow">Administratie</span>
+            <h1>Werknemers</h1>
+            <p class="sub">Iedere werknemer krijgt een eigen inlog voor de urenstaat op /werknemer.html — met op werkdagen om 16:30 automatisch een melding als de uren nog niet zijn ingevuld.</p>
+          </div>
+        </header>
+        <div class="inhoud-smal">
+          <div id="wrk-inlog"></div>
+          <div class="kaart">
+            <div id="wrk-lijst"></div>
+            <form id="wrk-form" style="margin-top:14px;">
+              <div class="grid-2">
+                <div><label>Naam *</label><input type="text" id="wn-naam" placeholder="Piet de Vries"></div>
+                <div><label>E-mail (voor herinnering + wachtwoord vergeten)</label><input type="email" id="wn-email" placeholder="piet@voorbeeld.nl"></div>
+              </div>
+              <button class="btn btn-klein" type="submit">+ Werknemer toevoegen + inlog genereren</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== KLANTEN ===== -->
+      <div class="pagina" id="pagina-klanten">
+        <header class="pagehead">
+          <div class="inhoud-smal">
+            <span class="eyebrow">Administratie</span>
+            <h1>Klanten</h1>
+            <p class="sub">Je klantenbestand, automatisch opgebouwd uit de projecten.</p>
+          </div>
+        </header>
+        <div class="inhoud-smal" id="klanten-lijst"></div>
+      </div>
+
+      <!-- ===== EXPORT & KOPPELINGEN ===== -->
+      <div class="pagina" id="pagina-admin">
+        <header class="pagehead">
+          <div class="inhoud-smal">
+            <span class="eyebrow">Administratie</span>
+            <h1>Export &amp; koppelingen</h1>
+            <p class="sub">Alles wat je boekhouder nodig heeft — nu via export, straks via directe koppelingen.</p>
+          </div>
+        </header>
+        <div class="inhoud-smal">
+          <div class="kaart">
+            <h2>Urenexport (CSV)</h2>
+            <p class="sectie-uitleg">Download alle uren van een periode als CSV — te openen in Excel en te importeren in je boekhoudpakket. Meerwerkuren staan in een aparte kolom.</p>
+            <div class="grid-2">
+              <div><label>Van</label><input type="date" id="exp-van"></div>
+              <div><label>Tot en met</label><input type="date" id="exp-tot"></div>
+            </div>
+            <a class="btn btn-klein" id="exp-uren-link" href="#" download>↓ Download uren (CSV)</a>
+            <a class="btn btn-klein btn-stil" href="/api/portaal/beheer/export/meerwerk.csv" download style="margin-left:8px;">↓ Download meerwerk (CSV)</a>
+          </div>
+          <div class="kaart">
+            <h2>Bonnetjes scannen</h2>
+            <p class="sectie-uitleg">Maak in een project een foto van het bonnetje met de categorie <strong>Bonnetje</strong>. De AI leest automatisch leverancier, datum en bedrag en zet dat bij het document — zo staat je bonnetjesadministratie per project bij elkaar.</p>
+          </div>
+          <div class="kaart">
+            <h2>Offertes, facturen &amp; calculatie</h2>
+            <p class="sectie-uitleg">De <strong>AI-schrijfhulp</strong> in elk project stelt conceptfacturen en werkbonnen op uit goedgekeurd meerwerk en gemaakte uren. Voor volledige calculaties en offertes gebruik je de AannemersCode Rekentool; digitale goedkeuring van meerwerk door de klant is al ingebouwd.</p>
+          </div>
+          <div class="kaart">
+            <h2>Boekhoudkoppelingen</h2>
+            <p class="sectie-uitleg">Directe koppelingen met <strong>Exact, Moneybird en AFAS</strong> staan op de planning. Tot die tijd werkt de CSV-export hierboven met elk pakket. Digitale handtekening bij oplevering volgt ook — meerwerk wordt nu al digitaal en met tijdstempel goedgekeurd.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PROJECTDETAIL ===== -->
+      <div id="detail">
+        <header class="pagehead">
+          <div>
+            <button class="terug" id="btn-terug">← Terug naar projecten</button>
+            <h1 id="d-naam" style="margin-top:14px;"></h1>
+            <p class="sub"><span class="mono" id="d-code"></span> · <span id="d-klant"></span></p>
+          </div>
+        </header>
+        <div class="inhoud-smal">
+          <div id="d-inlogblok"></div>
+
+          <div class="kaart">
+            <h2>Projectstatus</h2>
+            <p class="sectie-uitleg">Dit is de grote stappenbalk die de klant bovenaan ziet.</p>
+            <div class="status-select" id="d-status"></div>
+          </div>
+
+          <div class="kaart">
+            <span class="ai-chip">✦ AI-schrijfhulp</span>
+            <h2>Laat de administratie schrijven</h2>
+            <p class="sectie-uitleg">Spreek in (of typ) wat er gebeurd is — de AI maakt er een net stuk van op basis van de projectgegevens, foto's en uren. Jij controleert en plaatst met één klik.</p>
+            <label>Wat wil je maken?</label>
+            <select id="ai-type">
+              <option value="dagrapport">Dagrapport</option>
+              <option value="klantupdate">Klantupdate</option>
+              <option value="werkbon">Werkbon</option>
+              <option value="conceptfactuur">Conceptfactuur</option>
+              <option value="opleverrapport">Opleverrapport</option>
+              <option value="logboek">Logboeknotitie</option>
+            </select>
+            <label>Aantekeningen (optioneel — dicteren kan met de microfoon)</label>
+            <div class="dicteer">
+              <textarea id="ai-invoer" rows="2" placeholder="Bijv.: vandaag kozijnen gesteld, morgen glaszetter, extra stopcontact besproken met klant"></textarea>
+              <button type="button" class="mic" id="ai-mic" title="Spreek in" aria-label="Spreek in"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3.5a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0v-5a3 3 0 0 1 3-3z"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
+            </div>
+            <button class="btn btn-klein" id="ai-schrijf" style="margin-top:12px;">✦ Schrijf concept</button>
+            <div id="ai-uitkomst" style="display:none;">
+              <div class="ai-resultaat" id="ai-tekst"></div>
+              <div class="ai-acties">
+                <button class="btn btn-klein" id="ai-als-update">Plaats als update</button>
+                <button class="btn btn-klein btn-stil" id="ai-als-bericht">Stuur als bericht aan klant</button>
+                <button class="btn btn-klein btn-stil" id="ai-als-werkbon">Bewaar als werkbon</button>
+                <button class="btn btn-klein btn-stil" id="ai-kopieer">Kopieer</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="kaart">
+            <h2>Planning (fases)</h2>
+            <p class="sectie-uitleg">De klant ziet direct wat afgerond is, wat nu loopt en wat gepland staat.</p>
+            <div id="d-fases"></div>
+            <form id="fase-form">
+              <div class="grid-2">
+                <div><label>Fasenaam</label><input type="text" id="f-naam" placeholder="Fundering"></div>
+                <div><label>Periode (vrij invulbaar)</label><input type="text" id="f-start" placeholder="Week 12 of 3 t/m 7 maart"></div>
+              </div>
+              <button class="btn btn-klein" type="submit">+ Fase toevoegen</button>
+            </form>
+          </div>
+
+          <div class="kaart">
+            <h2>Meerwerk vastleggen</h2>
+            <p class="sectie-uitleg">Leg de wijziging vast met een bedrag; de klant keurt digitaal goed vóór je begint — met datum en tijd vastgelegd.</p>
+            <div id="d-meerwerk"></div>
+            <form id="mw-form">
+              <div class="grid-2">
+                <div><label>Titel *</label><input type="text" id="m-titel" placeholder="Wand 20 cm verplaatsen"></div>
+                <div><label>Bedrag incl. btw (€) *</label><input type="number" id="m-bedrag" step="0.01" min="0" placeholder="450.00"></div>
+              </div>
+              <label>Toelichting voor de klant</label>
+              <textarea id="m-omschrijving" rows="2" placeholder="Wat houdt het in, en wat betekent het voor planning en prijs?"></textarea>
+              <button class="btn btn-klein" type="submit">+ Ter goedkeuring naar klant</button>
+            </form>
+          </div>
+
+          <div class="kaart">
+            <h2>Voortgangsupdate plaatsen</h2>
+            <form id="update-form">
+              <textarea id="u-tekst" rows="2" placeholder="Vandaag de fundering gestort. Morgen start het metselwerk."></textarea>
+              <button class="btn btn-klein" type="submit">+ Update plaatsen</button>
+            </form>
+            <div id="d-updates" style="margin-top:14px;"></div>
+          </div>
+
+          <div class="kaart">
+            <h2>Materialen</h2>
+            <p class="sectie-uitleg">Houd bij wat er op de bouwplaats ligt. Zet iets op <strong>"bijna op"</strong> en de AI-projectmanager waarschuwt je — nooit meer voor een dichte bouwmarkt staan.</p>
+            <div id="d-materialen"></div>
+            <form id="mat-form">
+              <div class="grid-2">
+                <div><label>Materiaal *</label><input type="text" id="mat-naam" placeholder="Schroeven 4×40"></div>
+                <div><label>Aantal / eenheid</label><input type="text" id="mat-aantal" placeholder="2 dozen"></div>
+              </div>
+              <button class="btn btn-klein" type="submit">+ Materiaal toevoegen</button>
+            </form>
+          </div>
+
+          <div class="kaart">
+            <h2>Documenten &amp; foto's</h2>
+            <p class="sectie-uitleg">Alles in één dossier. Foto's en bonnetjes krijgen automatisch een AI-samenvatting.</p>
+            <div id="d-documenten"></div>
+            <input type="file" id="foto-camera" accept="image/*" capture="environment" style="display:none;">
+            <button class="btn foto-knop" id="btn-foto" type="button">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.2-2h4.6l1.2 2"/></svg>
+              Foto maken — staat direct in het dossier
+            </button>
+            <div class="grid-2">
+              <form id="doc-upload-form">
+                <label>Bestand uploaden (foto/PDF, max 15 MB)</label>
+                <input type="file" id="doc-bestand" style="margin-bottom:10px; font-size:13px;">
+                <select id="doc-upload-cat">
+                  <option value="foto">Foto</option>
+                  <option value="bonnetje">Bonnetje</option>
+                  <option value="offerte">Offerte</option>
+                  <option value="factuur">Factuur</option>
+                  <option value="handleiding">Handleiding</option>
+                  <option value="tekening">Tekening</option>
+                  <option value="overig">Overig</option>
+                </select>
+                <button class="btn btn-klein" type="submit">↑ Uploaden</button>
+              </form>
+              <form id="doc-link-form">
+                <label>Of een link toevoegen</label>
+                <input type="text" id="doc-naam" placeholder="Naam, bv. Offerte aanbouw">
+                <input type="text" id="doc-url" placeholder="https://...">
+                <select id="doc-link-cat">
+                  <option value="overig">Overig</option>
+                  <option value="offerte">Offerte</option>
+                  <option value="factuur">Factuur</option>
+                  <option value="handleiding">Handleiding</option>
+                  <option value="tekening">Tekening</option>
+                </select>
+                <button class="btn btn-klein" type="submit">+ Link toevoegen</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="kaart">
+            <h2>Werkbonnen</h2>
+            <p class="sectie-uitleg">Gemaakt via de AI-schrijfhulp of handmatig — printbaar voor op de bouw of bij de factuur.</p>
+            <div id="d-werkbonnen"></div>
+          </div>
+
+          <div class="kaart">
+            <h2>Berichten met de klant</h2>
+            <div class="bericht-lijst" id="d-berichten"></div>
+            <form id="bericht-form">
+              <textarea id="b-tekst" rows="2" placeholder="Antwoord aan de klant..."></textarea>
+              <button class="btn btn-klein" type="submit">Versturen</button>
+            </form>
+          </div>
+
+          <div class="kaart">
+            <div class="kop-rij" style="margin-bottom:8px;">
+              <h2 style="margin:0;">Opleverdossier</h2>
+              <a class="btn btn-klein btn-stil" id="link-dossier" href="#" target="_blank" rel="noopener">Bekijk / print dossier</a>
+            </div>
+            <p class="sectie-uitleg">Het complete document dat de klant na oplevering krijgt: garanties, facturen en handleidingen (via de documenten hierboven), onderhoudsplan, cv/warmtepomp, dakinspectie en de volledige verbouwgeschiedenis.</p>
+
+            <h3 style="margin-top:16px;">Garanties</h3>
+            <div id="ds-garanties"></div>
+            <form id="garantie-form">
+              <div class="grid-2">
+                <div><label>Onderdeel</label><input type="text" id="g-onderdeel" placeholder="Kozijnen"></div>
+                <div><label>Garantie</label><input type="text" id="g-duur" placeholder="10 jaar, tot 03-2036"></div>
+              </div>
+              <label>Toelichting (optioneel)</label>
+              <input type="text" id="g-toelichting" placeholder="Fabrieksgarantie via leverancier X">
+              <button class="btn btn-klein" type="submit">+ Garantie toevoegen</button>
+            </form>
+
+            <h3 style="margin-top:22px;">Onderhoudsplan</h3>
+            <div id="ds-onderhoud"></div>
+            <form id="onderhoud-form">
+              <div class="grid-2">
+                <div><label>Onderhoudstaak</label><input type="text" id="o-taak" placeholder="Kitranden badkamer controleren"></div>
+                <div><label>Frequentie</label><input type="text" id="o-frequentie" placeholder="Jaarlijks"></div>
+              </div>
+              <label>Toelichting (optioneel)</label>
+              <input type="text" id="o-toelichting" placeholder="Bij loslaten direct bijwerken om lekkage te voorkomen">
+              <button class="btn btn-klein" type="submit">+ Taak toevoegen</button>
+            </form>
+
+            <h3 style="margin-top:22px;">Cv- / warmtepompinstallatie</h3>
+            <div class="grid-2">
+              <div><label>Installatie (merk/type)</label><input type="text" id="cv-installatie" placeholder="Warmtepomp — merk, type"></div>
+              <div><label>Laatste onderhoud</label><input type="text" id="cv-laatste" placeholder="maart 2026"></div>
+              <div><label>Volgend onderhoud</label><input type="text" id="cv-volgende" placeholder="maart 2027 (jaarlijks)"></div>
+              <div><label>Toelichting</label><input type="text" id="cv-toelichting" placeholder="Onderhoudscontract via installateur Y"></div>
+            </div>
+
+            <h3 style="margin-top:10px;">Dakinspectie</h3>
+            <div class="grid-2">
+              <div><label>Laatste inspectie</label><input type="text" id="dak-laatste" placeholder="bij oplevering, juli 2026"></div>
+              <div><label>Volgende inspectie</label><input type="text" id="dak-volgende" placeholder="advies: elke 2 jaar"></div>
+            </div>
+            <label>Bevindingen</label>
+            <textarea id="dak-bevindingen" rows="2" placeholder="Dakbedekking en aansluitingen in goede staat opgeleverd."></textarea>
+
+            <h3 style="margin-top:10px;">Slotwoord voor de klant (optioneel)</h3>
+            <textarea id="ds-slotwoord" rows="2" placeholder="Bedankt voor het vertrouwen — bij vragen weet u ons te vinden."></textarea>
+
+            <button class="btn btn-klein" id="btn-dossier-opslaan" type="button" style="margin-top:6px;">Dossiergegevens opslaan</button>
+          </div>
+
+          <div class="kaart">
+            <h2>Klant-inlog</h2>
+            <p class="sectie-uitleg">Wachtwoord kwijt bij de klant? Genereer een nieuw wachtwoord (het oude vervalt direct). Met een e-mailadres op het project kan de klant het ook zelf aanvragen via "wachtwoord vergeten".</p>
+            <button class="btn btn-klein btn-stil" id="btn-reset">Nieuw klantwachtwoord genereren</button>
+            <button class="btn btn-klein btn-rood" id="btn-verwijder" style="float:right;">Project verwijderen</button>
+          </div>
+        </div>
+      </div>
+
+      <footer><p>© <span id="jaar"></span> Projexa · Projectbeheer</p></footer>
+    </main>
+  </div>
+</div>
+
+<div id="print-gebied"></div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  $('jaar').textContent = new Date().getFullYear();
+  let huidigProject = null;
+  let projectenCache = [];
+
+  function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+  function fmtEuro(n) { return '€ ' + Number(n).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function fmtTijd(iso) { return new Date(iso).toLocaleString('nl-NL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+  function fmtDatum(iso) { return iso ? new Date(iso).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }) : ''; }
+
+  async function api(url, opts = {}) {
+    const res = await fetch(url, { headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', ...opts });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Er ging iets mis.');
+    return data;
+  }
+
+  // ---------- Verdwijnende header (scroll + toetsenbord) ----------
+  (function () {
+    const bar = $('topbar');
+    let vorige = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      bar.classList.toggle('nav-verborgen', y > 90 && y > vorige);
+      vorige = y;
+    }, { passive: true });
+    document.addEventListener('focusin', (e) => {
+      if (e.target.matches('input, textarea, select')) bar.classList.add('nav-verborgen');
+    });
+    document.addEventListener('focusout', () => bar.classList.remove('nav-verborgen'));
+  })();
+
+  // ---------- Menu ----------
+  const PAGINA_LADERS = {
+    projecten: laadProjecten,
+    signalen: laadSignalen,
+    taken: laadTaken,
+    uren: laadUren,
+    werknemers: laadWerknemers,
+    klanten: laadKlanten,
+    admin: initExport,
+  };
+  document.querySelectorAll('.menu button[data-pagina]').forEach((knop) => {
+    knop.addEventListener('click', () => toonPagina(knop.dataset.pagina));
+  });
+  function toonPagina(naam) {
+    document.querySelectorAll('.menu button[data-pagina]').forEach((b) => b.classList.toggle('actief', b.dataset.pagina === naam));
+    document.querySelectorAll('.pagina').forEach((p) => p.classList.toggle('actief', p.id === `pagina-${naam}`));
+    $('detail').style.display = 'none';
+    document.body.classList.remove('menu-open');
+    (PAGINA_LADERS[naam] || (() => {}))();
+  }
+  $('btn-menu').addEventListener('click', () => document.body.classList.toggle('menu-open'));
+  $('menu-achtergrond').addEventListener('click', () => document.body.classList.remove('menu-open'));
+
+  // ---------- Inloggen ----------
+  $('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fout = $('login-fout'); fout.style.display = 'none';
+    try {
+      await api('/api/portaal/beheer/login', { method: 'POST', body: JSON.stringify({ wachtwoord: $('login-wachtwoord').value }) });
+      await start();
+    } catch (err) { fout.textContent = err.message; fout.style.display = 'block'; }
+  });
+  $('btn-uitloggen').addEventListener('click', async () => {
+    await api('/api/portaal/beheer/logout', { method: 'POST' }).catch(() => {});
+    location.reload();
+  });
+
+  async function start() {
+    await laadProjecten();
+    $('login').style.display = 'none';
+    $('dashboard-shell').style.display = 'block';
+    $('btn-uitloggen').style.display = 'inline-block';
+    laadSignaalTeller().catch(() => {});
+  }
+
+  async function laadSignaalTeller() {
+    const { signalen } = await api('/api/portaal/beheer/signalen');
+    const teller = $('signaal-teller');
+    teller.style.display = signalen.length ? 'inline-block' : 'none';
+    teller.textContent = signalen.length;
+  }
+
+  // ---------- Projecten ----------
+  async function laadProjecten() {
+    const { projecten } = await api('/api/portaal/beheer/projecten');
+    projectenCache = projecten;
+    const statusNaam = { voorbereiding: 'Voorbereiding', in_uitvoering: 'In uitvoering', opgeleverd: 'Opgeleverd' };
+    $('projectenlijst').innerHTML = projecten.length === 0
+      ? '<div class="leeg">Nog geen projecten. Klik op "+ Nieuw project" om te starten.</div>'
+      : projecten.map((p) => `
+        <div class="prj-rij" onclick="openProject('${p.id}')">
+          <span class="code">${esc(p.code)}</span>
+          <span class="naam">${esc(p.naam)}<small>${esc(p.klantNaam)}${p.adres ? ' · ' + esc(p.adres) : ''}</small></span>
+          ${p.openMeerwerk > 0 ? `<span class="badge alert">${p.openMeerwerk}× wacht op klant</span>` : ''}
+          <span class="badge ${p.status}">${statusNaam[p.status] || p.status}</span>
+        </div>`).join('');
+  }
+
+  $('btn-nieuw').addEventListener('click', () => {
+    const kaart = $('nieuw-form-kaart');
+    kaart.style.display = kaart.style.display === 'none' ? 'block' : 'none';
+  });
+
+  $('nieuw-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fout = $('nieuw-fout'); fout.style.display = 'none';
+    try {
+      const data = await api('/api/portaal/beheer/projecten', {
+        method: 'POST',
+        body: JSON.stringify({
+          naam: $('n-naam').value, klantNaam: $('n-klantNaam').value, adres: $('n-adres').value,
+          klantEmail: $('n-klantEmail').value, klantTelefoon: $('n-klantTelefoon').value,
+          startDatum: $('n-startDatum').value, omschrijving: $('n-omschrijving').value,
+        }),
+      });
+      $('nieuw-form').reset();
+      $('nieuw-form-kaart').style.display = 'none';
+      $('nieuw-inlog').innerHTML = inlogBlokHtml(data.inlog, `✓ Project "${esc(data.project.naam)}" aangemaakt — dit is de unieke klant-inlog`);
+      await laadProjecten();
+    } catch (err) { fout.textContent = err.message; fout.style.display = 'block'; }
+  });
+
+  function inlogBlokHtml(inlog, kop) {
+    return `
+      <div class="inlogblok">
+        <h3>${kop}</h3>
+        <p><strong>Geef deze gegevens aan de klant</strong> (bv. via WhatsApp of e-mail). Het wachtwoord wordt maar één keer getoond.</p>
+        <div class="cred"><span>${esc(inlog.code)}</span><small>Projectcode</small></div>
+        <div class="cred"><span>${esc(inlog.wachtwoord)}</span><small>Wachtwoord</small></div>
+        <p>Inloggen kan op: <strong>${location.origin}/portaal.html</strong></p>
+        <button class="btn btn-klein" onclick="kopieerInlog('${esc(inlog.code)}','${esc(inlog.wachtwoord)}')">Kopieer bericht voor de klant</button>
+      </div>`;
+  }
+  window.kopieerInlog = (code, wachtwoord) => {
+    const url = location.origin + '/portaal.html';
+    const tekst = `Beste klant,\n\nVia Projexa, ons klantportaal, volgt u uw project: planning, foto's, updates en goedkeuring van meerwerk — alles op één plek.\n\nInloggen: ${url}\nProjectcode: ${code}\nWachtwoord: ${wachtwoord}\n\nDeze inlog is uniek voor uw project; alleen u kunt uw project inzien.`;
+    navigator.clipboard.writeText(tekst).then(() => alert('Gekopieerd! Plak het bericht in WhatsApp of e-mail.'));
+  };
+
+  // ---------- AI-projectmanager (signalen) ----------
+  async function laadSignalen() {
+    const { signalen } = await api('/api/portaal/beheer/signalen');
+    laadSignaalTeller().catch(() => {});
+    const ernstNaam = { hoog: 'Actie nodig', middel: 'Let op', laag: 'Tip' };
+    $('signalen-lijst').innerHTML = signalen.length === 0
+      ? '<div class="kaart" style="text-align:center;"><h2 style="margin-bottom:4px;">✓ Alles onder controle</h2><p class="sectie-uitleg" style="margin:0;">Geen openstaande signalen. De AI-projectmanager blijft meekijken.</p></div>'
+      : signalen.map((s) => `
+        <div class="signaal ${s.ernst}">
+          <span class="ernst-chip">${ernstNaam[s.ernst]}</span>
+          <div class="s-body">
+            <div class="s-tekst">${esc(s.tekst)}</div>
+            <div class="s-actie">${esc(s.actie)}</div>
+            ${s.projectId ? `<div class="s-project" onclick="openProject('${s.projectId}')">→ Open ${esc(s.projectNaam)}</div>` : ''}
+          </div>
+        </div>`).join('');
+  }
+
+  // ---------- Taken ----------
+  async function laadTaken() {
+    const { taken } = await api('/api/portaal/beheer/taken');
+    const sel = $('t-project');
+    sel.innerHTML = '<option value="">Algemeen</option>' + projectenCache.map((p) => `<option value="${p.id}">${esc(p.naam)}</option>`).join('');
+    $('taken-lijst').innerHTML = taken.length === 0
+      ? '<span style="font-size:13px;color:var(--ink-soft);">Nog geen taken.</span>'
+      : taken.map((t) => `
+        <div class="rijtje taak-rij${t.klaar ? ' klaar' : ''}">
+          <input type="checkbox" ${t.klaar ? 'checked' : ''} onchange="vinkTaak('${t.id}', this.checked)">
+          <span class="hoofd">${esc(t.tekst)}<small>${t.projectNaam ? esc(t.projectNaam) + ' · ' : ''}${t.deadline ? 'deadline ' + t.deadline : 'geen deadline'}</small></span>
+          <button class="x" onclick="verwijderTaak('${t.id}')">✕</button>
+        </div>`).join('');
+  }
+  $('taak-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('t-tekst').value.trim()) return;
+    await api('/api/portaal/beheer/taken', { method: 'POST', body: JSON.stringify({ tekst: $('t-tekst').value, deadline: $('t-deadline').value, projectId: $('t-project').value }) }).catch((err) => alert(err.message));
+    $('taak-form').reset();
+    await laadTaken();
+  });
+  window.vinkTaak = async (id, klaar) => { await api(`/api/portaal/beheer/taken/${id}`, { method: 'PATCH', body: JSON.stringify({ klaar }) }); await laadTaken(); };
+  window.verwijderTaak = async (id) => { await api(`/api/portaal/beheer/taken/${id}`, { method: 'DELETE' }); await laadTaken(); };
+
+  // ---------- Werknemers ----------
+  async function laadWerknemers() {
+    const { werknemers } = await api('/api/portaal/beheer/werknemers');
+    $('wrk-lijst').innerHTML = werknemers.length === 0
+      ? '<div class="leeg" style="color:var(--ink-soft); border-color:#D9D3C5;">Nog geen werknemers. Voeg hieronder de eerste toe.</div>'
+      : werknemers.map((w) => `
+        <div class="rijtje">
+          <span class="mono" style="font-size:12px; font-weight:700; color:var(--accent); min-width:84px;">${esc(w.code)}</span>
+          <span class="hoofd">${esc(w.naam)}<small>${esc(w.email || 'geen e-mail')} · meldingen ${w.pushActief ? 'aan' : 'uit'}</small></span>
+          <span class="badge ${w.urenVandaagIngevuld ? 'opgeleverd' : 'voorbereiding'}">${w.urenVandaagIngevuld ? 'uren vandaag ✓' : 'vandaag nog leeg'}</span>
+          <button class="x" title="Nieuw wachtwoord" aria-label="Nieuw wachtwoord" onclick="resetWerknemerWw('${w.id}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8" cy="8" r="4.2"/><path d="M11 11l8 8M16.5 15.5l2.5-2.5 2 2"/></svg></button>
+          <button class="x" title="Verwijderen" onclick="verwijderWerknemer('${w.id}', '${esc(w.naam)}')">✕</button>
+        </div>`).join('');
+  }
+  $('wrk-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      const data = await api('/api/portaal/beheer/werknemers', { method: 'POST', body: JSON.stringify({ naam: $('wn-naam').value, email: $('wn-email').value }) });
+      $('wrk-form').reset();
+      $('wrk-inlog').innerHTML = `
+        <div class="inlogblok">
+          <h3>✓ Inlog voor ${esc(data.werknemer.naam)}</h3>
+          <p><strong>Geef deze gegevens aan de werknemer.</strong> Het wachtwoord wordt maar één keer getoond. Inloggen op: <strong>${location.origin}/werknemer.html</strong></p>
+          <div class="cred"><span>${esc(data.inlog.code)}</span><small>Persoonlijke code</small></div>
+          <div class="cred"><span>${esc(data.inlog.wachtwoord)}</span><small>Wachtwoord</small></div>
+        </div>`;
+      await laadWerknemers();
+    } catch (err) { alert(err.message); }
+  });
+  window.resetWerknemerWw = async (id) => {
+    if (!confirm('Nieuw wachtwoord voor deze werknemer genereren? Het oude vervalt direct.')) return;
+    const data = await api(`/api/portaal/beheer/werknemers/${id}/reset-wachtwoord`, { method: 'POST' });
+    $('wrk-inlog').innerHTML = `<div class="inlogblok"><h3>✓ Nieuw wachtwoord</h3><div class="cred"><span>${esc(data.inlog.code)}</span><small>Code</small></div><div class="cred"><span>${esc(data.inlog.wachtwoord)}</span><small>Wachtwoord</small></div></div>`;
+  };
+  window.verwijderWerknemer = async (id, naam) => {
+    if (!confirm(`Werknemer "${naam}" verwijderen? De al ingevulde uren blijven bewaard.`)) return;
+    await api(`/api/portaal/beheer/werknemers/${id}`, { method: 'DELETE' });
+    await laadWerknemers();
+  };
+
+  // ---------- Urenstaten ----------
+  let urenMaandag = (() => { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; })();
+  const isoDag = (d) => d.toISOString().slice(0, 10);
+  function weekNummer(d) {
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+    const jaarStart = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+    return Math.ceil((((t - jaarStart) / 86400000) + 1) / 7);
+  }
+  $('uren-vorige').addEventListener('click', () => { urenMaandag.setDate(urenMaandag.getDate() - 7); laadUren(); });
+  $('uren-volgende').addEventListener('click', () => { urenMaandag.setDate(urenMaandag.getDate() + 7); laadUren(); });
+
+  async function laadUren() {
+    const eind = new Date(urenMaandag); eind.setDate(eind.getDate() + 6);
+    $('uren-weeknr').textContent = weekNummer(urenMaandag);
+    $('uren-periode').textContent = `${urenMaandag.getDate()}/${urenMaandag.getMonth() + 1} – ${eind.getDate()}/${eind.getMonth() + 1}`;
+    const { uren } = await api(`/api/portaal/beheer/uren?van=${isoDag(urenMaandag)}&tot=${isoDag(eind)}`);
+    if (uren.length === 0) { $('uren-overzicht').innerHTML = '<div class="leeg" style="color:var(--ink-soft); border-color:#D9D3C5;">Geen uren ingevuld in deze week.</div>'; return; }
+    const totUren = uren.reduce((s, u) => s + u.uren, 0);
+    const totMw = uren.reduce((s, u) => s + u.meerwerkUren, 0);
+    $('uren-overzicht').innerHTML = uren.map((u) => `
+      <div class="rijtje">
+        <span class="hoofd"><strong>${esc(u.werknemerNaam)}</strong> · ${new Date(u.datum + 'T12:00').toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' })}
+          <small>${esc(u.projectNaam || 'Algemeen')}${u.omschrijving ? ' · ' + esc(u.omschrijving) : ''}</small></span>
+        <span style="font-weight:700; white-space:nowrap;">${u.uren} u${u.meerwerkUren > 0 ? ` <span style="color:var(--accent); font-weight:600; font-size:12px;">+ ${u.meerwerkUren} mw</span>` : ''}</span>
+      </div>`).join('') +
+      `<div class="rijtje" style="border-top:2px solid #D9D3C5;"><span class="hoofd"><strong>Weektotaal</strong></span>
+        <span style="font-weight:700;">${totUren} u${totMw > 0 ? ` <span style="color:var(--accent); font-size:12px;">+ ${totMw} meerwerk</span>` : ''}</span></div>`;
+  }
+
+  // ---------- Klanten ----------
+  async function laadKlanten() {
+    const { klanten } = await api('/api/portaal/beheer/klanten');
+    const statusNaam = { voorbereiding: 'voorbereiding', in_uitvoering: 'in uitvoering', opgeleverd: 'opgeleverd' };
+    $('klanten-lijst').innerHTML = klanten.length === 0
+      ? '<div class="leeg">Nog geen klanten — die verschijnen hier automatisch zodra je projecten aanmaakt.</div>'
+      : klanten.map((k) => `
+        <div class="kaart">
+          <h2>${esc(k.naam)}</h2>
+          <p class="sectie-uitleg" style="margin-bottom:8px;">${esc([k.email, k.telefoon].filter(Boolean).join(' · ') || 'Geen contactgegevens')}</p>
+          ${k.projecten.map((p) => `
+            <div class="rijtje" style="cursor:pointer;" onclick="openProject('${p.id}')">
+              <span class="hoofd">${esc(p.naam)}<small>${esc(p.adres || '')}</small></span>
+              <span class="badge ${p.status}">${statusNaam[p.status] || p.status}</span>
+            </div>`).join('')}
+        </div>`).join('');
+  }
+
+  // ---------- Export ----------
+  function initExport() {
+    const nu = new Date();
+    const eerste = `${nu.getFullYear()}-${String(nu.getMonth() + 1).padStart(2, '0')}-01`;
+    if (!$('exp-van').value) $('exp-van').value = eerste;
+    if (!$('exp-tot').value) $('exp-tot').value = isoDag(nu);
+    bijwerkExportLink();
+  }
+  function bijwerkExportLink() {
+    $('exp-uren-link').href = `/api/portaal/beheer/export/uren.csv?van=${$('exp-van').value || '0000-00-00'}&tot=${$('exp-tot').value || '9999-99-99'}`;
+  }
+  $('exp-van').addEventListener('change', bijwerkExportLink);
+  $('exp-tot').addEventListener('change', bijwerkExportLink);
+
+  // ---------- Projectdetail ----------
+  window.openProject = async (id) => {
+    const { project } = await api(`/api/portaal/beheer/projecten/${id}`);
+    huidigProject = project;
+    $('nieuw-inlog').innerHTML = '';
+    document.querySelectorAll('.pagina').forEach((p) => p.classList.remove('actief'));
+    $('detail').style.display = 'block';
+    $('d-inlogblok').innerHTML = '';
+    $('ai-uitkomst').style.display = 'none';
+    renderDetail(project);
+    window.scrollTo(0, 0);
+  };
+  $('btn-terug').addEventListener('click', () => toonPagina('projecten'));
+
+  async function herlaad() {
+    const { project } = await api(`/api/portaal/beheer/projecten/${huidigProject.id}`);
+    huidigProject = project;
+    renderDetail(project);
+  }
+
+  function renderDetail(p) {
+    $('d-naam').textContent = p.naam;
+    $('d-code').textContent = p.code;
+    $('d-klant').textContent = [p.klantNaam, p.klantTelefoon, p.klantEmail, p.adres].filter(Boolean).join(' · ');
+
+    const statussen = [['voorbereiding', '1 · Voorbereiding'], ['in_uitvoering', '2 · In uitvoering'], ['opgeleverd', '3 · Opgeleverd']];
+    $('d-status').innerHTML = statussen.map(([key, naam]) =>
+      `<button type="button" class="${p.status === key ? 'actief' : ''}" onclick="zetStatus('${key}')">${naam}</button>`).join('');
+
+    const faseStatus = { gepland: 'Gepland', bezig: 'Bezig', afgerond: 'Afgerond' };
+    $('d-fases').innerHTML = (p.fases || []).length === 0 ? '' : p.fases.map((f) => `
+      <div class="rijtje">
+        <span class="hoofd">${esc(f.naam)}<small>${esc(f.start)}${f.eind ? ' t/m ' + esc(f.eind) : ''}</small></span>
+        <select onchange="zetFaseStatus('${f.id}', this.value)">
+          ${Object.entries(faseStatus).map(([k, v]) => `<option value="${k}" ${f.status === k ? 'selected' : ''}>${v}</option>`).join('')}
+        </select>
+        <button class="x" onclick="verwijderFase('${f.id}')">✕</button>
+      </div>`).join('');
+
+    $('d-meerwerk').innerHTML = (p.meerwerk || []).length === 0 ? '' : p.meerwerk.map((m) => {
+      const status = m.status === 'wacht_op_klant' ? 'wacht op klant'
+        : m.status === 'goedgekeurd' ? `✓ goedgekeurd ${fmtDatum(m.besluitOp)}` : `✕ afgewezen ${fmtDatum(m.besluitOp)}`;
+      return `<div class="rijtje">
+        <span class="hoofd">${esc(m.titel)} — <strong>${fmtEuro(m.bedrag)}</strong><small>${status}</small></span>
+        ${m.status === 'wacht_op_klant' ? `<button class="x" onclick="verwijderMeerwerk('${m.id}')">✕</button>` : ''}
+      </div>`;
+    }).join('');
+
+    $('d-updates').innerHTML = (p.updates || []).map((u) =>
+      `<div class="rijtje"><span class="hoofd" style="white-space:pre-wrap;">${esc(u.tekst)}<small>${fmtTijd(u.op)}</small></span></div>`).join('');
+
+    const matStatus = { op_voorraad: 'Op voorraad', bijna_op: 'Bijna op', besteld: 'Besteld' };
+    $('d-materialen').innerHTML = (p.materialen || []).length === 0 ? '' : p.materialen.map((m) => `
+      <div class="rijtje">
+        <span class="hoofd">${esc(m.naam)}${m.aantal ? `<small>${esc(m.aantal)}</small>` : ''}</span>
+        <select onchange="zetMatStatus('${m.id}', this.value)">
+          ${Object.entries(matStatus).map(([k, v]) => `<option value="${k}" ${m.status === k ? 'selected' : ''}>${v}</option>`).join('')}
+        </select>
+        <button class="x" onclick="verwijderMat('${m.id}')">✕</button>
+      </div>`).join('');
+
+    $('d-documenten').innerHTML = (p.documenten || []).length === 0 ? '' : p.documenten.map((d) => {
+      const href = d.bestand ? `/api/portaal/bestand/${p.id}/${d.bestand.fileId}` : d.url;
+      return `<div class="rijtje">
+        <span class="hoofd"><a href="${esc(href)}" target="_blank" rel="noopener" style="color:var(--ink);">${esc(d.naam)}</a>
+          <small>${esc(d.categorie)}${d.bestand ? ' · upload' : ' · link'}${d.aiSamenvatting ? `<br><span style="color:var(--leisteen);">✦ ${esc(d.aiSamenvatting)}</span>` : ''}</small></span>
+        <button class="x" onclick="verwijderDoc('${d.id}')">✕</button>
+      </div>`;
+    }).join('');
+
+    $('d-werkbonnen').innerHTML = (p.werkbonnen || []).length === 0
+      ? '<span style="font-size:13px;color:var(--ink-soft);">Nog geen werkbonnen — maak er een via de AI-schrijfhulp hierboven.</span>'
+      : p.werkbonnen.map((b) => `
+        <div class="rijtje">
+          <span class="hoofd">${esc(b.titel)}<small>${fmtTijd(b.op)}</small></span>
+          <button class="btn btn-klein btn-stil" type="button" onclick="printWerkbon('${b.id}')">Print</button>
+          <button class="x" onclick="verwijderWerkbon('${b.id}')">✕</button>
+        </div>`).join('');
+
+    const lijst = $('d-berichten');
+    lijst.innerHTML = (p.berichten || []).length === 0
+      ? '<span style="font-size:12.5px;color:var(--ink-soft);">Nog geen berichten. Vragen van de klant verschijnen hier.</span>'
+      : p.berichten.map((b) => `<div class="bericht van-${b.van}">${esc(b.tekst)}<span class="tijd">${b.van === 'klant' ? 'Klant' : 'Jij'} · ${fmtTijd(b.op)}</span></div>`).join('');
+    lijst.scrollTop = lijst.scrollHeight;
+
+    renderDossier(p);
+  }
+
+  window.zetStatus = async (status) => { await api(`/api/portaal/beheer/projecten/${huidigProject.id}`, { method: 'PATCH', body: JSON.stringify({ status }) }); await herlaad(); };
+  window.zetFaseStatus = async (faseId, status) => { await api(`/api/portaal/beheer/projecten/${huidigProject.id}/fases/${faseId}`, { method: 'PATCH', body: JSON.stringify({ status }) }); await herlaad(); };
+  window.verwijderFase = async (faseId) => { if (!confirm('Fase verwijderen?')) return; await api(`/api/portaal/beheer/projecten/${huidigProject.id}/fases/${faseId}`, { method: 'DELETE' }); await herlaad(); };
+  window.verwijderMeerwerk = async (id) => { if (!confirm('Dit meerwerkvoorstel intrekken?')) return; await api(`/api/portaal/beheer/projecten/${huidigProject.id}/meerwerk/${id}`, { method: 'DELETE' }); await herlaad(); };
+  window.verwijderDoc = async (id) => { if (!confirm('Document verwijderen?')) return; await api(`/api/portaal/beheer/projecten/${huidigProject.id}/documenten/${id}`, { method: 'DELETE' }); await herlaad(); };
+  window.zetMatStatus = async (id, status) => { await api(`/api/portaal/beheer/projecten/${huidigProject.id}/materialen/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }); await herlaad(); };
+  window.verwijderMat = async (id) => { await api(`/api/portaal/beheer/projecten/${huidigProject.id}/materialen/${id}`, { method: 'DELETE' }); await herlaad(); };
+  window.verwijderWerkbon = async (id) => { if (!confirm('Werkbon verwijderen?')) return; await api(`/api/portaal/beheer/projecten/${huidigProject.id}/werkbonnen/${id}`, { method: 'DELETE' }); await herlaad(); };
+  window.printWerkbon = (id) => {
+    const bon = (huidigProject.werkbonnen || []).find((b) => b.id === id);
+    if (!bon) return;
+    $('print-gebied').innerHTML = `
+      <h1>Werkbon — ${esc(huidigProject.naam)}</h1>
+      <div class="pk">${esc(huidigProject.klantNaam)} · ${esc(huidigProject.adres || '')} · ${esc(huidigProject.code)} · ${fmtDatum(bon.op)}</div>
+      <pre>${esc(bon.tekst)}</pre>`;
+    window.print();
+  };
+
+  $('fase-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('f-naam').value.trim()) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/fases`, { method: 'POST', body: JSON.stringify({ naam: $('f-naam').value, start: $('f-start').value }) }).catch((err) => alert(err.message));
+    $('fase-form').reset();
+    await herlaad();
+  });
+
+  $('mw-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await api(`/api/portaal/beheer/projecten/${huidigProject.id}/meerwerk`, { method: 'POST', body: JSON.stringify({ titel: $('m-titel').value, bedrag: $('m-bedrag').value, omschrijving: $('m-omschrijving').value }) });
+      $('mw-form').reset();
+      await herlaad();
+    } catch (err) { alert(err.message); }
+  });
+
+  $('update-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('u-tekst').value.trim()) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/updates`, { method: 'POST', body: JSON.stringify({ tekst: $('u-tekst').value }) }).catch((err) => alert(err.message));
+    $('update-form').reset();
+    await herlaad();
+  });
+
+  $('mat-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('mat-naam').value.trim()) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/materialen`, { method: 'POST', body: JSON.stringify({ naam: $('mat-naam').value, aantal: $('mat-aantal').value }) }).catch((err) => alert(err.message));
+    $('mat-form').reset();
+    await herlaad();
+  });
+
+  $('doc-link-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await api(`/api/portaal/beheer/projecten/${huidigProject.id}/documenten`, { method: 'POST', body: JSON.stringify({ naam: $('doc-naam').value, url: $('doc-url').value, categorie: $('doc-link-cat').value }) });
+      $('doc-link-form').reset();
+      await herlaad();
+    } catch (err) { alert(err.message); }
+  });
+
+  async function uploadBestand(bestand, categorie) {
+    if (bestand.size > 15 * 1024 * 1024) throw new Error('Bestand is groter dan 15 MB.');
+    const params = new URLSearchParams({ filename: bestand.name || `foto-${Date.now()}.jpg`, categorie });
+    const res = await fetch(`/api/portaal/beheer/projecten/${huidigProject.id}/upload?${params}`, {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': bestand.type || 'application/octet-stream' },
+      body: bestand,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Upload mislukt.');
+  }
+
+  $('doc-upload-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const bestand = $('doc-bestand').files[0];
+    if (!bestand) return alert('Kies eerst een bestand.');
+    try {
+      await uploadBestand(bestand, $('doc-upload-cat').value);
+      $('doc-upload-form').reset();
+      await herlaad();
+    } catch (err) { alert(err.message); }
+  });
+
+  $('btn-foto').addEventListener('click', () => $('foto-camera').click());
+  $('foto-camera').addEventListener('change', async () => {
+    const bestand = $('foto-camera').files[0];
+    if (!bestand) return;
+    const knop = $('btn-foto');
+    const origineel = knop.innerHTML;
+    knop.disabled = true;
+    knop.textContent = 'Foto wordt opgeslagen...';
+    try {
+      await uploadBestand(bestand, 'foto');
+      await herlaad();
+    } catch (err) { alert(err.message); }
+    finally { knop.disabled = false; knop.innerHTML = origineel; $('foto-camera').value = ''; }
+  });
+
+  $('bericht-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('b-tekst').value.trim()) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/bericht`, { method: 'POST', body: JSON.stringify({ tekst: $('b-tekst').value }) }).catch((err) => alert(err.message));
+    $('bericht-form').reset();
+    await herlaad();
+  });
+
+  // ---------- AI-schrijfhulp ----------
+  let dicteerder = null;
+  $('ai-mic').addEventListener('click', () => {
+    const Spraak = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Spraak) return alert('Dicteren wordt niet ondersteund in deze browser. Typ je aantekeningen — of gebruik Chrome/Safari.');
+    if (dicteerder) { dicteerder.stop(); return; }
+    dicteerder = new Spraak();
+    dicteerder.lang = 'nl-NL';
+    dicteerder.continuous = true;
+    dicteerder.interimResults = false;
+    $('ai-mic').classList.add('actief');
+    dicteerder.onresult = (e) => {
+      const stuk = [...e.results].slice(e.resultIndex).map((r) => r[0].transcript).join(' ');
+      $('ai-invoer').value = ($('ai-invoer').value + ' ' + stuk).trim();
+    };
+    dicteerder.onend = () => { $('ai-mic').classList.remove('actief'); dicteerder = null; };
+    dicteerder.onerror = () => { $('ai-mic').classList.remove('actief'); dicteerder = null; };
+    dicteerder.start();
+  });
+
+  $('ai-schrijf').addEventListener('click', async () => {
+    const knop = $('ai-schrijf');
+    knop.disabled = true; knop.textContent = '✦ AI schrijft...';
+    try {
+      const data = await api(`/api/portaal/beheer/projecten/${huidigProject.id}/ai/schrijf`, {
+        method: 'POST', body: JSON.stringify({ type: $('ai-type').value, invoer: $('ai-invoer').value }),
+      });
+      $('ai-tekst').textContent = data.tekst;
+      $('ai-uitkomst').style.display = 'block';
+    } catch (err) { alert(err.message); }
+    finally { knop.disabled = false; knop.textContent = '✦ Schrijf concept'; }
+  });
+
+  $('ai-als-update').addEventListener('click', async () => {
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/updates`, { method: 'POST', body: JSON.stringify({ tekst: $('ai-tekst').textContent }) });
+    $('ai-uitkomst').style.display = 'none'; $('ai-invoer').value = '';
+    await herlaad();
+    alert('Geplaatst als update — de klant ziet hem in het portaal.');
+  });
+  $('ai-als-bericht').addEventListener('click', async () => {
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/bericht`, { method: 'POST', body: JSON.stringify({ tekst: $('ai-tekst').textContent }) });
+    $('ai-uitkomst').style.display = 'none'; $('ai-invoer').value = '';
+    await herlaad();
+  });
+  $('ai-als-werkbon').addEventListener('click', async () => {
+    const titel = prompt('Titel van de werkbon:', `Werkbon ${new Date().toLocaleDateString('nl-NL')}`);
+    if (titel === null) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}/werkbonnen`, { method: 'POST', body: JSON.stringify({ titel, tekst: $('ai-tekst').textContent }) });
+    $('ai-uitkomst').style.display = 'none'; $('ai-invoer').value = '';
+    await herlaad();
+  });
+  $('ai-kopieer').addEventListener('click', () => {
+    navigator.clipboard.writeText($('ai-tekst').textContent).then(() => alert('Gekopieerd.'));
+  });
+
+  // ---------- Opleverdossier ----------
+  function renderDossier(p) {
+    const d = p.dossier || {};
+    $('link-dossier').href = `/dossier.html?projectId=${p.id}`;
+    $('ds-garanties').innerHTML = (d.garanties || []).map((g, i) => `
+      <div class="rijtje"><span class="hoofd">${esc(g.onderdeel)} — ${esc(g.duur)}${g.toelichting ? `<small>${esc(g.toelichting)}</small>` : ''}</span>
+      <button class="x" onclick="verwijderDossierRij('garanties', ${i})">✕</button></div>`).join('');
+    $('ds-onderhoud').innerHTML = (d.onderhoud || []).map((o, i) => `
+      <div class="rijtje"><span class="hoofd">${esc(o.taak)} — ${esc(o.frequentie)}${o.toelichting ? `<small>${esc(o.toelichting)}</small>` : ''}</span>
+      <button class="x" onclick="verwijderDossierRij('onderhoud', ${i})">✕</button></div>`).join('');
+    const cv = d.cvWarmtepomp || {};
+    $('cv-installatie').value = cv.installatie || '';
+    $('cv-laatste').value = cv.laatsteOnderhoud || '';
+    $('cv-volgende').value = cv.volgendeOnderhoud || '';
+    $('cv-toelichting').value = cv.toelichting || '';
+    const dak = d.dakinspectie || {};
+    $('dak-laatste').value = dak.laatsteInspectie || '';
+    $('dak-volgende').value = dak.volgendeInspectie || '';
+    $('dak-bevindingen').value = dak.bevindingen || '';
+    $('ds-slotwoord').value = d.slotwoord || '';
+  }
+
+  async function bewaarDossier(extra = {}) {
+    const d = huidigProject.dossier || {};
+    const body = {
+      garanties: d.garanties || [],
+      onderhoud: d.onderhoud || [],
+      cvWarmtepomp: { installatie: $('cv-installatie').value, laatsteOnderhoud: $('cv-laatste').value, volgendeOnderhoud: $('cv-volgende').value, toelichting: $('cv-toelichting').value },
+      dakinspectie: { laatsteInspectie: $('dak-laatste').value, volgendeInspectie: $('dak-volgende').value, bevindingen: $('dak-bevindingen').value },
+      slotwoord: $('ds-slotwoord').value,
+      ...extra,
+    };
+    const res = await api(`/api/portaal/beheer/projecten/${huidigProject.id}/dossier`, { method: 'PATCH', body: JSON.stringify(body) });
+    huidigProject.dossier = res.dossier;
+    renderDossier(huidigProject);
+  }
+  window.verwijderDossierRij = async (soort, index) => {
+    const lijst = [...((huidigProject.dossier || {})[soort] || [])];
+    lijst.splice(index, 1);
+    await bewaarDossier({ [soort]: lijst });
+  };
+  $('garantie-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('g-onderdeel').value.trim()) return;
+    await bewaarDossier({ garanties: [...((huidigProject.dossier || {}).garanties || []), { onderdeel: $('g-onderdeel').value, duur: $('g-duur').value, toelichting: $('g-toelichting').value }] }).catch((err) => alert(err.message));
+    $('garantie-form').reset();
+  });
+  $('onderhoud-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!$('o-taak').value.trim()) return;
+    await bewaarDossier({ onderhoud: [...((huidigProject.dossier || {}).onderhoud || []), { taak: $('o-taak').value, frequentie: $('o-frequentie').value, toelichting: $('o-toelichting').value }] }).catch((err) => alert(err.message));
+    $('onderhoud-form').reset();
+  });
+  $('btn-dossier-opslaan').addEventListener('click', async () => {
+    try { await bewaarDossier(); alert('Dossiergegevens opgeslagen.'); } catch (err) { alert(err.message); }
+  });
+
+  $('btn-reset').addEventListener('click', async () => {
+    if (!confirm('Nieuw klantwachtwoord genereren? Het oude wachtwoord werkt daarna niet meer.')) return;
+    const data = await api(`/api/portaal/beheer/projecten/${huidigProject.id}/reset-wachtwoord`, { method: 'POST' });
+    $('d-inlogblok').innerHTML = inlogBlokHtml(data.inlog, '✓ Nieuw wachtwoord aangemaakt');
+    window.scrollTo(0, 0);
+  });
+
+  $('btn-verwijder').addEventListener('click', async () => {
+    if (!confirm(`Project "${huidigProject.naam}" definitief verwijderen, inclusief documenten en berichten?`)) return;
+    await api(`/api/portaal/beheer/projecten/${huidigProject.id}`, { method: 'DELETE' });
+    toonPagina('projecten');
+  });
+
+  // Service worker registreren zodat de site als app installeerbaar is.
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+
+  // Al ingelogd? Direct starten.
+  start().catch(() => { /* niet ingelogd */ });
+</script>
+</body>
+</html>
