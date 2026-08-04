@@ -160,7 +160,9 @@
       '<button class="chat__item" type="button" role="option" data-chat="' + g.id + '"' +
       ' aria-selected="' + (g.id === actiefGesprek) + '">' +
       '<span class="thumb">' + icon(g.icon, 17) + '</span>' +
-      '<span><h4>' + escapeHtml(g.naam) + '</h4><p>' + escapeHtml(g.preview) + '</p></span>' +
+      '<span><h4>' + escapeHtml(g.naam) +
+      (g.intern ? ' <em class="intern">intern</em>' : '') +
+      '</h4><p>' + escapeHtml(g.preview) + '</p></span>' +
       '<time>' + g.tijd + '</time></button>'
     ).join('') || '<p style="padding:16px;color:var(--ink-3);font-size:13.5px">Geen gesprekken gevonden.</p>';
 
@@ -192,7 +194,9 @@
 
   function tekenBerichten() {
     const g = huidigGesprek();
-    $('#chatTitle').textContent = 'Chat - ' + g.naam;
+    $('#chatTitle').textContent = g.intern
+      ? 'Chat - ' + g.naam + ' (medewerker)'
+      : 'Chat - ' + g.naam;
     $('#chatMessages').innerHTML = g.berichten.map(bubbel).join('');
     scrollChat();
   }
@@ -288,12 +292,19 @@
     toast(uren.gepauzeerd ? 'Timer gepauzeerd' : 'Timer hervat');
   });
 
-  const taakSelect = $('#taskSelect');
-  taakSelect.addEventListener('change', () => {
-    $('#taskSub').textContent = taakSelect.value;
+  const taakSoort = $('#taskSoort');
+  const taakWat = $('#taskWat');
+
+  function tekenTaakregel() {
     const entry = $('#entryList .entry span');
-    if (entry) entry.textContent = taakSelect.options[taakSelect.selectedIndex].text + ' — ' + taakSelect.value;
-  });
+    if (!entry) return;
+    const soort = taakSoort.value.trim() || 'Werkzaamheden';
+    const wat = taakWat.value.trim();
+    entry.textContent = wat ? soort + ' — ' + wat : soort;
+  }
+
+  taakSoort.addEventListener('input', tekenTaakregel);
+  taakWat.addEventListener('input', tekenTaakregel);
 
   const fotoReeks = ['ph-1', 'ph-2', 'ph-3'];
   let fotoTeller = 0;
@@ -327,6 +338,46 @@
     $('#mwDetailBtn').textContent = box.hidden ? 'Bekijk details' : 'Verberg details';
   });
 
+  const offertes = [];
+
+  function tekenBijlagen() {
+    const box = $('#mwBijlagen');
+    if (!offertes.length) {
+      box.innerHTML = '<p class="bijlagen__leeg" id="mwGeenBijlage">Nog geen offerte toegevoegd.</p>';
+      return;
+    }
+    box.innerHTML = offertes.map((f, i) =>
+      '<div class="bijlage">' + icon('i-doc', 18) +
+      '<span>' + escapeHtml(f.naam) + '<small>' + escapeHtml(f.grootte) + ' · zojuist toegevoegd</small></span>' +
+      '<button type="button" data-offerte-weg="' + i + '" aria-label="Offerte verwijderen">' +
+      icon('i-x', 16) + '</button></div>'
+    ).join('');
+  }
+
+  function leesbareGrootte(bytes) {
+    if (!bytes) return 'bestand';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' kB';
+    return (bytes / 1024 / 1024).toFixed(1).replace('.', ',') + ' MB';
+  }
+
+  $('#mwOfferte').addEventListener('change', e => {
+    const bestand = e.target.files && e.target.files[0];
+    if (!bestand) return;
+    offertes.push({ naam: bestand.name, grootte: leesbareGrootte(bestand.size) });
+    tekenBijlagen();
+    e.target.value = '';
+    toast('Offerte toegevoegd aan het meerwerkvoorstel');
+  });
+
+  document.addEventListener('click', e => {
+    const weg = e.target.closest('[data-offerte-weg]');
+    if (!weg) return;
+    offertes.splice(Number(weg.dataset.offerteWeg), 1);
+    tekenBijlagen();
+    toast('Offerte verwijderd');
+  });
+
   $('#mwSend').addEventListener('click', () => {
     const btn = $('#mwSend');
     if (btn.dataset.sent) { toast('Dit voorstel is al naar de klant gestuurd'); return; }
@@ -340,7 +391,9 @@
       else t.style.marginLeft = 'auto';
     });
     voegActiviteitToe('Meerwerk MW-2024-001 naar klant gestuurd', 'zojuist', 'i-plus-circle', 'gold');
-    toast('Meerwerkvoorstel verstuurd — de klant kan met één klik akkoord geven');
+    toast(offertes.length
+      ? 'Meerwerkvoorstel met offerte verstuurd — de klant kan met één klik akkoord geven'
+      : 'Meerwerkvoorstel verstuurd — de klant kan met één klik akkoord geven');
   });
 
   $('#closeMw').addEventListener('click', () => { location.hash = 'dashboard'; });
@@ -357,6 +410,61 @@
     const lijst = $('#docList');
     lijst.insertBefore(el, lijst.firstChild);
     toast('Document geüpload');
+  });
+
+  /* ---- Planning ---------------------------------------------------------- */
+
+  let planIndex = 0;
+
+  function tekenPlanningKiezers() {
+    $('#planProject').innerHTML = D.projecten.map((p, i) =>
+      '<option value="' + i + '"' + (i === planIndex ? ' selected' : '') + '>' +
+      escapeHtml(p.naam) + ' · ' + escapeHtml(p.plaats) + '</option>'
+    ).join('');
+
+    $('#planTabs').innerHTML = D.projecten.map((p, i) =>
+      '<button type="button" data-plan="' + i + '" aria-current="' + (i === planIndex) + '">' +
+      escapeHtml(p.naam) + '</button>'
+    ).join('');
+  }
+
+  function tekenPlanning() {
+    const p = D.projecten[planIndex];
+    const dagen = (p && p.planning) || [];
+    $('#planTijdlijn').innerHTML = dagen.length ? dagen.map(d =>
+      '<div class="timeline__day"><span class="timeline__date">' + escapeHtml(d.datum) + '</span><div>' +
+      d.taken.map(t => {
+        const klasse = t.staat === 'klaar' ? ' dot--done' : t.staat === 'mijlpaal' ? ' dot--milestone' : '';
+        const tekst = t.staat === 'mijlpaal'
+          ? '<b>' + escapeHtml(t.tekst) + '</b>'
+          : escapeHtml(t.tekst);
+        return '<div class="timeline__task"><span class="dot' + klasse + '"></span>' + tekst + '</div>';
+      }).join('') + '</div></div>'
+    ).join('') : '<p style="padding:20px;color:var(--ink-3)">Nog geen planning voor dit project.</p>';
+  }
+
+  function kiesPlanning(i) {
+    planIndex = i;
+    tekenPlanningKiezers();
+    tekenPlanning();
+  }
+
+  $('#planProject').addEventListener('change', e => kiesPlanning(Number(e.target.value)));
+
+  document.addEventListener('click', e => {
+    const knop = e.target.closest('[data-plan]');
+    if (knop) kiesPlanning(Number(knop.dataset.plan));
+  });
+
+  $('#planTaak').addEventListener('click', () => {
+    const tekst = prompt('Wat moet er gebeuren?');
+    if (!tekst) return;
+    const wanneer = prompt('Wanneer? (bijvoorbeeld: ma 6 mei)', 'ma 6 mei') || 'nog te plannen';
+    const p = D.projecten[planIndex];
+    p.planning = p.planning || [];
+    p.planning.push({ datum: wanneer.trim(), taken: [{ tekst: tekst.trim(), staat: 'open' }] });
+    tekenPlanning();
+    toast('Taak toegevoegd aan ' + p.naam);
   });
 
   /* ---- Notificaties, AI, beheer ----------------------------------------- */
@@ -411,6 +519,9 @@
   /* ---- Start ------------------------------------------------------------ */
 
   tekenProjecten();
+  tekenPlanningKiezers();
+  tekenPlanning();
+  tekenBijlagen();
   tekenChatlijst('');
   tekenBerichten();
   tekenTimer();

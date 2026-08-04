@@ -38,7 +38,7 @@
     vandaag: ['Mijn werk', 'Piet Vermeer · medewerker'],
     werk:    ['Werkzaamheden', 'Verbouwing Jansen'],
     fotos:   ['Foto’s', 'Verbouwing Jansen'],
-    chat:    ['Chat', 'Verbouwing Jansen']
+    chat:    ['Chat', 'Jan de Boer · aannemer']
   };
 
   function toon(tab) {
@@ -115,16 +115,19 @@
     toast(uren.gepauzeerd ? 'Timer gepauzeerd' : 'Timer hervat');
   });
 
-  const taak = $('#wTask');
+  const taakSoort = $('#wTaskSoort');
+  const taakWat = $('#wTaskWat');
   const project = $('#wProject');
 
   function tekenEntry() {
-    $('#wEntryText').innerHTML = escapeHtml(taak.options[taak.selectedIndex].text) +
-      ' — ' + escapeHtml(taak.value) + '<small>' +
-      escapeHtml(project.value.split(' · ')[0]) + '</small>';
+    const soort = taakSoort.value.trim() || 'Werkzaamheden';
+    const wat = taakWat.value.trim();
+    $('#wEntryText').innerHTML = escapeHtml(soort) + (wat ? ' — ' + escapeHtml(wat) : '') +
+      '<small>' + escapeHtml(project.value.split(' · ')[0]) + '</small>';
   }
 
-  taak.addEventListener('change', () => { $('#wTaskSub').textContent = taak.value; tekenEntry(); });
+  taakSoort.addEventListener('input', tekenEntry);
+  taakWat.addEventListener('input', tekenEntry);
   project.addEventListener('change', () => {
     tekenEntry();
     toast('Je schrijft nu op ' + project.value.split(' · ')[0]);
@@ -171,7 +174,7 @@
   });
 
   $('#wLogOpslaan').addEventListener('click', () => {
-    const soort = $('#wLogSoort').value;
+    const soort = $('#wLogSoort').value.trim() || 'Werkzaamheden';
     const tekst = $('#wLogTekst').value.trim();
     if (!tekst) { toast('Vul kort in wat je hebt gedaan'); $('#wLogTekst').focus(); return; }
     const el = document.createElement('div');
@@ -198,12 +201,13 @@
 
   /* ---- Chat ---------------------------------------------------------------- */
 
-  const gesprek = D.gesprekken[0];
+  // De medewerker chat alleen met de aannemer — niet met de klant.
+  const gesprek = D.intern;
 
   function bubbel(m) {
-    const mijn = m.van === 'ik';   // de medewerker hoort bij het team van de aannemer
+    const mijn = m.van === 'medewerker';
     const meta = '<span class="m-bubble__meta">' + m.tijd +
-      (mijn && m.gelezen ? ' <span class="read">' + icon('i-checks', 12) + '</span>' : '') + '</span>';
+      (mijn ? ' <span class="read">' + icon('i-checks', 12) + '</span>' : '') + '</span>';
     if (m.foto) {
       return '<div class="m-bubble m-bubble--photo' + (mijn ? ' m-bubble--me' : '') + '">' +
         '<svg viewBox="0 0 160 90" role="img" aria-label="Foto in het gesprek"><use href="#' + m.foto + '"></use></svg>' +
@@ -233,15 +237,19 @@
     const input = $('#wInput');
     const tekst = input.value.trim();
     if (!tekst) return;
-    gesprek.berichten.push({ van: 'ik', tekst: tekst, tijd: nu(), gelezen: true });
+    gesprek.berichten.push({ van: 'medewerker', tekst: tekst, tijd: nu() });
+    gesprek.preview = 'Piet: ' + tekst;
+    gesprek.tijd = nu();
     input.value = '';
     tekenChat();
   });
 
   $('#wPhoto').addEventListener('click', () => {
-    gesprek.berichten.push({ van: 'ik', foto: 'ph-beams', tijd: nu(), gelezen: true });
+    gesprek.berichten.push({ van: 'medewerker', foto: 'ph-beams', tijd: nu() });
+    gesprek.preview = 'Piet: Foto toegevoegd';
+    gesprek.tijd = nu();
     tekenChat();
-    toast('Foto gedeeld in de projectchat');
+    toast('Foto naar de aannemer gestuurd');
   });
 
   $('#wVoice').addEventListener('click', () => toast('Spraakbericht opnemen — houd ingedrukt'));

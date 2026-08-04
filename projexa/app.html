@@ -301,16 +301,28 @@
           <div class="field">
             <h3>Werkzaamheden</h3>
             <div class="select">
-              <select id="taskSelect" aria-label="Werkzaamheden">
-                <option value="Voorzetwand plaatsen" selected>Timmerwerk</option>
-                <option value="Tussenwand slopen">Sloopwerk</option>
-                <option value="Leidingwerk verleggen">Installatiewerk</option>
-                <option value="Wanden stucen">Stucwerk</option>
-              </select>
+              <input class="vrij" id="taskSoort" list="soortenWerk" value="Timmerwerk"
+                     placeholder="Kies of typ zelf" aria-label="Soort werk" autocomplete="off">
               <svg width="16" height="16" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-chev-d"></use></svg>
             </div>
-            <div class="select__sub" id="taskSub">Voorzetwand plaatsen</div>
+            <div class="select" style="margin-top:8px">
+              <input class="vrij vrij--licht" id="taskWat" value="Voorzetwand plaatsen"
+                     placeholder="Wat doe je precies?" aria-label="Omschrijving" autocomplete="off">
+            </div>
+            <p class="veldhint">Kies een bekende soort of typ zelf iets anders.</p>
           </div>
+
+          <datalist id="soortenWerk">
+            <option value="Timmerwerk"></option>
+            <option value="Sloopwerk"></option>
+            <option value="Installatiewerk"></option>
+            <option value="Stucwerk"></option>
+            <option value="Metselwerk"></option>
+            <option value="Tegelwerk"></option>
+            <option value="Dakwerk"></option>
+            <option value="Schilderwerk"></option>
+            <option value="Opruimen &amp; afvoeren"></option>
+          </datalist>
 
           <div class="field" style="padding-top:0">
             <h3>Foto&rsquo;s</h3>
@@ -370,6 +382,17 @@
             <div class="mw__row"><span>Afvoer &amp; afwerking</span><span>€60,00</span></div>
           </div>
 
+          <div class="mw__label">Offerte</div>
+          <div class="bijlagen" id="mwBijlagen">
+            <p class="bijlagen__leeg" id="mwGeenBijlage">Nog geen offerte toegevoegd.</p>
+          </div>
+          <label class="btn btn--ghost upload" style="margin-top:10px">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-clip"></use></svg>
+            Offerte uploaden
+            <input type="file" id="mwOfferte" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden>
+          </label>
+          <p class="veldhint">PDF, Word of foto. De klant ziet de offerte bij het voorstel.</p>
+
           <div class="mw__row"><span>Gemaakt op</span><span>1 mei 2024</span></div>
           <div class="mw__row is-total"><span>Totaal (excl. btw)</span><span>€685,00</span></div>
 
@@ -413,41 +436,22 @@
 
     <!-- ---- Planning -------------------------------------------------------- -->
     <section class="view" id="view-planning" hidden>
-      <div class="topbar"><h1>Planning — Verbouwing Jansen</h1></div>
-      <div class="card timeline">
-        <div class="timeline__day">
-          <span class="timeline__date">ma 29 apr</span>
-          <div>
-            <div class="timeline__task"><span class="dot dot--done"></span>Tussenwand slopen — afgerond</div>
-            <div class="timeline__task"><span class="dot dot--done"></span>Puin afvoeren — afgerond</div>
+      <div class="topbar">
+        <h1>Planning</h1>
+        <div class="topbar__actions">
+          <div class="select select--kop">
+            <select id="planProject" aria-label="Kies een project"></select>
+            <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
           </div>
-        </div>
-        <div class="timeline__day">
-          <span class="timeline__date">wo 1 mei</span>
-          <div>
-            <div class="timeline__task"><span class="dot"></span>Timmerwerk: voorzetwand plaatsen</div>
-            <div class="timeline__task"><span class="dot"></span>Balklaag inmeten voor meerwerk</div>
-          </div>
-        </div>
-        <div class="timeline__day">
-          <span class="timeline__date">do 2 mei</span>
-          <div>
-            <div class="timeline__task"><span class="dot"></span>Leidingwerk verleggen (installateur)</div>
-          </div>
-        </div>
-        <div class="timeline__day">
-          <span class="timeline__date">ma 6 mei</span>
-          <div>
-            <div class="timeline__task"><span class="dot dot--milestone"></span><b>Mijlpaal:</b> ruwbouw gereed</div>
-          </div>
-        </div>
-        <div class="timeline__day">
-          <span class="timeline__date">vr 17 mei</span>
-          <div>
-            <div class="timeline__task"><span class="dot dot--milestone"></span><b>Mijlpaal:</b> oplevering</div>
-          </div>
+          <button class="btn btn--gold" type="button" id="planTaak">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Taak toevoegen
+          </button>
         </div>
       </div>
+
+      <div class="tabsrij" id="planTabs"></div>
+
+      <div class="card timeline" id="planTijdlijn"></div>
     </section>
 
     <!-- ---- Documenten ------------------------------------------------------ -->

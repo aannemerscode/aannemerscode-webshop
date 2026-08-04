@@ -208,6 +208,9 @@
 
   /* ---- Meerwerk ----------------------------------------------------------- */
 
+  $('#mMwOfferte').addEventListener('click', () =>
+    toast('Offerte wordt geopend — ook terug te vinden bij Documenten'));
+
   $('#mMwDetailBtn').addEventListener('click', () => {
     const box = $('#mMwDetails');
     box.hidden = !box.hidden;

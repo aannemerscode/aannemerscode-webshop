@@ -177,7 +177,7 @@ button, input, select, textarea {
 
 
 /* ==========================================================================
-   Projexa — startscherm: kies je rol
+   Projexa — startscherm: logo en de drie inlogknoppen
    ========================================================================== */
 
 .startpg {
@@ -188,146 +188,81 @@ button, input, select, textarea {
 }
 
 .start__page {
-  max-width: 1080px;
+  min-height: 100vh;
+  max-width: 780px;
   margin: 0 auto;
-  padding: 56px 24px 70px;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 52px;
 }
 
-.start__head {
-  text-align: center;
-  display: grid;
-  justify-items: center;
-  gap: 18px;
-  margin-bottom: 42px;
-}
-
-.start__head .logo { font-size: 24px; }
-
-.start__head h1 {
-  margin: 8px 0 0;
-  font-size: 30px;
-  font-weight: 700;
-  text-wrap: balance;
-}
-
-.start__head p {
-  margin: 0;
-  max-width: 54ch;
-  color: rgba(255, 255, 255, .68);
-  font-size: 15.5px;
-}
+.start__head { display: grid; justify-items: center; }
+.start__head .logo { font-size: 30px; gap: 20px; }
 
 .roles-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  align-items: stretch;
+  gap: 18px;
+  width: 100%;
 }
 
 .rolecard {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 26px 24px 22px;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 30px 20px 24px;
   border: 1px solid rgba(255, 255, 255, .13);
   border-radius: var(--r-lg);
-  background: linear-gradient(180deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015));
+  background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .015));
+  text-decoration: none;
+  color: inherit;
   transition: border-color .18s ease, transform .18s ease;
 }
 
 .rolecard:hover {
-  border-color: rgba(181, 149, 94, .55);
+  border-color: rgba(181, 149, 94, .6);
   transform: translateY(-2px);
 }
 
 .rolecard__icon {
-  width: 46px; height: 46px;
-  border-radius: 13px;
+  width: 52px; height: 52px;
+  border-radius: 15px;
   display: grid;
   place-items: center;
   background: rgba(181, 149, 94, .16);
   color: var(--gold-light);
-  margin-bottom: 4px;
 }
 
-.rolecard h2 {
-  margin: 0;
-  font-size: 20px;
+.rolecard__naam {
+  font-size: 18px;
   font-weight: 700;
+  letter-spacing: .01em;
 }
 
-.rolecard__who {
-  margin: -6px 0 0;
-  font-size: 13px;
-  color: var(--gold-light);
-  letter-spacing: .02em;
-}
-
-.rolecard__what {
-  margin: 0;
-  font-size: 14.5px;
-  color: rgba(255, 255, 255, .72);
-}
-
-.rolecard ul {
-  list-style: none;
-  margin: 4px 0 0;
-  padding: 0;
-  display: grid;
-  gap: 7px;
-  align-content: start;
-  flex: 1;
-}
-
-.rolecard li {
-  position: relative;
-  padding-left: 18px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, .78);
-}
-
-.rolecard li::before {
-  content: "";
-  position: absolute;
-  left: 2px; top: 8px;
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--gold);
-}
-
-.rolecard .btn {
-  margin-top: 4px;
+.rolecard__actie {
   width: 100%;
-  padding: 13px 18px;
-}
-
-.rolecard__screens {
-  margin: 0;
-  min-height: 3.2em;
-  font-size: 11.5px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, .4);
-}
-
-.start__note {
-  margin: 40px auto 0;
-  max-width: 60ch;
   text-align: center;
-  font-size: 13.5px;
-  color: rgba(255, 255, 255, .45);
+  padding: 11px 16px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--gold-dark);
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.start__note a { color: var(--gold-light); }
+.rolecard:hover .rolecard__actie { filter: brightness(1.06); }
 
-@media (max-width: 880px) {
-  .roles-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
-  .rolecard .btn { margin-top: 8px; }
-  .rolecard__screens { min-height: 0; }
-}
-
-@media (max-width: 620px) {
-  .start__page { padding: 36px 18px 54px; }
-  .start__head h1 { font-size: 24px; }
+@media (max-width: 700px) {
+  .start__page { gap: 40px; padding: 44px 20px; }
+  .start__head .logo { font-size: 22px; gap: 14px; }
+  .roles-grid { grid-template-columns: 1fr; max-width: 340px; margin: 0 auto; }
+  .rolecard { grid-template-columns: 44px 1fr; justify-items: start; align-items: center; padding: 16px 18px; gap: 14px; }
+  .rolecard__icon { width: 44px; height: 44px; grid-row: span 2; }
+  .rolecard__actie { width: auto; padding: 9px 18px; }
 }
 
 
@@ -1786,6 +1721,95 @@ button, input, select, textarea {
   .cols[style*="repeat(3"] { grid-template-columns: 1fr !important; }
 }
 
+/* --------------------------------------------------------------------------
+   Vrij invulbare velden, bijlagen en projectkiezer
+   -------------------------------------------------------------------------- */
+
+.vrij {
+  border: 0;
+  background: none;
+  outline: none;
+  width: 100%;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.vrij--licht { font-weight: 400; color: var(--ink-2); }
+.vrij::placeholder { color: var(--ink-3); font-weight: 400; }
+
+.veldhint { font-size: 12.5px; color: var(--ink-3); margin: 8px 0 0; }
+
+.select--kop { padding: 8px 12px; min-width: 220px; background: var(--surface); }
+.select--kop select { border: 0; background: none; outline: none; font-size: 14px; font-weight: 600; cursor: pointer; appearance: none; -webkit-appearance: none; width: 100%; }
+
+.upload { cursor: pointer; }
+
+.bijlagen { display: grid; gap: 8px; margin-top: 6px; }
+
+.bijlagen__leeg { margin: 0; font-size: 13.5px; color: var(--ink-3); }
+
+.bijlage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: 14px;
+}
+
+.bijlage small { display: block; font-size: 12px; color: var(--ink-3); }
+.bijlage button { margin-left: auto; border: 0; background: none; color: var(--ink-3); cursor: pointer; padding: 4px; border-radius: 6px; }
+.bijlage button:hover { background: var(--line); color: var(--ink); }
+
+.tabsrij {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.tabsrij button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.tabsrij button:hover { border-color: var(--gold); color: var(--ink); }
+
+.tabsrij button[aria-current="true"] {
+  background: var(--black);
+  border-color: var(--black);
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .select--kop { min-width: 0; }
+  .topbar__actions { flex-wrap: wrap; }
+}
+
+.intern {
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  background: #f7efe2;
+  border-radius: 999px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  vertical-align: 1px;
+}
+
 
 /* ==========================================================================
    Projexa — smartphone-versie (mobile-first)
@@ -1868,10 +1892,10 @@ button, input, select, textarea {
 
 /* ---- Inhoud ------------------------------------------------------------- */
 
-.m-main { flex: 1; padding: 4px 18px 22px; display: flex; flex-direction: column; }
-.m-screen { flex: 1; display: flex; flex-direction: column; }
+.m-main { flex: 1; min-height: 0; padding: 4px 18px 22px; display: flex; flex-direction: column; }
+.m-screen { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .m-screen[hidden] { display: none; }
-.m-chat { flex: 1; }
+.m-chat { flex: 1; min-height: 0; overflow-y: auto; }
 
 .m-card {
   border: 1px solid var(--line);
@@ -2008,8 +2032,7 @@ button, input, select, textarea {
 .m-bubble__meta .read { color: #4a90d9; }
 
 .m-composer {
-  position: sticky;
-  bottom: 0;
+  flex: none;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2240,6 +2263,40 @@ button, input, select, textarea {
 
 .m-textarea:focus { border-color: var(--gold); }
 
+/* Met wie chat je? (medewerker-app) */
+.m-contact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.m-contact b { display: block; font-size: 14.5px; font-weight: 600; }
+.m-contact small { font-size: 12px; color: var(--ink-3); }
+
+.m-select .vrij { font-size: 14.5px; }
+
+/* Offerte bij een meerwerkvoorstel (klantportaal) */
+.m-bijlage {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  cursor: pointer;
+}
+
+.m-bijlage span { font-size: 14px; }
+.m-bijlage small { display: block; font-size: 12px; color: var(--ink-3); }
+.m-bijlage:hover { border-color: var(--gold); }
+
 
 /* ---- Wisselbalk van de demo ------------------------------------------- */
 .demo-bar {
@@ -2421,7 +2478,7 @@ button, input, select, textarea {
 
   <div class="start__head">
     <span class="logo">
-      <svg class="logo__mark" width="52" height="58" viewBox="0 0 72 80" aria-hidden="true">
+      <svg class="logo__mark" width="64" height="71" viewBox="0 0 72 80" aria-hidden="true">
         <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
         <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
         <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
@@ -2431,67 +2488,27 @@ button, input, select, textarea {
         <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
       </span>
     </span>
-
-    <h1>Waar wil je naar kijken?</h1>
-    <p>
-      Projexa ziet er anders uit voor iedere rol. Kies hieronder met welke ogen je
-      de demo doorloopt — je kunt op elk moment wisselen.
-    </p>
   </div>
 
   <div class="roles-grid">
+    <a class="rolecard" data-page="web" data-page="web">
+      <span class="rolecard__icon"><svg width="24" height="24" aria-hidden="true"><use href="#i-user"></use></svg></span>
+      <span class="rolecard__naam">Aannemer</span>
+      <span class="rolecard__actie">Inloggen</span>
+    </a>
 
-    <article class="rolecard">
-      <span class="rolecard__icon"><svg width="26" height="26" aria-hidden="true"><use href="#i-user"></use></svg></span>
-      <h2>Aannemer</h2>
-      <p class="rolecard__who">Jan de Boer · hoofdgebruiker</p>
-      <p class="rolecard__what">De volledige webversie op laptop of desktop.</p>
-      <ul>
-        <li>Volledige toegang tot alle projecten</li>
-        <li>Gebruikers beheren</li>
-        <li>Instellingen &amp; abonnementen</li>
-        <li>Facturatie &amp; rapportages</li>
-      </ul>
-      <a class="btn btn--gold" data-page="web" data-page="web">Inloggen als aannemer</a>
-      <p class="rolecard__screens">Dashboard · Projecten · Chat · Uren · Meerwerk · Planning · Documenten · Notificaties · AI assistent · Gebruikers · Facturatie · Abonnement</p>
-    </article>
+    <a class="rolecard" data-page="medewerker" data-page="medewerker">
+      <span class="rolecard__icon"><svg width="24" height="24" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+      <span class="rolecard__naam">Medewerker</span>
+      <span class="rolecard__actie">Inloggen</span>
+    </a>
 
-    <article class="rolecard">
-      <span class="rolecard__icon"><svg width="26" height="26" aria-hidden="true"><use href="#i-worker"></use></svg></span>
-      <h2>Medewerker</h2>
-      <p class="rolecard__who">Piet Vermeer · timmerman</p>
-      <p class="rolecard__what">De app op de telefoon, voor op de bouw.</p>
-      <ul>
-        <li>Uren registreren</li>
-        <li>Werkzaamheden invullen</li>
-        <li>Foto&rsquo;s uploaden</li>
-        <li>Chatten binnen projecten</li>
-      </ul>
-      <a class="btn btn--gold" data-page="medewerker" data-page="medewerker">Inloggen als medewerker</a>
-      <p class="rolecard__screens">Vandaag · Werkzaamheden · Foto&rsquo;s · Chat</p>
-    </article>
-
-    <article class="rolecard">
-      <span class="rolecard__icon"><svg width="26" height="26" aria-hidden="true"><use href="#i-home"></use></svg></span>
-      <h2>Klant</h2>
-      <p class="rolecard__who">Familie Jansen · Amsterdam</p>
-      <p class="rolecard__what">Het klantportaal op de telefoon.</p>
-      <ul>
-        <li>Inzien voortgang</li>
-        <li>Chatten met aannemer</li>
-        <li>Meerwerk goedkeuren</li>
-        <li>Documenten bekijken</li>
-      </ul>
-      <a class="btn btn--gold" data-page="klant" data-page="klant">Inloggen als klant</a>
-      <p class="rolecard__screens">Start · Berichten · Uren · Meerwerk · Planning · Foto&rsquo;s · Documenten</p>
-    </article>
-
+    <a class="rolecard" data-page="klant" data-page="klant">
+      <span class="rolecard__icon"><svg width="24" height="24" aria-hidden="true"><use href="#i-home"></use></svg></span>
+      <span class="rolecard__naam">Klant</span>
+      <span class="rolecard__actie">Inloggen</span>
+    </a>
   </div>
-
-  <p class="start__note">
-    Dit is een demo met voorbeeldgegevens — er is nog geen echte inlog of database.
-    Bekijk ook <a data-page="format" data-page="format">het ontwerp op één pagina</a>.
-  </p>
 
 </main>
 </section>
@@ -2722,16 +2739,28 @@ button, input, select, textarea {
           <div class="field">
             <h3>Werkzaamheden</h3>
             <div class="select">
-              <select id="taskSelect" aria-label="Werkzaamheden">
-                <option value="Voorzetwand plaatsen" selected>Timmerwerk</option>
-                <option value="Tussenwand slopen">Sloopwerk</option>
-                <option value="Leidingwerk verleggen">Installatiewerk</option>
-                <option value="Wanden stucen">Stucwerk</option>
-              </select>
+              <input class="vrij" id="taskSoort" list="soortenWerk" value="Timmerwerk"
+                     placeholder="Kies of typ zelf" aria-label="Soort werk" autocomplete="off">
               <svg width="16" height="16" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-chev-d"></use></svg>
             </div>
-            <div class="select__sub" id="taskSub">Voorzetwand plaatsen</div>
+            <div class="select" style="margin-top:8px">
+              <input class="vrij vrij--licht" id="taskWat" value="Voorzetwand plaatsen"
+                     placeholder="Wat doe je precies?" aria-label="Omschrijving" autocomplete="off">
+            </div>
+            <p class="veldhint">Kies een bekende soort of typ zelf iets anders.</p>
           </div>
+
+          <datalist id="soortenWerk">
+            <option value="Timmerwerk"></option>
+            <option value="Sloopwerk"></option>
+            <option value="Installatiewerk"></option>
+            <option value="Stucwerk"></option>
+            <option value="Metselwerk"></option>
+            <option value="Tegelwerk"></option>
+            <option value="Dakwerk"></option>
+            <option value="Schilderwerk"></option>
+            <option value="Opruimen &amp; afvoeren"></option>
+          </datalist>
 
           <div class="field" style="padding-top:0">
             <h3>Foto&rsquo;s</h3>
@@ -2791,6 +2820,17 @@ button, input, select, textarea {
             <div class="mw__row"><span>Afvoer &amp; afwerking</span><span>€60,00</span></div>
           </div>
 
+          <div class="mw__label">Offerte</div>
+          <div class="bijlagen" id="mwBijlagen">
+            <p class="bijlagen__leeg" id="mwGeenBijlage">Nog geen offerte toegevoegd.</p>
+          </div>
+          <label class="btn btn--ghost upload" style="margin-top:10px">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-clip"></use></svg>
+            Offerte uploaden
+            <input type="file" id="mwOfferte" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden>
+          </label>
+          <p class="veldhint">PDF, Word of foto. De klant ziet de offerte bij het voorstel.</p>
+
           <div class="mw__row"><span>Gemaakt op</span><span>1 mei 2024</span></div>
           <div class="mw__row is-total"><span>Totaal (excl. btw)</span><span>€685,00</span></div>
 
@@ -2834,41 +2874,22 @@ button, input, select, textarea {
 
     <!-- ---- Planning -------------------------------------------------------- -->
     <section class="view" id="view-planning" hidden>
-      <div class="topbar"><h1>Planning — Verbouwing Jansen</h1></div>
-      <div class="card timeline">
-        <div class="timeline__day">
-          <span class="timeline__date">ma 29 apr</span>
-          <div>
-            <div class="timeline__task"><span class="dot dot--done"></span>Tussenwand slopen — afgerond</div>
-            <div class="timeline__task"><span class="dot dot--done"></span>Puin afvoeren — afgerond</div>
+      <div class="topbar">
+        <h1>Planning</h1>
+        <div class="topbar__actions">
+          <div class="select select--kop">
+            <select id="planProject" aria-label="Kies een project"></select>
+            <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
           </div>
-        </div>
-        <div class="timeline__day">
-          <span class="timeline__date">wo 1 mei</span>
-          <div>
-            <div class="timeline__task"><span class="dot"></span>Timmerwerk: voorzetwand plaatsen</div>
-            <div class="timeline__task"><span class="dot"></span>Balklaag inmeten voor meerwerk</div>
-          </div>
-        </div>
-        <div class="timeline__day">
-          <span class="timeline__date">do 2 mei</span>
-          <div>
-            <div class="timeline__task"><span class="dot"></span>Leidingwerk verleggen (installateur)</div>
-          </div>
-        </div>
-        <div class="timeline__day">
-          <span class="timeline__date">ma 6 mei</span>
-          <div>
-            <div class="timeline__task"><span class="dot dot--milestone"></span><b>Mijlpaal:</b> ruwbouw gereed</div>
-          </div>
-        </div>
-        <div class="timeline__day">
-          <span class="timeline__date">vr 17 mei</span>
-          <div>
-            <div class="timeline__task"><span class="dot dot--milestone"></span><b>Mijlpaal:</b> oplevering</div>
-          </div>
+          <button class="btn btn--gold" type="button" id="planTaak">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Taak toevoegen
+          </button>
         </div>
       </div>
+
+      <div class="tabsrij" id="planTabs"></div>
+
+      <div class="card timeline" id="planTijdlijn"></div>
     </section>
 
     <!-- ---- Documenten ------------------------------------------------------ -->
@@ -3396,16 +3417,28 @@ button, input, select, textarea {
         <div class="m-field">
           <h3>Werkzaamheden</h3>
           <div class="m-select">
-            <select id="wTask" aria-label="Werkzaamheden">
-              <option value="Voorzetwand plaatsen" selected>Timmerwerk</option>
-              <option value="Tussenwand slopen">Sloopwerk</option>
-              <option value="Leidingwerk verleggen">Installatiewerk</option>
-              <option value="Wanden stucen">Stucwerk</option>
-            </select>
+            <input class="vrij" id="wTaskSoort" list="soortenWerk" value="Timmerwerk"
+                   placeholder="Kies of typ zelf" aria-label="Soort werk" autocomplete="off">
             <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
           </div>
-          <div class="m-select__sub" id="wTaskSub">Voorzetwand plaatsen</div>
+          <div class="m-select" style="margin-top:8px">
+            <input class="vrij vrij--licht" id="wTaskWat" value="Voorzetwand plaatsen"
+                   placeholder="Wat doe je precies?" aria-label="Omschrijving" autocomplete="off">
+          </div>
+          <p class="veldhint">Kies een bekende soort of typ zelf iets anders.</p>
         </div>
+
+        <datalist id="soortenWerk">
+          <option value="Timmerwerk"></option>
+          <option value="Sloopwerk"></option>
+          <option value="Installatiewerk"></option>
+          <option value="Stucwerk"></option>
+          <option value="Metselwerk"></option>
+          <option value="Tegelwerk"></option>
+          <option value="Dakwerk"></option>
+          <option value="Schilderwerk"></option>
+          <option value="Opruimen &amp; afvoeren"></option>
+        </datalist>
 
         <div class="m-field" style="padding-top:0">
           <button class="btn btn--ghost" type="button" id="wHandmatig" style="width:100%">Uren handmatig invoeren</button>
@@ -3436,15 +3469,11 @@ button, input, select, textarea {
         <div class="m-field" style="padding:14px 0 0">
           <h3>Soort werk</h3>
           <div class="m-select">
-            <select id="wLogSoort" aria-label="Soort werk">
-              <option>Timmerwerk</option>
-              <option>Sloopwerk</option>
-              <option>Installatiewerk</option>
-              <option>Stucwerk</option>
-              <option>Opruimen &amp; afvoeren</option>
-            </select>
+            <input class="vrij" id="wLogSoort" list="soortenWerk" value="Timmerwerk"
+                   placeholder="Kies of typ zelf" aria-label="Soort werk" autocomplete="off">
             <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
           </div>
+          <p class="veldhint">Staat je werk er niet bij? Typ het gewoon zelf.</p>
         </div>
 
         <div class="m-field" style="padding:14px 0 0">
@@ -3515,8 +3544,12 @@ button, input, select, textarea {
       </p>
     </section>
 
-    <!-- ---- Chat ------------------------------------------------------------ -->
+    <!-- ---- Chat met de aannemer -------------------------------------------- -->
     <section class="m-screen" id="w-chat" hidden>
+      <div class="m-contact">
+        <span class="m-ico"><svg width="18" height="18" aria-hidden="true"><use href="#i-user"></use></svg></span>
+        <span><b>Jan de Boer</b><small>Aannemer · Verbouwing Jansen</small></span>
+      </div>
       <div class="m-chat" id="wChat" aria-live="polite"></div>
       <form class="m-composer" id="wComposer">
         <input type="text" id="wInput" placeholder="Typ een bericht..." aria-label="Typ een bericht" autocomplete="off">
@@ -3545,7 +3578,7 @@ button, input, select, textarea {
       <svg width="21" height="21" aria-hidden="true"><use href="#i-camera"></use></svg><span>Foto&rsquo;s</span>
     </button>
     <button class="m-tab" type="button" data-wtab="chat">
-      <svg width="21" height="21" aria-hidden="true"><use href="#i-chat"></use></svg><span>Chat</span>
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-chat"></use></svg><span>Aannemer</span>
       <span class="m-tab__dot" id="wChatDot"></span>
     </button>
   </nav>
@@ -3739,6 +3772,13 @@ button, input, select, textarea {
           <div class="m-row"><span>Materiaal</span><span>€185,00</span></div>
           <div class="m-row"><span>Afvoer &amp; afwerking</span><span>€60,00</span></div>
         </div>
+
+        <p class="m-label">Offerte</p>
+        <button class="m-bijlage" type="button" id="mMwOfferte">
+          <svg width="20" height="20" style="color:var(--ink-2);flex:none" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Offerte MW-2024-001.pdf<small>PDF · 148 kB</small></span>
+          <svg width="18" height="18" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-r"></use></svg>
+        </button>
 
         <div class="m-row" style="margin-top:14px"><span>Gemaakt op</span><span>1 mei 2024</span></div>
         <div class="m-row is-total"><span>Totaal (excl. btw)</span><span>€685,00</span></div>
@@ -4432,6 +4472,20 @@ window.PROJEXA = (function () {
         { tekst: 'Leidingwerk verleggen (installateur)', wanneer: 'do 2 mei', staat: 'open' },
         { tekst: 'Balklaag laten keuren door constructeur', wanneer: 'vr 3 mei', staat: 'open' },
         { tekst: 'Stucwerk begane grond', wanneer: 'week 19', staat: 'open' }
+      ],
+      planning: [
+        { datum: 'ma 29 apr', taken: [
+          { tekst: 'Tussenwand slopen — afgerond', staat: 'klaar' },
+          { tekst: 'Puin afvoeren — afgerond', staat: 'klaar' } ] },
+        { datum: 'wo 1 mei', taken: [
+          { tekst: 'Timmerwerk: voorzetwand plaatsen', staat: 'bezig' },
+          { tekst: 'Balklaag inmeten voor meerwerk', staat: 'bezig' } ] },
+        { datum: 'do 2 mei', taken: [
+          { tekst: 'Leidingwerk verleggen (installateur)', staat: 'open' } ] },
+        { datum: 'ma 6 mei', taken: [
+          { tekst: 'Mijlpaal: ruwbouw gereed', staat: 'mijlpaal' } ] },
+        { datum: 'vr 17 mei', taken: [
+          { tekst: 'Mijlpaal: oplevering', staat: 'mijlpaal' } ] }
       ]
     },
     {
@@ -4441,6 +4495,19 @@ window.PROJEXA = (function () {
         { tekst: 'Dakkapel plaatsen', wanneer: 'week 19', staat: 'bezig' },
         { tekst: 'Extra dakraam inmeten', wanneer: 'ma 6 mei', staat: 'open' },
         { tekst: 'Kozijnen leveren', wanneer: 'week 20', staat: 'open' }
+      ],
+      planning: [
+        { datum: 'ma 29 apr', taken: [
+          { tekst: 'Fundering storten — afgerond', staat: 'klaar' } ] },
+        { datum: 'wo 1 mei', taken: [
+          { tekst: 'Dakkapel plaatsen', staat: 'bezig' },
+          { tekst: 'Steiger opbouwen achterzijde', staat: 'bezig' } ] },
+        { datum: 'ma 6 mei', taken: [
+          { tekst: 'Extra dakraam inmeten (meerwerk)', staat: 'open' } ] },
+        { datum: 'week 20', taken: [
+          { tekst: 'Kozijnen leveren en stellen', staat: 'open' } ] },
+        { datum: 'vr 28 jun', taken: [
+          { tekst: 'Mijlpaal: wind- en waterdicht', staat: 'mijlpaal' } ] }
       ]
     },
     {
@@ -4449,6 +4516,15 @@ window.PROJEXA = (function () {
       taken: [
         { tekst: 'Badkamer strippen', wanneer: 'deze week', staat: 'bezig' },
         { tekst: 'Vloerverwarming aanleggen', wanneer: 'week 20', staat: 'open' }
+      ],
+      planning: [
+        { datum: 'wo 1 mei', taken: [
+          { tekst: 'Badkamer strippen', staat: 'bezig' } ] },
+        { datum: 'week 20', taken: [
+          { tekst: 'Vloerverwarming aanleggen (meerwerk)', staat: 'open' },
+          { tekst: 'Leidingwerk aanpassen', staat: 'open' } ] },
+        { datum: 'week 22', taken: [
+          { tekst: 'Mijlpaal: badkamer gereed', staat: 'mijlpaal' } ] }
       ]
     },
     {
@@ -4457,6 +4533,14 @@ window.PROJEXA = (function () {
       taken: [
         { tekst: 'Opleverpunten afhandelen', wanneer: 'afgerond', staat: 'klaar' },
         { tekst: 'Eindfactuur versturen', wanneer: 'afgerond', staat: 'klaar' }
+      ],
+      planning: [
+        { datum: 'ma 15 apr', taken: [
+          { tekst: 'Opleverpunten afhandelen — afgerond', staat: 'klaar' } ] },
+        { datum: 'vr 19 apr', taken: [
+          { tekst: 'Mijlpaal: opgeleverd', staat: 'mijlpaal' } ] },
+        { datum: 'ma 22 apr', taken: [
+          { tekst: 'Eindfactuur verstuurd', staat: 'klaar' } ] }
       ]
     }
   ];
@@ -4519,6 +4603,25 @@ window.PROJEXA = (function () {
     }
   ];
 
+  // Interne chat tussen aannemer en medewerker. De klant heeft hier geen
+  // toegang toe; medewerkers chatten alleen met de aannemer.
+  const intern = {
+    id: 'piet',
+    naam: 'Piet Vermeer',
+    rol: 'Medewerker · Verbouwing Jansen',
+    preview: 'Piet: Gips is binnen',
+    tijd: '10:20',
+    icon: 'i-worker',
+    intern: true,
+    berichten: [
+      { van: 'ik', tekst: 'Piet, kun je vandaag de voorzetwand in de slaapkamer afmaken?', tijd: '07:05', gelezen: true },
+      { van: 'medewerker', tekst: 'Ja, ben ermee bezig. Gips is binnen.', tijd: '07:12' },
+      { van: 'medewerker', foto: 'ph-1', tijd: '09:48' },
+      { van: 'ik', tekst: 'Mooi. Schrijf je uren op Verbouwing Jansen.', tijd: '10:18', gelezen: true },
+      { van: 'medewerker', tekst: 'Doe ik.', tijd: '10:20' }
+    ]
+  };
+
   const meerwerk = {
     nummer: 'MW-2024-001',
     titel: 'Wand verplaatsen slaapkamer',
@@ -4534,7 +4637,9 @@ window.PROJEXA = (function () {
     { tekst: 'Nieuwe planning beschikbaar',   tijd: '1 uur geleden',  icon: 'i-calendar', stijl: 'gold' }
   ];
 
-  return { projecten, activiteit, gesprekken, meerwerk, updates };
+  gesprekken.splice(1, 0, intern);
+
+  return { projecten, activiteit, gesprekken, intern, meerwerk, updates };
 })();
 
 /* ==========================================================================
@@ -4699,7 +4804,9 @@ window.PROJEXA = (function () {
       '<button class="chat__item" type="button" role="option" data-chat="' + g.id + '"' +
       ' aria-selected="' + (g.id === actiefGesprek) + '">' +
       '<span class="thumb">' + icon(g.icon, 17) + '</span>' +
-      '<span><h4>' + escapeHtml(g.naam) + '</h4><p>' + escapeHtml(g.preview) + '</p></span>' +
+      '<span><h4>' + escapeHtml(g.naam) +
+      (g.intern ? ' <em class="intern">intern</em>' : '') +
+      '</h4><p>' + escapeHtml(g.preview) + '</p></span>' +
       '<time>' + g.tijd + '</time></button>'
     ).join('') || '<p style="padding:16px;color:var(--ink-3);font-size:13.5px">Geen gesprekken gevonden.</p>';
 
@@ -4731,7 +4838,9 @@ window.PROJEXA = (function () {
 
   function tekenBerichten() {
     const g = huidigGesprek();
-    $('#chatTitle').textContent = 'Chat - ' + g.naam;
+    $('#chatTitle').textContent = g.intern
+      ? 'Chat - ' + g.naam + ' (medewerker)'
+      : 'Chat - ' + g.naam;
     $('#chatMessages').innerHTML = g.berichten.map(bubbel).join('');
     scrollChat();
   }
@@ -4827,12 +4936,19 @@ window.PROJEXA = (function () {
     toast(uren.gepauzeerd ? 'Timer gepauzeerd' : 'Timer hervat');
   });
 
-  const taakSelect = $('#taskSelect');
-  taakSelect.addEventListener('change', () => {
-    $('#taskSub').textContent = taakSelect.value;
+  const taakSoort = $('#taskSoort');
+  const taakWat = $('#taskWat');
+
+  function tekenTaakregel() {
     const entry = $('#entryList .entry span');
-    if (entry) entry.textContent = taakSelect.options[taakSelect.selectedIndex].text + ' — ' + taakSelect.value;
-  });
+    if (!entry) return;
+    const soort = taakSoort.value.trim() || 'Werkzaamheden';
+    const wat = taakWat.value.trim();
+    entry.textContent = wat ? soort + ' — ' + wat : soort;
+  }
+
+  taakSoort.addEventListener('input', tekenTaakregel);
+  taakWat.addEventListener('input', tekenTaakregel);
 
   const fotoReeks = ['ph-1', 'ph-2', 'ph-3'];
   let fotoTeller = 0;
@@ -4866,6 +4982,46 @@ window.PROJEXA = (function () {
     $('#mwDetailBtn').textContent = box.hidden ? 'Bekijk details' : 'Verberg details';
   });
 
+  const offertes = [];
+
+  function tekenBijlagen() {
+    const box = $('#mwBijlagen');
+    if (!offertes.length) {
+      box.innerHTML = '<p class="bijlagen__leeg" id="mwGeenBijlage">Nog geen offerte toegevoegd.</p>';
+      return;
+    }
+    box.innerHTML = offertes.map((f, i) =>
+      '<div class="bijlage">' + icon('i-doc', 18) +
+      '<span>' + escapeHtml(f.naam) + '<small>' + escapeHtml(f.grootte) + ' · zojuist toegevoegd</small></span>' +
+      '<button type="button" data-offerte-weg="' + i + '" aria-label="Offerte verwijderen">' +
+      icon('i-x', 16) + '</button></div>'
+    ).join('');
+  }
+
+  function leesbareGrootte(bytes) {
+    if (!bytes) return 'bestand';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' kB';
+    return (bytes / 1024 / 1024).toFixed(1).replace('.', ',') + ' MB';
+  }
+
+  $('#mwOfferte').addEventListener('change', e => {
+    const bestand = e.target.files && e.target.files[0];
+    if (!bestand) return;
+    offertes.push({ naam: bestand.name, grootte: leesbareGrootte(bestand.size) });
+    tekenBijlagen();
+    e.target.value = '';
+    toast('Offerte toegevoegd aan het meerwerkvoorstel');
+  });
+
+  document.addEventListener('click', e => {
+    const weg = e.target.closest('[data-offerte-weg]');
+    if (!weg) return;
+    offertes.splice(Number(weg.dataset.offerteWeg), 1);
+    tekenBijlagen();
+    toast('Offerte verwijderd');
+  });
+
   $('#mwSend').addEventListener('click', () => {
     const btn = $('#mwSend');
     if (btn.dataset.sent) { toast('Dit voorstel is al naar de klant gestuurd'); return; }
@@ -4879,7 +5035,9 @@ window.PROJEXA = (function () {
       else t.style.marginLeft = 'auto';
     });
     voegActiviteitToe('Meerwerk MW-2024-001 naar klant gestuurd', 'zojuist', 'i-plus-circle', 'gold');
-    toast('Meerwerkvoorstel verstuurd — de klant kan met één klik akkoord geven');
+    toast(offertes.length
+      ? 'Meerwerkvoorstel met offerte verstuurd — de klant kan met één klik akkoord geven'
+      : 'Meerwerkvoorstel verstuurd — de klant kan met één klik akkoord geven');
   });
 
   $('#closeMw').addEventListener('click', () => { location.hash = 'dashboard'; });
@@ -4896,6 +5054,61 @@ window.PROJEXA = (function () {
     const lijst = $('#docList');
     lijst.insertBefore(el, lijst.firstChild);
     toast('Document geüpload');
+  });
+
+  /* ---- Planning ---------------------------------------------------------- */
+
+  let planIndex = 0;
+
+  function tekenPlanningKiezers() {
+    $('#planProject').innerHTML = D.projecten.map((p, i) =>
+      '<option value="' + i + '"' + (i === planIndex ? ' selected' : '') + '>' +
+      escapeHtml(p.naam) + ' · ' + escapeHtml(p.plaats) + '</option>'
+    ).join('');
+
+    $('#planTabs').innerHTML = D.projecten.map((p, i) =>
+      '<button type="button" data-plan="' + i + '" aria-current="' + (i === planIndex) + '">' +
+      escapeHtml(p.naam) + '</button>'
+    ).join('');
+  }
+
+  function tekenPlanning() {
+    const p = D.projecten[planIndex];
+    const dagen = (p && p.planning) || [];
+    $('#planTijdlijn').innerHTML = dagen.length ? dagen.map(d =>
+      '<div class="timeline__day"><span class="timeline__date">' + escapeHtml(d.datum) + '</span><div>' +
+      d.taken.map(t => {
+        const klasse = t.staat === 'klaar' ? ' dot--done' : t.staat === 'mijlpaal' ? ' dot--milestone' : '';
+        const tekst = t.staat === 'mijlpaal'
+          ? '<b>' + escapeHtml(t.tekst) + '</b>'
+          : escapeHtml(t.tekst);
+        return '<div class="timeline__task"><span class="dot' + klasse + '"></span>' + tekst + '</div>';
+      }).join('') + '</div></div>'
+    ).join('') : '<p style="padding:20px;color:var(--ink-3)">Nog geen planning voor dit project.</p>';
+  }
+
+  function kiesPlanning(i) {
+    planIndex = i;
+    tekenPlanningKiezers();
+    tekenPlanning();
+  }
+
+  $('#planProject').addEventListener('change', e => kiesPlanning(Number(e.target.value)));
+
+  document.addEventListener('click', e => {
+    const knop = e.target.closest('[data-plan]');
+    if (knop) kiesPlanning(Number(knop.dataset.plan));
+  });
+
+  $('#planTaak').addEventListener('click', () => {
+    const tekst = prompt('Wat moet er gebeuren?');
+    if (!tekst) return;
+    const wanneer = prompt('Wanneer? (bijvoorbeeld: ma 6 mei)', 'ma 6 mei') || 'nog te plannen';
+    const p = D.projecten[planIndex];
+    p.planning = p.planning || [];
+    p.planning.push({ datum: wanneer.trim(), taken: [{ tekst: tekst.trim(), staat: 'open' }] });
+    tekenPlanning();
+    toast('Taak toegevoegd aan ' + p.naam);
   });
 
   /* ---- Notificaties, AI, beheer ----------------------------------------- */
@@ -4950,6 +5163,9 @@ window.PROJEXA = (function () {
   /* ---- Start ------------------------------------------------------------ */
 
   tekenProjecten();
+  tekenPlanningKiezers();
+  tekenPlanning();
+  tekenBijlagen();
   tekenChatlijst('');
   tekenBerichten();
   tekenTimer();
@@ -4997,7 +5213,7 @@ window.PROJEXA = (function () {
     vandaag: ['Mijn werk', 'Piet Vermeer · medewerker'],
     werk:    ['Werkzaamheden', 'Verbouwing Jansen'],
     fotos:   ['Foto’s', 'Verbouwing Jansen'],
-    chat:    ['Chat', 'Verbouwing Jansen']
+    chat:    ['Chat', 'Jan de Boer · aannemer']
   };
 
   function toon(tab) {
@@ -5074,16 +5290,19 @@ window.PROJEXA = (function () {
     toast(uren.gepauzeerd ? 'Timer gepauzeerd' : 'Timer hervat');
   });
 
-  const taak = $('#wTask');
+  const taakSoort = $('#wTaskSoort');
+  const taakWat = $('#wTaskWat');
   const project = $('#wProject');
 
   function tekenEntry() {
-    $('#wEntryText').innerHTML = escapeHtml(taak.options[taak.selectedIndex].text) +
-      ' — ' + escapeHtml(taak.value) + '<small>' +
-      escapeHtml(project.value.split(' · ')[0]) + '</small>';
+    const soort = taakSoort.value.trim() || 'Werkzaamheden';
+    const wat = taakWat.value.trim();
+    $('#wEntryText').innerHTML = escapeHtml(soort) + (wat ? ' — ' + escapeHtml(wat) : '') +
+      '<small>' + escapeHtml(project.value.split(' · ')[0]) + '</small>';
   }
 
-  taak.addEventListener('change', () => { $('#wTaskSub').textContent = taak.value; tekenEntry(); });
+  taakSoort.addEventListener('input', tekenEntry);
+  taakWat.addEventListener('input', tekenEntry);
   project.addEventListener('change', () => {
     tekenEntry();
     toast('Je schrijft nu op ' + project.value.split(' · ')[0]);
@@ -5130,7 +5349,7 @@ window.PROJEXA = (function () {
   });
 
   $('#wLogOpslaan').addEventListener('click', () => {
-    const soort = $('#wLogSoort').value;
+    const soort = $('#wLogSoort').value.trim() || 'Werkzaamheden';
     const tekst = $('#wLogTekst').value.trim();
     if (!tekst) { toast('Vul kort in wat je hebt gedaan'); $('#wLogTekst').focus(); return; }
     const el = document.createElement('div');
@@ -5157,12 +5376,13 @@ window.PROJEXA = (function () {
 
   /* ---- Chat ---------------------------------------------------------------- */
 
-  const gesprek = D.gesprekken[0];
+  // De medewerker chat alleen met de aannemer — niet met de klant.
+  const gesprek = D.intern;
 
   function bubbel(m) {
-    const mijn = m.van === 'ik';   // de medewerker hoort bij het team van de aannemer
+    const mijn = m.van === 'medewerker';
     const meta = '<span class="m-bubble__meta">' + m.tijd +
-      (mijn && m.gelezen ? ' <span class="read">' + icon('i-checks', 12) + '</span>' : '') + '</span>';
+      (mijn ? ' <span class="read">' + icon('i-checks', 12) + '</span>' : '') + '</span>';
     if (m.foto) {
       return '<div class="m-bubble m-bubble--photo' + (mijn ? ' m-bubble--me' : '') + '">' +
         '<svg viewBox="0 0 160 90" role="img" aria-label="Foto in het gesprek"><use href="#' + m.foto + '"></use></svg>' +
@@ -5192,15 +5412,19 @@ window.PROJEXA = (function () {
     const input = $('#wInput');
     const tekst = input.value.trim();
     if (!tekst) return;
-    gesprek.berichten.push({ van: 'ik', tekst: tekst, tijd: nu(), gelezen: true });
+    gesprek.berichten.push({ van: 'medewerker', tekst: tekst, tijd: nu() });
+    gesprek.preview = 'Piet: ' + tekst;
+    gesprek.tijd = nu();
     input.value = '';
     tekenChat();
   });
 
   $('#wPhoto').addEventListener('click', () => {
-    gesprek.berichten.push({ van: 'ik', foto: 'ph-beams', tijd: nu(), gelezen: true });
+    gesprek.berichten.push({ van: 'medewerker', foto: 'ph-beams', tijd: nu() });
+    gesprek.preview = 'Piet: Foto toegevoegd';
+    gesprek.tijd = nu();
     tekenChat();
-    toast('Foto gedeeld in de projectchat');
+    toast('Foto naar de aannemer gestuurd');
   });
 
   $('#wVoice').addEventListener('click', () => toast('Spraakbericht opnemen — houd ingedrukt'));
@@ -5423,6 +5647,9 @@ window.PROJEXA = (function () {
   $('#mDayNext').addEventListener('click', () => { dagIndex = Math.min(dagen.length - 1, dagIndex + 1); tekenDag(); });
 
   /* ---- Meerwerk ----------------------------------------------------------- */
+
+  $('#mMwOfferte').addEventListener('click', () =>
+    toast('Offerte wordt geopend — ook terug te vinden bij Documenten'));
 
   $('#mMwDetailBtn').addEventListener('click', () => {
     const box = $('#mMwDetails');

@@ -714,3 +714,92 @@
   .nav__group { display: none; }
   .cols[style*="repeat(3"] { grid-template-columns: 1fr !important; }
 }
+
+/* --------------------------------------------------------------------------
+   Vrij invulbare velden, bijlagen en projectkiezer
+   -------------------------------------------------------------------------- */
+
+.vrij {
+  border: 0;
+  background: none;
+  outline: none;
+  width: 100%;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.vrij--licht { font-weight: 400; color: var(--ink-2); }
+.vrij::placeholder { color: var(--ink-3); font-weight: 400; }
+
+.veldhint { font-size: 12.5px; color: var(--ink-3); margin: 8px 0 0; }
+
+.select--kop { padding: 8px 12px; min-width: 220px; background: var(--surface); }
+.select--kop select { border: 0; background: none; outline: none; font-size: 14px; font-weight: 600; cursor: pointer; appearance: none; -webkit-appearance: none; width: 100%; }
+
+.upload { cursor: pointer; }
+
+.bijlagen { display: grid; gap: 8px; margin-top: 6px; }
+
+.bijlagen__leeg { margin: 0; font-size: 13.5px; color: var(--ink-3); }
+
+.bijlage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: 14px;
+}
+
+.bijlage small { display: block; font-size: 12px; color: var(--ink-3); }
+.bijlage button { margin-left: auto; border: 0; background: none; color: var(--ink-3); cursor: pointer; padding: 4px; border-radius: 6px; }
+.bijlage button:hover { background: var(--line); color: var(--ink); }
+
+.tabsrij {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.tabsrij button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.tabsrij button:hover { border-color: var(--gold); color: var(--ink); }
+
+.tabsrij button[aria-current="true"] {
+  background: var(--black);
+  border-color: var(--black);
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .select--kop { min-width: 0; }
+  .topbar__actions { flex-wrap: wrap; }
+}
+
+.intern {
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  background: #f7efe2;
+  border-radius: 999px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  vertical-align: 1px;
+}

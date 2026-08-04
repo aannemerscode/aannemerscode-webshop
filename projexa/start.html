@@ -83,7 +83,7 @@
 
   <div class="start__head">
     <span class="logo">
-      <svg class="logo__mark" width="52" height="58" viewBox="0 0 72 80" aria-hidden="true">
+      <svg class="logo__mark" width="64" height="71" viewBox="0 0 72 80" aria-hidden="true">
         <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
         <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
         <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
@@ -93,67 +93,27 @@
         <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
       </span>
     </span>
-
-    <h1>Waar wil je naar kijken?</h1>
-    <p>
-      Projexa ziet er anders uit voor iedere rol. Kies hieronder met welke ogen je
-      de demo doorloopt — je kunt op elk moment wisselen.
-    </p>
   </div>
 
   <div class="roles-grid">
+    <a class="rolecard" data-page="web" href="app.html">
+      <span class="rolecard__icon"><svg width="24" height="24" aria-hidden="true"><use href="#i-user"></use></svg></span>
+      <span class="rolecard__naam">Aannemer</span>
+      <span class="rolecard__actie">Inloggen</span>
+    </a>
 
-    <article class="rolecard">
-      <span class="rolecard__icon"><svg width="26" height="26" aria-hidden="true"><use href="#i-user"></use></svg></span>
-      <h2>Aannemer</h2>
-      <p class="rolecard__who">Jan de Boer · hoofdgebruiker</p>
-      <p class="rolecard__what">De volledige webversie op laptop of desktop.</p>
-      <ul>
-        <li>Volledige toegang tot alle projecten</li>
-        <li>Gebruikers beheren</li>
-        <li>Instellingen &amp; abonnementen</li>
-        <li>Facturatie &amp; rapportages</li>
-      </ul>
-      <a class="btn btn--gold" data-page="web" href="app.html">Inloggen als aannemer</a>
-      <p class="rolecard__screens">Dashboard · Projecten · Chat · Uren · Meerwerk · Planning · Documenten · Notificaties · AI assistent · Gebruikers · Facturatie · Abonnement</p>
-    </article>
+    <a class="rolecard" data-page="medewerker" href="medewerker.html">
+      <span class="rolecard__icon"><svg width="24" height="24" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+      <span class="rolecard__naam">Medewerker</span>
+      <span class="rolecard__actie">Inloggen</span>
+    </a>
 
-    <article class="rolecard">
-      <span class="rolecard__icon"><svg width="26" height="26" aria-hidden="true"><use href="#i-worker"></use></svg></span>
-      <h2>Medewerker</h2>
-      <p class="rolecard__who">Piet Vermeer · timmerman</p>
-      <p class="rolecard__what">De app op de telefoon, voor op de bouw.</p>
-      <ul>
-        <li>Uren registreren</li>
-        <li>Werkzaamheden invullen</li>
-        <li>Foto&rsquo;s uploaden</li>
-        <li>Chatten binnen projecten</li>
-      </ul>
-      <a class="btn btn--gold" data-page="medewerker" href="medewerker.html">Inloggen als medewerker</a>
-      <p class="rolecard__screens">Vandaag · Werkzaamheden · Foto&rsquo;s · Chat</p>
-    </article>
-
-    <article class="rolecard">
-      <span class="rolecard__icon"><svg width="26" height="26" aria-hidden="true"><use href="#i-home"></use></svg></span>
-      <h2>Klant</h2>
-      <p class="rolecard__who">Familie Jansen · Amsterdam</p>
-      <p class="rolecard__what">Het klantportaal op de telefoon.</p>
-      <ul>
-        <li>Inzien voortgang</li>
-        <li>Chatten met aannemer</li>
-        <li>Meerwerk goedkeuren</li>
-        <li>Documenten bekijken</li>
-      </ul>
-      <a class="btn btn--gold" data-page="klant" href="mobiel.html">Inloggen als klant</a>
-      <p class="rolecard__screens">Start · Berichten · Uren · Meerwerk · Planning · Foto&rsquo;s · Documenten</p>
-    </article>
-
+    <a class="rolecard" data-page="klant" href="mobiel.html">
+      <span class="rolecard__icon"><svg width="24" height="24" aria-hidden="true"><use href="#i-home"></use></svg></span>
+      <span class="rolecard__naam">Klant</span>
+      <span class="rolecard__actie">Inloggen</span>
+    </a>
   </div>
-
-  <p class="start__note">
-    Dit is een demo met voorbeeldgegevens — er is nog geen echte inlog of database.
-    Bekijk ook <a data-page="format" href="index.html">het ontwerp op één pagina</a>.
-  </p>
 
 </main>
 </body>

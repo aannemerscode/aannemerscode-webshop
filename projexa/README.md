@@ -10,7 +10,7 @@ Begin bij **`start.html`** — daar kies je een rol en loop je de demo door.
 
 | Bestand | Wat het is |
 |---|---|
-| `start.html` | Inlogscherm: kies of je als aannemer, medewerker of klant kijkt. |
+| `start.html` | Inlogscherm: het logo met daaronder aannemer, medewerker en klant. |
 | `app.html` | De aannemer op laptop: dashboard, projecten, projectdetail, chat, uren, meerwerk, planning, documenten, notificaties, AI assistent, klanten, gebruikers, facturatie en abonnement. |
 | `medewerker.html` | De medewerker op de telefoon: uren registreren, werkzaamheden invullen, foto's uploaden en chatten binnen projecten. |
 | `mobiel.html` | De klant op de telefoon ("Mijn verbouwing"): voortgang, berichten, meerwerk goedkeuren, planning, foto's en documenten. |
@@ -34,11 +34,11 @@ python3 -m http.server 8080
 |---|---|
 | Projecten dashboard | Aannemer → Dashboard en Projectdetail |
 | Klantportaal | Klant (hele app) en Aannemer → Klanten & portaal |
-| Chat | Alle drie de rollen, elk vanuit hun eigen kant van het gesprek |
+| Chat | Aannemer chat met klanten én (intern) met medewerkers; de medewerker chat alleen met de aannemer, nooit met de klant |
 | Urenregistratie | Aannemer → Uren, Medewerker → Vandaag |
 | Werkzaamheden & foto's | Medewerker → Werk en Foto's |
-| Meerwerk | Aannemer → Meerwerk (versturen), Klant → Meerwerk (goedkeuren) |
-| Planning | Aannemer → Planning, Klant → Meer |
+| Meerwerk | Aannemer → Meerwerk: offerte uploaden en versturen. Klant → Meerwerk: offerte bekijken en met één klik goedkeuren |
+| Planning | Aannemer → Planning, met een keuzelijst en tabs om tussen projecten te wisselen. Klant → Meer |
 | Documenten | Aannemer → Documenten, Klant → Meer |
 | Notificaties | Aannemer → Notificaties, met instellingen per soort melding |
 | AI assistent | Aannemer → AI assistent (samenvatting + automatisch meerwerk) |
@@ -56,10 +56,11 @@ en het abonnement van €69,99 per maand met proefperiode en Stripe.
   zoeken in de gesprekken, leesbevestiging (dubbel vinkje) die na het versturen
   aanspringt.
 - **Urenregistratie** — de timer loopt echt vanaf 07:30:45, met werkende
-  Stop/Start en Pauze/Hervat, dagnavigatie, keuze van werkzaamheden en foto's
-  toevoegen.
-- **Meerwerk** — details uitklappen, "Stuur naar klant" (web) zet de status op
-  *Verstuurd*, "Goedkeuren" (mobiel klantportaal) zet hem op *Goedgekeurd*.
+  Stop/Start en Pauze/Hervat, dagnavigatie en foto's toevoegen. Werkzaamheden
+  kies je uit een lijst óf typ je zelf; je zit niet vast aan vaste soorten.
+- **Meerwerk** — details uitklappen, een offerte uploaden (PDF, Word of foto) en
+  weer verwijderen, "Stuur naar klant" zet de status op *Verstuurd*, en
+  "Goedkeuren" in het klantportaal op *Goedgekeurd*.
 - **Dashboard** — project toevoegen, en acties elders in de app verschijnen in
   "Laatste activiteit".
 - **Documenten** — document toevoegen aan de lijst.

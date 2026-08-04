@@ -16,6 +16,20 @@ window.PROJEXA = (function () {
         { tekst: 'Leidingwerk verleggen (installateur)', wanneer: 'do 2 mei', staat: 'open' },
         { tekst: 'Balklaag laten keuren door constructeur', wanneer: 'vr 3 mei', staat: 'open' },
         { tekst: 'Stucwerk begane grond', wanneer: 'week 19', staat: 'open' }
+      ],
+      planning: [
+        { datum: 'ma 29 apr', taken: [
+          { tekst: 'Tussenwand slopen — afgerond', staat: 'klaar' },
+          { tekst: 'Puin afvoeren — afgerond', staat: 'klaar' } ] },
+        { datum: 'wo 1 mei', taken: [
+          { tekst: 'Timmerwerk: voorzetwand plaatsen', staat: 'bezig' },
+          { tekst: 'Balklaag inmeten voor meerwerk', staat: 'bezig' } ] },
+        { datum: 'do 2 mei', taken: [
+          { tekst: 'Leidingwerk verleggen (installateur)', staat: 'open' } ] },
+        { datum: 'ma 6 mei', taken: [
+          { tekst: 'Mijlpaal: ruwbouw gereed', staat: 'mijlpaal' } ] },
+        { datum: 'vr 17 mei', taken: [
+          { tekst: 'Mijlpaal: oplevering', staat: 'mijlpaal' } ] }
       ]
     },
     {
@@ -25,6 +39,19 @@ window.PROJEXA = (function () {
         { tekst: 'Dakkapel plaatsen', wanneer: 'week 19', staat: 'bezig' },
         { tekst: 'Extra dakraam inmeten', wanneer: 'ma 6 mei', staat: 'open' },
         { tekst: 'Kozijnen leveren', wanneer: 'week 20', staat: 'open' }
+      ],
+      planning: [
+        { datum: 'ma 29 apr', taken: [
+          { tekst: 'Fundering storten — afgerond', staat: 'klaar' } ] },
+        { datum: 'wo 1 mei', taken: [
+          { tekst: 'Dakkapel plaatsen', staat: 'bezig' },
+          { tekst: 'Steiger opbouwen achterzijde', staat: 'bezig' } ] },
+        { datum: 'ma 6 mei', taken: [
+          { tekst: 'Extra dakraam inmeten (meerwerk)', staat: 'open' } ] },
+        { datum: 'week 20', taken: [
+          { tekst: 'Kozijnen leveren en stellen', staat: 'open' } ] },
+        { datum: 'vr 28 jun', taken: [
+          { tekst: 'Mijlpaal: wind- en waterdicht', staat: 'mijlpaal' } ] }
       ]
     },
     {
@@ -33,6 +60,15 @@ window.PROJEXA = (function () {
       taken: [
         { tekst: 'Badkamer strippen', wanneer: 'deze week', staat: 'bezig' },
         { tekst: 'Vloerverwarming aanleggen', wanneer: 'week 20', staat: 'open' }
+      ],
+      planning: [
+        { datum: 'wo 1 mei', taken: [
+          { tekst: 'Badkamer strippen', staat: 'bezig' } ] },
+        { datum: 'week 20', taken: [
+          { tekst: 'Vloerverwarming aanleggen (meerwerk)', staat: 'open' },
+          { tekst: 'Leidingwerk aanpassen', staat: 'open' } ] },
+        { datum: 'week 22', taken: [
+          { tekst: 'Mijlpaal: badkamer gereed', staat: 'mijlpaal' } ] }
       ]
     },
     {
@@ -41,6 +77,14 @@ window.PROJEXA = (function () {
       taken: [
         { tekst: 'Opleverpunten afhandelen', wanneer: 'afgerond', staat: 'klaar' },
         { tekst: 'Eindfactuur versturen', wanneer: 'afgerond', staat: 'klaar' }
+      ],
+      planning: [
+        { datum: 'ma 15 apr', taken: [
+          { tekst: 'Opleverpunten afhandelen — afgerond', staat: 'klaar' } ] },
+        { datum: 'vr 19 apr', taken: [
+          { tekst: 'Mijlpaal: opgeleverd', staat: 'mijlpaal' } ] },
+        { datum: 'ma 22 apr', taken: [
+          { tekst: 'Eindfactuur verstuurd', staat: 'klaar' } ] }
       ]
     }
   ];
@@ -103,6 +147,25 @@ window.PROJEXA = (function () {
     }
   ];
 
+  // Interne chat tussen aannemer en medewerker. De klant heeft hier geen
+  // toegang toe; medewerkers chatten alleen met de aannemer.
+  const intern = {
+    id: 'piet',
+    naam: 'Piet Vermeer',
+    rol: 'Medewerker · Verbouwing Jansen',
+    preview: 'Piet: Gips is binnen',
+    tijd: '10:20',
+    icon: 'i-worker',
+    intern: true,
+    berichten: [
+      { van: 'ik', tekst: 'Piet, kun je vandaag de voorzetwand in de slaapkamer afmaken?', tijd: '07:05', gelezen: true },
+      { van: 'medewerker', tekst: 'Ja, ben ermee bezig. Gips is binnen.', tijd: '07:12' },
+      { van: 'medewerker', foto: 'ph-1', tijd: '09:48' },
+      { van: 'ik', tekst: 'Mooi. Schrijf je uren op Verbouwing Jansen.', tijd: '10:18', gelezen: true },
+      { van: 'medewerker', tekst: 'Doe ik.', tijd: '10:20' }
+    ]
+  };
+
   const meerwerk = {
     nummer: 'MW-2024-001',
     titel: 'Wand verplaatsen slaapkamer',
@@ -118,5 +181,7 @@ window.PROJEXA = (function () {
     { tekst: 'Nieuwe planning beschikbaar',   tijd: '1 uur geleden',  icon: 'i-calendar', stijl: 'gold' }
   ];
 
-  return { projecten, activiteit, gesprekken, meerwerk, updates };
+  gesprekken.splice(1, 0, intern);
+
+  return { projecten, activiteit, gesprekken, intern, meerwerk, updates };
 })();
