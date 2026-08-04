@@ -402,8 +402,8 @@ body.mob {
     outline: 1px solid #33383b;
     box-shadow: var(--shadow-lg);
     overflow: hidden;
-    min-height: 800px;
-    height: 800px;
+    min-height: 640px;
+    height: min(820px, calc(100vh - 130px));
   }
 
   .m-main { overflow-y: auto; }
