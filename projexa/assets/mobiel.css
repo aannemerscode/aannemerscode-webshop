@@ -483,3 +483,10 @@ body.mob {
 .m-bijlage span { font-size: 14px; }
 .m-bijlage small { display: block; font-size: 12px; color: var(--ink-3); }
 .m-bijlage:hover { border-color: var(--gold); }
+
+/* Uitloggen onderaan een scherm */
+.m-uitloggen {
+  width: 100%;
+  margin-top: 26px;
+  text-decoration: none;
+}

@@ -267,744 +267,6 @@ button, input, select, textarea {
 
 
 /* ==========================================================================
-   Projexa — opmaak van het overzichtsformat (de poster als werkende pagina)
-   ========================================================================== */
-
-.brief {
-  background:
-    radial-gradient(1200px 600px at 78% 6%, rgba(181, 149, 94, .10), transparent 60%),
-    radial-gradient(900px 500px at 4% 60%, rgba(181, 149, 94, .06), transparent 60%),
-    var(--black);
-}
-
-.page {
-  max-width: 1220px;
-  margin: 0 auto;
-  padding: 0 28px 70px;
-}
-
-/* --------------------------------------------------------------------------
-   Sticky kop met links naar de werkende versies
-   -------------------------------------------------------------------------- */
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  backdrop-filter: blur(10px);
-  background: rgba(9, 11, 12, .82);
-  border-bottom: 1px solid rgba(255, 255, 255, .07);
-}
-
-.site-header__inner {
-  max-width: 1220px;
-  margin: 0 auto;
-  padding: 12px 28px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.site-header .logo { font-size: 15px; gap: 10px; }
-.site-header__links { margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap; }
-.site-header .btn { padding: 9px 15px; font-size: 13px; }
-
-/* --------------------------------------------------------------------------
-   Koppen
-   -------------------------------------------------------------------------- */
-
-.eyebrow {
-  font-size: 15px;
-  letter-spacing: .06em;
-  font-weight: 700;
-  color: var(--gold-light);
-  text-transform: uppercase;
-  margin: 0 0 16px;
-}
-
-.rule {
-  border: 0;
-  border-top: 1px solid rgba(181, 149, 94, .28);
-  margin: 46px 0 34px;
-}
-
-/* --------------------------------------------------------------------------
-   Hero
-   -------------------------------------------------------------------------- */
-
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
-  gap: 46px;
-  padding: 44px 0 8px;
-  align-items: start;
-}
-
-.hero__logo { font-size: 30px; margin-bottom: 34px; }
-
-.hero h1 {
-  font-size: 30px;
-  line-height: 1.15;
-  letter-spacing: .01em;
-  margin: 0 0 14px;
-  font-weight: 700;
-}
-
-.hero__intro {
-  color: rgba(255, 255, 255, .76);
-  font-size: 15.5px;
-  margin: 0;
-  max-width: 46ch;
-}
-
-.guidelines { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-
-.guidelines li {
-  position: relative;
-  padding-left: 22px;
-  color: rgba(255, 255, 255, .82);
-  font-size: 15px;
-}
-
-.guidelines li::before {
-  content: "";
-  position: absolute;
-  left: 4px; top: 10px;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .55);
-}
-
-/* --------------------------------------------------------------------------
-   Hoofdraster: functies links, schermen rechts
-   -------------------------------------------------------------------------- */
-
-.body-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
-  gap: 46px;
-  align-items: start;
-}
-
-.features { display: grid; gap: 26px; }
-
-.feature {
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  gap: 16px;
-  align-items: start;
-}
-
-.feature__icon {
-  width: 38px; height: 38px;
-  color: #fff;
-  opacity: .92;
-}
-
-.feature h3 {
-  margin: 2px 0 6px;
-  font-size: 15.5px;
-  font-weight: 700;
-  letter-spacing: .03em;
-  text-transform: uppercase;
-}
-
-.feature h3 em {
-  font-style: normal;
-  font-size: 12.5px;
-  letter-spacing: .06em;
-  color: rgba(255, 255, 255, .6);
-}
-
-.feature p {
-  margin: 0;
-  font-size: 14px;
-  color: rgba(255, 255, 255, .68);
-  line-height: 1.6;
-}
-
-/* --------------------------------------------------------------------------
-   Schermen / devices
-   -------------------------------------------------------------------------- */
-
-.showcase { display: grid; gap: 30px; }
-
-.showcase__row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-
-.device {
-  background: #16191b;
-  border: 1px solid #2a2e31;
-  border-radius: 20px;
-  padding: 10px;
-  box-shadow: var(--shadow-lg);
-}
-
-.device__screen {
-  background: var(--app-bg);
-  border-radius: 12px;
-  overflow: hidden;
-  color: var(--ink);
-}
-
-.device__caption {
-  font-size: 12px;
-  color: rgba(255, 255, 255, .45);
-  margin-top: 10px;
-  line-height: 1.7;
-}
-
-.device__caption a { color: var(--gold-light); text-decoration: none; }
-.device__caption a:hover { text-decoration: underline; }
-
-/* Laptop + telefoon combinatie */
-.combo { position: relative; padding-right: 96px; padding-bottom: 118px; }
-
-.laptop { border-radius: 16px 16px 6px 6px; }
-.laptop .device__screen { border-radius: 8px; }
-
-.laptop__base {
-  height: 12px;
-  margin: 8px -34px 0;
-  border-radius: 0 0 14px 14px;
-  background: linear-gradient(180deg, #23272a, #101314);
-  border: 1px solid #2a2e31;
-  border-top: 0;
-  position: relative;
-}
-
-.laptop__base::after {
-  content: "";
-  position: absolute;
-  left: 50%; top: 0;
-  transform: translateX(-50%);
-  width: 88px; height: 4px;
-  border-radius: 0 0 6px 6px;
-  background: #2f3437;
-}
-
-.phone {
-  position: absolute;
-  right: 0;
-  top: 44px;
-  width: 208px;
-  background: #16191b;
-  border: 1px solid #33383b;
-  border-radius: 30px;
-  padding: 8px;
-  box-shadow: var(--shadow-lg);
-}
-
-.phone__screen {
-  background: var(--surface);
-  border-radius: 24px;
-  overflow: hidden;
-  color: var(--ink);
-  position: relative;
-}
-
-.phone__notch {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 6px;
-  width: 74px; height: 15px;
-  border-radius: 999px;
-  background: #16191b;
-  z-index: 2;
-}
-
-.phone__status {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 7px 14px 2px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-/* --------------------------------------------------------------------------
-   Compacte namaak-UI in de schermen (mk = mockup)
-   -------------------------------------------------------------------------- */
-
-.mk { font-size: 11px; line-height: 1.4; }
-
-.mk__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px 14px;
-  background: var(--surface);
-}
-
-.mk__title { font-size: 14px; font-weight: 600; }
-
-.mk__btn {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 5px 10px;
-  font-size: 10.5px;
-  font-weight: 600;
-  background: var(--surface);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.mk__layout { display: grid; grid-template-columns: 92px 1fr; min-height: 232px; }
-
-.mk__side {
-  background: var(--black);
-  padding: 12px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.mk__side .logo { font-size: 7px; gap: 5px; padding-left: 3px; margin-bottom: 12px; }
-
-.mk__nav {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px;
-  border-radius: 6px;
-  color: rgba(255, 255, 255, .5);
-  font-size: 9px;
-}
-
-.mk__nav svg { width: 11px; height: 11px; flex: none; }
-.mk__nav.is-active { background: #1b2023; color: #fff; }
-.mk__nav.is-active svg { color: var(--gold-light); }
-
-.mk__body { background: var(--surface); padding: 12px 14px 14px; }
-
-.mk__stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-
-.mk__stat {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px 9px;
-  background: var(--surface);
-}
-
-.mk__stat b { display: block; font-size: 18px; font-weight: 600; line-height: 1.1; }
-.mk__stat span { font-size: 9.5px; color: var(--ink-2); }
-
-.mk__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
-.mk__coltitle { font-size: 11.5px; font-weight: 600; margin-bottom: 6px; }
-
-.mk__card { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-.mk__row { display: flex; align-items: center; gap: 7px; padding: 7px 8px; }
-.mk__row + .mk__row { border-top: 1px solid var(--line); }
-.mk__row svg { width: 13px; height: 13px; flex: none; }
-.mk__row b { font-size: 10px; font-weight: 600; display: block; }
-.mk__row small { font-size: 8.5px; color: var(--ink-3); }
-.mk__pct { margin-left: auto; text-align: right; width: 54px; }
-.mk__pct b { font-size: 10px; }
-
-.mk__bar { display: block; height: 3px; border-radius: 99px; background: var(--line); margin-top: 4px; overflow: hidden; }
-.mk__bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); }
-
-.mk__ico {
-  width: 17px; height: 17px;
-  border-radius: 5px;
-  background: var(--surface-2);
-  display: grid;
-  place-items: center;
-  flex: none;
-}
-
-.mk__ico svg { width: 10px; height: 10px; }
-.mk__ico--green { background: #e8f6ec; color: var(--green); }
-.mk__ico--gold { background: #f7efe2; color: var(--gold-dark); }
-
-/* Telefoonscherm */
-.mkp { padding: 4px 12px 14px; }
-.mkp h4 { margin: 6px 0 10px; font-size: 13px; font-weight: 700; }
-
-.mkp__project {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 9px 0;
-  border-top: 1px solid var(--line);
-}
-
-.mkp__project b { font-size: 11.5px; font-weight: 600; display: block; }
-.mkp__project small { font-size: 9.5px; color: var(--ink-3); }
-
-.mkp__prog { padding: 9px 0; border-top: 1px solid var(--line); }
-.mkp__prog div { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 600; }
-
-.mkp__quick {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  padding: 10px 0;
-  border-top: 1px solid var(--line);
-  text-align: center;
-}
-
-.mkp__quick span { font-size: 7.5px; color: var(--ink-2); display: block; margin-top: 3px; }
-.mkp__quick svg { width: 15px; height: 15px; }
-
-.mkp__label { font-size: 9.5px; color: var(--ink-3); padding-top: 8px; border-top: 1px solid var(--line); }
-.mkp__title { font-size: 11.5px; font-weight: 700; margin: 8px 0 4px; }
-
-.mkp__upd { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-top: 1px solid var(--line); }
-.mkp__upd b { font-size: 10px; font-weight: 600; display: block; }
-.mkp__upd small { font-size: 8.5px; color: var(--ink-3); }
-
-/* Chatscherm */
-.mkc { display: grid; grid-template-columns: 162px 1fr; min-height: 246px; background: var(--surface); }
-.mkc__aside { border-right: 1px solid var(--line); }
-.mkc__asidehead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px 6px; font-size: 12px; font-weight: 700; }
-
-.mkc__search {
-  margin: 0 10px 8px;
-  border: 1px solid var(--line);
-  background: var(--surface-2);
-  border-radius: 7px;
-  padding: 5px 8px;
-  font-size: 9.5px;
-  color: var(--ink-3);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.mkc__item {
-  display: grid;
-  grid-template-columns: 20px 1fr auto;
-  gap: 7px;
-  padding: 8px 10px;
-  border-top: 1px solid var(--line);
-  border-left: 2px solid transparent;
-}
-
-.mkc__item.is-active { background: var(--surface-2); border-left-color: var(--gold); }
-.mkc__item b { font-size: 10px; font-weight: 600; display: block; }
-.mkc__item small { font-size: 8.5px; color: var(--ink-3); }
-.mkc__item time { font-size: 8.5px; color: var(--ink-3); }
-
-.mkc__thread { display: flex; flex-direction: column; background: var(--surface-2); }
-.mkc__msgs { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 7px; }
-
-.mkc__b {
-  max-width: 74%;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  padding: 7px 9px 5px;
-  font-size: 9.5px;
-  align-self: flex-start;
-}
-
-.mkc__b--me { align-self: flex-end; background: #f4ece0; border-color: #e8dcc8; }
-.mkc__b--photo { padding: 4px; align-self: flex-end; max-width: 60%; }
-.mkc__b--photo svg { border-radius: 6px; width: 100%; display: block; }
-.mkc__t { display: flex; justify-content: flex-end; gap: 4px; font-size: 8px; color: var(--ink-3); margin-top: 3px; }
-
-.mkc__composer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--surface);
-  border-top: 1px solid var(--line);
-  padding: 8px 10px;
-}
-
-.mkc__input {
-  flex: 1;
-  border: 1px solid var(--line);
-  background: var(--surface-2);
-  border-radius: 99px;
-  padding: 6px 10px;
-  font-size: 9.5px;
-  color: var(--ink-3);
-}
-
-.mkc__send {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, var(--gold-light), var(--gold));
-  color: #221b0c;
-  display: grid;
-  place-items: center;
-  flex: none;
-}
-
-.mkc__send svg { width: 11px; height: 11px; }
-
-/* Uren- en meerwerkkaart */
-.mkt { background: var(--surface); min-height: 246px; }
-.mkt__head { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px 8px; font-size: 13px; font-weight: 700; }
-.mkt__timer { background: var(--surface-2); padding: 8px 14px 14px; text-align: center; }
-.mkt__datenav { display: flex; align-items: center; justify-content: space-between; font-size: 10.5px; font-weight: 600; }
-.mkt__big { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 6px; }
-.mkt__sub { font-size: 9.5px; color: var(--ink-2); }
-.mkt__btns { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
-
-.mkt__btn {
-  border-radius: 7px;
-  padding: 5px 16px;
-  font-size: 10.5px;
-  font-weight: 700;
-  border: 1px solid var(--line);
-  background: var(--surface);
-}
-
-.mkt__btn--stop { background: var(--red); color: #fff; border-color: var(--red); }
-.mkt__section { padding: 10px 14px; }
-.mkt__section h5 { margin: 0 0 6px; font-size: 11px; font-weight: 700; }
-
-.mkt__select {
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  padding: 6px 9px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.mkt__select b { font-size: 10.5px; font-weight: 600; display: block; }
-.mkt__select small { font-size: 9px; color: var(--ink-3); }
-
-.mkt__photos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
-.mkt__photos > * { aspect-ratio: 1; border-radius: 6px; overflow: hidden; }
-.mkt__photos svg { width: 100%; height: 100%; display: block; }
-
-.mkt__add {
-  border: 1px dashed var(--line);
-  background: var(--surface-2);
-  display: grid;
-  place-items: center;
-  color: var(--ink-3);
-}
-
-.mkm { padding: 0 14px 14px; }
-.mkm__card { border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; }
-.mkm__top { display: flex; justify-content: space-between; gap: 10px; }
-.mkm__nr { font-size: 11px; font-weight: 600; }
-.mkm__price { font-size: 12px; font-weight: 700; }
-.mkm__title { font-size: 11px; font-weight: 600; margin-top: 5px; }
-
-.mkm__tag {
-  display: inline-block;
-  margin-left: 8px;
-  background: #f7ecd7;
-  color: #8a6a20;
-  border-radius: 99px;
-  padding: 2px 8px;
-  font-size: 8.5px;
-  font-weight: 700;
-  float: right;
-}
-
-.mkm__label { font-size: 9.5px; color: var(--ink-3); margin-top: 12px; }
-.mkm__text { font-size: 10px; margin-top: 3px; }
-.mkm__row { display: flex; justify-content: space-between; font-size: 10px; padding: 7px 0; border-top: 1px solid var(--line); margin-top: 8px; color: var(--ink-2); }
-.mkm__row b { color: var(--ink); }
-.mkm__btns { display: flex; gap: 8px; margin-top: 10px; }
-
-.mkm__btn {
-  flex: 1;
-  text-align: center;
-  border-radius: 7px;
-  padding: 7px;
-  font-size: 10px;
-  font-weight: 700;
-  border: 1px solid var(--line);
-  background: var(--surface);
-}
-
-.mkm__btn--gold {
-  background: linear-gradient(180deg, var(--gold-light), var(--gold));
-  color: #221b0c;
-  border-color: var(--gold-dark);
-}
-
-/* --------------------------------------------------------------------------
-   Onderste blokken
-   -------------------------------------------------------------------------- */
-
-.specs {
-  display: grid;
-  grid-template-columns: 1fr 1fr minmax(0, 300px);
-  gap: 40px;
-  align-items: start;
-}
-
-.speclist { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
-
-.speclist li {
-  position: relative;
-  padding-left: 22px;
-  font-size: 14.5px;
-  color: rgba(255, 255, 255, .8);
-}
-
-.speclist li::before {
-  content: "";
-  position: absolute;
-  left: 4px; top: 9px;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .5);
-}
-
-.speclist--gold li::before { background: var(--gold); }
-
-/* Prijskaart */
-.price {
-  background: var(--surface);
-  color: var(--ink);
-  border-radius: var(--r-lg);
-  padding: 20px 22px 22px;
-  box-shadow: var(--shadow-lg);
-  text-align: center;
-}
-
-.price__trial { font-size: 12.5px; color: var(--ink-2); }
-.price__trial b { display: block; color: var(--gold-dark); font-weight: 700; }
-
-.price__amount {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 6px;
-  margin: 10px 0 14px;
-}
-
-.price__amount strong { font-size: 38px; font-weight: 700; letter-spacing: -.01em; }
-.price__amount span { font-size: 14px; color: var(--ink-2); }
-
-.price__list { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 6px; text-align: left; }
-
-.price__list li {
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--ink);
-}
-
-.price__list svg { width: 14px; height: 14px; color: var(--gold-dark); margin-top: 3px; }
-.price .btn { width: 100%; }
-
-/* Rollen */
-.roles {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: var(--r-md);
-  overflow: hidden;
-}
-
-.role { padding: 18px 22px; }
-.role + .role { border-left: 1px solid rgba(255, 255, 255, .12); }
-
-.role h3 {
-  margin: 0 0 10px;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
-
-.role ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-
-.role li {
-  position: relative;
-  padding-left: 16px;
-  font-size: 13.5px;
-  color: rgba(255, 255, 255, .78);
-}
-
-.role li::before {
-  content: "";
-  position: absolute;
-  left: 2px; top: 9px;
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--gold);
-}
-
-.roles-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
-  gap: 34px;
-  align-items: center;
-}
-
-.brandbox {
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: var(--r-md);
-  padding: 26px;
-  display: grid;
-  place-items: center;
-}
-
-.brandbox .logo { font-size: 22px; }
-
-.site-footer {
-  border-top: 1px solid rgba(255, 255, 255, .08);
-  margin-top: 50px;
-  padding-top: 22px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  align-items: center;
-  font-size: 13px;
-  color: rgba(255, 255, 255, .45);
-}
-
-.site-footer__links { margin-left: auto; display: flex; gap: 18px; }
-.site-footer a { color: var(--gold-light); text-decoration: none; }
-.site-footer a:hover { text-decoration: underline; }
-
-/* --------------------------------------------------------------------------
-   Responsive
-   -------------------------------------------------------------------------- */
-
-@media (max-width: 1080px) {
-  .hero, .body-grid { grid-template-columns: 1fr; gap: 34px; }
-  .specs { grid-template-columns: 1fr 1fr; }
-  .specs .price { grid-column: 1 / -1; max-width: 340px; }
-  .roles-row { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 860px) {
-  .showcase__row { grid-template-columns: 1fr; }
-  .combo { padding-right: 0; padding-bottom: 0; }
-  .phone { position: static; width: 100%; max-width: 260px; margin: 22px auto 0; }
-  .roles { grid-template-columns: 1fr; }
-  .role + .role { border-left: 0; border-top: 1px solid rgba(255, 255, 255, .12); }
-}
-
-@media (max-width: 620px) {
-  .page { padding: 0 18px 54px; }
-  .site-header__inner { padding: 10px 18px; }
-  .site-header .logo__tag { display: none; }
-  .hero { padding-top: 28px; }
-  .hero__logo { font-size: 22px; margin-bottom: 24px; }
-  .hero h1 { font-size: 24px; }
-  .specs { grid-template-columns: 1fr; gap: 32px; }
-  .specs .price { max-width: none; }
-  .mk__layout { grid-template-columns: 62px 1fr; }
-  .mk__nav span { display: none; }
-  .mk__stats { grid-template-columns: repeat(2, 1fr); }
-  .mk__cols { grid-template-columns: 1fr; }
-  .mkc { grid-template-columns: 1fr; }
-  .mkc__aside { border-right: 0; border-bottom: 1px solid var(--line); }
-}
-
-
-/* ==========================================================================
    Projexa — UI-componenten voor de werkende app (desktop + smartphone)
    ========================================================================== */
 
@@ -1810,6 +1072,20 @@ button, input, select, textarea {
   vertical-align: 1px;
 }
 
+.uitloggen {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gold-light);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.uitloggen:hover { text-decoration: underline; }
+
+a.avatar { text-decoration: none; }
+a.avatar:hover { filter: brightness(1.08); }
+
 
 /* ==========================================================================
    Projexa — smartphone-versie (mobile-first)
@@ -2297,76 +1573,16 @@ button, input, select, textarea {
 .m-bijlage small { display: block; font-size: 12px; color: var(--ink-3); }
 .m-bijlage:hover { border-color: var(--gold); }
 
-
-/* ---- Wisselbalk van de demo ------------------------------------------- */
-.demo-bar {
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 10px 20px;
-  background: rgba(9, 11, 12, .93);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, .09);
+/* Uitloggen onderaan een scherm */
+.m-uitloggen {
+  width: 100%;
+  margin-top: 26px;
+  text-decoration: none;
 }
 
-.demo-bar .logo { font-size: 14px; gap: 9px; }
-
-.demo-switch {
-  margin-left: auto;
-  display: flex;
-  gap: 3px;
-  padding: 3px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .07);
-  border: 1px solid rgba(255, 255, 255, .1);
-}
-
-.demo-switch button {
-  border: 0;
-  background: none;
-  color: rgba(255, 255, 255, .68);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 999px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.demo-switch button:hover { color: #fff; }
-
-.demo-switch button[aria-current="page"] {
-  background: linear-gradient(180deg, var(--gold-light), var(--gold));
-  color: #221b0c;
-}
 
 .demo-page[hidden] { display: none; }
 [data-page] { cursor: pointer; }
-
-.demo-hint {
-  font-size: 12.5px;
-  color: rgba(255, 255, 255, .4);
-  padding: 0 20px 0 0;
-}
-
-@media (max-width: 760px) {
-  .demo-bar { padding: 9px 12px; gap: 10px; flex-wrap: nowrap; }
-  .demo-bar .logo__type, .demo-hint { display: none; }
-  .demo-switch {
-    margin-left: 0;
-    flex: 1;
-    min-width: 0;
-    overflow-x: auto;
-    justify-content: flex-start;
-    scrollbar-width: none;
-  }
-  .demo-switch::-webkit-scrollbar { display: none; }
-  .demo-switch button { padding: 7px 13px; font-size: 12.5px; }
-}
 </style>
 
 </head>
@@ -2377,6 +1593,11 @@ button, input, select, textarea {
     <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#e7cb8e"/>
       <stop offset="1" stop-color="#a98449"/>
+    </linearGradient>
+    <linearGradient id="phshade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity=".28"/>
+      <stop offset=".5" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".35"/>
     </linearGradient>
   </defs>
   <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -2406,13 +1627,12 @@ button, input, select, textarea {
     <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V9.2L12 4l8 5.2v11.3"/><path d="M9.6 20.5v-5.2h4.8v5.2"/><path d="M3 20.5h18"/></symbol>
     <symbol id="i-worker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.4" r="3"/><path d="M5.5 20.5c0-3.3 2.9-5.2 6.5-5.2s6.5 1.9 6.5 5.2"/><path d="M8.4 5.6a4 4 0 0 1 7.2 0"/></symbol>
     <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="16" rx="2.2"/><path d="M9 4.5V3h6v1.5"/><path d="M8 12.5h8M8 16h5"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 5.4h3"/></symbol>
     <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.5A6.5 6.5 0 0 0 7.5 12 6.5 6.5 0 0 0 17 17.5"/><path d="M5 10.5h7M5 13.5h7"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
-    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 5.4h3"/></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></symbol>
   </g>
 
-  <!-- Foto-illustraties (getekend, dus geen externe bestanden nodig) -->
   <symbol id="ph-beams" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">
     <rect width="160" height="90" fill="#201915"/>
     <g fill="#7d6041"><polygon points="0,16 160,0 160,13 0,29"/><polygon points="0,45 160,29 160,42 0,58"/><polygon points="0,74 160,58 160,71 0,87"/></g>
@@ -2420,55 +1640,21 @@ button, input, select, textarea {
     <g fill="#5d4830" opacity=".75"><polygon points="0,29 160,13 160,17 0,33"/><polygon points="0,58 160,42 160,46 0,62"/></g>
     <rect width="160" height="90" fill="url(#phshade)"/>
   </symbol>
-  <linearGradient id="phshade" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#000" stop-opacity=".28"/>
-    <stop offset=".5" stop-color="#000" stop-opacity="0"/>
-    <stop offset="1" stop-color="#000" stop-opacity=".35"/>
-  </linearGradient>
-
   <symbol id="ph-1" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
-    <rect width="60" height="60" fill="#c9ab86"/>
-    <path d="M0 44h60v16H0z" fill="#8f6f4c"/>
-    <path d="M8 12h10v32H8zM42 12h10v32H42z" fill="#a8845c"/>
-    <path d="M18 8h24v6H18z" fill="#e0c9a8"/>
+    <rect width="60" height="60" fill="#c9ab86"/><path d="M0 44h60v16H0z" fill="#8f6f4c"/>
+    <path d="M8 12h10v32H8zM42 12h10v32H42z" fill="#a8845c"/><path d="M18 8h24v6H18z" fill="#e0c9a8"/>
     <path d="M24 24h12v20H24z" fill="#6f5537"/>
   </symbol>
   <symbol id="ph-2" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
-    <rect width="60" height="60" fill="#b99a72"/>
-    <path d="M0 0h60v18H0z" fill="#8a6a48"/>
-    <path d="M14 18h8v42h-8zM38 18h8v42h-8z" fill="#d8c0a0"/>
-    <path d="M0 50h60v10H0z" fill="#6c5334"/>
+    <rect width="60" height="60" fill="#b99a72"/><path d="M0 0h60v18H0z" fill="#8a6a48"/>
+    <path d="M14 18h8v42h-8zM38 18h8v42h-8z" fill="#d8c0a0"/><path d="M0 50h60v10H0z" fill="#6c5334"/>
   </symbol>
   <symbol id="ph-3" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
-    <rect width="60" height="60" fill="#cfcfcb"/>
-    <path d="M0 0h60v14H0z" fill="#e8e8e4"/>
-    <path d="M0 46h60v14H0z" fill="#9d9d98"/>
-    <path d="M16 14h6v32h-6zM38 14h6v32h-6z" fill="#b6b6b1"/>
+    <rect width="60" height="60" fill="#cfcfcb"/><path d="M0 0h60v14H0z" fill="#e8e8e4"/>
+    <path d="M0 46h60v14H0z" fill="#9d9d98"/><path d="M16 14h6v32h-6zM38 14h6v32h-6z" fill="#b6b6b1"/>
     <path d="M26 20h8v26h-8z" fill="#7f7f7a"/>
   </symbol>
 </svg>
-
-<header class="demo-bar">
-  <span class="logo">
-      <svg class="logo__mark" width="26" height="29" viewBox="0 0 72 80" aria-hidden="true">
-        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
-        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
-        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
-      </svg>
-      <span class="logo__type">
-        <span class="logo__name">PROJEX<b>A</b></span>
-        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
-      </span>
-    </span>
-  <span class="demo-hint">Loop de demo door — alles werkt echt</span>
-  <nav class="demo-switch" aria-label="Kies een rol">
-    <button type="button" data-page="start" aria-current="page">Start</button>
-    <button type="button" data-page="web">Aannemer</button>
-    <button type="button" data-page="medewerker">Medewerker</button>
-    <button type="button" data-page="klant">Klant</button>
-    <button type="button" data-page="format">Het ontwerp</button>
-  </nav>
-</header>
 
 <section class="demo-page startpg" id="page-start">
 
@@ -2521,7 +1707,7 @@ button, input, select, textarea {
 
   <!-- ==== Zijbalk ============================================================ -->
   <aside class="sidebar">
-    <a class="logo" data-page="format" aria-label="Projexa">
+    <a class="logo" href="index.html" aria-label="Projexa">
       <svg class="logo__mark" width="26" height="29" viewBox="0 0 72 80" aria-hidden="true">
         <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
         <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
@@ -2584,7 +1770,9 @@ button, input, select, textarea {
         <span class="avatar">JB</span>
         <span>Jan de Boer<br><small style="color:rgba(255,255,255,.45)">Aannemer</small></span>
       </div>
-      <a data-page="start" style="color:var(--gold-light);text-decoration:none">Andere rol bekijken →</a>
+      <a class="uitloggen" data-page="start">
+        <svg width="15" height="15" aria-hidden="true"><use href="#i-chev-l"></use></svg> Uitloggen
+      </a>
     </div>
   </aside>
 
@@ -3376,7 +2564,7 @@ button, input, select, textarea {
       <button class="m-bell" type="button" id="wBell" aria-label="Notificaties">
         <svg width="21" height="21" aria-hidden="true"><use href="#i-bell"></use></svg>
       </button>
-      <span class="avatar">PV</span>
+      <a class="avatar" data-page="start" title="Uitloggen" aria-label="Uitloggen">PV</a>
     </div>
   </header>
 
@@ -3460,6 +2648,8 @@ button, input, select, textarea {
         <div class="m-item"><span>dinsdag 30 april<small>Timmerwerk · Verbouwing Jansen</small></span><b style="margin-left:auto">07:45</b></div>
         <div class="m-item"><span><b>Totaal deze week</b></span><b style="margin-left:auto" id="wWeek">23:30</b></div>
       </div>
+
+      <a class="btn btn--ghost m-uitloggen" data-page="start">Uitloggen</a>
     </section>
 
     <!-- ---- Werkzaamheden invullen ------------------------------------------ -->
@@ -3612,7 +2802,7 @@ button, input, select, textarea {
       <button class="m-bell" type="button" id="mBell" aria-label="Notificaties">
         <svg width="21" height="21" aria-hidden="true"><use href="#i-bell"></use></svg>
       </button>
-      <span class="avatar">FJ</span>
+      <a class="avatar" data-page="start" title="Uitloggen" aria-label="Uitloggen">FJ</a>
     </div>
   </header>
 
@@ -3880,10 +3070,7 @@ button, input, select, textarea {
         </div>
       </div>
 
-      <p style="text-align:center;margin:26px 0 0;font-size:13px;color:var(--ink-3)">
-        <a data-page="format" style="color:var(--gold-dark)">Overzicht</a> ·
-        <a data-page="web" style="color:var(--gold-dark)">Webversie</a>
-      </p>
+      <a class="btn btn--ghost m-uitloggen" data-page="start">Uitloggen</a>
     </section>
 
   </main>
@@ -3909,546 +3096,6 @@ button, input, select, textarea {
   </nav>
 </div>
 
-</section>
-
-<section class="demo-page brief" id="page-format" hidden>
-
-<!-- ==== Iconenset (SVG-sprite) ================================================ -->
-
-<!-- ==== Kop ================================================================== -->
-<main class="page">
-
-  <!-- ==== Hero ============================================================== -->
-  <section class="hero">
-    <div>
-      <div class="logo hero__logo">
-        <svg class="logo__mark" width="66" height="73" viewBox="0 0 72 80" aria-hidden="true">
-          <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
-          <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
-          <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
-        </svg>
-        <span class="logo__type">
-          <span class="logo__name">PROJEX<b>A</b></span>
-          <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
-        </span>
-      </div>
-
-      <h1>PROMPT VOOR CLAUDE</h1>
-      <p class="hero__intro">
-        Bouw een complete SaaS web- en mobiele applicatie voor Projexa. Een
-        overzichtelijke platform voor aannemers om bouwprojecten te beheren,
-        communiceren met klanten en medewerkers, uren te registreren en meerwerk
-        te beheren.
-      </p>
-    </div>
-
-    <div>
-      <h2 class="eyebrow">Design richtlijnen</h2>
-      <ul class="guidelines">
-        <li>Zeer overzichtelijke en minimalistische interface</li>
-        <li>Moderne uitstraling in zwart, wit en goud (Projexa kleuren)</li>
-        <li>Mobile-first design</li>
-        <li>Intuitieve navigatie</li>
-        <li>Rustige typografie en veel witruimte</li>
-      </ul>
-    </div>
-  </section>
-
-  <hr class="rule">
-
-  <!-- ==== Kernfuncties + schermen =========================================== -->
-  <div class="body-grid">
-
-    <section>
-      <h2 class="eyebrow">Fase 1 – Kernfuncties</h2>
-      <div class="features">
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-home"></use></svg>
-          <div>
-            <h3>Projecten dashboard</h3>
-            <p>Overzicht van alle projecten met status, voortgang, open taken, uren, meerwerk en laatste activiteit.</p>
-          </div>
-        </article>
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-user"></use></svg>
-          <div>
-            <h3>Klantportaal</h3>
-            <p>Klanten krijgen een eigen inlog en zien de voortgang, foto&rsquo;s, planning, berichten, meerwerk en documenten van hun project.</p>
-          </div>
-        </article>
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-chat"></use></svg>
-          <div>
-            <h3>Chat</h3>
-            <p>WhatsApp-achtige chat per project. Snel, strak en real-time. Ondersteuning voor tekst, foto&rsquo;s, bestanden en spraakberichten. Leesbevestigingen en notificaties.</p>
-          </div>
-        </article>
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-clock"></use></svg>
-          <div>
-            <h3>Urenregistratie</h3>
-            <p>Werknemers kunnen eenvoudig hun uren registreren per project. Start/stop timer of handmatige invoer. Koppel aan werkzaamheden en notities.</p>
-          </div>
-        </article>
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-camera"></use></svg>
-          <div>
-            <h3>Werkzaamheden &amp; foto&rsquo;s</h3>
-            <p>Registreer dagelijkse werkzaamheden en voeg foto&rsquo;s toe. Automatisch gelogd in het projectlogboek.</p>
-          </div>
-        </article>
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-plus-circle"></use></svg>
-          <div>
-            <h3>Meerwerk</h3>
-            <p>Maak meerwerkvoorstellen, stuur naar klant, akkoord via één klik. Overzicht van alle meerwerk en status.</p>
-          </div>
-        </article>
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-calendar"></use></svg>
-          <div>
-            <h3>Planning</h3>
-            <p>Eenvoudige projectplanning met taken en mijlpalen. Overzichtelijk per dag/week.</p>
-          </div>
-        </article>
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-folder"></use></svg>
-          <div>
-            <h3>Documenten</h3>
-            <p>Upload en beheer documenten per project (offertes, tekeningen, contracten, facturen, opleverrapporten, etc.).</p>
-          </div>
-        </article>
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-bell"></use></svg>
-          <div>
-            <h3>Notificaties</h3>
-            <p>Push- en e-mailmeldingen voor nieuwe berichten, meerwerk akkoord, wijzigingen en taken.</p>
-          </div>
-        </article>
-
-        <article class="feature">
-          <svg class="feature__icon" aria-hidden="true"><use href="#i-sparkle"></use></svg>
-          <div>
-            <h3>AI assistent <em>(optioneel)</em></h3>
-            <p>Laat AI samenvattingen maken van gesprekken, automatisch meerwerk detecteren op basis van logs en foto&rsquo;s.</p>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- ==== Schermen ======================================================== -->
-    <section class="showcase" aria-label="Schermen">
-
-      <!-- Dashboard op laptop + klantportaal op telefoon -->
-      <div class="combo">
-        <div class="device laptop">
-          <div class="device__screen">
-            <div class="mk">
-              <div class="mk__layout">
-                <aside class="mk__side">
-                  <span class="logo">
-                    <svg class="logo__mark" width="14" height="16" viewBox="0 0 72 80" aria-hidden="true">
-                      <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
-                      <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
-                    </svg>
-                    <span class="logo__type">
-                      <span class="logo__name">PROJEX<b>A</b></span>
-                      <span class="logo__tag">PLAN. BOUW.</span>
-                    </span>
-                  </span>
-                  <span class="mk__nav is-active"><svg aria-hidden="true"><use href="#i-home"></use></svg><span>Dashboard</span></span>
-                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-building"></use></svg><span>Projecten</span></span>
-                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-chat"></use></svg><span>Chat</span></span>
-                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-clock"></use></svg><span>Uren</span></span>
-                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-plus-circle"></use></svg><span>Meerwerk</span></span>
-                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-calendar"></use></svg><span>Planning</span></span>
-                </aside>
-
-                <div class="mk__body">
-                  <div class="mk__head" style="padding:0 0 12px">
-                    <span class="mk__title">Dashboard</span>
-                    <span class="mk__btn"><svg width="9" height="9" aria-hidden="true"><use href="#i-plus"></use></svg> Project toevoegen</span>
-                  </div>
-
-                  <div class="mk__stats">
-                    <div class="mk__stat"><b>12</b><span>Projecten</span></div>
-                    <div class="mk__stat"><b>5</b><span>Actief</span></div>
-                    <div class="mk__stat"><b>3</b><span>In uitvoering</span></div>
-                    <div class="mk__stat"><b>2</b><span>Afgerond</span></div>
-                  </div>
-
-                  <div class="mk__cols">
-                    <div>
-                      <div class="mk__coltitle">Mijn projecten</div>
-                      <div class="mk__card">
-                        <div class="mk__row">
-                          <svg aria-hidden="true"><use href="#i-building"></use></svg>
-                          <span><b>Verbouwing Jansen</b><small>Amsterdam</small></span>
-                          <span class="mk__pct"><b>75%</b><span class="mk__bar"><i style="width:75%"></i></span></span>
-                        </div>
-                        <div class="mk__row">
-                          <svg aria-hidden="true"><use href="#i-home"></use></svg>
-                          <span><b>Nieuwbouw De Vries</b><small>Utrecht</small></span>
-                          <span class="mk__pct"><b>45%</b><span class="mk__bar"><i style="width:45%"></i></span></span>
-                        </div>
-                        <div class="mk__row">
-                          <svg aria-hidden="true"><use href="#i-worker"></use></svg>
-                          <span><b>Renovatie Bakker</b><small>Haarlem</small></span>
-                          <span class="mk__pct"><b>20%</b><span class="mk__bar"><i style="width:20%"></i></span></span>
-                        </div>
-                        <div class="mk__row">
-                          <svg aria-hidden="true"><use href="#i-building"></use></svg>
-                          <span><b>Uitbouw Peters</b><small>Almere</small></span>
-                          <span class="mk__pct"><b>100%</b><span class="mk__bar"><i style="width:100%"></i></span></span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div class="mk__coltitle">Laatste activiteit</div>
-                      <div class="mk__card">
-                        <div class="mk__row">
-                          <span class="mk__ico"><svg aria-hidden="true"><use href="#i-worker"></use></svg></span>
-                          <span><b>Jan heeft een foto toegevoegd</b><small>2 min geleden</small></span>
-                        </div>
-                        <div class="mk__row">
-                          <span class="mk__ico mk__ico--green"><svg aria-hidden="true"><use href="#i-chat"></use></svg></span>
-                          <span><b>Meerwerk goedgekeurd</b><small>15 min geleden</small></span>
-                        </div>
-                        <div class="mk__row">
-                          <span class="mk__ico mk__ico--gold"><svg aria-hidden="true"><use href="#i-clipboard"></use></svg></span>
-                          <span><b>Nieuw bericht van klant</b><small>1 uur geleden</small></span>
-                        </div>
-                        <div class="mk__row">
-                          <span class="mk__ico mk__ico--gold"><svg aria-hidden="true"><use href="#i-clock"></use></svg></span>
-                          <span><b>Uren geregistreerd</b><small>2 uur geleden</small></span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="laptop__base"></div>
-        </div>
-
-        <!-- Klantportaal op de telefoon -->
-        <div class="phone">
-          <div class="phone__notch"></div>
-          <div class="phone__screen">
-            <div class="phone__status">
-              <span>9:41</span>
-              <span aria-hidden="true">
-                <svg width="34" height="9" viewBox="0 0 34 9" fill="currentColor"><rect x="0" y="5" width="2" height="4" rx=".5"/><rect x="3.5" y="3.5" width="2" height="5.5" rx=".5"/><rect x="7" y="2" width="2" height="7" rx=".5"/><rect x="10.5" y="0" width="2" height="9" rx=".5"/><path d="M16 3.2a5 5 0 0 1 6 0l-3 3.6z"/><rect x="24" y="1.5" width="8.5" height="6" rx="1.6" fill="none" stroke="currentColor"/><rect x="25.2" y="2.7" width="6" height="3.6" rx=".8"/></svg>
-              </span>
-            </div>
-            <div class="mkp">
-              <h4>Mijn verbouwing</h4>
-
-              <div class="mkp__project">
-                <span><b>Verbouwing Jansen</b><small>Amsterdam</small></span>
-                <svg width="12" height="12" aria-hidden="true"><use href="#i-chev-r"></use></svg>
-              </div>
-
-              <div class="mkp__prog">
-                <div><span>Voortgang</span><span>75%</span></div>
-                <span class="mk__bar" style="height:4px"><i style="width:75%"></i></span>
-              </div>
-
-              <div class="mkp__label">Laatste update</div>
-
-              <div class="mkp__quick">
-                <span><svg aria-hidden="true"><use href="#i-chat"></use></svg><span>Berichten</span></span>
-                <span><svg aria-hidden="true"><use href="#i-calendar"></use></svg><span>Planning</span></span>
-                <span><svg aria-hidden="true"><use href="#i-camera"></use></svg><span>Foto&rsquo;s</span></span>
-                <span><svg aria-hidden="true"><use href="#i-doc"></use></svg><span>Documenten</span></span>
-              </div>
-
-              <div class="mkp__title">Laatste updates</div>
-
-              <div class="mkp__upd">
-                <span class="mk__ico"><svg aria-hidden="true"><use href="#i-worker"></use></svg></span>
-                <span><b>Jan heeft een foto toegevoegd</b><small>2 min geleden</small></span>
-              </div>
-              <div class="mkp__upd">
-                <span class="mk__ico mk__ico--green"><svg aria-hidden="true"><use href="#i-chat"></use></svg></span>
-                <span><b>Meerwerk goedgekeurd</b><small>15 min geleden</small></span>
-              </div>
-              <div class="mkp__upd">
-                <span class="mk__ico mk__ico--gold"><svg aria-hidden="true"><use href="#i-calendar"></use></svg></span>
-                <span><b>Nieuwe planning beschikbaar</b><small>1 uur geleden</small></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <p class="device__caption">
-        Dashboard (web) en klantportaal (smartphone) —
-        <a data-page="web">open de werkende webversie</a> ·
-        <a data-page="klant">open de smartphone-versie</a>
-      </p>
-
-      <!-- Chat -->
-      <div class="device">
-        <div class="device__screen">
-          <div class="mk">
-            <div class="mk__head"><span class="mk__title">Chat - Verbouwing Jansen</span></div>
-            <div class="mkc">
-              <aside class="mkc__aside">
-                <div class="mkc__asidehead">
-                  <span>Chats</span>
-                  <svg width="11" height="11" aria-hidden="true"><use href="#i-chev-r"></use></svg>
-                </div>
-                <div class="mkc__search">
-                  <svg width="10" height="10" aria-hidden="true"><use href="#i-search"></use></svg> Zoeken
-                </div>
-                <div class="mkc__item is-active">
-                  <span class="mk__ico"><svg aria-hidden="true"><use href="#i-worker"></use></svg></span>
-                  <span><b>Verbouwing Jansen</b><small>Jan: Foto toegevoegd</small></span>
-                  <time>14:32</time>
-                </div>
-                <div class="mkc__item">
-                  <span class="mk__ico"><svg aria-hidden="true"><use href="#i-doc"></use></svg></span>
-                  <span><b>Nieuwbouw De Vries</b><small>Lisa: Meerwerk akkoord?</small></span>
-                  <time>13:15</time>
-                </div>
-                <div class="mkc__item">
-                  <span class="mk__ico"><svg aria-hidden="true"><use href="#i-building"></use></svg></span>
-                  <span><b>Renovatie Bakker</b><small>Piet: Uren ingevoerd</small></span>
-                  <time>11:45</time>
-                </div>
-                <div class="mkc__item">
-                  <span class="mk__ico"><svg aria-hidden="true"><use href="#i-calendar"></use></svg></span>
-                  <span><b>Uitbouw Peters</b><small>Mark: Planning update</small></span>
-                  <time>09:30</time>
-                </div>
-              </aside>
-
-              <div class="mkc__thread">
-                <div class="mkc__msgs">
-                  <div class="mkc__b mkc__b--me">
-                    Goedemiddag, we hebben tijdens het slopen gezien dat de balken vervangen moeten worden.
-                    <span class="mkc__t">14:28 <svg width="9" height="9" style="color:#4a90d9" aria-hidden="true"><use href="#i-checks"></use></svg></span>
-                  </div>
-                  <div class="mkc__b mkc__b--photo">
-                    <svg viewBox="0 0 160 90" role="img" aria-label="Foto van de bestaande balklaag"><use href="#ph-beams"></use></svg>
-                  </div>
-                  <div class="mkc__b">
-                    Dank voor de update en foto. Kunnen jullie een meerwerk voorstel sturen?
-                    <span class="mkc__t">14:31</span>
-                  </div>
-                  <div class="mkc__b">
-                    Zeker, komt eraan!
-                    <span class="mkc__t">14:32</span>
-                  </div>
-                </div>
-                <div class="mkc__composer">
-                  <span class="mkc__input">Typ een bericht...</span>
-                  <svg width="12" height="12" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-clip"></use></svg>
-                  <svg width="12" height="12" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-mic"></use></svg>
-                  <span class="mkc__send"><svg aria-hidden="true"><use href="#i-send"></use></svg></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p class="device__caption">Real-time projectchat met foto&rsquo;s, bestanden en leesbevestigingen</p>
-      </div>
-
-      <!-- Urenregistratie + meerwerk -->
-      <div class="showcase__row">
-
-        <div class="device">
-          <div class="device__screen">
-            <div class="mkt">
-              <div class="mkt__head"><span>Urenregistratie</span></div>
-              <div class="mkt__timer">
-                <div class="mkt__datenav">
-                  <svg width="11" height="11" aria-hidden="true"><use href="#i-chev-l"></use></svg>
-                  <span>Vandaag, 1 mei 2024</span>
-                  <svg width="11" height="11" aria-hidden="true"><use href="#i-chev-d"></use></svg>
-                </div>
-                <div class="mkt__big">07:30:45</div>
-                <div class="mkt__sub">Uren vandaag</div>
-                <div class="mkt__btns">
-                  <span class="mkt__btn mkt__btn--stop">Stop</span>
-                  <span class="mkt__btn">Pauze</span>
-                </div>
-              </div>
-              <div class="mkt__section">
-                <h5>Werkzaamheden</h5>
-                <div class="mkt__select">
-                  <span><b>Timmerwerk</b><small>Voorzetwand plaatsen</small></span>
-                  <svg width="11" height="11" aria-hidden="true"><use href="#i-chev-d"></use></svg>
-                </div>
-              </div>
-              <div class="mkt__section" style="padding-top:0">
-                <h5>Foto&rsquo;s</h5>
-                <div class="mkt__photos">
-                  <figure style="margin:0"><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 1"><use href="#ph-1"></use></svg></figure>
-                  <figure style="margin:0"><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 2"><use href="#ph-2"></use></svg></figure>
-                  <figure style="margin:0"><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 3"><use href="#ph-3"></use></svg></figure>
-                  <span class="mkt__add"><svg width="10" height="10" aria-hidden="true"><use href="#i-plus"></use></svg></span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <p class="device__caption">Start/stop timer, gekoppeld aan werkzaamheden en foto&rsquo;s</p>
-        </div>
-
-        <div class="device">
-          <div class="device__screen">
-            <div class="mkt">
-              <div class="mkt__head">
-                <span>Meerwerk</span>
-                <svg width="13" height="13" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-x"></use></svg>
-              </div>
-              <div class="mkm">
-                <div class="mkm__card">
-                  <div class="mkm__top">
-                    <span class="mkm__nr">MW-2024-001</span>
-                    <span class="mkm__price">€685,00</span>
-                  </div>
-                  <div class="mkm__title">
-                    Wand verplaatsen slaapkamer
-                    <span class="mkm__tag">In afwachting</span>
-                  </div>
-                  <div class="mkm__label">Omschrijving</div>
-                  <div class="mkm__text">Verplaatsen van de tussenwand met 20cm i.v.m. leidingwerk.</div>
-                  <div class="mkm__row"><span>Gemaakt op</span><b>1 mei 2024</b></div>
-                  <div class="mkm__row"><span>Totaal (excl. btw)</span><b>€685,00</b></div>
-                  <div class="mkm__btns">
-                    <span class="mkm__btn">Bekijk details</span>
-                    <span class="mkm__btn mkm__btn--gold">Stuur naar klant</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <p class="device__caption">Meerwerkvoorstel: sturen naar klant, akkoord via één klik</p>
-        </div>
-
-      </div>
-    </section>
-  </div>
-
-  <hr class="rule">
-
-  <!-- ==== Technische eisen, abonnement en prijs ============================== -->
-  <section class="specs">
-    <div>
-      <h2 class="eyebrow">Technische eisen</h2>
-      <ul class="speclist">
-        <li>Responsive webapplicatie (ook als mobiele app te installeren)</li>
-        <li>Supabase of vergelijkbare backend (auth, database, storage, realtime)</li>
-        <li>Real-time chat functionaliteit</li>
-        <li>Role-based access (aannemer, medewerker, klant)</li>
-        <li>Veiligheid en privacy volgens AVG</li>
-        <li>Integratie met betaalprovider (Stripe)</li>
-      </ul>
-    </div>
-
-    <div>
-      <h2 class="eyebrow">Abonnement &amp; betaling</h2>
-      <ul class="speclist speclist--gold">
-        <li>Abonnement op basis van maandbetaling</li>
-        <li>Gratis proefperiode van 14 dagen</li>
-        <li>Automatische betaling via Stripe</li>
-        <li>Opzeggen kan maandelijks</li>
-        <li>Inclusief facturatie (PDF) voor klanten</li>
-      </ul>
-    </div>
-
-    <div class="price">
-      <p class="price__trial">Proefperiode <b>14 dagen gratis</b></p>
-      <p class="price__amount"><strong>€69,99</strong> <span>/ maand</span></p>
-      <ul class="price__list">
-        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Onbeperkte projecten</li>
-        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Onbeperkte gebruikers</li>
-        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Alle functies inbegrepen</li>
-        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Klantportaal</li>
-        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Meerwerk &amp; offertes</li>
-        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Chat &amp; notificaties</li>
-      </ul>
-      <a class="btn btn--gold" data-page="start">Start gratis proefperiode</a>
-    </div>
-  </section>
-
-  <hr class="rule">
-
-  <!-- ==== Gebruikers &amp; rechten =========================================== -->
-  <section>
-    <h2 class="eyebrow">Gebruikers &amp; rechten</h2>
-    <div class="roles-row">
-      <div class="roles">
-        <div class="role">
-          <h3>Aannemer (hoofdgebruiker)</h3>
-          <ul>
-            <li>Volledige toegang tot alle projecten</li>
-            <li>Gebruikers beheren</li>
-            <li>Instellingen &amp; abonnementen</li>
-            <li>Facturatie &amp; rapportages</li>
-          </ul>
-        </div>
-        <div class="role">
-          <h3>Medewerker</h3>
-          <ul>
-            <li>Uren registreren</li>
-            <li>Werkzaamheden invullen</li>
-            <li>Foto&rsquo;s uploaden</li>
-            <li>Chatten binnen projecten</li>
-          </ul>
-        </div>
-        <div class="role">
-          <h3>Klant</h3>
-          <ul>
-            <li>Inzien voortgang</li>
-            <li>Chatten met aannemer</li>
-            <li>Meerwerk goedkeuren</li>
-            <li>Documenten bekijken</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="brandbox">
-        <span class="logo">
-          <svg class="logo__mark" width="48" height="53" viewBox="0 0 72 80" aria-hidden="true">
-            <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
-            <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
-            <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
-          </svg>
-          <span class="logo__type">
-            <span class="logo__name">PROJEX<b>A</b></span>
-            <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
-          </span>
-        </span>
-      </div>
-    </div>
-  </section>
-
-  <footer class="site-footer">
-    <span>Projexa — Plan. Bouw. Beheer.</span>
-    <span class="site-footer__links">
-      <a data-page="start">Demo doorlopen</a>
-      <a data-page="web">Webversie</a>
-      <a data-page="medewerker">Medewerker</a>
-      <a data-page="klant">Klantportaal</a>
-    </span>
-  </footer>
-
-</main>
 </section>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -5681,23 +4328,19 @@ window.PROJEXA = (function () {
 })();
 
 
-/* ---- Wisselen tussen de drie pagina's --------------------------------- */
+/* ---- Wisselen tussen de rollen (via inloggen en uitloggen) ------------- */
 (function () {
   var titels = {
-    start: 'Projexa — Inloggen',
+    start: 'Projexa',
     web: 'Projexa — Aannemer',
     medewerker: 'Projexa — Medewerker',
-    klant: 'Projexa — Klantportaal',
-    format: 'Projexa — Het ontwerp'
+    klant: 'Projexa — Klantportaal'
   };
 
   function ga(pagina) {
     if (!titels[pagina]) pagina = 'start';
     Object.keys(titels).forEach(function (p) {
       document.getElementById('page-' + p).hidden = p !== pagina;
-      var knop = document.querySelector('.demo-switch button[data-page="' + p + '"]');
-      if (p === pagina) knop.setAttribute('aria-current', 'page');
-      else knop.removeAttribute('aria-current');
     });
     document.title = titels[pagina];
     window.scrollTo({ top: 0 });

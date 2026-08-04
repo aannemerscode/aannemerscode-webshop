@@ -15,7 +15,7 @@ Begin bij **`start.html`** — daar kies je een rol en loop je de demo door.
 | `medewerker.html` | De medewerker op de telefoon: uren registreren, werkzaamheden invullen, foto's uploaden en chatten binnen projecten. |
 | `mobiel.html` | De klant op de telefoon ("Mijn verbouwing"): voortgang, berichten, meerwerk goedkeuren, planning, foto's en documenten. |
 | `index.html` | Het ontwerp uit de foto als webpagina: alle tekst plus de schermen in laptop-, telefoon- en vensterframes. |
-| `demo.html` | Alles hierboven in één zelfstandig bestand, met een wisselbalk bovenin. Gebouwd door `build-demo.js`. |
+| `demo.html` | Het inlogscherm en de drie rol-apps in één zelfstandig bestand. Wisselen van rol gaat via inloggen en uitloggen, net als in de echte app. Gebouwd door `build-demo.js`. |
 
 ## Openen
 
@@ -49,7 +49,9 @@ en het abonnement van €69,99 per maand met proefperiode en Stripe.
 ## Wat er werkt
 
 - **Navigatie** — zijbalk (web) en tabbalk (mobiel), inclusief `#hash`-links
-  zoals `app.html#chat`.
+  zoals `app.html#chat`. Uitloggen brengt je terug naar het inlogscherm: in de
+  webversie linksonder in de zijbalk, in de telefoon-apps via de avatar
+  rechtsboven of de knop onderaan het beginscherm.
 - **Projectdetail** — klik een project aan voor voortgang, open taken, uren,
   meerwerk, projectgegevens en foto's.
 - **Chat** — bericht typen en versturen, foto meesturen, van gesprek wisselen,

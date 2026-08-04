@@ -803,3 +803,17 @@
   margin-left: 6px;
   vertical-align: 1px;
 }
+
+.uitloggen {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gold-light);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.uitloggen:hover { text-decoration: underline; }
+
+a.avatar { text-decoration: none; }
+a.avatar:hover { filter: brightness(1.08); }
