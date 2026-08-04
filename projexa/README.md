@@ -4,18 +4,23 @@ Dit is het Projexa-ontwerp (de foto met "Prompt voor Claude") uitgewerkt tot een
 werkende, responsive website. Alle informatie van het ontwerp is overgenomen, en
 er is een aparte smartphone-versie bijgemaakt.
 
-## De drie pagina's
+## De pagina's
+
+Begin bij **`start.html`** — daar kies je een rol en loop je de demo door.
 
 | Bestand | Wat het is |
 |---|---|
-| `index.html` | Het complete format: alle tekst uit het ontwerp (prompt, design­richtlijnen, de 10 kernfuncties, technische eisen, abonnement, prijskaart, gebruikers & rechten) plus de schermen als échte HTML in laptop-, telefoon- en vensterframes. Volledig responsive. |
-| `app.html` | De werkende webversie voor de aannemer: dashboard, projecten, chat, urenregistratie, meerwerk, planning, documenten en klantportaal. |
-| `mobiel.html` | De smartphone-versie (klantportaal "Mijn verbouwing") met tabbalk onderin. Op een telefoon schermvullend, op een groot scherm in een telefoonframe. |
+| `start.html` | Inlogscherm: kies of je als aannemer, medewerker of klant kijkt. |
+| `app.html` | De aannemer op laptop: dashboard, projecten, projectdetail, chat, uren, meerwerk, planning, documenten, notificaties, AI assistent, klanten, gebruikers, facturatie en abonnement. |
+| `medewerker.html` | De medewerker op de telefoon: uren registreren, werkzaamheden invullen, foto's uploaden en chatten binnen projecten. |
+| `mobiel.html` | De klant op de telefoon ("Mijn verbouwing"): voortgang, berichten, meerwerk goedkeuren, planning, foto's en documenten. |
+| `index.html` | Het ontwerp uit de foto als webpagina: alle tekst plus de schermen in laptop-, telefoon- en vensterframes. |
+| `demo.html` | Alles hierboven in één zelfstandig bestand, met een wisselbalk bovenin. Gebouwd door `build-demo.js`. |
 
 ## Openen
 
-Geen build, geen server, geen internet nodig — dubbelklik `index.html`, of
-serveer de map:
+Geen build, geen server, geen internet nodig — dubbelklik `demo.html` (of
+`start.html`), of serveer de map:
 
 ```bash
 cd projexa
@@ -23,10 +28,30 @@ python3 -m http.server 8080
 # open http://localhost:8080
 ```
 
+## Alle tien de kernfuncties uit het ontwerp
+
+| Functie | Waar je het ziet |
+|---|---|
+| Projecten dashboard | Aannemer → Dashboard en Projectdetail |
+| Klantportaal | Klant (hele app) en Aannemer → Klanten & portaal |
+| Chat | Alle drie de rollen, elk vanuit hun eigen kant van het gesprek |
+| Urenregistratie | Aannemer → Uren, Medewerker → Vandaag |
+| Werkzaamheden & foto's | Medewerker → Werk en Foto's |
+| Meerwerk | Aannemer → Meerwerk (versturen), Klant → Meerwerk (goedkeuren) |
+| Planning | Aannemer → Planning, Klant → Meer |
+| Documenten | Aannemer → Documenten, Klant → Meer |
+| Notificaties | Aannemer → Notificaties, met instellingen per soort melding |
+| AI assistent | Aannemer → AI assistent (samenvatting + automatisch meerwerk) |
+
+Daarnaast: gebruikersbeheer met de rechten per rol, facturatie & rapportages,
+en het abonnement van €69,99 per maand met proefperiode en Stripe.
+
 ## Wat er werkt
 
 - **Navigatie** — zijbalk (web) en tabbalk (mobiel), inclusief `#hash`-links
   zoals `app.html#chat`.
+- **Projectdetail** — klik een project aan voor voortgang, open taken, uren,
+  meerwerk, projectgegevens en foto's.
 - **Chat** — bericht typen en versturen, foto meesturen, van gesprek wisselen,
   zoeken in de gesprekken, leesbevestiging (dubbel vinkje) die na het versturen
   aanspringt.
@@ -47,19 +72,28 @@ technische eisen staat.
 
 ```
 projexa/
-├── index.html          het format
-├── app.html            werkende webversie
-├── mobiel.html         smartphone-versie
+├── start.html          kies je rol
+├── app.html            aannemer (web)
+├── medewerker.html     medewerker (telefoon)
+├── mobiel.html         klant (telefoon)
+├── index.html          het ontwerp als webpagina
+├── demo.html           alles in één bestand (gegenereerd)
+├── build-demo.js       bouwt demo.html
 └── assets/
     ├── base.css        kleuren, typografie, logo, knoppen
-    ├── brief.css       opmaak van het format
+    ├── start.css       opmaak van het startscherm
+    ├── brief.css       opmaak van het ontwerp
     ├── app.css         UI-componenten van de app
-    ├── mobiel.css      smartphone-opmaak
+    ├── mobiel.css      opmaak voor de telefoon
     ├── data.js         demodata (projecten, chats, meerwerk)
-    ├── app.js          logica webversie
-    ├── mobiel.js       logica smartphone-versie
+    ├── app.js          logica aannemer
+    ├── medewerker.js   logica medewerker
+    ├── mobiel.js       logica klantportaal
     └── favicon.svg
 ```
+
+Pas je iets aan in een van de losse pagina's? Draai dan `node build-demo.js`
+om `demo.html` opnieuw te bouwen.
 
 Het logo, de iconen en de "foto's" zijn getekende SVG's in het bestand zelf —
 er worden geen externe bestanden of lettertypen geladen, dus alles werkt ook

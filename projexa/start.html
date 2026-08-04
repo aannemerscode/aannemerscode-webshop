@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projexa — Inloggen</title>
+<meta name="description" content="Kies met welke rol je Projexa bekijkt: aannemer, medewerker of klant.">
+<meta name="theme-color" content="#090b0c">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/start.css">
+</head>
+<body class="start">
+
+<!-- ==== Iconenset (SVG-sprite) ================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7cb8e"/>
+      <stop offset="1" stop-color="#a98449"/>
+    </linearGradient>
+    <linearGradient id="phshade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity=".28"/>
+      <stop offset=".5" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".35"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M4.8 20c0-3.5 3.3-5.5 7.2-5.5s7.2 2 7.2 5.5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-5.5 4V6.5a1 1 0 0 1 1-1z"/><circle cx="8.6" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8v5.4l3.4 2"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+    <symbol id="i-plus-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/><path d="M8 3v4M16 3v4M3.5 10h17"/><circle cx="8.4" cy="14.2" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.6A1.6 1.6 0 0 1 5.1 6h3.8l2 2.5h8A1.6 1.6 0 0 1 20.5 10v8a1.6 1.6 0 0 1-1.6 1.6H5.1A1.6 1.6 0 0 1 3.5 18z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 10.2a5.6 5.6 0 0 1 11.2 0c0 4 1.6 5.6 1.6 5.6H4.8s1.6-1.6 1.6-5.6z"/><path d="M9.9 19a2.3 2.3 0 0 0 4.2 0"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 11.7 8l4.5 1.7-4.5 1.7L10 15.9 8.3 11.4 3.8 9.7 8.3 8z"/><path d="M17.8 3v3M16.3 4.5h3M18.2 15.5V18M17 16.7h2.4"/></symbol>
+    <symbol id="i-chev-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5l7 7-7 7"/></symbol>
+    <symbol id="i-chev-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5l-7 7 7 7"/></symbol>
+    <symbol id="i-chev-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8 20.5 20.5"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 11.3l-8 8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.4 3.4 0 1 1 4.8 4.8l-8.5 8.5a1.8 1.8 0 0 1-2.5-2.5l7.8-7.8"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9.4" y="3" width="5.2" height="11" rx="2.6"/><path d="M6 11.4a6 6 0 0 0 12 0"/><path d="M12 17.4V21"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12.5"/><path d="M12.5 6.5 18.5 12l-6 5.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+    <symbol id="i-checks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.6 6 16.6 13.6 7.4"/><path d="M9.6 14.9 12 17.2 21 6.8"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5v13M5.5 12h13"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h7l4.5 4.5V21h-11.5z"/><path d="M13.2 3v5h5"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.2"/><circle cx="9" cy="10" r="1.5"/><path d="M4.5 17.2 9.4 12.9l3.8 3.2 3-2.4 3.6 3"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V9.2L12 4l8 5.2v11.3"/><path d="M9.6 20.5v-5.2h4.8v5.2"/><path d="M3 20.5h18"/></symbol>
+    <symbol id="i-worker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.4" r="3"/><path d="M5.5 20.5c0-3.3 2.9-5.2 6.5-5.2s6.5 1.9 6.5 5.2"/><path d="M8.4 5.6a4 4 0 0 1 7.2 0"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="16" rx="2.2"/><path d="M9 4.5V3h6v1.5"/><path d="M8 12.5h8M8 16h5"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 5.4h3"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  </g>
+
+  <symbol id="ph-beams" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">
+    <rect width="160" height="90" fill="#201915"/>
+    <g fill="#7d6041"><polygon points="0,16 160,0 160,13 0,29"/><polygon points="0,45 160,29 160,42 0,58"/><polygon points="0,74 160,58 160,71 0,87"/></g>
+    <g fill="#b38b5c"><polygon points="16,0 38,0 106,90 84,90"/><polygon points="118,0 138,0 160,28 160,50"/></g>
+    <g fill="#5d4830" opacity=".75"><polygon points="0,29 160,13 160,17 0,33"/><polygon points="0,58 160,42 160,46 0,62"/></g>
+    <rect width="160" height="90" fill="url(#phshade)"/>
+  </symbol>
+  <symbol id="ph-1" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#c9ab86"/><path d="M0 44h60v16H0z" fill="#8f6f4c"/>
+    <path d="M8 12h10v32H8zM42 12h10v32H42z" fill="#a8845c"/><path d="M18 8h24v6H18z" fill="#e0c9a8"/>
+    <path d="M24 24h12v20H24z" fill="#6f5537"/>
+  </symbol>
+  <symbol id="ph-2" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#b99a72"/><path d="M0 0h60v18H0z" fill="#8a6a48"/>
+    <path d="M14 18h8v42h-8zM38 18h8v42h-8z" fill="#d8c0a0"/><path d="M0 50h60v10H0z" fill="#6c5334"/>
+  </symbol>
+  <symbol id="ph-3" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#cfcfcb"/><path d="M0 0h60v14H0z" fill="#e8e8e4"/>
+    <path d="M0 46h60v14H0z" fill="#9d9d98"/><path d="M16 14h6v32h-6zM38 14h6v32h-6z" fill="#b6b6b1"/>
+    <path d="M26 20h8v26h-8z" fill="#7f7f7a"/>
+  </symbol>
+</svg>
+
+<main class="start__page">
+
+  <div class="start__head">
+    <span class="logo">
+      <svg class="logo__mark" width="52" height="58" viewBox="0 0 72 80" aria-hidden="true">
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </span>
+
+    <h1>Waar wil je naar kijken?</h1>
+    <p>
+      Projexa ziet er anders uit voor iedere rol. Kies hieronder met welke ogen je
+      de demo doorloopt — je kunt op elk moment wisselen.
+    </p>
+  </div>
+
+  <div class="roles-grid">
+
+    <article class="rolecard">
+      <span class="rolecard__icon"><svg width="26" height="26" aria-hidden="true"><use href="#i-user"></use></svg></span>
+      <h2>Aannemer</h2>
+      <p class="rolecard__who">Jan de Boer · hoofdgebruiker</p>
+      <p class="rolecard__what">De volledige webversie op laptop of desktop.</p>
+      <ul>
+        <li>Volledige toegang tot alle projecten</li>
+        <li>Gebruikers beheren</li>
+        <li>Instellingen &amp; abonnementen</li>
+        <li>Facturatie &amp; rapportages</li>
+      </ul>
+      <a class="btn btn--gold" data-page="web" href="app.html">Inloggen als aannemer</a>
+      <p class="rolecard__screens">Dashboard · Projecten · Chat · Uren · Meerwerk · Planning · Documenten · Notificaties · AI assistent · Gebruikers · Facturatie · Abonnement</p>
+    </article>
+
+    <article class="rolecard">
+      <span class="rolecard__icon"><svg width="26" height="26" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+      <h2>Medewerker</h2>
+      <p class="rolecard__who">Piet Vermeer · timmerman</p>
+      <p class="rolecard__what">De app op de telefoon, voor op de bouw.</p>
+      <ul>
+        <li>Uren registreren</li>
+        <li>Werkzaamheden invullen</li>
+        <li>Foto&rsquo;s uploaden</li>
+        <li>Chatten binnen projecten</li>
+      </ul>
+      <a class="btn btn--gold" data-page="medewerker" href="medewerker.html">Inloggen als medewerker</a>
+      <p class="rolecard__screens">Vandaag · Werkzaamheden · Foto&rsquo;s · Chat</p>
+    </article>
+
+    <article class="rolecard">
+      <span class="rolecard__icon"><svg width="26" height="26" aria-hidden="true"><use href="#i-home"></use></svg></span>
+      <h2>Klant</h2>
+      <p class="rolecard__who">Familie Jansen · Amsterdam</p>
+      <p class="rolecard__what">Het klantportaal op de telefoon.</p>
+      <ul>
+        <li>Inzien voortgang</li>
+        <li>Chatten met aannemer</li>
+        <li>Meerwerk goedkeuren</li>
+        <li>Documenten bekijken</li>
+      </ul>
+      <a class="btn btn--gold" data-page="klant" href="mobiel.html">Inloggen als klant</a>
+      <p class="rolecard__screens">Start · Berichten · Uren · Meerwerk · Planning · Foto&rsquo;s · Documenten</p>
+    </article>
+
+  </div>
+
+  <p class="start__note">
+    Dit is een demo met voorbeeldgegevens — er is nog geen echte inlog of database.
+    Bekijk ook <a data-page="format" href="index.html">het ontwerp op één pagina</a>.
+  </p>
+
+</main>
+</body>
+</html>

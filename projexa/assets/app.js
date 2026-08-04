@@ -34,8 +34,11 @@
   /* ---- Navigatie -------------------------------------------------------- */
 
   const titels = {
-    dashboard: 'Dashboard', projecten: 'Projecten', chat: 'Chat', uren: 'Urenregistratie',
-    meerwerk: 'Meerwerk', planning: 'Planning', documenten: 'Documenten', klanten: 'Klantportaal'
+    dashboard: 'Dashboard', projecten: 'Projecten', project: 'Project', chat: 'Chat',
+    uren: 'Urenregistratie', meerwerk: 'Meerwerk', planning: 'Planning',
+    documenten: 'Documenten', notificaties: 'Notificaties', ai: 'AI assistent',
+    klanten: 'Klanten & portaal', gebruikers: 'Gebruikers', facturatie: 'Facturatie',
+    abonnement: 'Abonnement'
   };
 
   function toon(view) {
@@ -50,6 +53,11 @@
       $('#chatBadge').hidden = true;
       scrollChat();
     }
+    if (view === 'notificaties') {
+      $('#belBadge').hidden = true;
+      var dot = $('#belDot');
+      if (dot) dot.hidden = true;
+    }
     window.scrollTo({ top: 0 });
   }
 
@@ -58,16 +66,51 @@
   });
 
   document.addEventListener('click', e => {
-    const el = e.target.closest('[data-goto]');
-    if (el) location.hash = el.dataset.goto;
+    const ga = e.target.closest('[data-goto]');
+    if (ga) { location.hash = ga.dataset.goto; return; }
+
+    const terug = e.target.closest('[data-view-back]');
+    if (terug) { location.hash = terug.dataset.viewBack; return; }
+
+    const open = e.target.closest('[data-view-open]');
+    if (open) { location.hash = open.dataset.viewOpen; return; }
+
+    const pr = e.target.closest('[data-project]');
+    if (pr) { openProject(Number(pr.dataset.project)); }
   });
+
+  /* ---- Projectdetail ---------------------------------------------------- */
+
+  function openProject(i) {
+    const p = D.projecten[i];
+    if (!p) return;
+    $('#pdNaam').textContent = p.naam;
+    $('#pdStatus').textContent = p.status || 'In uitvoering';
+    $('#pdStatus').className = 'tag ' + (p.pct === 100 ? 'tag--ok' : 'tag--sent');
+    $('#pdPct').textContent = p.pct + '%';
+    $('#pdUren').textContent = p.urenTotaal || 0;
+    $('#pdMeerwerk').textContent = p.meerwerk || '€0';
+    $('#pdKlant').textContent = p.klant || '—';
+    $('#pdAdres').textContent = p.plaats;
+
+    const taken = p.taken || [];
+    $('#pdTaken').textContent = taken.filter(t => t.staat !== 'klaar').length;
+    $('#pdTakenLijst').innerHTML = taken.map(t =>
+      '<div class="timeline__day" style="grid-template-columns:22px 1fr auto">' +
+      '<span class="dot' + (t.staat === 'klaar' ? ' dot--done' : t.staat === 'bezig' ? '' : ' dot--milestone') + '"></span>' +
+      '<span class="timeline__task">' + escapeHtml(t.tekst) + '</span>' +
+      '<span class="timeline__date">' + escapeHtml(t.wanneer) + '</span></div>'
+    ).join('') || '<p style="padding:16px;color:var(--ink-3)">Geen open taken.</p>';
+
+    location.hash = 'project';
+  }
 
   window.addEventListener('hashchange', () => toon(location.hash.slice(1)));
 
   /* ---- Projectenoverzicht ----------------------------------------------- */
 
-  function projectRij(p) {
-    return '<button class="project" type="button" data-goto="' + p.view + '">' +
+  function projectRij(p, i) {
+    return '<button class="project" type="button" data-project="' + i + '">' +
       '<svg class="project__icon" width="24" height="24" aria-hidden="true"><use href="#' + p.icon + '"></use></svg>' +
       '<span><span class="project__name">' + escapeHtml(p.naam) + '</span>' +
       '<span class="project__place">' + escapeHtml(p.plaats) + '</span></span>' +
@@ -314,6 +357,55 @@
     const lijst = $('#docList');
     lijst.insertBefore(el, lijst.firstChild);
     toast('Document geüpload');
+  });
+
+  /* ---- Notificaties, AI, beheer ----------------------------------------- */
+
+  $('#allesGelezen').addEventListener('click', () => {
+    $('#notiNieuw').innerHTML =
+      '<p style="padding:20px;color:var(--ink-3);font-size:14px">Je bent helemaal bij.</p>';
+    $('#belBadge').hidden = true;
+    const dot = $('#belDot');
+    if (dot) dot.hidden = true;
+    toast('Alle meldingen gelezen');
+  });
+
+  $('#aiSamenvatting').addEventListener('click', () =>
+    toast('Gesprek opnieuw samengevat'));
+
+  $('#nodigUit').addEventListener('click', () => {
+    const naam = prompt('Naam van de nieuwe gebruiker:');
+    if (!naam) return;
+    const rol = prompt('Welke rol? (aannemer, medewerker of klant)', 'medewerker') || 'medewerker';
+    const initialen = naam.trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const el = document.createElement('div');
+    el.className = 'doc';
+    el.innerHTML = '<span class="avatar">' + escapeHtml(initialen) + '</span><span>' +
+      escapeHtml(naam.trim()) + '<small>uitnodiging verstuurd</small></span>' +
+      '<span class="tag">' + escapeHtml(rol.trim()) + '</span>';
+    $('#gebruikersLijst').appendChild(el);
+    toast('Uitnodiging verstuurd naar ' + naam.trim());
+  });
+
+  $('#nieuweFactuur').addEventListener('click', () => {
+    const el = document.createElement('div');
+    el.className = 'doc';
+    el.innerHTML = icon('i-euro', 20) +
+      '<span>2024-0032 · Verbouwing Jansen<small>Concept · nog te verzenden</small></span>' +
+      '<span class="tag">Concept</span>';
+    $('#factuurLijst').insertBefore(el, $('#factuurLijst').firstChild);
+    toast('Conceptfactuur aangemaakt');
+  });
+
+  $('#abonneer').addEventListener('click', () =>
+    toast('Je wordt doorgestuurd naar Stripe om de incasso te regelen'));
+
+  $('#opzeggen').addEventListener('click', () =>
+    toast('Opzeggen kan maandelijks — je houdt toegang tot het einde van de maand'));
+
+  document.addEventListener('click', e => {
+    const r = e.target.closest('[data-rapport]');
+    if (r) toast(r.dataset.rapport + ' wordt als PDF gedownload');
   });
 
   /* ---- Start ------------------------------------------------------------ */

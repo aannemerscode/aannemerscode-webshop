@@ -11,6 +11,7 @@
   const $  = (sel, root) => (root || document).querySelector(sel);
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
 
+  const root = document.getElementById('m-start').closest('.m-app');
   const toastEl = $('#toast');
   let toastTimer;
 
@@ -43,8 +44,8 @@
 
   function toon(tab, focus) {
     if (!koppen[tab]) tab = 'start';
-    $$('.m-screen').forEach(s => { s.hidden = s.id !== 'm-' + tab; });
-    $$('.m-tab').forEach(b => {
+    $$('.m-screen', root).forEach(s => { s.hidden = s.id !== 'm-' + tab; });
+    $$('.m-tab', root).forEach(b => {
       if (b.dataset.tab === tab) b.setAttribute('aria-current', 'page');
       else b.removeAttribute('aria-current');
     });
@@ -57,7 +58,7 @@
       $('#mChatDot').hidden = true;
       setTimeout(scrollChat, 0);
     }
-    const main = $('.m-main');
+    const main = $('.m-main', root);
     if (focus) {
       const doel = document.getElementById(focus);
       if (doel) { doel.scrollIntoView({ block: 'start' }); return; }
@@ -222,7 +223,7 @@
     tag.textContent = 'Goedgekeurd';
     tag.className = 'tag tag--ok';
     tag.style.marginTop = '6px';
-    $$('#m-start .tag').forEach(t => {
+    $$('#m-start .tag', root).forEach(t => {
       if (t.textContent === 'In afwachting') { t.textContent = 'Goedgekeurd'; t.className = 'tag tag--ok'; t.style.marginTop = '6px'; }
     });
     toast('Meerwerk goedgekeurd — de aannemer krijgt een notificatie');

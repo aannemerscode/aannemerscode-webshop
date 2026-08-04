@@ -434,3 +434,19 @@ body.mob {
     background: var(--surface);
   }
 }
+
+/* Invoerveld voor werkzaamheden (medewerker-app) */
+.m-textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  padding: 11px 13px;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+}
+
+.m-textarea:focus { border-color: var(--gold); }

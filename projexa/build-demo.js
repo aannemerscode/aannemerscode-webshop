@@ -16,6 +16,7 @@ const lees = f => fs.readFileSync(path.join(dir, f), 'utf8');
 
 const css = [
   lees('assets/base.css'),
+  lees('assets/start.css').replace(/^\.start\b/gm, '.startpg').replace(/\n\.start /g, '\n.startpg '),
   lees('assets/brief.css').replace(/body\.brief\b/g, '.brief'),
   lees('assets/app.css'),
   lees('assets/mobiel.css').replace(/body\.mob\b/g, '.mob')
@@ -41,8 +42,10 @@ function symbool(bron, id) {
   return '    ' + m[0] + '\n';
 }
 
+const startBody  = body('start.html');
 const formatBody = body('index.html');
 const webBody    = body('app.html');
+const werkBody   = body('medewerker.html');
 const mobBody    = body('mobiel.html');
 
 // Eén gedeelde iconenset: die van het format, aangevuld met de twee iconen
@@ -51,17 +54,21 @@ let sprite = formatBody.match(SPRITE)[0];
 sprite = sprite.replace('  </g>', symbool(webBody, 'i-phone') + symbool(mobBody, 'i-grid') + '  </g>');
 
 const paginas = {
-  format: formatBody.replace(SPRITE, '').replace(/<header class="site-header">[\s\S]*?<\/header>\s*/, ''),
-  web:    zonderScripts(webBody.replace(SPRITE, '')),
-  mobiel: zonderScripts(mobBody.replace(SPRITE, '').replace(/<p class="m-desk-note">[\s\S]*?<\/p>\s*/, ''))
+  start:      startBody.replace(SPRITE, ''),
+  web:        zonderScripts(webBody.replace(SPRITE, '')),
+  medewerker: zonderScripts(werkBody.replace(SPRITE, '').replace(/<p class="m-desk-note">[\s\S]*?<\/p>\s*/, '')),
+  klant:      zonderScripts(mobBody.replace(SPRITE, '').replace(/<p class="m-desk-note">[\s\S]*?<\/p>\s*/, '')),
+  format:     formatBody.replace(SPRITE, '').replace(/<header class="site-header">[\s\S]*?<\/header>\s*/, '')
 };
 
 // Verwijzingen tussen de pagina's worden knoppen in de wisselbalk.
 for (const k of Object.keys(paginas)) {
   paginas[k] = paginas[k]
     .replace(/href="index\.html"/g, 'data-page="format"')
+    .replace(/href="start\.html"/g, 'data-page="start"')
     .replace(/href="app\.html"/g, 'data-page="web"')
-    .replace(/href="mobiel\.html"/g, 'data-page="mobiel"');
+    .replace(/href="medewerker\.html"/g, 'data-page="medewerker"')
+    .replace(/href="mobiel\.html"/g, 'data-page="klant"');
 }
 
 /* ---- Wisselbalk ------------------------------------------------------- */
@@ -134,11 +141,19 @@ const demoCss = `
   padding: 0 20px 0 0;
 }
 
-@media (max-width: 620px) {
-  .demo-bar { padding: 9px 14px; }
-  .demo-bar .logo__tag, .demo-hint { display: none; }
-  .demo-switch { margin-left: auto; }
-  .demo-switch button { padding: 7px 12px; font-size: 12.5px; }
+@media (max-width: 760px) {
+  .demo-bar { padding: 9px 12px; gap: 10px; flex-wrap: nowrap; }
+  .demo-bar .logo__type, .demo-hint { display: none; }
+  .demo-switch {
+    margin-left: 0;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+  }
+  .demo-switch::-webkit-scrollbar { display: none; }
+  .demo-switch button { padding: 7px 13px; font-size: 12.5px; }
 }
 `;
 
@@ -146,14 +161,16 @@ const demoJs = `
 /* ---- Wisselen tussen de drie pagina's --------------------------------- */
 (function () {
   var titels = {
-    format: 'Projexa — Plan. Bouw. Beheer.',
-    web: 'Projexa — Webversie',
-    mobiel: 'Projexa — Smartphone-versie'
+    start: 'Projexa — Inloggen',
+    web: 'Projexa — Aannemer',
+    medewerker: 'Projexa — Medewerker',
+    klant: 'Projexa — Klantportaal',
+    format: 'Projexa — Het ontwerp'
   };
 
   function ga(pagina) {
-    if (!titels[pagina]) pagina = 'format';
-    ['format', 'web', 'mobiel'].forEach(function (p) {
+    if (!titels[pagina]) pagina = 'start';
+    Object.keys(titels).forEach(function (p) {
       document.getElementById('page-' + p).hidden = p !== pagina;
       var knop = document.querySelector('.demo-switch button[data-page="' + p + '"]');
       if (p === pagina) knop.setAttribute('aria-current', 'page');
@@ -170,7 +187,7 @@ const demoJs = `
     ga(el.dataset.page);
   });
 
-  ga('format');
+  ga('start');
 })();
 `;
 
@@ -182,25 +199,32 @@ ${demoCss}</style>
 ${sprite}
 <header class="demo-bar">
   ${logo}
-  <span class="demo-hint">Klik door de drie versies — alles werkt echt</span>
-  <nav class="demo-switch" aria-label="Kies een versie">
-    <button type="button" data-page="format" aria-current="page">Het format</button>
-    <button type="button" data-page="web">Webversie</button>
-    <button type="button" data-page="mobiel">Smartphone</button>
+  <span class="demo-hint">Loop de demo door — alles werkt echt</span>
+  <nav class="demo-switch" aria-label="Kies een rol">
+    <button type="button" data-page="start" aria-current="page">Start</button>
+    <button type="button" data-page="web">Aannemer</button>
+    <button type="button" data-page="medewerker">Medewerker</button>
+    <button type="button" data-page="klant">Klant</button>
+    <button type="button" data-page="format">Het ontwerp</button>
   </nav>
 </header>
 
-<section class="demo-page brief" id="page-format">${paginas.format}</section>
+<section class="demo-page startpg" id="page-start">${paginas.start}</section>
 
 <section class="demo-page app" id="page-web" hidden>${paginas.web}</section>
 
-<section class="demo-page mob" id="page-mobiel" hidden>${paginas.mobiel}</section>
+<section class="demo-page mob" id="page-medewerker" hidden>${paginas.medewerker}</section>
+
+<section class="demo-page mob" id="page-klant" hidden>${paginas.klant}</section>
+
+<section class="demo-page brief" id="page-format" hidden>${paginas.format}</section>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 ${lees('assets/data.js')}
 ${lees('assets/app.js')}
+${lees('assets/medewerker.js')}
 ${lees('assets/mobiel.js')}
 ${demoJs}</script>
 `;

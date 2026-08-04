@@ -8,10 +8,41 @@
 
 window.PROJEXA = (function () {
   const projecten = [
-    { naam: 'Verbouwing Jansen',   plaats: 'Amsterdam', pct: 75,  icon: 'i-building', view: 'chat' },
-    { naam: 'Nieuwbouw De Vries',  plaats: 'Utrecht',   pct: 45,  icon: 'i-home',     view: 'planning' },
-    { naam: 'Renovatie Bakker',    plaats: 'Haarlem',   pct: 20,  icon: 'i-worker',   view: 'uren' },
-    { naam: 'Uitbouw Peters',      plaats: 'Almere',    pct: 100, icon: 'i-building', view: 'documenten' }
+    {
+      naam: 'Verbouwing Jansen', plaats: 'Amsterdam', pct: 75, icon: 'i-building',
+      status: 'In uitvoering', klant: 'Familie Jansen', urenTotaal: 186, meerwerk: '€685',
+      taken: [
+        { tekst: 'Voorzetwand slaapkamer plaatsen', wanneer: 'vandaag', staat: 'bezig' },
+        { tekst: 'Leidingwerk verleggen (installateur)', wanneer: 'do 2 mei', staat: 'open' },
+        { tekst: 'Balklaag laten keuren door constructeur', wanneer: 'vr 3 mei', staat: 'open' },
+        { tekst: 'Stucwerk begane grond', wanneer: 'week 19', staat: 'open' }
+      ]
+    },
+    {
+      naam: 'Nieuwbouw De Vries', plaats: 'Utrecht', pct: 45, icon: 'i-home',
+      status: 'In uitvoering', klant: 'Lisa de Vries', urenTotaal: 312, meerwerk: '€1.240',
+      taken: [
+        { tekst: 'Dakkapel plaatsen', wanneer: 'week 19', staat: 'bezig' },
+        { tekst: 'Extra dakraam inmeten', wanneer: 'ma 6 mei', staat: 'open' },
+        { tekst: 'Kozijnen leveren', wanneer: 'week 20', staat: 'open' }
+      ]
+    },
+    {
+      naam: 'Renovatie Bakker', plaats: 'Haarlem', pct: 20, icon: 'i-worker',
+      status: 'Gestart', klant: 'Fam. Bakker', urenTotaal: 64, meerwerk: '€2.150',
+      taken: [
+        { tekst: 'Badkamer strippen', wanneer: 'deze week', staat: 'bezig' },
+        { tekst: 'Vloerverwarming aanleggen', wanneer: 'week 20', staat: 'open' }
+      ]
+    },
+    {
+      naam: 'Uitbouw Peters', plaats: 'Almere', pct: 100, icon: 'i-building',
+      status: 'Afgerond', klant: 'Mark Peters', urenTotaal: 244, meerwerk: '€0',
+      taken: [
+        { tekst: 'Opleverpunten afhandelen', wanneer: 'afgerond', staat: 'klaar' },
+        { tekst: 'Eindfactuur versturen', wanneer: 'afgerond', staat: 'klaar' }
+      ]
+    }
   ];
 
   const activiteit = [

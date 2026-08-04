@@ -118,8 +118,26 @@
       <button class="nav__item" type="button" data-view="documenten">
         <svg width="18" height="18" aria-hidden="true"><use href="#i-folder"></use></svg><span>Documenten</span>
       </button>
+      <button class="nav__item" type="button" data-view="notificaties">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-bell"></use></svg><span>Notificaties</span>
+        <span class="nav__badge" id="belBadge">3</span>
+      </button>
+      <button class="nav__item" type="button" data-view="ai">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-sparkle"></use></svg><span>AI assistent</span>
+      </button>
+
+      <p class="nav__group">Beheer</p>
       <button class="nav__item" type="button" data-view="klanten">
-        <svg width="18" height="18" aria-hidden="true"><use href="#i-user"></use></svg><span>Klantportaal</span>
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-user"></use></svg><span>Klanten &amp; portaal</span>
+      </button>
+      <button class="nav__item" type="button" data-view="gebruikers">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-worker"></use></svg><span>Gebruikers</span>
+      </button>
+      <button class="nav__item" type="button" data-view="facturatie">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-euro"></use></svg><span>Facturatie</span>
+      </button>
+      <button class="nav__item" type="button" data-view="abonnement">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-clipboard"></use></svg><span>Abonnement</span>
       </button>
     </nav>
 
@@ -128,7 +146,7 @@
         <span class="avatar">JB</span>
         <span>Jan de Boer<br><small style="color:rgba(255,255,255,.45)">Aannemer</small></span>
       </div>
-      <a href="mobiel.html" style="color:var(--gold-light);text-decoration:none">Smartphone-versie →</a>
+      <a href="start.html" style="color:var(--gold-light);text-decoration:none">Andere rol bekijken →</a>
     </div>
   </aside>
 
@@ -140,6 +158,10 @@
       <div class="topbar">
         <h1>Dashboard</h1>
         <div class="topbar__actions">
+          <button class="btn btn--ghost" type="button" data-view-open="notificaties" aria-label="Notificaties" style="position:relative">
+            <svg width="16" height="16" aria-hidden="true"><use href="#i-bell"></use></svg>
+            <span class="dotmark" id="belDot"></span>
+          </button>
           <button class="btn btn--ghost" type="button" id="addProject">
             <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Project toevoegen
           </button>
@@ -498,6 +520,384 @@
             <div class="doc">
               <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-home"></use></svg>
               <span>Klant<small>Inzien voortgang · chatten met aannemer · meerwerk goedkeuren · documenten bekijken</small></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Projectdetail --------------------------------------------------- -->
+    <section class="view" id="view-project" hidden>
+      <div class="topbar">
+        <button class="btn btn--ghost" type="button" data-view-back="projecten" aria-label="Terug naar projecten">
+          <svg width="16" height="16" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+        </button>
+        <h1 id="pdNaam">Verbouwing Jansen</h1>
+        <span class="tag tag--sent" id="pdStatus">In uitvoering</span>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" type="button" data-goto="chat">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-chat"></use></svg> Chat
+          </button>
+          <button class="btn btn--gold" type="button" data-goto="meerwerk">Meerwerk maken</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat__value" id="pdPct">75%</div><div class="stat__label">Voortgang</div></div>
+        <div class="stat"><div class="stat__value" id="pdTaken">4</div><div class="stat__label">Open taken</div></div>
+        <div class="stat"><div class="stat__value" id="pdUren">186</div><div class="stat__label">Uren geschreven</div></div>
+        <div class="stat"><div class="stat__value" id="pdMeerwerk">€685</div><div class="stat__label">Meerwerk open</div></div>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h2 class="panel__title">Open taken</h2>
+          <div class="card timeline" id="pdTakenLijst"></div>
+
+          <h2 class="panel__title" style="margin-top:24px">Foto&rsquo;s uit het projectlogboek</h2>
+          <div class="card" style="padding:16px">
+            <div class="photos" style="grid-template-columns:repeat(4,1fr)">
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 1"><use href="#ph-1"></use></svg></figure>
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 2"><use href="#ph-2"></use></svg></figure>
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 3"><use href="#ph-3"></use></svg></figure>
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 4"><use href="#ph-beams"></use></svg></figure>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Projectgegevens</h2>
+          <div class="card" style="padding:6px 18px 14px">
+            <div class="mw__row" style="border-top:0"><span>Klant</span><span id="pdKlant">Familie Jansen</span></div>
+            <div class="mw__row"><span>Adres</span><span id="pdAdres">Amsterdam</span></div>
+            <div class="mw__row"><span>Start</span><span>8 april 2024</span></div>
+            <div class="mw__row"><span>Verwachte oplevering</span><span>17 mei 2024</span></div>
+            <div class="mw__row"><span>Aanneemsom</span><span>€48.500,00</span></div>
+            <div class="mw__row"><span>Meerwerk tot nu toe</span><span>€1.925,00</span></div>
+          </div>
+
+          <h2 class="panel__title" style="margin-top:24px">Laatste activiteit</h2>
+          <div class="card list">
+            <div class="activity">
+              <span class="activity__icon"><svg width="17" height="17" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+              <span><span class="activity__text">Jan heeft een foto toegevoegd</span><span class="activity__time">2 min geleden</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-clock"></use></svg></span>
+              <span><span class="activity__text">Piet schreef 7:30 uur op Timmerwerk</span><span class="activity__time">2 uur geleden</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--green"><svg width="17" height="17" aria-hidden="true"><use href="#i-check"></use></svg></span>
+              <span><span class="activity__text">Meerwerk MW-2024-000 goedgekeurd</span><span class="activity__time">gisteren</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Notificaties ---------------------------------------------------- -->
+    <section class="view" id="view-notificaties" hidden>
+      <div class="topbar">
+        <h1>Notificaties</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" type="button" id="allesGelezen">Alles als gelezen markeren</button>
+        </div>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h2 class="panel__title">Nieuw</h2>
+          <div class="card list" id="notiNieuw">
+            <div class="activity">
+              <span class="activity__icon activity__icon--green"><svg width="17" height="17" aria-hidden="true"><use href="#i-check"></use></svg></span>
+              <span><span class="activity__text">Meerwerk goedgekeurd door familie Jansen</span><span class="activity__time">15 min geleden · push + e-mail</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-chat"></use></svg></span>
+              <span><span class="activity__text">Nieuw bericht van klant in Verbouwing Jansen</span><span class="activity__time">1 uur geleden · push</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-calendar"></use></svg></span>
+              <span><span class="activity__text">Taak "Leidingwerk verleggen" staat morgen gepland</span><span class="activity__time">1 uur geleden · e-mail</span></span>
+            </div>
+          </div>
+
+          <h2 class="panel__title" style="margin-top:24px">Eerder</h2>
+          <div class="card list">
+            <div class="activity">
+              <span class="activity__icon"><svg width="17" height="17" aria-hidden="true"><use href="#i-clock"></use></svg></span>
+              <span><span class="activity__text">Uren geregistreerd door Piet</span><span class="activity__time">2 uur geleden</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon"><svg width="17" height="17" aria-hidden="true"><use href="#i-doc"></use></svg></span>
+              <span><span class="activity__text">Factuur termijn 1 verstuurd</span><span class="activity__time">gisteren</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Waar wil je bericht van krijgen?</h2>
+          <div class="card" style="padding:6px 18px 16px">
+            <label class="toggle"><span>Nieuwe berichten<small>Chat in al je projecten</small></span><input type="checkbox" checked></label>
+            <label class="toggle"><span>Meerwerk akkoord<small>Zodra de klant goedkeurt</small></span><input type="checkbox" checked></label>
+            <label class="toggle"><span>Wijzigingen in de planning<small>Taken en mijlpalen</small></span><input type="checkbox" checked></label>
+            <label class="toggle"><span>Nieuwe taken<small>Toegewezen aan jou of je team</small></span><input type="checkbox"></label>
+            <p style="font-size:13px;color:var(--ink-2);margin:14px 0 0">
+              Meldingen komen binnen als push op je telefoon én als e-mail.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- AI assistent ---------------------------------------------------- -->
+    <section class="view" id="view-ai" hidden>
+      <div class="topbar">
+        <h1>AI assistent</h1>
+        <span class="tag">Optioneel</span>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h2 class="panel__title">Samenvatting van het gesprek</h2>
+          <div class="card" style="padding:18px 20px">
+            <p style="font-size:13px;color:var(--ink-3);margin:0 0 8px">Verbouwing Jansen · vandaag 14:28 – 14:32</p>
+            <p style="margin:0 0 12px;font-size:14.5px">
+              Tijdens het slopen bleken de balken vervangen te moeten worden. De aannemer
+              heeft een foto gedeeld; de klant vraagt om een meerwerkvoorstel en de
+              aannemer zegt dat toe.
+            </p>
+            <p class="mw__label" style="margin-top:0">Actiepunten</p>
+            <div class="timeline">
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:8px 0">
+                <span class="dot"></span><span class="timeline__task">Meerwerkvoorstel balklaag opstellen en versturen</span>
+              </div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:8px 0">
+                <span class="dot"></span><span class="timeline__task">Constructeur laten meekijken vóór 2 mei</span>
+              </div>
+            </div>
+            <button class="btn btn--ghost" type="button" id="aiSamenvatting" style="margin-top:14px">Opnieuw samenvatten</button>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Automatisch gevonden meerwerk</h2>
+          <div class="card list">
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-sparkle"></use></svg></span>
+              <span>
+                <span class="activity__text">Balklaag vervangen — uit chat en foto van 1 mei</span>
+                <span class="activity__time">Zekerheid: hoog · geschat €2.400,00</span>
+              </span>
+              <button class="btn btn--gold" type="button" data-goto="meerwerk" style="margin-left:auto;padding:8px 14px">Voorstel maken</button>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-sparkle"></use></svg></span>
+              <span>
+                <span class="activity__text">Extra wandcontactdozen — uit logboek van 29 april</span>
+                <span class="activity__time">Zekerheid: gemiddeld · geschat €310,00</span>
+              </span>
+              <button class="btn btn--ghost" type="button" data-goto="meerwerk" style="margin-left:auto;padding:8px 14px">Bekijken</button>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--ink-2);margin-top:14px">
+            De assistent leest mee met chats, logboeken en foto&rsquo;s. Je beslist altijd zelf
+            wat er als meerwerk naar de klant gaat.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Gebruikers ------------------------------------------------------ -->
+    <section class="view" id="view-gebruikers" hidden>
+      <div class="topbar">
+        <h1>Gebruikers</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--gold" type="button" id="nodigUit">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Gebruiker uitnodigen
+          </button>
+        </div>
+      </div>
+
+      <div class="card list" id="gebruikersLijst">
+        <div class="doc">
+          <span class="avatar">JB</span>
+          <span>Jan de Boer<small>jan@debouwers.nl · alle projecten</small></span>
+          <span class="tag tag--ok">Aannemer</span>
+        </div>
+        <div class="doc">
+          <span class="avatar">PV</span>
+          <span>Piet Vermeer<small>piet@debouwers.nl · Verbouwing Jansen, Renovatie Bakker</small></span>
+          <span class="tag tag--sent">Medewerker</span>
+        </div>
+        <div class="doc">
+          <span class="avatar">MK</span>
+          <span>Mark Kuiper<small>mark@debouwers.nl · Uitbouw Peters</small></span>
+          <span class="tag tag--sent">Medewerker</span>
+        </div>
+        <div class="doc">
+          <span class="avatar">FJ</span>
+          <span>Familie Jansen<small>jansen@voorbeeld.nl · Verbouwing Jansen</small></span>
+          <span class="tag">Klant</span>
+        </div>
+        <div class="doc">
+          <span class="avatar">LD</span>
+          <span>Lisa de Vries<small>lisa@voorbeeld.nl · Nieuwbouw De Vries</small></span>
+          <span class="tag">Klant</span>
+        </div>
+      </div>
+
+      <h2 class="panel__title" style="margin-top:26px">Wat mag welke rol?</h2>
+      <div class="cols" style="grid-template-columns:repeat(3,1fr)">
+        <div class="card" style="padding:18px 20px">
+          <h3 style="margin:0 0 10px;font-size:14px;letter-spacing:.04em;text-transform:uppercase">Aannemer</h3>
+          <div class="timeline">
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Volledige toegang tot alle projecten</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Gebruikers beheren</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Instellingen &amp; abonnementen</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Facturatie &amp; rapportages</span></div>
+          </div>
+        </div>
+        <div class="card" style="padding:18px 20px">
+          <h3 style="margin:0 0 10px;font-size:14px;letter-spacing:.04em;text-transform:uppercase">Medewerker</h3>
+          <div class="timeline">
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Uren registreren</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Werkzaamheden invullen</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Foto&rsquo;s uploaden</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Chatten binnen projecten</span></div>
+          </div>
+          <a class="btn btn--ghost" href="medewerker.html" style="margin-top:12px;width:100%">Bekijk de medewerker-app</a>
+        </div>
+        <div class="card" style="padding:18px 20px">
+          <h3 style="margin:0 0 10px;font-size:14px;letter-spacing:.04em;text-transform:uppercase">Klant</h3>
+          <div class="timeline">
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Inzien voortgang</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Chatten met aannemer</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Meerwerk goedkeuren</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Documenten bekijken</span></div>
+          </div>
+          <a class="btn btn--ghost" href="mobiel.html" style="margin-top:12px;width:100%">Bekijk het klantportaal</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Facturatie ------------------------------------------------------ -->
+    <section class="view" id="view-facturatie" hidden>
+      <div class="topbar">
+        <h1>Facturatie &amp; rapportages</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--gold" type="button" id="nieuweFactuur">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Factuur maken
+          </button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat__value">€12.400</div><div class="stat__label">Openstaand</div></div>
+        <div class="stat"><div class="stat__value">€68.150</div><div class="stat__label">Gefactureerd dit jaar</div></div>
+        <div class="stat"><div class="stat__value">€4.075</div><div class="stat__label">Meerwerk dit jaar</div></div>
+        <div class="stat"><div class="stat__value">412</div><div class="stat__label">Uren deze maand</div></div>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h2 class="panel__title">Facturen</h2>
+          <div class="card list" id="factuurLijst">
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-euro"></use></svg>
+              <span>2024-0031 · Verbouwing Jansen<small>Termijn 2 · €12.400,00 · vervalt 14 mei</small></span>
+              <span class="tag tag--sent">Verstuurd</span>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-euro"></use></svg>
+              <span>2024-0030 · Verbouwing Jansen<small>Termijn 1 · €16.200,00</small></span>
+              <span class="tag tag--ok">Betaald</span>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-euro"></use></svg>
+              <span>2024-0029 · Uitbouw Peters<small>Eindafrekening · €9.850,00</small></span>
+              <span class="tag tag--ok">Betaald</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Rapportages</h2>
+          <div class="card list">
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-clock"></use></svg>
+              <span>Urenoverzicht per project<small>Deze maand · per medewerker uit te splitsen</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Urenoverzicht" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-plus-circle"></use></svg>
+              <span>Meerwerkoverzicht<small>Voorstellen, akkoord en omzet</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Meerwerkoverzicht" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-building"></use></svg>
+              <span>Projectrendement<small>Begroot tegenover werkelijk</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Projectrendement" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Abonnement ------------------------------------------------------ -->
+    <section class="view" id="view-abonnement" hidden>
+      <div class="topbar"><h1>Abonnement &amp; betaling</h1></div>
+
+      <div class="cols">
+        <div>
+          <div class="card" style="padding:20px 22px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <span class="tag tag--ok">Proefperiode actief</span>
+              <span style="font-size:13px;color:var(--ink-2)">nog 9 van de 14 dagen gratis</span>
+            </div>
+            <p style="display:flex;align-items:baseline;gap:8px;margin:16px 0 6px">
+              <strong style="font-size:34px;font-weight:700">€69,99</strong>
+              <span style="color:var(--ink-2)">/ maand</span>
+            </p>
+            <p style="margin:0;font-size:14px;color:var(--ink-2)">
+              Eerste incasso op 15 mei 2024 · maandelijks opzegbaar
+            </p>
+
+            <div class="mw__row" style="margin-top:20px"><span>Betaalmethode</span><span>Automatische incasso via Stripe</span></div>
+            <div class="mw__row"><span>Rekening</span><span>NL91 •••• 4321</span></div>
+            <div class="mw__row"><span>Facturatie</span><span>PDF per e-mail, elke 15e</span></div>
+
+            <div class="mw__actions">
+              <button class="btn btn--gold" type="button" id="abonneer">Nu abonneren</button>
+              <button class="btn btn--ghost" type="button" id="opzeggen">Opzeggen</button>
+            </div>
+          </div>
+
+          <h2 class="panel__title" style="margin-top:26px">Facturen van je abonnement</h2>
+          <div class="card list">
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+              <span>Projexa april 2024<small>PDF · €69,99 · betaald</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Factuur april" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+              <span>Projexa maart 2024<small>PDF · €69,99 · betaald</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Factuur maart" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Wat zit er in je abonnement?</h2>
+          <div class="card" style="padding:18px 20px">
+            <div class="timeline">
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Onbeperkte projecten</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Onbeperkte gebruikers</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Alle functies inbegrepen</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Klantportaal</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Meerwerk &amp; offertes</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Chat &amp; notificaties</span></div>
             </div>
           </div>
         </div>
