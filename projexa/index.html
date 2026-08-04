@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projexa — Plan. Bouw. Beheer.</title>
+<meta name="description" content="Projexa: SaaS-platform voor aannemers om bouwprojecten te beheren, te communiceren met klanten en medewerkers, uren te registreren en meerwerk te beheren.">
+<meta name="theme-color" content="#090b0c">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/brief.css">
+</head>
+<body class="brief">
+
+<!-- ==== Iconenset (SVG-sprite) ================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7cb8e"/>
+      <stop offset="1" stop-color="#a98449"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M4.8 20c0-3.5 3.3-5.5 7.2-5.5s7.2 2 7.2 5.5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-5.5 4V6.5a1 1 0 0 1 1-1z"/><circle cx="8.6" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8v5.4l3.4 2"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+    <symbol id="i-plus-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/><path d="M8 3v4M16 3v4M3.5 10h17"/><circle cx="8.4" cy="14.2" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.6A1.6 1.6 0 0 1 5.1 6h3.8l2 2.5h8A1.6 1.6 0 0 1 20.5 10v8a1.6 1.6 0 0 1-1.6 1.6H5.1A1.6 1.6 0 0 1 3.5 18z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 10.2a5.6 5.6 0 0 1 11.2 0c0 4 1.6 5.6 1.6 5.6H4.8s1.6-1.6 1.6-5.6z"/><path d="M9.9 19a2.3 2.3 0 0 0 4.2 0"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 11.7 8l4.5 1.7-4.5 1.7L10 15.9 8.3 11.4 3.8 9.7 8.3 8z"/><path d="M17.8 3v3M16.3 4.5h3M18.2 15.5V18M17 16.7h2.4"/></symbol>
+    <symbol id="i-chev-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5l7 7-7 7"/></symbol>
+    <symbol id="i-chev-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5l-7 7 7 7"/></symbol>
+    <symbol id="i-chev-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8 20.5 20.5"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 11.3l-8 8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.4 3.4 0 1 1 4.8 4.8l-8.5 8.5a1.8 1.8 0 0 1-2.5-2.5l7.8-7.8"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9.4" y="3" width="5.2" height="11" rx="2.6"/><path d="M6 11.4a6 6 0 0 0 12 0"/><path d="M12 17.4V21"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12.5"/><path d="M12.5 6.5 18.5 12l-6 5.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+    <symbol id="i-checks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.6 6 16.6 13.6 7.4"/><path d="M9.6 14.9 12 17.2 21 6.8"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5v13M5.5 12h13"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h7l4.5 4.5V21h-11.5z"/><path d="M13.2 3v5h5"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.2"/><circle cx="9" cy="10" r="1.5"/><path d="M4.5 17.2 9.4 12.9l3.8 3.2 3-2.4 3.6 3"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V9.2L12 4l8 5.2v11.3"/><path d="M9.6 20.5v-5.2h4.8v5.2"/><path d="M3 20.5h18"/></symbol>
+    <symbol id="i-worker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.4" r="3"/><path d="M5.5 20.5c0-3.3 2.9-5.2 6.5-5.2s6.5 1.9 6.5 5.2"/><path d="M8.4 5.6a4 4 0 0 1 7.2 0"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="16" rx="2.2"/><path d="M9 4.5V3h6v1.5"/><path d="M8 12.5h8M8 16h5"/></symbol>
+    <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.5A6.5 6.5 0 0 0 7.5 12 6.5 6.5 0 0 0 17 17.5"/><path d="M5 10.5h7M5 13.5h7"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  </g>
+
+  <!-- Foto-illustraties (getekend, dus geen externe bestanden nodig) -->
+  <symbol id="ph-beams" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">
+    <rect width="160" height="90" fill="#201915"/>
+    <g fill="#7d6041"><polygon points="0,16 160,0 160,13 0,29"/><polygon points="0,45 160,29 160,42 0,58"/><polygon points="0,74 160,58 160,71 0,87"/></g>
+    <g fill="#b38b5c"><polygon points="16,0 38,0 106,90 84,90"/><polygon points="118,0 138,0 160,28 160,50"/></g>
+    <g fill="#5d4830" opacity=".75"><polygon points="0,29 160,13 160,17 0,33"/><polygon points="0,58 160,42 160,46 0,62"/></g>
+    <rect width="160" height="90" fill="url(#phshade)"/>
+  </symbol>
+  <linearGradient id="phshade" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#000" stop-opacity=".28"/>
+    <stop offset=".5" stop-color="#000" stop-opacity="0"/>
+    <stop offset="1" stop-color="#000" stop-opacity=".35"/>
+  </linearGradient>
+
+  <symbol id="ph-1" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#c9ab86"/>
+    <path d="M0 44h60v16H0z" fill="#8f6f4c"/>
+    <path d="M8 12h10v32H8zM42 12h10v32H42z" fill="#a8845c"/>
+    <path d="M18 8h24v6H18z" fill="#e0c9a8"/>
+    <path d="M24 24h12v20H24z" fill="#6f5537"/>
+  </symbol>
+  <symbol id="ph-2" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#b99a72"/>
+    <path d="M0 0h60v18H0z" fill="#8a6a48"/>
+    <path d="M14 18h8v42h-8zM38 18h8v42h-8z" fill="#d8c0a0"/>
+    <path d="M0 50h60v10H0z" fill="#6c5334"/>
+  </symbol>
+  <symbol id="ph-3" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#cfcfcb"/>
+    <path d="M0 0h60v14H0z" fill="#e8e8e4"/>
+    <path d="M0 46h60v14H0z" fill="#9d9d98"/>
+    <path d="M16 14h6v32h-6zM38 14h6v32h-6z" fill="#b6b6b1"/>
+    <path d="M26 20h8v26h-8z" fill="#7f7f7a"/>
+  </symbol>
+</svg>
+
+<!-- ==== Kop ================================================================== -->
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="logo" href="index.html" aria-label="Projexa — Plan. Bouw. Beheer.">
+      <svg class="logo__mark" width="30" height="33" viewBox="0 0 72 80" aria-hidden="true">
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </a>
+    <nav class="site-header__links">
+      <a class="btn btn--outline-gold" href="app.html">Werkende webversie</a>
+      <a class="btn btn--gold" href="mobiel.html">Smartphone-versie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- ==== Hero ============================================================== -->
+  <section class="hero">
+    <div>
+      <div class="logo hero__logo">
+        <svg class="logo__mark" width="66" height="73" viewBox="0 0 72 80" aria-hidden="true">
+          <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+          <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+          <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+        </svg>
+        <span class="logo__type">
+          <span class="logo__name">PROJEX<b>A</b></span>
+          <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+        </span>
+      </div>
+
+      <h1>PROMPT VOOR CLAUDE</h1>
+      <p class="hero__intro">
+        Bouw een complete SaaS web- en mobiele applicatie voor Projexa. Een
+        overzichtelijke platform voor aannemers om bouwprojecten te beheren,
+        communiceren met klanten en medewerkers, uren te registreren en meerwerk
+        te beheren.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="eyebrow">Design richtlijnen</h2>
+      <ul class="guidelines">
+        <li>Zeer overzichtelijke en minimalistische interface</li>
+        <li>Moderne uitstraling in zwart, wit en goud (Projexa kleuren)</li>
+        <li>Mobile-first design</li>
+        <li>Intuitieve navigatie</li>
+        <li>Rustige typografie en veel witruimte</li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ==== Kernfuncties + schermen =========================================== -->
+  <div class="body-grid">
+
+    <section>
+      <h2 class="eyebrow">Fase 1 – Kernfuncties</h2>
+      <div class="features">
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-home"></use></svg>
+          <div>
+            <h3>Projecten dashboard</h3>
+            <p>Overzicht van alle projecten met status, voortgang, open taken, uren, meerwerk en laatste activiteit.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-user"></use></svg>
+          <div>
+            <h3>Klantportaal</h3>
+            <p>Klanten krijgen een eigen inlog en zien de voortgang, foto&rsquo;s, planning, berichten, meerwerk en documenten van hun project.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-chat"></use></svg>
+          <div>
+            <h3>Chat</h3>
+            <p>WhatsApp-achtige chat per project. Snel, strak en real-time. Ondersteuning voor tekst, foto&rsquo;s, bestanden en spraakberichten. Leesbevestigingen en notificaties.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+          <div>
+            <h3>Urenregistratie</h3>
+            <p>Werknemers kunnen eenvoudig hun uren registreren per project. Start/stop timer of handmatige invoer. Koppel aan werkzaamheden en notities.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-camera"></use></svg>
+          <div>
+            <h3>Werkzaamheden &amp; foto&rsquo;s</h3>
+            <p>Registreer dagelijkse werkzaamheden en voeg foto&rsquo;s toe. Automatisch gelogd in het projectlogboek.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-plus-circle"></use></svg>
+          <div>
+            <h3>Meerwerk</h3>
+            <p>Maak meerwerkvoorstellen, stuur naar klant, akkoord via één klik. Overzicht van alle meerwerk en status.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-calendar"></use></svg>
+          <div>
+            <h3>Planning</h3>
+            <p>Eenvoudige projectplanning met taken en mijlpalen. Overzichtelijk per dag/week.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-folder"></use></svg>
+          <div>
+            <h3>Documenten</h3>
+            <p>Upload en beheer documenten per project (offertes, tekeningen, contracten, facturen, opleverrapporten, etc.).</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-bell"></use></svg>
+          <div>
+            <h3>Notificaties</h3>
+            <p>Push- en e-mailmeldingen voor nieuwe berichten, meerwerk akkoord, wijzigingen en taken.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <svg class="feature__icon" aria-hidden="true"><use href="#i-sparkle"></use></svg>
+          <div>
+            <h3>AI assistent <em>(optioneel)</em></h3>
+            <p>Laat AI samenvattingen maken van gesprekken, automatisch meerwerk detecteren op basis van logs en foto&rsquo;s.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ==== Schermen ======================================================== -->
+    <section class="showcase" aria-label="Schermen">
+
+      <!-- Dashboard op laptop + klantportaal op telefoon -->
+      <div class="combo">
+        <div class="device laptop">
+          <div class="device__screen">
+            <div class="mk">
+              <div class="mk__layout">
+                <aside class="mk__side">
+                  <span class="logo">
+                    <svg class="logo__mark" width="14" height="16" viewBox="0 0 72 80" aria-hidden="true">
+                      <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+                      <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+                    </svg>
+                    <span class="logo__type">
+                      <span class="logo__name">PROJEX<b>A</b></span>
+                      <span class="logo__tag">PLAN. BOUW.</span>
+                    </span>
+                  </span>
+                  <span class="mk__nav is-active"><svg aria-hidden="true"><use href="#i-home"></use></svg><span>Dashboard</span></span>
+                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-building"></use></svg><span>Projecten</span></span>
+                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-chat"></use></svg><span>Chat</span></span>
+                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-clock"></use></svg><span>Uren</span></span>
+                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-plus-circle"></use></svg><span>Meerwerk</span></span>
+                  <span class="mk__nav"><svg aria-hidden="true"><use href="#i-calendar"></use></svg><span>Planning</span></span>
+                </aside>
+
+                <div class="mk__body">
+                  <div class="mk__head" style="padding:0 0 12px">
+                    <span class="mk__title">Dashboard</span>
+                    <span class="mk__btn"><svg width="9" height="9" aria-hidden="true"><use href="#i-plus"></use></svg> Project toevoegen</span>
+                  </div>
+
+                  <div class="mk__stats">
+                    <div class="mk__stat"><b>12</b><span>Projecten</span></div>
+                    <div class="mk__stat"><b>5</b><span>Actief</span></div>
+                    <div class="mk__stat"><b>3</b><span>In uitvoering</span></div>
+                    <div class="mk__stat"><b>2</b><span>Afgerond</span></div>
+                  </div>
+
+                  <div class="mk__cols">
+                    <div>
+                      <div class="mk__coltitle">Mijn projecten</div>
+                      <div class="mk__card">
+                        <div class="mk__row">
+                          <svg aria-hidden="true"><use href="#i-building"></use></svg>
+                          <span><b>Verbouwing Jansen</b><small>Amsterdam</small></span>
+                          <span class="mk__pct"><b>75%</b><span class="mk__bar"><i style="width:75%"></i></span></span>
+                        </div>
+                        <div class="mk__row">
+                          <svg aria-hidden="true"><use href="#i-home"></use></svg>
+                          <span><b>Nieuwbouw De Vries</b><small>Utrecht</small></span>
+                          <span class="mk__pct"><b>45%</b><span class="mk__bar"><i style="width:45%"></i></span></span>
+                        </div>
+                        <div class="mk__row">
+                          <svg aria-hidden="true"><use href="#i-worker"></use></svg>
+                          <span><b>Renovatie Bakker</b><small>Haarlem</small></span>
+                          <span class="mk__pct"><b>20%</b><span class="mk__bar"><i style="width:20%"></i></span></span>
+                        </div>
+                        <div class="mk__row">
+                          <svg aria-hidden="true"><use href="#i-building"></use></svg>
+                          <span><b>Uitbouw Peters</b><small>Almere</small></span>
+                          <span class="mk__pct"><b>100%</b><span class="mk__bar"><i style="width:100%"></i></span></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div class="mk__coltitle">Laatste activiteit</div>
+                      <div class="mk__card">
+                        <div class="mk__row">
+                          <span class="mk__ico"><svg aria-hidden="true"><use href="#i-worker"></use></svg></span>
+                          <span><b>Jan heeft een foto toegevoegd</b><small>2 min geleden</small></span>
+                        </div>
+                        <div class="mk__row">
+                          <span class="mk__ico mk__ico--green"><svg aria-hidden="true"><use href="#i-chat"></use></svg></span>
+                          <span><b>Meerwerk goedgekeurd</b><small>15 min geleden</small></span>
+                        </div>
+                        <div class="mk__row">
+                          <span class="mk__ico mk__ico--gold"><svg aria-hidden="true"><use href="#i-clipboard"></use></svg></span>
+                          <span><b>Nieuw bericht van klant</b><small>1 uur geleden</small></span>
+                        </div>
+                        <div class="mk__row">
+                          <span class="mk__ico mk__ico--gold"><svg aria-hidden="true"><use href="#i-clock"></use></svg></span>
+                          <span><b>Uren geregistreerd</b><small>2 uur geleden</small></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="laptop__base"></div>
+        </div>
+
+        <!-- Klantportaal op de telefoon -->
+        <div class="phone">
+          <div class="phone__notch"></div>
+          <div class="phone__screen">
+            <div class="phone__status">
+              <span>9:41</span>
+              <span aria-hidden="true">
+                <svg width="34" height="9" viewBox="0 0 34 9" fill="currentColor"><rect x="0" y="5" width="2" height="4" rx=".5"/><rect x="3.5" y="3.5" width="2" height="5.5" rx=".5"/><rect x="7" y="2" width="2" height="7" rx=".5"/><rect x="10.5" y="0" width="2" height="9" rx=".5"/><path d="M16 3.2a5 5 0 0 1 6 0l-3 3.6z"/><rect x="24" y="1.5" width="8.5" height="6" rx="1.6" fill="none" stroke="currentColor"/><rect x="25.2" y="2.7" width="6" height="3.6" rx=".8"/></svg>
+              </span>
+            </div>
+            <div class="mkp">
+              <h4>Mijn verbouwing</h4>
+
+              <div class="mkp__project">
+                <span><b>Verbouwing Jansen</b><small>Amsterdam</small></span>
+                <svg width="12" height="12" aria-hidden="true"><use href="#i-chev-r"></use></svg>
+              </div>
+
+              <div class="mkp__prog">
+                <div><span>Voortgang</span><span>75%</span></div>
+                <span class="mk__bar" style="height:4px"><i style="width:75%"></i></span>
+              </div>
+
+              <div class="mkp__label">Laatste update</div>
+
+              <div class="mkp__quick">
+                <span><svg aria-hidden="true"><use href="#i-chat"></use></svg><span>Berichten</span></span>
+                <span><svg aria-hidden="true"><use href="#i-calendar"></use></svg><span>Planning</span></span>
+                <span><svg aria-hidden="true"><use href="#i-camera"></use></svg><span>Foto&rsquo;s</span></span>
+                <span><svg aria-hidden="true"><use href="#i-doc"></use></svg><span>Documenten</span></span>
+              </div>
+
+              <div class="mkp__title">Laatste updates</div>
+
+              <div class="mkp__upd">
+                <span class="mk__ico"><svg aria-hidden="true"><use href="#i-worker"></use></svg></span>
+                <span><b>Jan heeft een foto toegevoegd</b><small>2 min geleden</small></span>
+              </div>
+              <div class="mkp__upd">
+                <span class="mk__ico mk__ico--green"><svg aria-hidden="true"><use href="#i-chat"></use></svg></span>
+                <span><b>Meerwerk goedgekeurd</b><small>15 min geleden</small></span>
+              </div>
+              <div class="mkp__upd">
+                <span class="mk__ico mk__ico--gold"><svg aria-hidden="true"><use href="#i-calendar"></use></svg></span>
+                <span><b>Nieuwe planning beschikbaar</b><small>1 uur geleden</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="device__caption">
+        Dashboard (web) en klantportaal (smartphone) —
+        <a href="app.html">open de werkende webversie</a> ·
+        <a href="mobiel.html">open de smartphone-versie</a>
+      </p>
+
+      <!-- Chat -->
+      <div class="device">
+        <div class="device__screen">
+          <div class="mk">
+            <div class="mk__head"><span class="mk__title">Chat - Verbouwing Jansen</span></div>
+            <div class="mkc">
+              <aside class="mkc__aside">
+                <div class="mkc__asidehead">
+                  <span>Chats</span>
+                  <svg width="11" height="11" aria-hidden="true"><use href="#i-chev-r"></use></svg>
+                </div>
+                <div class="mkc__search">
+                  <svg width="10" height="10" aria-hidden="true"><use href="#i-search"></use></svg> Zoeken
+                </div>
+                <div class="mkc__item is-active">
+                  <span class="mk__ico"><svg aria-hidden="true"><use href="#i-worker"></use></svg></span>
+                  <span><b>Verbouwing Jansen</b><small>Jan: Foto toegevoegd</small></span>
+                  <time>14:32</time>
+                </div>
+                <div class="mkc__item">
+                  <span class="mk__ico"><svg aria-hidden="true"><use href="#i-doc"></use></svg></span>
+                  <span><b>Nieuwbouw De Vries</b><small>Lisa: Meerwerk akkoord?</small></span>
+                  <time>13:15</time>
+                </div>
+                <div class="mkc__item">
+                  <span class="mk__ico"><svg aria-hidden="true"><use href="#i-building"></use></svg></span>
+                  <span><b>Renovatie Bakker</b><small>Piet: Uren ingevoerd</small></span>
+                  <time>11:45</time>
+                </div>
+                <div class="mkc__item">
+                  <span class="mk__ico"><svg aria-hidden="true"><use href="#i-calendar"></use></svg></span>
+                  <span><b>Uitbouw Peters</b><small>Mark: Planning update</small></span>
+                  <time>09:30</time>
+                </div>
+              </aside>
+
+              <div class="mkc__thread">
+                <div class="mkc__msgs">
+                  <div class="mkc__b mkc__b--me">
+                    Goedemiddag, we hebben tijdens het slopen gezien dat de balken vervangen moeten worden.
+                    <span class="mkc__t">14:28 <svg width="9" height="9" style="color:#4a90d9" aria-hidden="true"><use href="#i-checks"></use></svg></span>
+                  </div>
+                  <div class="mkc__b mkc__b--photo">
+                    <svg viewBox="0 0 160 90" role="img" aria-label="Foto van de bestaande balklaag"><use href="#ph-beams"></use></svg>
+                  </div>
+                  <div class="mkc__b">
+                    Dank voor de update en foto. Kunnen jullie een meerwerk voorstel sturen?
+                    <span class="mkc__t">14:31</span>
+                  </div>
+                  <div class="mkc__b">
+                    Zeker, komt eraan!
+                    <span class="mkc__t">14:32</span>
+                  </div>
+                </div>
+                <div class="mkc__composer">
+                  <span class="mkc__input">Typ een bericht...</span>
+                  <svg width="12" height="12" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-clip"></use></svg>
+                  <svg width="12" height="12" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-mic"></use></svg>
+                  <span class="mkc__send"><svg aria-hidden="true"><use href="#i-send"></use></svg></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="device__caption">Real-time projectchat met foto&rsquo;s, bestanden en leesbevestigingen</p>
+      </div>
+
+      <!-- Urenregistratie + meerwerk -->
+      <div class="showcase__row">
+
+        <div class="device">
+          <div class="device__screen">
+            <div class="mkt">
+              <div class="mkt__head"><span>Urenregistratie</span></div>
+              <div class="mkt__timer">
+                <div class="mkt__datenav">
+                  <svg width="11" height="11" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+                  <span>Vandaag, 1 mei 2024</span>
+                  <svg width="11" height="11" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+                </div>
+                <div class="mkt__big">07:30:45</div>
+                <div class="mkt__sub">Uren vandaag</div>
+                <div class="mkt__btns">
+                  <span class="mkt__btn mkt__btn--stop">Stop</span>
+                  <span class="mkt__btn">Pauze</span>
+                </div>
+              </div>
+              <div class="mkt__section">
+                <h5>Werkzaamheden</h5>
+                <div class="mkt__select">
+                  <span><b>Timmerwerk</b><small>Voorzetwand plaatsen</small></span>
+                  <svg width="11" height="11" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+                </div>
+              </div>
+              <div class="mkt__section" style="padding-top:0">
+                <h5>Foto&rsquo;s</h5>
+                <div class="mkt__photos">
+                  <figure style="margin:0"><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 1"><use href="#ph-1"></use></svg></figure>
+                  <figure style="margin:0"><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 2"><use href="#ph-2"></use></svg></figure>
+                  <figure style="margin:0"><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 3"><use href="#ph-3"></use></svg></figure>
+                  <span class="mkt__add"><svg width="10" height="10" aria-hidden="true"><use href="#i-plus"></use></svg></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="device__caption">Start/stop timer, gekoppeld aan werkzaamheden en foto&rsquo;s</p>
+        </div>
+
+        <div class="device">
+          <div class="device__screen">
+            <div class="mkt">
+              <div class="mkt__head">
+                <span>Meerwerk</span>
+                <svg width="13" height="13" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-x"></use></svg>
+              </div>
+              <div class="mkm">
+                <div class="mkm__card">
+                  <div class="mkm__top">
+                    <span class="mkm__nr">MW-2024-001</span>
+                    <span class="mkm__price">€685,00</span>
+                  </div>
+                  <div class="mkm__title">
+                    Wand verplaatsen slaapkamer
+                    <span class="mkm__tag">In afwachting</span>
+                  </div>
+                  <div class="mkm__label">Omschrijving</div>
+                  <div class="mkm__text">Verplaatsen van de tussenwand met 20cm i.v.m. leidingwerk.</div>
+                  <div class="mkm__row"><span>Gemaakt op</span><b>1 mei 2024</b></div>
+                  <div class="mkm__row"><span>Totaal (excl. btw)</span><b>€685,00</b></div>
+                  <div class="mkm__btns">
+                    <span class="mkm__btn">Bekijk details</span>
+                    <span class="mkm__btn mkm__btn--gold">Stuur naar klant</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="device__caption">Meerwerkvoorstel: sturen naar klant, akkoord via één klik</p>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <hr class="rule">
+
+  <!-- ==== Technische eisen, abonnement en prijs ============================== -->
+  <section class="specs">
+    <div>
+      <h2 class="eyebrow">Technische eisen</h2>
+      <ul class="speclist">
+        <li>Responsive webapplicatie (ook als mobiele app te installeren)</li>
+        <li>Supabase of vergelijkbare backend (auth, database, storage, realtime)</li>
+        <li>Real-time chat functionaliteit</li>
+        <li>Role-based access (aannemer, medewerker, klant)</li>
+        <li>Veiligheid en privacy volgens AVG</li>
+        <li>Integratie met betaalprovider (Stripe)</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="eyebrow">Abonnement &amp; betaling</h2>
+      <ul class="speclist speclist--gold">
+        <li>Abonnement op basis van maandbetaling</li>
+        <li>Gratis proefperiode van 14 dagen</li>
+        <li>Automatische betaling via Stripe</li>
+        <li>Opzeggen kan maandelijks</li>
+        <li>Inclusief facturatie (PDF) voor klanten</li>
+      </ul>
+    </div>
+
+    <div class="price">
+      <p class="price__trial">Proefperiode <b>14 dagen gratis</b></p>
+      <p class="price__amount"><strong>€69,99</strong> <span>/ maand</span></p>
+      <ul class="price__list">
+        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Onbeperkte projecten</li>
+        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Onbeperkte gebruikers</li>
+        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Alle functies inbegrepen</li>
+        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Klantportaal</li>
+        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Meerwerk &amp; offertes</li>
+        <li><svg aria-hidden="true"><use href="#i-check"></use></svg> Chat &amp; notificaties</li>
+      </ul>
+      <a class="btn btn--gold" href="app.html">Start gratis proefperiode</a>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ==== Gebruikers &amp; rechten =========================================== -->
+  <section>
+    <h2 class="eyebrow">Gebruikers &amp; rechten</h2>
+    <div class="roles-row">
+      <div class="roles">
+        <div class="role">
+          <h3>Aannemer (hoofdgebruiker)</h3>
+          <ul>
+            <li>Volledige toegang tot alle projecten</li>
+            <li>Gebruikers beheren</li>
+            <li>Instellingen &amp; abonnementen</li>
+            <li>Facturatie &amp; rapportages</li>
+          </ul>
+        </div>
+        <div class="role">
+          <h3>Medewerker</h3>
+          <ul>
+            <li>Uren registreren</li>
+            <li>Werkzaamheden invullen</li>
+            <li>Foto&rsquo;s uploaden</li>
+            <li>Chatten binnen projecten</li>
+          </ul>
+        </div>
+        <div class="role">
+          <h3>Klant</h3>
+          <ul>
+            <li>Inzien voortgang</li>
+            <li>Chatten met aannemer</li>
+            <li>Meerwerk goedkeuren</li>
+            <li>Documenten bekijken</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="brandbox">
+        <span class="logo">
+          <svg class="logo__mark" width="48" height="53" viewBox="0 0 72 80" aria-hidden="true">
+            <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+            <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+            <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+          </svg>
+          <span class="logo__type">
+            <span class="logo__name">PROJEX<b>A</b></span>
+            <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+          </span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <span>Projexa — Plan. Bouw. Beheer.</span>
+    <span class="site-footer__links">
+      <a href="app.html">Werkende webversie</a>
+      <a href="mobiel.html">Smartphone-versie</a>
+    </span>
+  </footer>
+
+</main>
+</body>
+</html>
