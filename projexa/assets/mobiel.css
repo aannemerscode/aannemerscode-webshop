@@ -1,0 +1,436 @@
+/* ==========================================================================
+   Projexa — smartphone-versie (mobile-first)
+   Op een telefoon vult de app het scherm; op een groot scherm wordt hij in
+   een telefoonframe getoond zodat je hem ook op de desktop kunt bekijken.
+   ========================================================================== */
+
+body.mob {
+  background: var(--app-bg);
+  color: var(--ink);
+}
+
+.m-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--surface);
+  max-width: 460px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ---- Kop ---------------------------------------------------------------- */
+
+.m-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 18px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.m-top h1 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.m-top__sub { font-size: 12px; color: var(--ink-3); }
+.m-top__right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.m-back {
+  border: 0;
+  background: none;
+  padding: 6px;
+  margin-left: -6px;
+  border-radius: 50%;
+  color: var(--ink);
+  cursor: pointer;
+  display: none;
+}
+
+.m-back.is-visible { display: inline-flex; }
+
+.m-bell {
+  position: relative;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.m-bell::after {
+  content: "";
+  position: absolute;
+  top: 5px; right: 6px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 1.5px solid var(--surface);
+}
+
+/* ---- Inhoud ------------------------------------------------------------- */
+
+.m-main { flex: 1; padding: 4px 18px 22px; display: flex; flex-direction: column; }
+.m-screen { flex: 1; display: flex; flex-direction: column; }
+.m-screen[hidden] { display: none; }
+.m-chat { flex: 1; }
+
+.m-card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.m-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 22px 0 10px;
+}
+
+.m-label {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin: 18px 0 6px;
+}
+
+/* Projectregel */
+.m-project {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.m-project:first-of-type { border-top: 0; }
+.m-project b { display: block; font-size: 15px; font-weight: 600; }
+.m-project small { font-size: 12.5px; color: var(--ink-3); }
+.m-project svg:last-child { margin-left: auto; color: var(--ink-3); flex: none; }
+
+.m-prog { padding: 14px 0; border-top: 1px solid var(--line); }
+
+.m-prog__head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.m-bar { display: block; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.m-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); }
+
+/* Snelknoppen */
+.m-quick {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.m-quick button {
+  border: 0;
+  background: none;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 8px 2px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--ink-2);
+}
+
+.m-quick button:hover { background: var(--surface-2); }
+.m-quick svg { color: var(--ink); }
+
+/* Updates */
+.m-update {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.m-update b { display: block; font-size: 14px; font-weight: 600; }
+.m-update small { font-size: 12px; color: var(--ink-3); }
+
+.m-ico {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--ink);
+}
+
+.m-ico--green { background: #e8f6ec; color: var(--green); }
+.m-ico--gold { background: #f7efe2; color: var(--gold-dark); }
+
+/* ---- Chat --------------------------------------------------------------- */
+
+.m-chat { display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; padding: 14px 0 4px; }
+
+.m-bubble {
+  max-width: 82%;
+  padding: 10px 13px 7px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  align-self: flex-start;
+}
+
+.m-bubble--me { align-self: flex-end; background: #f4ece0; border-color: #e8dcc8; }
+.m-bubble--photo { padding: 5px; max-width: 74%; }
+.m-bubble--photo svg { width: 100%; border-radius: 10px; display: block; }
+
+.m-bubble__meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-top: 3px;
+}
+
+.m-bubble__meta .read { color: #4a90d9; }
+
+.m-composer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+}
+
+.m-composer input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 11px 15px;
+  font-size: 14.5px;
+  outline: none;
+}
+
+.m-round {
+  width: 40px; height: 40px;
+  flex: none;
+  border-radius: 50%;
+  border: 0;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.m-round--send { background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #221b0c; }
+
+/* ---- Uren --------------------------------------------------------------- */
+
+.m-timer { text-align: center; padding: 18px; background: var(--surface-2); }
+
+.m-timer__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.m-timer__nav button { border: 0; background: none; padding: 4px 8px; cursor: pointer; color: var(--ink-2); }
+.m-timer__value { font-size: 40px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.m-timer__label { font-size: 13px; color: var(--ink-2); }
+.m-timer__btns { display: flex; gap: 10px; justify-content: center; margin-top: 14px; }
+.m-timer__btns .btn { flex: 1; max-width: 150px; }
+
+.m-field { padding: 16px 16px; }
+.m-field h3 { margin: 0 0 8px; font-size: 14px; font-weight: 700; }
+
+.m-select {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 10px 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.m-select select { border: 0; background: none; outline: none; width: 100%; font-size: 14.5px; font-weight: 600; appearance: none; -webkit-appearance: none; }
+.m-select__sub { font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+
+.m-photos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
+.m-photos figure { margin: 0; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 1; }
+.m-photos svg { width: 100%; height: 100%; display: block; }
+
+.m-photos__add {
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  cursor: pointer;
+}
+
+/* ---- Meerwerk ----------------------------------------------------------- */
+
+.m-mw { padding: 16px; }
+.m-mw__top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.m-mw__nr { font-size: 14px; font-weight: 600; }
+.m-mw__price { font-size: 17px; font-weight: 700; white-space: nowrap; }
+.m-mw__title { font-size: 15px; font-weight: 600; margin-top: 6px; }
+
+.m-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.m-row span:first-child { color: var(--ink-2); }
+.m-row.is-total { font-weight: 700; }
+.m-mw__btns { display: flex; gap: 10px; margin-top: 14px; }
+.m-mw__btns .btn { flex: 1; }
+
+/* ---- Lijstjes (planning, documenten, foto's) ---------------------------- */
+
+.m-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+}
+
+.m-item:first-child { border-top: 0; }
+.m-item small { display: block; font-size: 12px; color: var(--ink-3); }
+.m-item .tag { margin-left: auto; }
+
+.m-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.m-gallery figure { margin: 0; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 1; }
+.m-gallery svg { width: 100%; height: 100%; display: block; }
+
+/* ---- Tabbalk ------------------------------------------------------------ */
+
+.m-tabs {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+
+.m-tab {
+  border: 0;
+  background: none;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 7px 2px;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  cursor: pointer;
+  border-radius: var(--r-md);
+  position: relative;
+}
+
+.m-tab[aria-current="page"] { color: var(--gold-dark); font-weight: 700; }
+.m-tab[aria-current="page"] svg { color: var(--gold-dark); }
+
+.m-tab__dot {
+  position: absolute;
+  top: 5px;
+  right: 22%;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+/* ---- Telefoonframe op grote schermen ------------------------------------ */
+
+.m-desk-note { display: none; }
+
+@media (min-width: 900px) {
+  body.mob {
+    background:
+      radial-gradient(900px 500px at 50% 0%, rgba(181, 149, 94, .12), transparent 60%),
+      var(--black);
+    padding: 30px 20px 40px;
+  }
+
+  .m-app {
+    max-width: 400px;
+    border-radius: 36px;
+    border: 10px solid #16191b;
+    outline: 1px solid #33383b;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    min-height: 800px;
+    height: 800px;
+  }
+
+  .m-main { overflow-y: auto; }
+
+  .m-desk-note {
+    display: block;
+    text-align: center;
+    color: rgba(255, 255, 255, .55);
+    font-size: 13px;
+    margin: 0 auto 22px;
+    max-width: 460px;
+  }
+
+  .m-desk-note a { color: var(--gold-light); }
+}
+
+/* Statusbalk alleen zichtbaar in het frame op desktop */
+.m-status { display: none; }
+
+@media (min-width: 900px) {
+  .m-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px 0;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--surface);
+  }
+}

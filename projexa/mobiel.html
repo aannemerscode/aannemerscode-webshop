@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Projexa — Mijn verbouwing</title>
+<meta name="description" content="Smartphone-versie van Projexa: voortgang, berichten, uren, meerwerk, planning, foto's en documenten.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/favicon.svg">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/mobiel.css">
+</head>
+<body class="mob">
+
+<!-- ==== Iconenset (SVG-sprite) ================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7cb8e"/>
+      <stop offset="1" stop-color="#a98449"/>
+    </linearGradient>
+    <linearGradient id="phshade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity=".28"/>
+      <stop offset=".5" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".35"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M4.8 20c0-3.5 3.3-5.5 7.2-5.5s7.2 2 7.2 5.5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-5.5 4V6.5a1 1 0 0 1 1-1z"/><circle cx="8.6" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8v5.4l3.4 2"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+    <symbol id="i-plus-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/><path d="M8 3v4M16 3v4M3.5 10h17"/><circle cx="8.4" cy="14.2" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.6A1.6 1.6 0 0 1 5.1 6h3.8l2 2.5h8A1.6 1.6 0 0 1 20.5 10v8a1.6 1.6 0 0 1-1.6 1.6H5.1A1.6 1.6 0 0 1 3.5 18z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 10.2a5.6 5.6 0 0 1 11.2 0c0 4 1.6 5.6 1.6 5.6H4.8s1.6-1.6 1.6-5.6z"/><path d="M9.9 19a2.3 2.3 0 0 0 4.2 0"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 11.7 8l4.5 1.7-4.5 1.7L10 15.9 8.3 11.4 3.8 9.7 8.3 8z"/><path d="M17.8 3v3M16.3 4.5h3M18.2 15.5V18M17 16.7h2.4"/></symbol>
+    <symbol id="i-chev-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5l7 7-7 7"/></symbol>
+    <symbol id="i-chev-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5l-7 7 7 7"/></symbol>
+    <symbol id="i-chev-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8 20.5 20.5"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 11.3l-8 8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.4 3.4 0 1 1 4.8 4.8l-8.5 8.5a1.8 1.8 0 0 1-2.5-2.5l7.8-7.8"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9.4" y="3" width="5.2" height="11" rx="2.6"/><path d="M6 11.4a6 6 0 0 0 12 0"/><path d="M12 17.4V21"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12.5"/><path d="M12.5 6.5 18.5 12l-6 5.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+    <symbol id="i-checks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.6 6 16.6 13.6 7.4"/><path d="M9.6 14.9 12 17.2 21 6.8"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5v13M5.5 12h13"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h7l4.5 4.5V21h-11.5z"/><path d="M13.2 3v5h5"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.2"/><circle cx="9" cy="10" r="1.5"/><path d="M4.5 17.2 9.4 12.9l3.8 3.2 3-2.4 3.6 3"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V9.2L12 4l8 5.2v11.3"/><path d="M9.6 20.5v-5.2h4.8v5.2"/><path d="M3 20.5h18"/></symbol>
+    <symbol id="i-worker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.4" r="3"/><path d="M5.5 20.5c0-3.3 2.9-5.2 6.5-5.2s6.5 1.9 6.5 5.2"/><path d="M8.4 5.6a4 4 0 0 1 7.2 0"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="16" rx="2.2"/><path d="M9 4.5V3h6v1.5"/><path d="M8 12.5h8M8 16h5"/></symbol>
+    <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.5A6.5 6.5 0 0 0 7.5 12 6.5 6.5 0 0 0 17 17.5"/><path d="M5 10.5h7M5 13.5h7"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></symbol>
+  </g>
+
+  <symbol id="ph-beams" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">
+    <rect width="160" height="90" fill="#201915"/>
+    <g fill="#7d6041"><polygon points="0,16 160,0 160,13 0,29"/><polygon points="0,45 160,29 160,42 0,58"/><polygon points="0,74 160,58 160,71 0,87"/></g>
+    <g fill="#b38b5c"><polygon points="16,0 38,0 106,90 84,90"/><polygon points="118,0 138,0 160,28 160,50"/></g>
+    <g fill="#5d4830" opacity=".75"><polygon points="0,29 160,13 160,17 0,33"/><polygon points="0,58 160,42 160,46 0,62"/></g>
+    <rect width="160" height="90" fill="url(#phshade)"/>
+  </symbol>
+  <symbol id="ph-1" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#c9ab86"/><path d="M0 44h60v16H0z" fill="#8f6f4c"/>
+    <path d="M8 12h10v32H8zM42 12h10v32H42z" fill="#a8845c"/><path d="M18 8h24v6H18z" fill="#e0c9a8"/>
+    <path d="M24 24h12v20H24z" fill="#6f5537"/>
+  </symbol>
+  <symbol id="ph-2" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#b99a72"/><path d="M0 0h60v18H0z" fill="#8a6a48"/>
+    <path d="M14 18h8v42h-8zM38 18h8v42h-8z" fill="#d8c0a0"/><path d="M0 50h60v10H0z" fill="#6c5334"/>
+  </symbol>
+  <symbol id="ph-3" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#cfcfcb"/><path d="M0 0h60v14H0z" fill="#e8e8e4"/>
+    <path d="M0 46h60v14H0z" fill="#9d9d98"/><path d="M16 14h6v32h-6zM38 14h6v32h-6z" fill="#b6b6b1"/>
+    <path d="M26 20h8v26h-8z" fill="#7f7f7a"/>
+  </symbol>
+</svg>
+
+<p class="m-desk-note">
+  Smartphone-versie van Projexa — <a href="index.html">terug naar het overzicht</a> ·
+  <a href="app.html">webversie</a>
+</p>
+
+<div class="m-app">
+
+  <div class="m-status">
+    <span>9:41</span>
+    <span aria-hidden="true">
+      <svg width="40" height="10" viewBox="0 0 34 9" fill="currentColor"><rect x="0" y="5" width="2" height="4" rx=".5"/><rect x="3.5" y="3.5" width="2" height="5.5" rx=".5"/><rect x="7" y="2" width="2" height="7" rx=".5"/><rect x="10.5" y="0" width="2" height="9" rx=".5"/><path d="M16 3.2a5 5 0 0 1 6 0l-3 3.6z"/><rect x="24" y="1.5" width="8.5" height="6" rx="1.6" fill="none" stroke="currentColor"/><rect x="25.2" y="2.7" width="6" height="3.6" rx=".8"/></svg>
+    </span>
+  </div>
+
+  <!-- ==== Kop ============================================================== -->
+  <header class="m-top">
+    <button class="m-back" type="button" id="mBack" aria-label="Terug">
+      <svg width="22" height="22" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+    </button>
+    <div>
+      <h1 id="mTitle">Mijn verbouwing</h1>
+      <div class="m-top__sub" id="mSub">Verbouwing Jansen · Amsterdam</div>
+    </div>
+    <div class="m-top__right">
+      <button class="m-bell" type="button" id="mBell" aria-label="Notificaties">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-bell"></use></svg>
+      </button>
+      <span class="avatar">FJ</span>
+    </div>
+  </header>
+
+  <main class="m-main">
+
+    <!-- ---- Start ---------------------------------------------------------- -->
+    <section class="m-screen" id="m-start">
+      <button class="m-project" type="button" data-tab="meer">
+        <span>
+          <b>Verbouwing Jansen</b>
+          <small>Amsterdam</small>
+        </span>
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg>
+      </button>
+
+      <div class="m-prog">
+        <div class="m-prog__head"><span>Voortgang</span><span>75%</span></div>
+        <span class="m-bar"><i style="width:75%"></i></span>
+      </div>
+
+      <p class="m-label" style="margin-bottom:0">Laatste update</p>
+
+      <div class="m-quick">
+        <button type="button" data-tab="berichten">
+          <svg width="22" height="22" aria-hidden="true"><use href="#i-chat"></use></svg>
+          <span>Berichten</span>
+        </button>
+        <button type="button" data-tab="meer" data-focus="planning">
+          <svg width="22" height="22" aria-hidden="true"><use href="#i-calendar"></use></svg>
+          <span>Planning</span>
+        </button>
+        <button type="button" data-tab="meer" data-focus="fotos">
+          <svg width="22" height="22" aria-hidden="true"><use href="#i-camera"></use></svg>
+          <span>Foto&rsquo;s</span>
+        </button>
+        <button type="button" data-tab="meer" data-focus="documenten">
+          <svg width="22" height="22" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Documenten</span>
+        </button>
+      </div>
+
+      <h2 class="m-section-title">Laatste updates</h2>
+      <div id="mUpdates"></div>
+
+      <h2 class="m-section-title">Openstaand meerwerk</h2>
+      <div class="m-card m-mw" style="padding:14px 16px">
+        <div class="m-mw__top">
+          <div>
+            <div class="m-mw__nr">MW-2024-001</div>
+            <div class="m-mw__title">Wand verplaatsen slaapkamer</div>
+          </div>
+          <div style="text-align:right">
+            <div class="m-mw__price">€685,00</div>
+            <span class="tag" style="margin-top:6px">In afwachting</span>
+          </div>
+        </div>
+        <div class="m-mw__btns">
+          <button class="btn btn--gold" type="button" data-tab="meerwerk">Bekijk voorstel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Berichten ------------------------------------------------------ -->
+    <section class="m-screen" id="m-berichten" hidden>
+      <div class="m-chat" id="mChat" aria-live="polite"></div>
+      <form class="m-composer" id="mComposer">
+        <input type="text" id="mInput" placeholder="Typ een bericht..." aria-label="Typ een bericht" autocomplete="off">
+        <button class="m-round" type="button" id="mPhoto" aria-label="Foto toevoegen">
+          <svg width="19" height="19" aria-hidden="true"><use href="#i-clip"></use></svg>
+        </button>
+        <button class="m-round" type="button" id="mVoice" aria-label="Spraakbericht">
+          <svg width="19" height="19" aria-hidden="true"><use href="#i-mic"></use></svg>
+        </button>
+        <button class="m-round m-round--send" type="submit" aria-label="Versturen">
+          <svg width="19" height="19" aria-hidden="true"><use href="#i-send"></use></svg>
+        </button>
+      </form>
+    </section>
+
+    <!-- ---- Uren ----------------------------------------------------------- -->
+    <section class="m-screen" id="m-uren" hidden>
+      <div class="m-card" style="margin-top:14px">
+        <div class="m-timer">
+          <div class="m-timer__nav">
+            <button type="button" id="mDayPrev" aria-label="Vorige dag">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+            </button>
+            <span id="mDayLabel">Vandaag, 1 mei 2024</span>
+            <button type="button" id="mDayNext" aria-label="Volgende dag">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+            </button>
+          </div>
+          <div class="m-timer__value" id="mTimer">07:30:45</div>
+          <div class="m-timer__label">Uren vandaag</div>
+          <div class="m-timer__btns">
+            <button class="btn btn--red" type="button" id="mStop">Stop</button>
+            <button class="btn btn--ghost" type="button" id="mPause">Pauze</button>
+          </div>
+        </div>
+
+        <div class="m-field">
+          <h3>Werkzaamheden</h3>
+          <div class="m-select">
+            <select id="mTask" aria-label="Werkzaamheden">
+              <option value="Voorzetwand plaatsen" selected>Timmerwerk</option>
+              <option value="Tussenwand slopen">Sloopwerk</option>
+              <option value="Leidingwerk verleggen">Installatiewerk</option>
+              <option value="Wanden stucen">Stucwerk</option>
+            </select>
+            <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+          </div>
+          <div class="m-select__sub" id="mTaskSub">Voorzetwand plaatsen</div>
+        </div>
+
+        <div class="m-field" style="padding-top:0">
+          <h3>Foto&rsquo;s</h3>
+          <div class="m-photos" id="mPhotos">
+            <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 1"><use href="#ph-1"></use></svg></figure>
+            <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 2"><use href="#ph-2"></use></svg></figure>
+            <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 3"><use href="#ph-3"></use></svg></figure>
+            <button class="m-photos__add" type="button" id="mAddPhoto" aria-label="Foto toevoegen">
+              <svg width="20" height="20" aria-hidden="true"><use href="#i-plus"></use></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="m-section-title">Geregistreerd vandaag</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-clock"></use></svg>
+          <span id="mEntryText">Timmerwerk — Voorzetwand plaatsen</span>
+          <b style="margin-left:auto;font-variant-numeric:tabular-nums" id="mEntryTime">07:30:45</b>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Meerwerk -------------------------------------------------------- -->
+    <section class="m-screen" id="m-meerwerk" hidden>
+      <div class="m-card m-mw" style="margin-top:14px">
+        <div class="m-mw__top">
+          <div>
+            <div class="m-mw__nr">MW-2024-001</div>
+            <div class="m-mw__title">Wand verplaatsen slaapkamer</div>
+          </div>
+          <div style="text-align:right">
+            <div class="m-mw__price">€685,00</div>
+            <span class="tag" id="mMwStatus" style="margin-top:6px">In afwachting</span>
+          </div>
+        </div>
+
+        <p class="m-label">Omschrijving</p>
+        <p style="margin:0;font-size:14.5px">Verplaatsen van de tussenwand met 20cm i.v.m. leidingwerk.</p>
+
+        <div id="mMwDetails" hidden>
+          <div class="m-row"><span>Arbeid (8 uur × €55,00)</span><span>€440,00</span></div>
+          <div class="m-row"><span>Materiaal</span><span>€185,00</span></div>
+          <div class="m-row"><span>Afvoer &amp; afwerking</span><span>€60,00</span></div>
+        </div>
+
+        <div class="m-row" style="margin-top:14px"><span>Gemaakt op</span><span>1 mei 2024</span></div>
+        <div class="m-row is-total"><span>Totaal (excl. btw)</span><span>€685,00</span></div>
+
+        <div class="m-mw__btns">
+          <button class="btn btn--ghost" type="button" id="mMwDetailBtn">Bekijk details</button>
+          <button class="btn btn--gold" type="button" id="mMwOk">Goedkeuren</button>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-3);margin:10px 0 0;text-align:center">
+          Akkoord via één klik — de aannemer krijgt direct een notificatie.
+        </p>
+      </div>
+
+      <h2 class="m-section-title">Eerder meerwerk</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <span class="m-ico m-ico--green"><svg width="17" height="17" aria-hidden="true"><use href="#i-check"></use></svg></span>
+          <span>MW-2024-002 · Extra dakraam<small>Nieuwbouw De Vries · €1.240,00</small></span>
+          <span class="tag tag--ok">Goedgekeurd</span>
+        </div>
+        <div class="m-item">
+          <span class="m-ico m-ico--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-clipboard"></use></svg></span>
+          <span>MW-2024-003 · Vloerverwarming badkamer<small>Renovatie Bakker · €2.150,00</small></span>
+          <span class="tag tag--sent">Verstuurd</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Meer (planning, foto's, documenten) ----------------------------- -->
+    <section class="m-screen" id="m-meer" hidden>
+
+      <h2 class="m-section-title" id="planning" style="margin-top:16px">Planning</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <span class="dot dot--done"></span>
+          <span>Tussenwand slopen<small>ma 29 apr · afgerond</small></span>
+        </div>
+        <div class="m-item">
+          <span class="dot"></span>
+          <span>Timmerwerk: voorzetwand plaatsen<small>wo 1 mei · vandaag</small></span>
+        </div>
+        <div class="m-item">
+          <span class="dot"></span>
+          <span>Leidingwerk verleggen<small>do 2 mei · installateur</small></span>
+        </div>
+        <div class="m-item">
+          <span class="dot dot--milestone"></span>
+          <span>Mijlpaal: ruwbouw gereed<small>ma 6 mei</small></span>
+        </div>
+        <div class="m-item">
+          <span class="dot dot--milestone"></span>
+          <span>Mijlpaal: oplevering<small>vr 17 mei</small></span>
+        </div>
+      </div>
+
+      <h2 class="m-section-title" id="fotos">Foto&rsquo;s</h2>
+      <div class="m-gallery">
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 1"><use href="#ph-1"></use></svg></figure>
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 2"><use href="#ph-2"></use></svg></figure>
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 3"><use href="#ph-3"></use></svg></figure>
+        <figure style="grid-column:span 3;aspect-ratio:16/9">
+          <svg viewBox="0 0 160 90" role="img" aria-label="Foto van de bestaande balklaag"><use href="#ph-beams"></use></svg>
+        </figure>
+      </div>
+
+      <h2 class="m-section-title" id="documenten">Documenten</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Offerte verbouwing<small>PDF · 1 apr 2024</small></span>
+          <span class="tag tag--ok">Getekend</span>
+        </div>
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-image"></use></svg>
+          <span>Tekening begane grond<small>PDF · 8 apr 2024</small></span>
+        </div>
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Aannemingsovereenkomst<small>PDF · 12 apr 2024</small></span>
+          <span class="tag tag--ok">Getekend</span>
+        </div>
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-euro"></use></svg>
+          <span>Factuur termijn 1<small>PDF · 22 apr 2024</small></span>
+          <span class="tag tag--sent">Verstuurd</span>
+        </div>
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-clipboard"></use></svg>
+          <span>Opleverrapport<small>Nog niet beschikbaar</small></span>
+        </div>
+      </div>
+
+      <h2 class="m-section-title">Contact</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <span class="m-ico"><svg width="18" height="18" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+          <span>Jan de Boer<small>Aannemer · hoofdgebruiker</small></span>
+          <button class="btn btn--ghost" type="button" style="margin-left:auto;padding:7px 12px" data-tab="berichten">Chat</button>
+        </div>
+      </div>
+
+      <p style="text-align:center;margin:26px 0 0;font-size:13px;color:var(--ink-3)">
+        <a href="index.html" style="color:var(--gold-dark)">Overzicht</a> ·
+        <a href="app.html" style="color:var(--gold-dark)">Webversie</a>
+      </p>
+    </section>
+
+  </main>
+
+  <!-- ==== Tabbalk ========================================================== -->
+  <nav class="m-tabs" aria-label="Hoofdnavigatie">
+    <button class="m-tab" type="button" data-tab="start" aria-current="page">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-home"></use></svg><span>Start</span>
+    </button>
+    <button class="m-tab" type="button" data-tab="berichten">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-chat"></use></svg><span>Berichten</span>
+      <span class="m-tab__dot" id="mChatDot"></span>
+    </button>
+    <button class="m-tab" type="button" data-tab="uren">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-clock"></use></svg><span>Uren</span>
+    </button>
+    <button class="m-tab" type="button" data-tab="meerwerk">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-plus-circle"></use></svg><span>Meerwerk</span>
+    </button>
+    <button class="m-tab" type="button" data-tab="meer">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-grid"></use></svg><span>Meer</span>
+    </button>
+  </nav>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/data.js"></script>
+<script src="assets/mobiel.js"></script>
+</body>
+</html>
