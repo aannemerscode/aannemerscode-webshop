@@ -411,22 +411,73 @@ button.m-rij:hover { background: var(--surface-2); }
   cursor: pointer;
 }
 
-.m-partijen { display: flex; gap: 7px; overflow-x: auto; padding: 10px 0 4px; }
-
-.m-partij {
-  flex: none;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  border-radius: 999px;
-  padding: 7px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink-2);
+/* Gesprekkenlijst — je kiest eerst met wie je praat, dan pas de chat zelf. */
+.chatrij {
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  gap: 13px;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
   cursor: pointer;
+}
+
+.chatrij:first-child { border-top: 0; }
+.chatrij:hover { background: var(--surface-2); }
+
+.chatavatar {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  flex: none;
+}
+
+.chatavatar--a { background: #ece5d6; color: #7a6437; }
+.chatavatar--b { background: #dfe5e7; color: #4c5d64; }
+.chatavatar--c { background: #e2e7dc; color: #566044; }
+
+.chatrij__tekst { min-width: 0; }
+.chatrij__naam { display: block; font-size: 15.5px; font-weight: 600; line-height: 1.3; }
+.chatrij__rol { font-size: 12px; color: var(--ink-3); font-weight: 400; }
+
+.chatrij__prev {
+  display: block;
+  font-size: 13.5px;
+  color: var(--ink-3);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.m-partij[aria-current="true"] { background: var(--black); border-color: var(--black); color: #fff; }
+.chatrij__prev b { color: var(--ink-2); font-weight: 600; }
+
+.chatrij__meta { display: grid; justify-items: end; gap: 6px; flex: none; }
+.chatrij__tijd { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+.chatrij__ongelezen {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #221b0c;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.chatrij__naam + .chatrij__prev { margin-top: 3px; }
 
 /* Dagboek */
 .m-dag { padding: 14px 16px; border-top: 1px solid var(--line); }
@@ -1048,18 +1099,18 @@ button.m-rij:hover { background: var(--surface-2); }
     eigenaar: 'Thijs Broersen',
     klant: { mail: 'thijs@voorbeeld.nl', ww: 'demodemo' },
     deelnemers: [
-      { naam: 'Bouwbedrijf Van Dijk', rol: 'Hoofdaannemer', code: 'PRJ-VDK4', ww: 'K3PT-9WXR-2LMH', actief: true },
-      { naam: 'Elektro Bertens', rol: 'Elektricien', code: 'PRJ-BRT8', ww: 'Q7HD-4MNP-8TVK', actief: true },
-      { naam: 'Kuiper Installaties', rol: 'Loodgieter', code: 'PRJ-KPR2', ww: 'R2WM-6XCL-3HQF', actief: true },
-      { naam: 'Timmerwerk Sanders', rol: 'Timmerman', code: 'PRJ-SND6', ww: 'N9BZ-5TKR-7PWD', actief: false }
+      { naam: 'Bouwbedrijf Van Dijk', rol: 'Hoofdaannemer', code: 'PRJ-VDK4', ww: 'K3PT-9WXR-2LMH', actief: true, ongelezen: 2 },
+      { naam: 'Elektro Bertens', rol: 'Elektricien', code: 'PRJ-BRT8', ww: 'Q7HD-4MNP-8TVK', actief: true, ongelezen: 1 },
+      { naam: 'Kuiper Installaties', rol: 'Loodgieter', code: 'PRJ-KPR2', ww: 'R2WM-6XCL-3HQF', actief: true, ongelezen: 0 },
+      { naam: 'Timmerwerk Sanders', rol: 'Timmerman', code: 'PRJ-SND6', ww: 'N9BZ-5TKR-7PWD', actief: false, ongelezen: 0 }
     ],
     ingelogdAls: 'Bouwbedrijf Van Dijk',
-    partij: 'Bouwbedrijf Van Dijk',
+    chatOpen: null,
     berichten: [
       { partij: 'Bouwbedrijf Van Dijk', van: 'Mark — Van Dijk', tekst: 'Stucwerk woonkamer is klaar. Hal doen we morgen. De stukadoor komt op een punt bij de trapkast dat niet in de offerte zat — ik stuur je zo een voorstel.', tijd: '08:42' },
       { partij: 'Bouwbedrijf Van Dijk', van: 'ik', tekst: 'Prima. Kun je er een foto bij doen zodat ik zie wat je bedoelt?', tijd: '09:10' },
       { partij: 'Bouwbedrijf Van Dijk', van: 'Mark — Van Dijk', tekst: 'Gedaan — staat bij de foto’s van vandaag en in meerwerk #036.', tijd: '09:22' },
-      { partij: 'Bouwbedrijf Van Dijk', systeem: true, tekst: 'Meerwerk #036 toegevoegd · € 850 · wacht op jouw akkoord' },
+      { partij: 'Bouwbedrijf Van Dijk', systeem: true, tekst: 'Meerwerk #036 toegevoegd · € 850 · wacht op jouw akkoord', tijd: '09:25' },
       { partij: 'Elektro Bertens', van: 'Jeroen — Bertens', tekst: 'Donderdag ben ik er voor de laatste groepen. Wel graag de meterkast vrij houden.', tijd: '16:05' },
       { partij: 'Kuiper Installaties', van: 'Wim — Kuiper', tekst: 'Afvoer badkamer ligt erin. Volgende week sluit ik de kranen aan.', tijd: '11:30' },
       { partij: 'Timmerwerk Sanders', van: 'Bas — Sanders', tekst: 'Binnendeuren staan gepland voor week 9.', tijd: '13:12' }
@@ -1106,7 +1157,7 @@ button.m-rij:hover { background: var(--surface-2); }
       { soort: 'doc', titel: 'Keuze tegelwerk badkamer vastgelegd', tekst: 'Wandtegel wit mat 30×60, vloertegel antraciet 60×60.', ref: '21-01-2027 18:47 · Thijs Broersen · geen prijsgevolg' },
       { soort: 'datum', titel: 'Verschuiving opleverdatum akkoord', tekst: 'Van 4 maart naar 18 maart 2027 wegens levertijd keuken.', ref: '15-12-2026 10:20 · Thijs Broersen · voorstel Van Dijk' }
     ],
-    ongelezenKlant: { berichten: 0, meerwerk: 1 },
+    ongelezenKlant: { meerwerk: 1 },
     ongelezenAannemer: { berichten: 0, meerwerk: 0 },
     volgendMeerwerk: 37
   };
@@ -1270,26 +1321,47 @@ button.m-rij:hover { background: var(--surface-2); }
 
   function kGa(tab) {
     kTab = tab;
+    if (tab !== 'berichten') S.chatOpen = null;
+
     $$('.m-scherm').forEach(function (s) { s.hidden = s.id !== 'k-' + tab; });
     $$('.m-tab').forEach(function (t) {
       var hoofd = ['documenten', 'akkoorden', 'dossier'].indexOf(tab) >= 0 ? 'meer' : tab;
       t.setAttribute('aria-current', t.getAttribute('data-tab') === hoofd ? 'page' : 'false');
     });
-    $('#kTitel').textContent = K_TITELS[tab][0];
-    $('#kSub').textContent = K_TITELS[tab][1] || S.project.naam;
-    $('#kTerug').hidden = ['documenten', 'akkoorden', 'dossier'].indexOf(tab) < 0;
-    if (tab === 'berichten') S.ongelezenKlant.berichten = 0;
+
+    if (tab === 'berichten' && S.chatOpen) {
+      var partij = S.deelnemers.filter(function (d) { return d.naam === S.chatOpen; })[0];
+      $('#kTitel').textContent = partij ? partij.naam : 'Bericht';
+      $('#kSub').textContent = partij ? partij.rol : '';
+    } else {
+      $('#kTitel').textContent = K_TITELS[tab][0];
+      $('#kSub').textContent = K_TITELS[tab][1] || S.project.naam;
+    }
+
+    $('#kTerug').hidden = ['documenten', 'akkoorden', 'dossier'].indexOf(tab) < 0 && !(tab === 'berichten' && S.chatOpen);
     if (tab === 'meerwerk') S.ongelezenKlant.meerwerk = 0;
+
     tekenKlant();
     var main = $('#pagina-klant .m-main');
     if (main) main.scrollTop = 0;
+  }
+
+  /* Een gesprek openen leest het meteen als gelezen — net als in een chatapp. */
+  function kOpenChat(naam) {
+    var partij = S.deelnemers.filter(function (d) { return d.naam === naam; })[0];
+    if (partij) partij.ongelezen = 0;
+    S.chatOpen = naam;
+    kGa('berichten');
   }
 
   $$('.m-tab').forEach(function (t) {
     t.addEventListener('click', function () { kGa(t.getAttribute('data-tab')); });
   });
 
-  $('#kTerug').addEventListener('click', function () { kGa('meer'); });
+  $('#kTerug').addEventListener('click', function () {
+    if (kTab === 'berichten' && S.chatOpen) { S.chatOpen = null; kGa('berichten'); return; }
+    kGa('meer');
+  });
 
   function tekenKlantStart() {
     var open = wachtend();
@@ -1310,12 +1382,15 @@ button.m-rij:hover { background: var(--surface-2); }
       '<span><b>' + veilig(laatste.titel) + '</b><small>' + laatste.datum + ' · ' + laatste.bedrijf + '</small></span>' +
       '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>';
 
-    var laatsteBericht = S.berichten[S.berichten.length - 1];
-    acties += '<button class="m-rij" type="button" data-naar="berichten">' +
-      '<span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-chat"></use></svg></span>' +
-      '<span><b>' + veilig(laatsteBericht.systeem ? 'Nieuw in het gesprek' : (laatsteBericht.van === 'ik' ? 'Jij' : laatsteBericht.van)) + '</b>' +
-      '<small>' + veilig(laatsteBericht.tekst.slice(0, 48)) + (laatsteBericht.tekst.length > 48 ? '…' : '') + '</small></span>' +
-      '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>';
+    var onbeantwoord = S.deelnemers.filter(function (d) { return d.ongelezen; });
+    if (onbeantwoord.length) {
+      var totaal = ongelezenTotaal();
+      acties += '<button class="m-rij" type="button" data-chat="' + veilig(onbeantwoord[0].naam) + '">' +
+        '<span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-chat"></use></svg></span>' +
+        '<span><b>' + totaal + (totaal === 1 ? ' nieuw bericht' : ' nieuwe berichten') + '</b>' +
+        '<small>' + onbeantwoord.map(function (d) { return veilig(d.naam) + ' (' + d.ongelezen + ')'; }).join(' · ') + '</small></span>' +
+        '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>';
+    }
 
     $('#k-start').innerHTML =
       slot +
@@ -1353,11 +1428,60 @@ button.m-rij:hover { background: var(--surface-2); }
       '</div>';
   }
 
-  function tekenKlantBerichten() {
-    var partijen = S.deelnemers.map(function (d) { return d.naam; });
-    if (partijen.indexOf(S.partij) < 0) S.partij = partijen[0];
+  function chatInitialen(naam) {
+    var woorden = naam.replace(/^(Bouwbedrijf|Schildersbedrijf|Installatiebedrijf|Timmerwerk|Elektro) /i, '').split(/\s+/);
+    return (woorden[0][0] + (woorden[1] ? woorden[1][0] : '')).toUpperCase();
+  }
 
-    var lijst = S.berichten.filter(function (b) { return b.partij === S.partij; });
+  function chatTint(naam) {
+    var som = 0;
+    for (var i = 0; i < naam.length; i++) som += naam.charCodeAt(i);
+    return ['a', 'b', 'c'][som % 3];
+  }
+
+  function laatsteVan(naam) {
+    var lijst = S.berichten.filter(function (b) { return b.partij === naam; });
+    return lijst.length ? lijst[lijst.length - 1] : null;
+  }
+
+  function ongelezenTotaal() {
+    return S.deelnemers.reduce(function (t, d) { return t + (d.ongelezen || 0); }, 0);
+  }
+
+  function tekenKlantBerichten() {
+    var vak = $('#k-berichten');
+
+    /* Geen gesprek open: de lijst, zoals je hem uit een chatapp kent. */
+    if (!S.chatOpen) {
+      vak.innerHTML =
+        '<div class="m-card" style="margin-top:14px">' +
+          S.deelnemers.map(function (d) {
+            var laatste = laatsteVan(d.naam);
+            var voorbeeld = laatste
+              ? (laatste.systeem ? veilig(laatste.tekst)
+                 : (laatste.van === 'ik' ? '<b>Jij:</b> ' : '') + veilig(laatste.tekst))
+              : 'Nog geen berichten';
+
+            return '<button class="chatrij" type="button" data-chat="' + veilig(d.naam) + '">' +
+              '<span class="chatavatar chatavatar--' + chatTint(d.naam) + '">' + veilig(chatInitialen(d.naam)) + '</span>' +
+              '<span class="chatrij__tekst">' +
+                '<span class="chatrij__naam">' + veilig(d.naam) + '</span>' +
+                '<span class="chatrij__prev"><span class="chatrij__rol">' + veilig(d.rol) + '</span> · ' + voorbeeld + '</span>' +
+              '</span>' +
+              '<span class="chatrij__meta">' +
+                '<span class="chatrij__tijd">' + (laatste && laatste.tijd ? laatste.tijd : '') + '</span>' +
+                (d.ongelezen ? '<span class="chatrij__ongelezen">' + d.ongelezen + '</span>' : '') +
+              '</span>' +
+            '</button>';
+          }).join('') +
+        '</div>' +
+        '<p class="notitie">Elke partij heeft een eigen gesprek. Alles blijft bij dit project horen, ook als iemand van telefoon of medewerker wisselt.</p>';
+      return;
+    }
+
+    /* Gesprek open: kop met wie het is, daaronder de berichten. */
+    var partij = S.deelnemers.filter(function (d) { return d.naam === S.chatOpen; })[0] || S.deelnemers[0];
+    var lijst = S.berichten.filter(function (b) { return b.partij === partij.naam; });
 
     var bubbels = lijst.map(function (b) {
       if (b.systeem) return '<div class="m-bubbel m-bubbel--systeem">' + veilig(b.tekst) + '</div>';
@@ -1365,17 +1489,13 @@ button.m-rij:hover { background: var(--surface-2); }
       return '<div class="m-bubbel"><span class="m-bubbel__wie">' + veilig(b.van) + '</span>' + veilig(b.tekst) + '<span class="m-bubbel__tijd">' + b.tijd + '</span></div>';
     }).join('');
 
-    $('#k-berichten').innerHTML =
-      '<div class="m-partijen">' +
-        partijen.map(function (p) {
-          return '<button class="m-partij" type="button" data-partij="' + veilig(p) + '" aria-current="' + (p === S.partij) + '">' + veilig(p) + '</button>';
-        }).join('') +
-      '</div>' +
+    vak.innerHTML =
       '<div class="m-chat">' + (bubbels || '<p class="m-leeg">Nog geen berichten met deze partij.</p>') + '</div>' +
+      (S.project.afgesloten ? '<p class="notitie">Het project is afgesloten. Je kunt het gesprek teruglezen, maar niet meer reageren.</p>' :
       '<div class="m-opsteller">' +
-        '<input type="text" id="kBericht" placeholder="Bericht aan ' + veilig(S.partij) + '" aria-label="Bericht">' +
+        '<input type="text" id="kBericht" placeholder="Bericht aan ' + veilig(partij.naam) + '" aria-label="Bericht">' +
         '<button class="m-rond" type="button" id="kVerstuur" aria-label="Versturen"><svg width="18" height="18" aria-hidden="true"><use href="#i-send"></use></svg></button>' +
-      '</div>';
+      '</div>');
   }
 
   function tekenKlantDagboek() {
@@ -1522,6 +1642,10 @@ button.m-rij:hover { background: var(--surface-2); }
   }
 
   function tekenKlant() {
+    if (kTab === 'berichten' && S.chatOpen) {
+      var open = S.deelnemers.filter(function (d) { return d.naam === S.chatOpen; })[0];
+      if (open) open.ongelezen = 0;
+    }
     tekenKlantStart();
     tekenKlantBerichten();
     tekenKlantDagboek();
@@ -1532,8 +1656,8 @@ button.m-rij:hover { background: var(--surface-2); }
     tekenKlantDossier();
 
     var sb = $('#tabStipBerichten');
-    sb.hidden = !S.ongelezenKlant.berichten;
-    sb.textContent = S.ongelezenKlant.berichten;
+    sb.hidden = !ongelezenTotaal();
+    sb.textContent = ongelezenTotaal();
 
     var sm = $('#tabStipMeerwerk');
     sm.hidden = !S.ongelezenKlant.meerwerk;
@@ -1547,8 +1671,8 @@ button.m-rij:hover { background: var(--surface-2); }
     var naar = e.target.closest('[data-naar]');
     if (naar) { kGa(naar.getAttribute('data-naar')); return; }
 
-    var partij = e.target.closest('[data-partij]');
-    if (partij) { S.partij = partij.getAttribute('data-partij'); tekenKlantBerichten(); return; }
+    var chat = e.target.closest('[data-chat]');
+    if (chat) { kOpenChat(chat.getAttribute('data-chat')); return; }
 
     var besluit = e.target.closest('[data-besluit]');
     if (besluit) { neemBesluit(Number(besluit.getAttribute('data-nr')), besluit.getAttribute('data-besluit')); return; }
@@ -1574,13 +1698,13 @@ button.m-rij:hover { background: var(--surface-2); }
     var veld = $('#kBericht');
     var tekst = veld.value.trim();
     if (!tekst) return;
-    S.berichten.push({ partij: S.partij, van: 'ik', tekst: tekst, tijd: nuTijd() });
+    S.berichten.push({ partij: S.chatOpen, van: 'ik', tekst: tekst, tijd: nuTijd() });
     S.ongelezenAannemer.berichten++;
     veld.value = '';
     tekenKlantBerichten();
     var chat = $('#k-berichten .m-chat');
     if (chat) chat.scrollTop = chat.scrollHeight;
-    melding('Verstuurd naar ' + S.partij);
+    melding('Verstuurd naar ' + S.chatOpen);
     tekenAannemer();
   }
 
@@ -1691,7 +1815,7 @@ button.m-rij:hover { background: var(--surface-2); }
       if (!naam) { melding('Vul eerst een bedrijfsnaam in'); $('#uNaam').focus(); return; }
 
       var inlog = nieuweInlog();
-      var partij = { naam: naam, rol: $('#uRol').value, code: inlog.code, ww: inlog.ww, actief: false };
+      var partij = { naam: naam, rol: $('#uRol').value, code: inlog.code, ww: inlog.ww, actief: false, ongelezen: 0 };
       S.deelnemers.push(partij);
 
       toonInlog(partij, true);
@@ -1915,7 +2039,7 @@ button.m-rij:hover { background: var(--surface-2); }
     });
 
     S.ongelezenKlant.meerwerk++;
-    S.ongelezenKlant.berichten++;
+    ik().ongelezen = (ik().ongelezen || 0) + 1;
 
     melding('Voorstel #' + nr + ' staat klaar bij de klant');
     tekenAannemer();
@@ -1956,7 +2080,7 @@ button.m-rij:hover { background: var(--surface-2); }
       tijd: nuTijd()
     });
 
-    S.ongelezenKlant.berichten++;
+    ik().ongelezen = (ik().ongelezen || 0) + 1;
     veld.value = '';
     tekenAannemer();
     tekenKlant();

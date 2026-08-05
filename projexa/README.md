@@ -24,8 +24,9 @@ bestaande Projexa-omgeving, zodat deze opzet er direct naast past.
 
 `demo-klant.html` is de werkende demo van diezelfde opzet: **één project, twee kanten**.
 
-- **Huiseigenaar** (telefoonweergave) — meerwerk goedkeuren of afwijzen, berichten sturen
-  per partij, bouwdagboek en documenten doorbladeren, een vakman uitnodigen, het project
+- **Huiseigenaar** (telefoonweergave) — meerwerk goedkeuren of afwijzen, per partij chatten
+  (een gesprekkenlijst met naam, laatste bericht en ongelezen-teller; tik erop voor het
+  gesprek zelf), bouwdagboek en documenten doorbladeren, een vakman uitnodigen, het project
   bij oplevering afsluiten.
 - **Aannemer** (desktop) — meerwerk voorstellen, dagrapport plaatsen, berichten sturen,
   zien wat de klant heeft vastgelegd.
