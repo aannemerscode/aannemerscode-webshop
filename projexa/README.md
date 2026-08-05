@@ -20,7 +20,22 @@ uitnodigingsstroom, de prijzen per project en een sectie over de woordkeuze — 
 Het ontwerp (zwart/goud, logo, iconen, componenten) is 1-op-1 overgenomen uit de
 bestaande Projexa-omgeving, zodat deze opzet er direct naast past.
 
+## Klikbare demo
+
+`demo-klant.html` is de werkende demo van diezelfde opzet: **één project, twee kanten**.
+
+- **Huiseigenaar** (telefoonweergave) — meerwerk goedkeuren of afwijzen, berichten sturen
+  per partij, bouwdagboek en documenten doorbladeren, een vakman uitnodigen, het project
+  bij oplevering afsluiten.
+- **Aannemer** (desktop) — meerwerk voorstellen, dagrapport plaatsen, berichten sturen,
+  zien wat de klant heeft vastgelegd.
+- **Nieuwe verbouwing starten** — de drie stappen waarin een huiseigenaar zelf een project
+  koopt en zijn aannemer uitnodigt.
+
+Beide rollen delen dezelfde staat: wat je aan de ene kant doet, staat meteen aan de andere
+kant. De staat leeft in het geheugen — bij verversen begint de demo opnieuw.
+
 ## Bekijken
 
-Open het bestand in een browser, of publiceer het als artifact. Alle stijlen, iconen en
-scripts staan in het bestand zelf — er zijn geen externe bronnen nodig.
+Open de bestanden in een browser, of publiceer ze als artifact. Alle stijlen, iconen en
+scripts staan in de bestanden zelf — er zijn geen externe bronnen nodig.
