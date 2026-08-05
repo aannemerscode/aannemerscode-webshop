@@ -29,11 +29,17 @@ bestaande Projexa-omgeving, zodat deze opzet er direct naast past.
   bij oplevering afsluiten.
 - **Aannemer** (desktop) — meerwerk voorstellen, dagrapport plaatsen, berichten sturen,
   zien wat de klant heeft vastgelegd.
-- **Nieuwe verbouwing starten** — de drie stappen waarin een huiseigenaar zelf een project
-  koopt en zijn aannemer uitnodigt.
+Je begint op een inlogscherm: de huiseigenaar logt in het midden in met e-mailadres en
+wachtwoord, de uitgenodigde partij onderaan met een projectcode. Die code en het bijbehorende
+wachtwoord ontstaan op het moment dat de eigenaar iemand toevoegt — na het uitnodigen worden
+ze getoond, en de eigenaar kan ze per bedrijf teruglezen. Log je in met de code van een
+vakman, dan plaats je meerwerk, dagrapporten en berichten onder díe bedrijfsnaam.
 
 Beide rollen delen dezelfde staat: wat je aan de ene kant doet, staat meteen aan de andere
 kant. De staat leeft in het geheugen — bij verversen begint de demo opnieuw.
+
+Demo-inlog: `thijs@voorbeeld.nl` / `demodemo` voor de eigenaar; de projectcode van de
+hoofdaannemer staat vooringevuld.
 
 ## Bekijken
 
