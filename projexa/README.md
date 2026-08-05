@@ -29,6 +29,7 @@ bestaande Projexa-omgeving, zodat deze opzet er direct naast past.
   bij oplevering afsluiten.
 - **Aannemer** (desktop) — meerwerk voorstellen, dagrapport plaatsen, berichten sturen,
   zien wat de klant heeft vastgelegd.
+
 Je begint op een inlogscherm: de huiseigenaar logt in het midden in met e-mailadres en
 wachtwoord, de uitgenodigde partij onderaan met een projectcode. Die code en het bijbehorende
 wachtwoord ontstaan op het moment dat de eigenaar iemand toevoegt — na het uitnodigen worden
