@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projexa — resultaten van de vraagtest</title>
+<meta name="robots" content="noindex">
+<style>
+:root {
+  --black: #090b0c;
+  --gold: #b5955e;
+  --gold-light: #d8b778;
+  --gold-dark: #8c7343;
+  --app-bg: #f2f1ef;
+  --surface: #ffffff;
+  --surface-2: #f7f6f4;
+  --line: #e6e3df;
+  --ink: #16181a;
+  --ink-2: #55595e;
+  --ink-3: #8b9096;
+  --green: #2fa84f;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --shadow: 0 1px 2px rgba(9,11,12,.04), 0 8px 24px rgba(9,11,12,.06);
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--app-bg);
+  color: var(--ink);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.kop { background: var(--black); color: #fff; padding: 20px 0; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 22px; }
+.kop .binnen { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+.logo { display: inline-flex; align-items: center; gap: 13px; font-size: 13px; }
+.logo__type { display: flex; flex-direction: column; gap: 2px; }
+.logo__name { letter-spacing: .28em; line-height: 1; }
+.logo__name b { font-weight: 400; color: var(--gold-light); }
+.logo__tag { font-size: .34em; letter-spacing: .34em; color: var(--gold); line-height: 1; }
+.kop h1 { margin: 0; font-size: 15px; font-weight: 600; margin-left: auto; color: rgba(255,255,255,.6); }
+
+main { padding: 28px 0 60px; }
+
+.slot { max-width: 380px; margin: 60px auto; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 26px; }
+.slot h2 { margin: 0 0 6px; font-size: 19px; font-weight: 600; }
+.slot p { margin: 0 0 18px; font-size: 13.5px; color: var(--ink-2); }
+.slot input { width: 100%; padding: 11px 13px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface-2); margin-bottom: 14px; outline: none; }
+.slot input:focus { border-color: var(--gold); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 1px solid var(--gold-dark); border-radius: var(--r-md); padding: 11px 18px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #221b0c;
+  text-decoration: none;
+}
+.btn--breed { width: 100%; }
+.btn--stil { background: var(--surface); color: var(--ink); border-color: var(--line); }
+
+.fout { font-size: 13.5px; font-weight: 600; color: #a33a26; background: #fbeae7; border: 1px solid #f0d2cb; border-radius: 8px; padding: 10px 13px; margin: 0 0 14px; }
+
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 16px 18px; box-shadow: var(--shadow); }
+.stat__waarde { font-size: 27px; font-weight: 600; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.stat__label { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+.stat__extra { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
+
+@media (max-width: 780px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+.kolommen { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; margin-bottom: 18px; }
+@media (max-width: 780px) { .kolommen { grid-template-columns: 1fr; } }
+
+.kaart { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
+.kaart h2 { margin: 0; padding: 16px 20px 12px; font-size: 15px; font-weight: 600; }
+.kaart__body { padding: 0 20px 18px; }
+
+.balkrij { display: grid; grid-template-columns: 1fr 46px; gap: 12px; align-items: center; margin-bottom: 11px; font-size: 13.5px; }
+.balkrij:last-child { margin-bottom: 0; }
+.balkrij__naam { display: block; margin-bottom: 4px; }
+.balk { display: block; height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.balk i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); }
+.balkrij__getal { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.leeg { padding: 6px 0 4px; font-size: 13.5px; color: var(--ink-3); }
+
+.reactie { border-top: 1px solid var(--line); padding: 14px 20px; }
+.reactie:first-child { border-top: 0; }
+.reactie__meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 6px; }
+.chip { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 2px 10px; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2); }
+.chip--ja { background: #e8f6ec; border-color: #cfeada; color: #1f7a39; }
+.chip--nee { background: #fbeae7; border-color: #f0d2cb; color: #a33a26; }
+.chip--geld { background: #f7efe2; border-color: #e8d9bd; color: #7a5f24; }
+.reactie p { margin: 0; font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+.reactie__email { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; }
+.reactie__tijd { font-size: 12px; color: var(--ink-3); margin-left: auto; }
+
+.uitleg { font-size: 13px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: 8px; padding: 13px 16px; margin: 0 0 22px; line-height: 1.6; }
+.acties { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+</style>
+</head>
+<body>
+
+<header class="kop">
+  <div class="wrap binnen">
+    <span class="logo">
+      <svg width="24" height="27" viewBox="0 0 72 80" aria-hidden="true">
+        <defs>
+          <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e7cb8e"/><stop offset="1" stop-color="#a98449"/>
+          </linearGradient>
+        </defs>
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </span>
+    <h1>Resultaten van de vraagtest</h1>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <form class="slot" id="slotForm">
+      <h2>Sleutel invullen</h2>
+      <p>Hier staan e-mailadressen in, dus dit overzicht zit achter de sleutel die je in <code>PROJEXA_SLEUTEL</code> hebt gezet.</p>
+      <p class="fout" id="slotFout" hidden></p>
+      <input id="sleutel" type="password" placeholder="Je sleutel" autocomplete="current-password">
+      <button class="btn btn--breed" type="submit">Bekijk de resultaten</button>
+    </form>
+
+    <div id="overzicht" hidden></div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (s) { return document.querySelector(s); };
+
+  var LABELS = {
+    bedrag: {
+      'niets': 'Niets', 'tot-50': 'Tot € 50', '50-100': '€ 50 – € 100', '100-150': '€ 100 – € 150',
+      '150-250': '€ 150 – € 250', '250-400': '€ 250 – € 400', 'meer-400': 'Meer dan € 400',
+      'eenmalig': 'Alleen eenmalig'
+    },
+    gebruik: { 'ja': 'Ja, zeker', 'misschien': 'Misschien', 'nee': 'Nee' },
+    wanneer: {
+      'bezig': 'Nu bezig', '6-maanden': 'Binnen 6 maanden', 'dit-jaar': 'Dit jaar',
+      'later': 'Later of geen plannen', 'vakman': 'Werkt in de bouw'
+    },
+    pakket: { 'basis': 'Basis · € 149,95', 'compleet': 'Compleet · € 249,95', 'nieuwbouw': 'Nieuwbouw · € 399,95' }
+  };
+
+  function veilig(t) {
+    return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function label(groep, sleutel) {
+    return (LABELS[groep] && LABELS[groep][sleutel]) || sleutel || 'Niet ingevuld';
+  }
+
+  /* Balkjes op volgorde van de vragenlijst, zodat je een prijsladder leest en
+     geen willekeurige stapel. */
+  var VOLGORDE = {
+    bedrag: ['niets', 'tot-50', '50-100', '100-150', '150-250', '250-400', 'meer-400', 'eenmalig'],
+    gebruik: ['ja', 'misschien', 'nee'],
+    wanneer: ['bezig', '6-maanden', 'dit-jaar', 'later', 'vakman'],
+    pakket: ['basis', 'compleet', 'nieuwbouw']
+  };
+
+  function balken(groep, tellingen) {
+    var sleutels = (VOLGORDE[groep] || Object.keys(tellingen)).filter(function (k) { return tellingen[k]; });
+    Object.keys(tellingen).forEach(function (k) {
+      if (sleutels.indexOf(k) < 0) sleutels.push(k);
+    });
+
+    if (!sleutels.length) return '<p class="leeg">Nog geen antwoorden.</p>';
+
+    var hoogste = Math.max.apply(null, sleutels.map(function (k) { return tellingen[k] || 0; }));
+
+    return sleutels.map(function (k) {
+      var aantal = tellingen[k] || 0;
+      var breedte = hoogste ? Math.round((aantal / hoogste) * 100) : 0;
+      return '<div class="balkrij"><div>' +
+        '<span class="balkrij__naam">' + veilig(label(groep, k)) + '</span>' +
+        '<span class="balk"><i style="width:' + breedte + '%"></i></span>' +
+      '</div><span class="balkrij__getal">' + aantal + '</span></div>';
+    }).join('');
+  }
+
+  function procent(deel, geheel) {
+    if (!geheel) return '—';
+    return Math.round((deel / geheel) * 100) + '%';
+  }
+
+  function teken(d) {
+    var jaZeker = d.gebruik.ja || 0;
+    var wilBetalen = (d.bedrag['150-250'] || 0) + (d.bedrag['250-400'] || 0) + (d.bedrag['meer-400'] || 0);
+
+    var reacties = d.reacties.length
+      ? d.reacties.map(function (r) {
+          var klasse = r.gebruik === 'ja' ? 'chip--ja' : (r.gebruik === 'nee' ? 'chip--nee' : '');
+          return '<div class="reactie">' +
+            '<div class="reactie__meta">' +
+              '<span class="chip ' + klasse + '">' + veilig(label('gebruik', r.gebruik)) + '</span>' +
+              '<span class="chip chip--geld">' + veilig(label('bedrag', r.bedrag)) + '</span>' +
+              (r.pakket ? '<span class="chip">' + veilig(label('pakket', r.pakket)) + '</span>' : '') +
+              (r.wanneer ? '<span class="chip">' + veilig(label('wanneer', r.wanneer)) + '</span>' : '') +
+              '<span class="reactie__tijd">' + new Date(r.op).toLocaleString('nl-NL') + '</span>' +
+            '</div>' +
+            (r.opmerking ? '<p>' + veilig(r.opmerking) + '</p>' : '<p style="color:var(--ink-3)">Geen opmerking.</p>') +
+            (r.email ? '<div class="reactie__email">' + veilig(r.email) + '</div>' : '') +
+          '</div>';
+        }).join('')
+      : '<p class="leeg" style="padding:0 20px 18px">Nog geen ingevulde formulieren.</p>';
+
+    $('#overzicht').innerHTML =
+      '<p class="uitleg">' +
+        '<b>Zo lees je dit:</b> bezoekers zegt hoeveel mensen de pagina zagen, prijsklikken hoeveel ' +
+        'er op een pakket klikten (het eerste echte signaal), en reacties hoeveel er het formulier ' +
+        'invulden. Het percentage dat "ja, zeker" zegt én € 150 of meer wil betalen is de groep waar ' +
+        'het om gaat. Let op: dit is wat mensen zeggen — pas een echte betaling bewijst het.' +
+      '</p>' +
+
+      '<div class="acties">' +
+        '<a class="btn btn--stil" href="./">Naar de landingspagina</a>' +
+        '<button class="btn btn--stil" type="button" id="ververs">Ververs</button>' +
+      '</div>' +
+
+      '<div class="stats">' +
+        '<div class="stat"><div class="stat__waarde">' + d.bezoekers + '</div><div class="stat__label">Bezoekers</div>' +
+          '<div class="stat__extra">' + d.bezoeken + ' bezoeken totaal</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + d.klikkers + '</div><div class="stat__label">Klikten op een prijs</div>' +
+          '<div class="stat__extra">' + procent(d.klikkers, d.bezoekers) + ' van de bezoekers</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + d.aanmeldingen + '</div><div class="stat__label">Reacties</div>' +
+          '<div class="stat__extra">' + procent(d.aanmeldingen, d.bezoekers) + ' van de bezoekers</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + jaZeker + '</div><div class="stat__label">Zegt "ja, zeker"</div>' +
+          '<div class="stat__extra">' + wilBetalen + ' wil € 150 of meer betalen</div></div>' +
+      '</div>' +
+
+      '<div class="kolommen">' +
+        '<div class="kaart"><h2>Wat men wil betalen per jaar</h2><div class="kaart__body">' + balken('bedrag', d.bedrag) + '</div></div>' +
+        '<div class="kaart"><h2>Zou je het gebruiken?</h2><div class="kaart__body">' + balken('gebruik', d.gebruik) + '</div></div>' +
+      '</div>' +
+
+      '<div class="kolommen">' +
+        '<div class="kaart"><h2>Klikken op de prijskaarten</h2><div class="kaart__body">' + balken('pakket', d.prijsklikken) + '</div></div>' +
+        '<div class="kaart"><h2>Gekozen pakket in het formulier</h2><div class="kaart__body">' + balken('pakket', d.pakket) + '</div></div>' +
+      '</div>' +
+
+      '<div class="kolommen">' +
+        '<div class="kaart"><h2>Wanneer gaan ze verbouwen?</h2><div class="kaart__body">' + balken('wanneer', d.wanneer) + '</div></div>' +
+        '<div class="kaart"><h2>E-mailadressen</h2><div class="kaart__body">' +
+          '<div class="balkrij"><div><span class="balkrij__naam">Achtergelaten</span>' +
+          '<span class="balk"><i style="width:' + (d.aanmeldingen ? Math.round((d.metEmail / d.aanmeldingen) * 100) : 0) + '%"></i></span></div>' +
+          '<span class="balkrij__getal">' + d.metEmail + '</span></div>' +
+          '<p class="leeg">' + procent(d.metEmail, d.aanmeldingen) + ' van de reacties liet een adres achter.</p>' +
+        '</div></div>' +
+      '</div>' +
+
+      '<div class="kaart"><h2>Alle reacties</h2>' + reacties + '</div>';
+
+    var ververs = $('#ververs');
+    if (ververs) ververs.addEventListener('click', function () { haal(huidigeSleutel); });
+  }
+
+  var huidigeSleutel = '';
+
+  function haal(sleutel) {
+    return fetch('/api/projexa/resultaten?sleutel=' + encodeURIComponent(sleutel))
+      .then(function (r) {
+        if (r.status === 401) throw new Error('Deze sleutel klopt niet.');
+        if (r.status === 503) throw new Error('Stel eerst PROJEXA_SLEUTEL in bij je omgevingsvariabelen.');
+        if (!r.ok) throw new Error('Kon de resultaten niet ophalen.');
+        return r.json();
+      })
+      .then(function (d) {
+        huidigeSleutel = sleutel;
+        try { sessionStorage.setItem('projexa-sleutel', sleutel); } catch (e) {}
+        $('#slotForm').hidden = true;
+        $('#overzicht').hidden = false;
+        teken(d);
+      });
+  }
+
+  $('#slotForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fout = $('#slotFout');
+    fout.hidden = true;
+    haal($('#sleutel').value.trim()).catch(function (err) {
+      fout.textContent = err.message;
+      fout.hidden = false;
+    });
+  });
+
+  // Sleutel uit de adresbalk of uit deze sessie: dan hoef je hem niet steeds te typen.
+  var uitUrl = new URLSearchParams(location.search).get('sleutel');
+  var bewaard = null;
+  try { bewaard = sessionStorage.getItem('projexa-sleutel'); } catch (e) {}
+  var vooraf = uitUrl || bewaard;
+  if (vooraf) haal(vooraf).catch(function () {});
+}());
+</script>
+</body>
+</html>

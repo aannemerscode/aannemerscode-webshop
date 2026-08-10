@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projexa — alles rondom je verbouwing overzichtelijk vastgelegd</title>
+<meta name="description" content="Projexa is de digitale projectmap voor je verbouwing: communicatie, bouwdagboek, documenten, meerwerk en akkoorden op één plek. Jij start het project, je aannemer doet gratis mee.">
+<meta name="robots" content="noindex">
+
+<meta property="og:title" content="Projexa — jouw verbouwing, jouw dossier">
+<meta property="og:description" content="Alles rondom je verbouwing overzichtelijk vastgelegd. Van eerste afspraak tot oplevering.">
+<meta property="og:type" content="website">
+
+<style>
+/* ==========================================================================
+   Projexa — landingspagina om de vraag te toetsen
+   Zelfde ontwerp als de Projexa-omgeving: zwart, wit, goud.
+   ========================================================================== */
+
+:root {
+  --black: #090b0c;
+  --black-2: #0f1214;
+  --gold: #b5955e;
+  --gold-light: #d8b778;
+  --gold-bright: #e7cb8e;
+  --gold-dark: #8c7343;
+
+  --app-bg: #f2f1ef;
+  --surface: #ffffff;
+  --surface-2: #f7f6f4;
+  --line: #e6e3df;
+  --ink: #16181a;
+  --ink-2: #55595e;
+  --ink-3: #8b9096;
+
+  --green: #2fa84f;
+  --red: #d3513b;
+
+  --on-black: rgba(255, 255, 255, .74);
+  --on-black-dim: rgba(255, 255, 255, .46);
+  --hairline: rgba(255, 255, 255, .12);
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --shadow: 0 1px 2px rgba(9, 11, 12, .04), 0 8px 24px rgba(9, 11, 12, .06);
+  --shadow-lg: 0 30px 70px rgba(0, 0, 0, .55);
+
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; }
+
+/* De balk bovenaan blijft staan; anders schuift een sectiekop eronder weg. */
+#prijzen, #meedenken { scroll-margin-top: 78px; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--black);
+  color: #fff;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+.wrap--smal { max-width: 720px; }
+
+.sec { padding: 72px 0; }
+.sec--licht { background: var(--app-bg); color: var(--ink); }
+.sec--rand { border-top: 1px solid var(--hairline); }
+
+.eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 13px;
+}
+
+.sec--licht .eyebrow { color: var(--gold-dark); }
+
+h2.kop {
+  font-size: clamp(25px, 3.4vw, 35px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  margin: 0 0 14px;
+  text-wrap: balance;
+}
+
+p.lead { font-size: 16.5px; line-height: 1.65; color: var(--on-black); margin: 0; max-width: 60ch; }
+.sec--licht p.lead { color: var(--ink-2); }
+.sec__head { margin-bottom: 34px; }
+
+/* --------------------------------------------------------------------------
+   Logo en knoppen
+   -------------------------------------------------------------------------- */
+
+.logo { display: inline-flex; align-items: center; gap: 15px; text-decoration: none; }
+.logo__mark { flex: none; }
+.logo__type { display: flex; flex-direction: column; gap: 2px; }
+.logo__name { font-weight: 400; letter-spacing: .28em; line-height: 1; color: #fff; white-space: nowrap; }
+.logo__name b { font-weight: 400; color: var(--gold-light); }
+.logo__tag { font-size: .34em; letter-spacing: .34em; color: var(--gold); line-height: 1; white-space: nowrap; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  padding: 13px 22px;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter .15s ease, background .15s ease, border-color .15s ease;
+}
+
+.btn:hover { filter: brightness(1.06); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn--gold { background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #221b0c; border-color: var(--gold-dark); }
+.btn--ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.btn--outline-gold { background: transparent; color: var(--gold-light); border-color: rgba(181, 149, 94, .5); }
+.btn--outline-gold:hover { background: rgba(181, 149, 94, .12); }
+.btn--breed { width: 100%; }
+
+/* --------------------------------------------------------------------------
+   Melding dat antwoorden niet worden opgeslagen (alleen buiten de server)
+   -------------------------------------------------------------------------- */
+
+.voorbeeldbalk {
+  background: #3a2f14;
+  color: var(--gold-bright);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  padding: 9px 20px;
+  border-bottom: 1px solid rgba(181, 149, 94, .3);
+}
+
+/* --------------------------------------------------------------------------
+   Kop
+   -------------------------------------------------------------------------- */
+
+nav.balk {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(9, 11, 12, .92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+nav.balk .binnen { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
+nav.balk .logo { font-size: 14px; }
+
+.hero {
+  background:
+    radial-gradient(1100px 560px at 50% -10%, rgba(181, 149, 94, .15), transparent 62%),
+    var(--black);
+  padding: 66px 0 74px;
+}
+
+.hero__grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 54px; align-items: center; }
+
+h1.hero__kop {
+  font-size: clamp(33px, 5vw, 52px);
+  line-height: 1.06;
+  font-weight: 600;
+  letter-spacing: -.025em;
+  margin: 0 0 20px;
+  text-wrap: balance;
+}
+
+h1.hero__kop b { font-weight: 600; color: var(--gold-light); }
+.hero__sub { font-size: 17px; line-height: 1.65; color: var(--on-black); margin: 0 0 28px; max-width: 46ch; }
+.hero__acties { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero__voet { margin: 26px 0 0; font-size: 13px; color: var(--on-black-dim); max-width: 44ch; }
+
+.heroKaart { background: var(--surface); color: var(--ink); border-radius: var(--r-xl); box-shadow: var(--shadow-lg); overflow: hidden; }
+.heroKaart__top { padding: 20px 22px 16px; border-bottom: 1px solid var(--line); }
+.heroKaart__label { font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.heroKaart__naam { font-size: 19px; font-weight: 600; margin: 5px 0 2px; }
+.heroKaart__adres { font-size: 13px; color: var(--ink-3); }
+.heroKaart__cijfers { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+.heroKaart__cijfer { background: var(--surface); padding: 13px 22px; }
+.heroKaart__cijfer dt { font-size: 11.5px; color: var(--ink-3); margin: 0 0 2px; }
+.heroKaart__cijfer dd { margin: 0; font-size: 15.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.heroKaart__lijst { padding: 6px 0 8px; }
+
+.heroRij { display: flex; align-items: center; gap: 11px; padding: 10px 22px; font-size: 13.5px; }
+.heroRij b { display: block; font-weight: 600; font-size: 14px; }
+.heroRij small { display: block; font-size: 12px; color: var(--ink-3); }
+
+.ico { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--surface-2); flex: none; }
+.ico--groen { background: #e8f6ec; color: var(--green); }
+.ico--goud { background: #f7efe2; color: var(--gold-dark); }
+
+@media (max-width: 900px) { .hero__grid { grid-template-columns: 1fr; gap: 38px; } }
+
+/* --------------------------------------------------------------------------
+   Herkenbaar / functies / stappen
+   -------------------------------------------------------------------------- */
+
+.vragen { display: grid; grid-template-columns: repeat(auto-fill, minmax(262px, 1fr)); gap: 10px; }
+
+.vraag {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  padding: 13px 15px;
+  font-size: 14px;
+  color: var(--on-black);
+  background: rgba(255, 255, 255, .025);
+}
+
+.vraag svg { flex: none; margin-top: 2px; color: var(--gold); }
+
+.functies { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+.functie {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.functie svg { color: var(--gold-dark); margin-bottom: 11px; }
+.functie h3 { margin: 0 0 5px; font-size: 16px; font-weight: 600; }
+.functie p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-2); }
+
+@media (max-width: 860px) { .functies { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .functies { grid-template-columns: 1fr; } }
+
+.stappen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: stap; }
+
+.stap { border-top: 2px solid rgba(181, 149, 94, .45); padding-top: 16px; }
+.stap__nr { font-size: 12px; font-weight: 700; letter-spacing: .14em; color: var(--gold); text-transform: uppercase; }
+.stap h3 { margin: 8px 0 6px; font-size: 17px; font-weight: 600; }
+.stap p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--on-black); }
+
+@media (max-width: 780px) { .stappen { grid-template-columns: 1fr; gap: 26px; } }
+
+/* --------------------------------------------------------------------------
+   Prijzen
+   -------------------------------------------------------------------------- */
+
+.prijzen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
+
+.prijskaart {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.prijskaart--uitgelicht { border: 2px solid var(--gold); padding: 23px 21px; }
+
+.prijskaart__vlag {
+  position: absolute;
+  top: -11px;
+  left: 21px;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 3px 12px;
+}
+
+.prijskaart__label { font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 7px; }
+.prijskaart h3 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+.prijskaart__voor { font-size: 13px; color: var(--ink-3); margin-bottom: 16px; min-height: 38px; }
+.prijskaart__prijs { font-size: 33px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.prijskaart__eenheid { font-size: 13px; color: var(--ink-3); margin-bottom: 18px; }
+
+.prijskaart ul { list-style: none; margin: 0 0 20px; padding: 0; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.prijskaart li { font-size: 13.5px; line-height: 1.5; display: flex; gap: 9px; align-items: flex-start; color: var(--ink-2); }
+.prijskaart li svg { flex: none; margin-top: 3px; color: var(--gold-dark); }
+
+.prijs__voet { margin: 24px 0 0; font-size: 13.5px; color: var(--ink-2); text-align: center; }
+
+@media (max-width: 900px) { .prijzen { grid-template-columns: 1fr; } }
+
+/* --------------------------------------------------------------------------
+   Formulier
+   -------------------------------------------------------------------------- */
+
+.form {
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg);
+  padding: 30px 30px 26px;
+}
+
+.form__kop { margin-bottom: 22px; }
+.form__kop h2 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+.form__kop p { margin: 0; font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+
+.veld { margin-bottom: 20px; }
+.veld > label, .veld legend { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 9px; padding: 0; }
+.veld .toelichting { font-size: 12.5px; color: var(--ink-3); font-weight: 400; display: block; margin-top: 2px; }
+
+.veld input[type=email], .veld input[type=text], .veld textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 15px;
+  outline: none;
+}
+
+.veld input:focus, .veld textarea:focus { border-color: var(--gold); }
+.veld textarea { resize: vertical; min-height: 84px; }
+
+fieldset { border: 0; margin: 0; padding: 0; }
+
+.keuzes { display: grid; gap: 8px; }
+.keuzes--rij { grid-template-columns: repeat(3, 1fr); }
+.keuzes--twee { grid-template-columns: repeat(2, 1fr); }
+
+.keuze {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 11px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  background: var(--surface);
+  transition: border-color .12s ease, background .12s ease;
+}
+
+.keuze:hover { border-color: var(--gold); }
+.keuze input { accent-color: var(--gold-dark); margin: 0; flex: none; }
+.keuze:has(input:checked) { border-color: var(--gold); background: #fdfaf4; box-shadow: inset 0 0 0 1px var(--gold); }
+
+@media (max-width: 620px) {
+  .keuzes--rij, .keuzes--twee { grid-template-columns: 1fr; }
+  .form { padding: 24px 20px 22px; }
+}
+
+.formfout {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #a33a26;
+  background: #fbeae7;
+  border: 1px solid #f0d2cb;
+  border-radius: var(--r-sm);
+  padding: 10px 13px;
+}
+
+.privacy { margin: 14px 0 0; font-size: 12px; color: var(--ink-3); line-height: 1.55; text-align: center; }
+
+.bedankt { text-align: center; padding: 14px 0 6px; }
+.bedankt__vink { width: 54px; height: 54px; border-radius: 50%; background: #e8f6ec; color: var(--green); display: grid; place-items: center; margin: 0 auto 16px; }
+.bedankt h2 { margin: 0 0 8px; font-size: 22px; font-weight: 600; }
+.bedankt p { margin: 0 auto; font-size: 14.5px; color: var(--ink-2); max-width: 46ch; line-height: 1.6; }
+
+/* --------------------------------------------------------------------------
+   Voet
+   -------------------------------------------------------------------------- */
+
+.slot { text-align: center; padding: 74px 0; }
+.slot h2 { font-size: clamp(25px, 3.4vw, 34px); font-weight: 600; letter-spacing: -.02em; margin: 0 0 14px; text-wrap: balance; }
+.slot p { max-width: 50ch; margin: 0 auto 26px; color: var(--on-black); font-size: 16px; }
+
+footer.voet { border-top: 1px solid var(--hairline); padding: 24px 0 40px; }
+footer.voet .binnen { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+footer.voet .logo { font-size: 12px; }
+footer.voet p { margin: 0; font-size: 12.5px; color: var(--on-black-dim); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7cb8e"/>
+      <stop offset="1" stop-color="#a98449"/>
+    </linearGradient>
+  </defs>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-5.5 4V6.5a1 1 0 0 1 1-1z"/><circle cx="8.6" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.6A1.6 1.6 0 0 1 5.1 6h3.8l2 2.5h8A1.6 1.6 0 0 1 20.5 10v8a1.6 1.6 0 0 1-1.6 1.6H5.1A1.6 1.6 0 0 1 3.5 18z"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.6A6.4 6.4 0 0 0 7.6 9a8 8 0 0 0 0 6 6.4 6.4 0 0 0 9.4 2.4"/><path d="M4.8 10.6h7M4.8 13.6h7"/></symbol>
+  <symbol id="i-checks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.6 6 16.6 13.6 7.4"/><path d="M9.6 14.9 12 17.2 21 6.8"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="4.5" width="17.2" height="4.2" rx="1.4"/><path d="M5.2 8.7V19a1.4 1.4 0 0 0 1.4 1.4h10.8a1.4 1.4 0 0 0 1.4-1.4V8.7"/><path d="M10 12.4h4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2-2.4 3.6"/><circle cx="12" cy="17.2" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 6.3a3.8 3.8 0 0 0 5 5l-8 8a2.3 2.3 0 0 1-3.3-3.3z"/><path d="M6.2 4.5 9 7.3l-1.7 1.7L4.5 6.2z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+</svg>
+
+<div class="voorbeeldbalk" id="voorbeeldbalk" hidden>
+  Voorbeeldweergave — antwoorden worden hier niet opgeslagen.
+</div>
+
+<nav class="balk">
+  <div class="wrap binnen">
+    <span class="logo">
+      <svg class="logo__mark" width="28" height="31" viewBox="0 0 72 80" aria-hidden="true">
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </span>
+    <a class="btn btn--gold" href="#prijzen">Bekijk de prijzen</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <h1 class="hero__kop">Jouw verbouwing.<br><b>Jouw dossier.</b></h1>
+      <p class="hero__sub">
+        Alles rondom je verbouwing overzichtelijk vastgelegd — van eerste afspraak tot
+        oplevering. Jij start het project, je aannemer en vakmensen doen gratis mee.
+      </p>
+      <div class="hero__acties">
+        <a class="btn btn--gold" href="#prijzen">Wat zou jij hiervoor betalen? →</a>
+        <a class="btn btn--outline-gold" href="demo.html">Probeer de demo</a>
+      </div>
+      <p class="hero__voet">
+        Projexa is in ontwikkeling. Je betaalt nu niets — we willen eerst weten of dit
+        oplost wat jij tijdens een verbouwing mist.
+      </p>
+    </div>
+
+    <div class="heroKaart">
+      <div class="heroKaart__top">
+        <div class="heroKaart__label">Mijn verbouwing</div>
+        <div class="heroKaart__naam">Renovatie woning</div>
+        <div class="heroKaart__adres">Dorpsstraat 12, Ede</div>
+      </div>
+      <dl class="heroKaart__cijfers">
+        <div class="heroKaart__cijfer"><dt>Aanneemsom</dt><dd>€&nbsp;184.500</dd></div>
+        <div class="heroKaart__cijfer"><dt>Goedgekeurd meerwerk</dt><dd>€&nbsp;3.780</dd></div>
+      </dl>
+      <div class="heroKaart__lijst">
+        <div class="heroRij">
+          <span class="ico ico--goud"><svg width="16" height="16" aria-hidden="true"><use href="#i-euro"></use></svg></span>
+          <span><b>Meerwerk #36 wacht op jou</b><small>Extra stucwerk trapkast · €&nbsp;850</small></span>
+        </div>
+        <div class="heroRij">
+          <span class="ico ico--groen"><svg width="16" height="16" aria-hidden="true"><use href="#i-camera"></use></svg></span>
+          <span><b>14 nieuwe foto's van vandaag</b><small>Elektro Bertens · 6,5 uur gewerkt</small></span>
+        </div>
+        <div class="heroRij">
+          <span class="ico"><svg width="16" height="16" aria-hidden="true"><use href="#i-checks"></use></svg></span>
+          <span><b>Akkoord vastgelegd</b><small>Meerwerk #34 · €&nbsp;280 · 14-02 om 09:31</small></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="sec sec--rand">
+  <div class="wrap">
+    <div class="sec__head">
+      <p class="eyebrow">Herkenbaar?</p>
+      <h2 class="kop">Tijdens een verbouwing loop je achter de feiten aan.</h2>
+      <p class="lead">
+        Afspraken staan in appjes, foto's op iemands telefoon, meerwerk in een los mailtje.
+        Als er later discussie ontstaat, moet je alles bij elkaar zoeken.
+      </p>
+    </div>
+
+    <div class="vragen">
+      <div class="vraag"><svg width="17" height="17" aria-hidden="true"><use href="#i-help"></use></svg>Wat is er precies afgesproken?</div>
+      <div class="vraag"><svg width="17" height="17" aria-hidden="true"><use href="#i-help"></use></svg>Wat gebeurt er deze week?</div>
+      <div class="vraag"><svg width="17" height="17" aria-hidden="true"><use href="#i-help"></use></svg>Wat kost dat meerwerk?</div>
+      <div class="vraag"><svg width="17" height="17" aria-hidden="true"><use href="#i-help"></use></svg>Waar heb ik akkoord op gegeven?</div>
+      <div class="vraag"><svg width="17" height="17" aria-hidden="true"><use href="#i-help"></use></svg>Welke foto's zijn er van de bouw?</div>
+      <div class="vraag"><svg width="17" height="17" aria-hidden="true"><use href="#i-help"></use></svg>Welke documenten horen bij mijn woning?</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--licht">
+  <div class="wrap">
+    <div class="sec__head">
+      <p class="eyebrow">Wat je krijgt</p>
+      <h2 class="kop">Eén plek voor alles wat met je verbouwing te maken heeft</h2>
+    </div>
+
+    <div class="functies">
+      <div class="functie">
+        <svg width="22" height="22" aria-hidden="true"><use href="#i-chat"></use></svg>
+        <h3>Communicatie</h3>
+        <p>Een apart gesprek met je aannemer, elektricien en loodgieter. Alles blijft bij het project horen.</p>
+      </div>
+      <div class="functie">
+        <svg width="22" height="22" aria-hidden="true"><use href="#i-camera"></use></svg>
+        <h3>Bouwdagboek</h3>
+        <p>Per dag wat er is gedaan, met foto's en gewerkte uren. Ook als je zelf niet langs kon.</p>
+      </div>
+      <div class="functie">
+        <svg width="22" height="22" aria-hidden="true"><use href="#i-euro"></use></svg>
+        <h3>Meerwerk</h3>
+        <p>Elk voorstel apart, met bedrag en toelichting. Jij zegt ja of nee — vóór het werk wordt uitgevoerd.</p>
+      </div>
+      <div class="functie">
+        <svg width="22" height="22" aria-hidden="true"><use href="#i-checks"></use></svg>
+        <h3>Akkoorden</h3>
+        <p>Alles waar je akkoord op gaf, met datum en tijd en het voorstel erbij.</p>
+      </div>
+      <div class="functie">
+        <svg width="22" height="22" aria-hidden="true"><use href="#i-folder"></use></svg>
+        <h3>Documenten</h3>
+        <p>Offerte, contract, tekeningen, facturen, garantiebewijzen en handleidingen bij elkaar.</p>
+      </div>
+      <div class="functie">
+        <svg width="22" height="22" aria-hidden="true"><use href="#i-archive"></use></svg>
+        <h3>Dossier na oplevering</h3>
+        <p>Het complete bouwdossier van je woning blijft bewaard. Handig bij onderhoud, garantie of verkoop.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--rand">
+  <div class="wrap">
+    <div class="sec__head">
+      <p class="eyebrow">Zo werkt het</p>
+      <h2 class="kop">Jij bepaalt dat het wordt vastgelegd, niet je aannemer</h2>
+    </div>
+
+    <div class="stappen">
+      <div class="stap">
+        <span class="stap__nr">Stap 1</span>
+        <h3>Je start je project</h3>
+        <p>Je maakt je verbouwing aan: wat er gebeurt, wat het kost en wanneer het klaar moet zijn.</p>
+      </div>
+      <div class="stap">
+        <span class="stap__nr">Stap 2</span>
+        <h3>Je nodigt je aannemer uit</h3>
+        <p>Hij krijgt een projectcode en doet gratis mee. Hij nodigt zijn eigen vakmensen erbij uit.</p>
+      </div>
+      <div class="stap">
+        <span class="stap__nr">Stap 3</span>
+        <h3>Je dossier vult zichzelf</h3>
+        <p>Foto's, dagrapporten, meerwerk en akkoorden komen vanzelf binnen. Bij oplevering sluit je het af.</p>
+      </div>
+    </div>
+
+    <p class="lead" style="margin-top:34px">
+      Wil je zien hoe het eruitziet? <a href="demo.html" style="color:var(--gold-light)">Bekijk de klikbare demo</a> —
+      je kunt er zelf meerwerk goedkeuren en een bericht sturen.
+    </p>
+  </div>
+</section>
+
+<section class="sec sec--licht" id="prijzen">
+  <div class="wrap">
+    <div class="sec__head" style="text-align:center">
+      <p class="eyebrow">Wat het gaat kosten</p>
+      <h2 class="kop" style="margin-left:auto;margin-right:auto">Welke past bij jouw verbouwing?</h2>
+      <p class="lead" style="margin:0 auto">
+        Eén bedrag per jaar dat je verbouwing loopt. Iedereen die je uitnodigt doet gratis mee.
+        Kies wat jij redelijk vindt — je zit nergens aan vast.
+      </p>
+    </div>
+
+    <div class="prijzen">
+      <div class="prijskaart">
+        <div class="prijskaart__label">Projexa</div>
+        <h3>Basis</h3>
+        <div class="prijskaart__voor">Eén verbouwing met een paar vakmensen — badkamer, keuken, dakkapel.</div>
+        <div class="prijskaart__prijs">€&nbsp;149,95</div>
+        <div class="prijskaart__eenheid">per jaar</div>
+        <ul>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Tot 3 bedrijven uitnodigen, gratis</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Communicatie en bouwdagboek met foto's</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Meerwerk met akkoord per voorstel</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Documenten en garantiebewijzen</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Dossier blijft na oplevering bewaard</li>
+        </ul>
+        <button class="btn btn--ghost btn--breed" type="button" data-pakket="basis" data-prijs="149,95">Dit past bij mij</button>
+      </div>
+
+      <div class="prijskaart prijskaart--uitgelicht">
+        <span class="prijskaart__vlag">Meest gekozen</span>
+        <div class="prijskaart__label">Projexa</div>
+        <h3>Compleet</h3>
+        <div class="prijskaart__voor">Een grotere verbouwing of renovatie met meerdere partijen tegelijk.</div>
+        <div class="prijskaart__prijs">€&nbsp;249,95</div>
+        <div class="prijskaart__eenheid">per jaar</div>
+        <ul>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Alles uit Basis</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Onbeperkt bedrijven uitnodigen</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Planning met mijlpalen en verschuivingen</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Opleverlijst met afgehandelde punten</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Je hele dossier te downloaden als pdf</li>
+        </ul>
+        <button class="btn btn--gold btn--breed" type="button" data-pakket="compleet" data-prijs="249,95">Dit past bij mij</button>
+      </div>
+
+      <div class="prijskaart">
+        <div class="prijskaart__label">Projexa</div>
+        <h3>Nieuwbouw</h3>
+        <div class="prijskaart__voor">Nieuwbouw of een ingrijpende verbouwing met architect en constructeur.</div>
+        <div class="prijskaart__prijs">€&nbsp;399,95</div>
+        <div class="prijskaart__eenheid">per jaar</div>
+        <ul>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Alles uit Compleet</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Meerdere bouwdelen in één project</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Ruimte voor architect en constructeur</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Hulp bij het inrichten van je dossier</li>
+          <li><svg width="15" height="15" aria-hidden="true"><use href="#i-check"></use></svg>Dossier 10 jaar bewaard na oplevering</li>
+        </ul>
+        <button class="btn btn--ghost btn--breed" type="button" data-pakket="nieuwbouw" data-prijs="399,95">Dit past bij mij</button>
+      </div>
+    </div>
+
+    <p class="prijs__voet">
+      Je aannemer en de vakmensen betalen niets. Zij doen mee op jouw uitnodiging.
+    </p>
+  </div>
+</section>
+
+<section class="sec sec--rand" id="meedenken">
+  <div class="wrap wrap--smal">
+
+    <form class="form" id="form" novalidate>
+      <div class="form__kop">
+        <h2>Zou jij dit gebruiken?</h2>
+        <p>
+          Projexa bestaat nog niet als product — we bouwen het nu. Laat weten wat je ervan
+          vindt en wat het je waard zou zijn. Twee minuten, en je bepaalt mee wat er in komt.
+        </p>
+      </div>
+
+      <p class="formfout" id="formfout" hidden></p>
+
+      <div class="veld">
+        <fieldset>
+          <legend>Welk pakket past bij jouw situatie?</legend>
+          <div class="keuzes keuzes--rij">
+            <label class="keuze"><input type="radio" name="pakket" value="basis"> Basis · €&nbsp;149,95</label>
+            <label class="keuze"><input type="radio" name="pakket" value="compleet" checked> Compleet · €&nbsp;249,95</label>
+            <label class="keuze"><input type="radio" name="pakket" value="nieuwbouw"> Nieuwbouw · €&nbsp;399,95</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="veld">
+        <fieldset>
+          <legend>Zou je Projexa gebruiken bij je verbouwing?</legend>
+          <div class="keuzes keuzes--rij">
+            <label class="keuze"><input type="radio" name="gebruik" value="ja"> Ja, zeker</label>
+            <label class="keuze"><input type="radio" name="gebruik" value="misschien"> Misschien</label>
+            <label class="keuze"><input type="radio" name="gebruik" value="nee"> Nee</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="veld">
+        <fieldset>
+          <legend>
+            Wat zou je hier per jaar voor willen betalen?
+            <span class="toelichting">Wees eerlijk — hier hebben we het meest aan.</span>
+          </legend>
+          <div class="keuzes keuzes--twee">
+            <label class="keuze"><input type="radio" name="bedrag" value="niets"> Niets, ik zou het niet kopen</label>
+            <label class="keuze"><input type="radio" name="bedrag" value="tot-50"> Tot €&nbsp;50</label>
+            <label class="keuze"><input type="radio" name="bedrag" value="50-100"> €&nbsp;50 – €&nbsp;100</label>
+            <label class="keuze"><input type="radio" name="bedrag" value="100-150"> €&nbsp;100 – €&nbsp;150</label>
+            <label class="keuze"><input type="radio" name="bedrag" value="150-250"> €&nbsp;150 – €&nbsp;250</label>
+            <label class="keuze"><input type="radio" name="bedrag" value="250-400"> €&nbsp;250 – €&nbsp;400</label>
+            <label class="keuze"><input type="radio" name="bedrag" value="meer-400"> Meer dan €&nbsp;400</label>
+            <label class="keuze"><input type="radio" name="bedrag" value="eenmalig"> Alleen eenmalig, geen abonnement</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="veld">
+        <fieldset>
+          <legend>Wanneer ga je (ver)bouwen?</legend>
+          <div class="keuzes keuzes--twee">
+            <label class="keuze"><input type="radio" name="wanneer" value="bezig"> Ik ben nu bezig</label>
+            <label class="keuze"><input type="radio" name="wanneer" value="6-maanden"> Binnen 6 maanden</label>
+            <label class="keuze"><input type="radio" name="wanneer" value="dit-jaar"> Dit jaar nog</label>
+            <label class="keuze"><input type="radio" name="wanneer" value="later"> Later, of nog geen plannen</label>
+            <label class="keuze"><input type="radio" name="wanneer" value="vakman"> Ik werk zelf in de bouw</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="veld">
+        <label for="opmerking">Wat zou je missen, of wat houdt je tegen?</label>
+        <textarea id="opmerking" name="opmerking" placeholder="Bijvoorbeeld: mijn aannemer gaat dit toch niet gebruiken, of: ik wil ook de planning kunnen zien."></textarea>
+      </div>
+
+      <div class="veld">
+        <label for="email">E-mailadres <span class="toelichting">Zodat we je laten weten wanneer Projexa klaar is. Laat leeg als je dat niet wilt.</span></label>
+        <input id="email" name="email" type="email" placeholder="jij@voorbeeld.nl" autocomplete="email">
+      </div>
+
+      <button class="btn btn--gold btn--breed" type="submit" id="verstuur">Versturen</button>
+      <p class="privacy">
+        We gebruiken je antwoord alleen om Projexa te verbeteren en je op de hoogte te houden.
+        Geen nieuwsbrief, geen doorverkoop, en je kunt je altijd afmelden.
+      </p>
+    </form>
+
+    <div class="form bedankt" id="bedankt" hidden>
+      <div class="bedankt__vink"><svg width="26" height="26" aria-hidden="true"><use href="#i-check"></use></svg></div>
+      <h2>Bedankt — dit helpt echt</h2>
+      <p id="bedanktTekst">
+        Je antwoord is binnen. Als Projexa er komt, laten we het je als eerste weten.
+      </p>
+      <p style="margin-top:18px">
+        <a class="btn btn--ghost" href="demo.html">Bekijk intussen de demo</a>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<section class="slot">
+  <div class="wrap wrap--smal">
+    <h2>Van losse appjes naar het bouwdossier van je woning.</h2>
+    <p>Zeg wat jij ervan vindt — daar bouwen we het mee.</p>
+    <a class="btn btn--gold" href="#meedenken">Laat je mening achter</a>
+  </div>
+</section>
+
+<footer class="voet">
+  <div class="wrap binnen">
+    <span class="logo">
+      <svg class="logo__mark" width="22" height="24" viewBox="0 0 72 80" aria-hidden="true">
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </span>
+    <p>Projexa is in ontwikkeling · je kunt hier nog niets kopen</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (sel) { return document.querySelector(sel); };
+
+  /* Eén anonieme bezoeker-id per browser, zodat we bezoeken en klikken kunnen
+     tellen zonder iets persoonlijks op te slaan. */
+  var BEZOEKER_SLEUTEL = 'projexa-bezoeker';
+  var bezoeker;
+  try {
+    bezoeker = localStorage.getItem(BEZOEKER_SLEUTEL);
+    if (!bezoeker) {
+      bezoeker = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      localStorage.setItem(BEZOEKER_SLEUTEL, bezoeker);
+    }
+  } catch (e) {
+    bezoeker = 'b-onbekend';
+  }
+
+  var serverAanwezig = true;
+
+  function stuur(pad, gegevens) {
+    return fetch(pad, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(gegevens)
+    }).then(function (r) {
+      if (!r.ok) throw new Error('mislukt');
+      return r.json();
+    });
+  }
+
+  /* Bezoek tellen. Lukt dat niet, dan draait deze pagina los van de server en
+     zeggen we dat eerlijk bovenaan. */
+  stuur('/api/projexa/gebeurtenis', {
+    soort: 'bezoek',
+    bezoeker: bezoeker,
+    verwijzer: document.referrer || '',
+    zoekcode: location.search || ''
+  }).catch(function () {
+    serverAanwezig = false;
+    $('#voorbeeldbalk').hidden = false;
+  });
+
+  /* Klik op een prijskaart: dat is het eerste echte signaal, nog vóór iemand
+     het formulier invult. */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-pakket]'), function (knop) {
+    knop.addEventListener('click', function () {
+      var pakket = knop.getAttribute('data-pakket');
+
+      if (serverAanwezig) {
+        stuur('/api/projexa/gebeurtenis', { soort: 'prijsklik', bezoeker: bezoeker, pakket: pakket }).catch(function () {});
+      }
+
+      var keuze = document.querySelector('input[name="pakket"][value="' + pakket + '"]');
+      if (keuze) keuze.checked = true;
+
+      $('#meedenken').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(function () {
+        var eerste = document.querySelector('input[name="gebruik"]');
+        if (eerste) eerste.focus({ preventScroll: true });
+      }, 500);
+    });
+  });
+
+  function gekozen(naam) {
+    var el = document.querySelector('input[name="' + naam + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  $('#form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var fout = $('#formfout');
+    var email = $('#email').value.trim();
+
+    if (!gekozen('gebruik')) {
+      fout.textContent = 'Laat even weten of je Projexa zou gebruiken — dat is de belangrijkste vraag.';
+      fout.hidden = false;
+      fout.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (!gekozen('bedrag')) {
+      fout.textContent = 'Kies wat je hiervoor zou willen betalen. "Niets" mag ook — daar leren we net zoveel van.';
+      fout.hidden = false;
+      fout.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (email && email.indexOf('@') < 0) {
+      fout.textContent = 'Dit e-mailadres klopt niet. Laat het veld leeg als je liever geen bericht krijgt.';
+      fout.hidden = false;
+      $('#email').focus();
+      return;
+    }
+
+    fout.hidden = true;
+
+    var antwoord = {
+      bezoeker: bezoeker,
+      pakket: gekozen('pakket'),
+      gebruik: gekozen('gebruik'),
+      bedrag: gekozen('bedrag'),
+      wanneer: gekozen('wanneer'),
+      opmerking: $('#opmerking').value.trim(),
+      email: email
+    };
+
+    var knop = $('#verstuur');
+    knop.disabled = true;
+    knop.textContent = 'Bezig…';
+
+    var klaar = function () {
+      $('#form').hidden = true;
+      $('#bedankt').hidden = false;
+      if (!email) {
+        $('#bedanktTekst').textContent =
+          'Je antwoord is binnen. Je hebt geen e-mailadres achtergelaten, dus we sturen je niets — maar je mening telt gewoon mee.';
+      }
+      $('#bedankt').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    if (!serverAanwezig) { klaar(); return; }
+
+    stuur('/api/projexa/aanmelding', antwoord)
+      .then(klaar)
+      .catch(function () {
+        knop.disabled = false;
+        knop.textContent = 'Versturen';
+        fout.textContent = 'Het versturen lukte niet. Probeer het zo nog eens — je antwoorden staan nog ingevuld.';
+        fout.hidden = false;
+      });
+  });
+}());
+</script>
+</body>
+</html>
