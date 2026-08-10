@@ -155,8 +155,9 @@ data/orders.json    — simpele bestelhistorie (vervang door een echte database
 Naast de webshop draait op deze server een landingspagina waarmee je test of er vraag is
 naar **Projexa** (het verbouwdossier voor huiseigenaren):
 
-- `/projexa/` — de landingspagina met drie prijzen (€ 149,95 / € 249,95 / € 399,95 per jaar)
-  en een korte vragenlijst: zou je dit gebruiken, en wat zou je ervoor betalen?
+- `/projexa/` — één scherm met drie prijzen om aan te vinken (€ 149,95 / € 249,95 / € 399,95
+  per jaar, plus "geen van deze") en drie korte vragen: zou je dit voor je eigen woning
+  gebruiken, gebruik je nu al zoiets, en ben je hiernaar op zoek?
 - `/projexa/demo.html` — de klikbare demo, waar bezoekers vanaf de landingspagina naartoe kunnen
 - `/projexa/resultaten.html` — je eigen overzicht van de uitkomsten
 
@@ -164,7 +165,8 @@ De server slaat drie dingen op in `data/projexa-reacties.json`:
 
 1. **bezoeken** — één per browser per dag, met de verwijzende site
 2. **prijsklikken** — welk pakket iemand aanklikt (het eerste echte signaal, nog vóór het formulier)
-3. **reacties** — het ingevulde formulier, inclusief het bedrag dat iemand zegt te willen betalen
+3. **reacties** — het ingevulde formulier: gekozen prijs, of ze het zouden gebruiken, of ze
+   nu al iets gebruiken en of ze er actief naar op zoek zijn
 
 Zet in `.env` (en in Render → Environment) een zelfverzonnen `PROJEXA_SLEUTEL`; zonder die
 sleutel is het resultatenoverzicht dicht, want er staan e-mailadressen van bezoekers in.

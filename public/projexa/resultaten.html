@@ -157,17 +157,13 @@ main { padding: 28px 0 60px; }
   var $ = function (s) { return document.querySelector(s); };
 
   var LABELS = {
-    bedrag: {
-      'niets': 'Niets', 'tot-50': 'Tot € 50', '50-100': '€ 50 – € 100', '100-150': '€ 100 – € 150',
-      '150-250': '€ 150 – € 250', '250-400': '€ 250 – € 400', 'meer-400': 'Meer dan € 400',
-      'eenmalig': 'Alleen eenmalig'
-    },
-    gebruik: { 'ja': 'Ja, zeker', 'misschien': 'Misschien', 'nee': 'Nee' },
-    wanneer: {
-      'bezig': 'Nu bezig', '6-maanden': 'Binnen 6 maanden', 'dit-jaar': 'Dit jaar',
-      'later': 'Later of geen plannen', 'vakman': 'Werkt in de bouw'
-    },
-    pakket: { 'basis': 'Basis · € 149,95', 'compleet': 'Compleet · € 249,95', 'nieuwbouw': 'Nieuwbouw · € 399,95' }
+    gebruik: { 'ja': 'Ja', 'misschien': 'Misschien', 'nee': 'Nee' },
+    heeftAl: { 'ja': 'Ja, gebruikt al iets', 'appjes': 'Nee, appjes en mail', 'nee': 'Nee, niets' },
+    zoekt: { 'ja': 'Ja, zoekt nu', 'later': 'Later wel', 'nee': 'Nee' },
+    pakket: {
+      'basis': 'Basis · € 149,95', 'compleet': 'Compleet · € 249,95',
+      'nieuwbouw': 'Nieuwbouw · € 399,95', 'geen': 'Geen van deze'
+    }
   };
 
   function veilig(t) {
@@ -181,10 +177,10 @@ main { padding: 28px 0 60px; }
   /* Balkjes op volgorde van de vragenlijst, zodat je een prijsladder leest en
      geen willekeurige stapel. */
   var VOLGORDE = {
-    bedrag: ['niets', 'tot-50', '50-100', '100-150', '150-250', '250-400', 'meer-400', 'eenmalig'],
     gebruik: ['ja', 'misschien', 'nee'],
-    wanneer: ['bezig', '6-maanden', 'dit-jaar', 'later', 'vakman'],
-    pakket: ['basis', 'compleet', 'nieuwbouw']
+    heeftAl: ['ja', 'appjes', 'nee'],
+    zoekt: ['ja', 'later', 'nee'],
+    pakket: ['basis', 'compleet', 'nieuwbouw', 'geen']
   };
 
   function balken(groep, tellingen) {
@@ -214,7 +210,8 @@ main { padding: 28px 0 60px; }
 
   function teken(d) {
     var jaZeker = d.gebruik.ja || 0;
-    var wilBetalen = (d.bedrag['150-250'] || 0) + (d.bedrag['250-400'] || 0) + (d.bedrag['meer-400'] || 0);
+    var wilBetalen = (d.pakket.basis || 0) + (d.pakket.compleet || 0) + (d.pakket.nieuwbouw || 0);
+    var zoektNu = d.zoekt.ja || 0;
 
     var reacties = d.reacties.length
       ? d.reacties.map(function (r) {
@@ -222,9 +219,9 @@ main { padding: 28px 0 60px; }
           return '<div class="reactie">' +
             '<div class="reactie__meta">' +
               '<span class="chip ' + klasse + '">' + veilig(label('gebruik', r.gebruik)) + '</span>' +
-              '<span class="chip chip--geld">' + veilig(label('bedrag', r.bedrag)) + '</span>' +
-              (r.pakket ? '<span class="chip">' + veilig(label('pakket', r.pakket)) + '</span>' : '') +
-              (r.wanneer ? '<span class="chip">' + veilig(label('wanneer', r.wanneer)) + '</span>' : '') +
+              (r.pakket ? '<span class="chip chip--geld">' + veilig(label('pakket', r.pakket)) + '</span>' : '') +
+              (r.heeftAl ? '<span class="chip">' + veilig(label('heeftAl', r.heeftAl)) + '</span>' : '') +
+              (r.zoekt ? '<span class="chip">' + veilig(label('zoekt', r.zoekt)) + '</span>' : '') +
               '<span class="reactie__tijd">' + new Date(r.op).toLocaleString('nl-NL') + '</span>' +
             '</div>' +
             (r.opmerking ? '<p>' + veilig(r.opmerking) + '</p>' : '<p style="color:var(--ink-3)">Geen opmerking.</p>') +
@@ -235,10 +232,10 @@ main { padding: 28px 0 60px; }
 
     $('#overzicht').innerHTML =
       '<p class="uitleg">' +
-        '<b>Zo lees je dit:</b> bezoekers zegt hoeveel mensen de pagina zagen, prijsklikken hoeveel ' +
-        'er op een pakket klikten (het eerste echte signaal), en reacties hoeveel er het formulier ' +
-        'invulden. Het percentage dat "ja, zeker" zegt én € 150 of meer wil betalen is de groep waar ' +
-        'het om gaat. Let op: dit is wat mensen zeggen — pas een echte betaling bewijst het.' +
+        '<b>Zo lees je dit:</b> bezoekers zegt hoeveel mensen de pagina zagen, en reacties hoeveel er ' +
+        'het formulier invulden. De groep die een prijs aanvinkt én "ja" zegt is waar het om gaat; ' +
+        'wie "geen van deze" kiest, zou niet betalen. Let op: dit is wat mensen zeggen — pas een ' +
+        'echte betaling bewijst het.' +
       '</p>' +
 
       '<div class="acties">' +
@@ -253,22 +250,22 @@ main { padding: 28px 0 60px; }
           '<div class="stat__extra">' + procent(d.klikkers, d.bezoekers) + ' van de bezoekers</div></div>' +
         '<div class="stat"><div class="stat__waarde">' + d.aanmeldingen + '</div><div class="stat__label">Reacties</div>' +
           '<div class="stat__extra">' + procent(d.aanmeldingen, d.bezoekers) + ' van de bezoekers</div></div>' +
-        '<div class="stat"><div class="stat__waarde">' + jaZeker + '</div><div class="stat__label">Zegt "ja, zeker"</div>' +
-          '<div class="stat__extra">' + wilBetalen + ' wil € 150 of meer betalen</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + jaZeker + '</div><div class="stat__label">Zegt "ja"</div>' +
+          '<div class="stat__extra">' + wilBetalen + ' koos een prijs · ' + zoektNu + ' zoekt nu</div></div>' +
       '</div>' +
 
       '<div class="kolommen">' +
-        '<div class="kaart"><h2>Wat men wil betalen per jaar</h2><div class="kaart__body">' + balken('bedrag', d.bedrag) + '</div></div>' +
+        '<div class="kaart"><h2>Gekozen prijs</h2><div class="kaart__body">' + balken('pakket', d.pakket) + '</div></div>' +
         '<div class="kaart"><h2>Zou je het gebruiken?</h2><div class="kaart__body">' + balken('gebruik', d.gebruik) + '</div></div>' +
       '</div>' +
 
       '<div class="kolommen">' +
-        '<div class="kaart"><h2>Klikken op de prijskaarten</h2><div class="kaart__body">' + balken('pakket', d.prijsklikken) + '</div></div>' +
-        '<div class="kaart"><h2>Gekozen pakket in het formulier</h2><div class="kaart__body">' + balken('pakket', d.pakket) + '</div></div>' +
+        '<div class="kaart"><h2>Gebruikt nu al zoiets?</h2><div class="kaart__body">' + balken('heeftAl', d.heeftAl) + '</div></div>' +
+        '<div class="kaart"><h2>Zoekt hiernaar?</h2><div class="kaart__body">' + balken('zoekt', d.zoekt) + '</div></div>' +
       '</div>' +
 
       '<div class="kolommen">' +
-        '<div class="kaart"><h2>Wanneer gaan ze verbouwen?</h2><div class="kaart__body">' + balken('wanneer', d.wanneer) + '</div></div>' +
+        '<div class="kaart"><h2>Aangevinkt zonder af te maken</h2><div class="kaart__body">' + balken('pakket', d.prijsklikken) + '</div></div>' +
         '<div class="kaart"><h2>E-mailadressen</h2><div class="kaart__body">' +
           '<div class="balkrij"><div><span class="balkrij__naam">Achtergelaten</span>' +
           '<span class="balk"><i style="width:' + (d.aanmeldingen ? Math.round((d.metEmail / d.aanmeldingen) * 100) : 0) + '%"></i></span></div>' +

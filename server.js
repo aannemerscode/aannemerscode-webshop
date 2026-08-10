@@ -426,6 +426,7 @@ const PROJEXA_PAKKETTEN = {
   basis: { naam: 'Basis', prijs: '149,95' },
   compleet: { naam: 'Compleet', prijs: '249,95' },
   nieuwbouw: { naam: 'Nieuwbouw', prijs: '399,95' },
+  geen: { naam: 'Geen van deze', prijs: '0' },
 };
 
 function kort(waarde, max) {
@@ -472,10 +473,10 @@ app.post('/api/projexa/gebeurtenis', (req, res) => {
 
 app.post('/api/projexa/aanmelding', async (req, res) => {
   try {
-    const { bezoeker, pakket, gebruik, bedrag, wanneer, opmerking, email } = req.body || {};
+    const { bezoeker, pakket, gebruik, heeftAl, zoekt, opmerking, email } = req.body || {};
 
-    if (!gebruik || !bedrag) {
-      return res.status(400).json({ error: 'Vul in of je Projexa zou gebruiken en wat je ervoor zou betalen.' });
+    if (!gebruik) {
+      return res.status(400).json({ error: 'Laat in elk geval weten of je Projexa zou gebruiken.' });
     }
 
     const data = readProjexa();
@@ -485,8 +486,8 @@ app.post('/api/projexa/aanmelding', async (req, res) => {
       bezoeker: kort(bezoeker, 40),
       pakket: PROJEXA_PAKKETTEN[pakket] ? pakket : '',
       gebruik: kort(gebruik, 20),
-      bedrag: kort(bedrag, 20),
-      wanneer: kort(wanneer, 20),
+      heeftAl: kort(heeftAl, 20),
+      zoekt: kort(zoekt, 20),
       opmerking: kort(opmerking, 2000),
       email: kort(email, 200),
     };
@@ -502,12 +503,12 @@ app.post('/api/projexa/aanmelding', async (req, res) => {
         .sendMail({
           from: process.env.MAIL_FROM || 'Projexa <no-reply@aannemerscode.nl>',
           to: process.env.OWNER_EMAIL,
-          subject: `Projexa: nieuwe reactie (${reactie.gebruik}, ${reactie.bedrag})`,
+          subject: `Projexa: nieuwe reactie (${reactie.gebruik}, ${pakketNaam})`,
           text:
             `Zou gebruiken: ${reactie.gebruik}\n` +
-            `Wil betalen: ${reactie.bedrag}\n` +
-            `Pakket: ${pakketNaam}\n` +
-            `Verbouwt: ${reactie.wanneer || 'niet ingevuld'}\n` +
+            `Gekozen pakket: ${pakketNaam}\n` +
+            `Gebruikt al iets: ${reactie.heeftAl || 'niet ingevuld'}\n` +
+            `Zoekt hiernaar: ${reactie.zoekt || 'niet ingevuld'}\n` +
             `E-mail: ${reactie.email || 'niet achtergelaten'}\n\n` +
             `Opmerking:\n${reactie.opmerking || '—'}\n\n` +
             `Totaal aantal reacties: ${data.aanmeldingen.length}`,
@@ -553,8 +554,8 @@ app.get('/api/projexa/resultaten', (req, res) => {
     prijsklikken: tel(data.prijsklikken, 'pakket'),
     pakket: tel(data.aanmeldingen, 'pakket'),
     gebruik: tel(data.aanmeldingen, 'gebruik'),
-    bedrag: tel(data.aanmeldingen, 'bedrag'),
-    wanneer: tel(data.aanmeldingen, 'wanneer'),
+    heeftAl: tel(data.aanmeldingen, 'heeftAl'),
+    zoekt: tel(data.aanmeldingen, 'zoekt'),
     verwijzers: tel(data.bezoeken, 'verwijzer'),
     reacties: data.aanmeldingen.slice().reverse(),
   });
