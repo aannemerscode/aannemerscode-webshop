@@ -6,3 +6,8 @@ node_modules/
 
 # Systeembestanden
 .DS_Store
+
+# De database van de app (staat op de server, hoort niet in git)
+data/*.db
+data/*.db-wal
+data/*.db-shm

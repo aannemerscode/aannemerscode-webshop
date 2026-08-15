@@ -2,6 +2,7 @@ require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const nodemailer = require('nodemailer');
 const PDFDocument = require('pdfkit');
 const { createMollieClient } = require('@mollie/api-client');
@@ -327,7 +328,12 @@ async function sendDownloadEmail(order) {
 // ---------- Routes ----------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Mollie webhook stuurt form-encoded data
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ---------- Projexa: de echte app ----------
+// Eigen database (SQLite) en eigen routes, los van de webshop hierboven.
+app.use('/api/app', require('./projexa-app/routes'));
 
 // Checkout starten
 app.post('/api/checkout', async (req, res) => {

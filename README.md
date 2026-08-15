@@ -178,3 +178,39 @@ Wil je weten waar bezoekers vandaan komen, zet dan een herkenbare code achter de
 Let op: `data/projexa-reacties.json` is een bestand op de server. Render's gratis laag kan
 bij een herstart met een schone schijf beginnen — download je resultaten dus regelmatig, of
 zet er een echte database onder zodra het serieus wordt.
+
+## Projexa: de app
+
+De echte app staat onder `/app/` en draait op dezelfde server als de webshop.
+
+- `/app/` — inloggen: de huiseigenaar met e-mailadres en wachtwoord, de uitgenodigde
+  partij onderaan met de projectcode die hij van de eigenaar krijgt
+- `/app/mijn-verbouwing.html` — de app van de huiseigenaar (telefoonweergave)
+- `/app/werk.html` — de app van het uitgenodigde bedrijf (desktop)
+
+### Wat er nu werkt
+
+Account aanmaken en inloggen, een project aanmaken en bijwerken, bedrijven uitnodigen
+(elk krijgt een eigen projectcode en wachtwoord), chatten per bedrijf met ongelezen-tellers,
+en het project afsluiten bij oplevering — daarna kan niemand er nog iets aan veranderen.
+
+Nog te bouwen: bouwdagboek met foto's, meerwerk met akkoorden, documenten en het
+afgesloten dossier.
+
+### Techniek
+
+- `projexa-app/db.js` — SQLite-schema en verbinding
+- `projexa-app/auth.js` — wachtwoorden (scrypt), sessies in een httpOnly-cookie, poortwachters
+- `projexa-app/routes.js` — de API onder `/api/app`
+- `public/app/` — de schermen
+
+Wachtwoorden staan gehasht met scrypt; het wachtwoord van een uitgenodigd bedrijf is na het
+aanmaken niet meer op te vragen — kwijt betekent een nieuw wachtwoord uitgeven, waarmee de
+oude sessies meteen vervallen. Een deelnemer komt nooit verder dan zijn eigen project.
+
+### Belangrijk voor productie
+
+De database is één bestand. Op Render heeft die een **vaste schijf** nodig (Disk toevoegen,
+bijvoorbeeld op `/var/data`) en zet je `PROJEXA_DB=/var/data/projexa.db`. Zonder vaste schijf
+is bij elke herstart alles weg. Zet ook `NODE_ENV=production`, zodat de sessiecookie alleen
+over https wordt verstuurd.
