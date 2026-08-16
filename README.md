@@ -190,18 +190,27 @@ De echte app staat onder `/app/` en draait op dezelfde server als de webshop.
 
 ### Wat er nu werkt
 
-Account aanmaken en inloggen, een project aanmaken en bijwerken, bedrijven uitnodigen
-(elk krijgt een eigen projectcode en wachtwoord), chatten per bedrijf met ongelezen-tellers,
-en het project afsluiten bij oplevering — daarna kan niemand er nog iets aan veranderen.
+- **Accounts** — de eigenaar registreert met e-mailadres en wachtwoord; een uitgenodigd
+  bedrijf logt in met een projectcode
+- **Projecten** — aanmaken, bijwerken, en afsluiten bij oplevering
+- **Uitnodigen** — elk bedrijf krijgt een eigen code en wachtwoord, één keer getoond
+- **Chat** — per bedrijf een apart gesprek, met ongelezen-tellers aan beide kanten
+- **Bouwdagboek** — dagrapporten met punten, uren en foto's; zowel de aannemer als de
+  eigenaar kan iets vastleggen
+- **Meerwerk** — de aannemer stelt voor met bedrag en foto, de eigenaar keurt goed of af.
+  Alleen de eigenaar beslist, en een besluit kan niet worden teruggedraaid
+- **Akkoorden** — elk besluit komt hier met datum, tijd en naam te staan, plus losse
+  afspraken zonder prijskaartje
 
-Nog te bouwen: bouwdagboek met foto's, meerwerk met akkoorden, documenten en het
-afgesloten dossier.
+Nog te bouwen: documenten (offerte, contract, garanties) en het dossier om te downloaden.
 
 ### Techniek
 
 - `projexa-app/db.js` — SQLite-schema en verbinding
 - `projexa-app/auth.js` — wachtwoorden (scrypt), sessies in een httpOnly-cookie, poortwachters
-- `projexa-app/routes.js` — de API onder `/api/app`
+- `projexa-app/routes.js` — accounts, projecten, uitnodigen en chat
+- `projexa-app/routes-werk.js` — bouwdagboek, foto's, meerwerk en akkoorden
+- `projexa-app/opslag.js` — foto's naar Cloudflare R2 of S3
 - `public/app/` — de schermen
 
 Wachtwoorden staan gehasht met scrypt; het wachtwoord van een uitgenodigd bedrijf is na het
@@ -214,3 +223,19 @@ De database is één bestand. Op Render heeft die een **vaste schijf** nodig (Di
 bijvoorbeeld op `/var/data`) en zet je `PROJEXA_DB=/var/data/projexa.db`. Zonder vaste schijf
 is bij elke herstart alles weg. Zet ook `NODE_ENV=production`, zodat de sessiecookie alleen
 over https wordt verstuurd.
+
+**Foto's** gaan naar objectopslag, niet naar de schijf van de webserver. Maak een bucket bij
+Cloudflare R2 (of S3) en vul in:
+
+```
+S3_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+S3_BUCKET=projexa
+S3_REGION=auto
+S3_KEY=<access key id>
+S3_SECRET=<secret access key>
+```
+
+De bucket blijft dicht: de app maakt per foto een ondertekende link die na een uur vervalt.
+Zolang deze variabelen ontbreken, weigert de app foto's aan te nemen met een duidelijke
+melding. Om lokaal te kunnen proefdraaien kun je `PROJEXA_OPSLAG=lokaal` zetten — dan komen
+de foto's in `data/fotos/`. Gebruik die stand niet voor echte klanten.

@@ -133,8 +133,10 @@ function huidigeSessie(req) {
 
 function alleenEigenaar(req, res, volgende) {
   const sessie = huidigeSessie(req);
-  if (!sessie || sessie.soort !== 'eigenaar') {
-    return res.status(401).json({ fout: 'Log eerst in.' });
+  if (!sessie) return res.status(401).json({ fout: 'Log eerst in.' });
+  if (sessie.soort !== 'eigenaar') {
+    // Wél ingelogd, maar als uitgenodigd bedrijf: dan is dit gewoon niet aan hem.
+    return res.status(403).json({ fout: 'Alleen de eigenaar van het project kan dit doen.' });
   }
   req.eigenaar = sessie.eigenaar;
   volgende();
@@ -142,8 +144,9 @@ function alleenEigenaar(req, res, volgende) {
 
 function alleenDeelnemer(req, res, volgende) {
   const sessie = huidigeSessie(req);
-  if (!sessie || sessie.soort !== 'deelnemer') {
-    return res.status(401).json({ fout: 'Log eerst in met je projectcode.' });
+  if (!sessie) return res.status(401).json({ fout: 'Log eerst in met je projectcode.' });
+  if (sessie.soort !== 'deelnemer') {
+    return res.status(403).json({ fout: 'Dit is bedoeld voor uitgenodigde bedrijven.' });
   }
   req.deelnemer = sessie.deelnemer;
   volgende();

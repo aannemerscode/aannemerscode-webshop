@@ -275,3 +275,118 @@ button.rij:hover { background: var(--surface-2); }
 .inloggegevens dl { margin: 0; display: grid; gap: 10px; }
 .inloggegevens dt { font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
 .inloggegevens dd { margin: 2px 0 0; font-size: 16px; font-weight: 700; }
+
+/* --------------------------------------------------------------------------
+   Foto's
+   -------------------------------------------------------------------------- */
+
+.fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 6px; margin-top: 10px; }
+
+.foto {
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: var(--surface-2);
+  cursor: pointer;
+}
+
+.foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto:hover { border-color: var(--gold); }
+
+.fotoweergave {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 11, 12, .92);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 70;
+}
+
+.fotoweergave img { max-width: 100%; max-height: 100%; border-radius: var(--r-md); }
+
+.fotoweergave__sluit {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .2);
+  background: rgba(0, 0, 0, .4);
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Gekozen bestanden vóór het versturen */
+.bestanden { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.bestandje { font-size: 12px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+
+.knopbestand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  width: 100%;
+  justify-content: center;
+  background: var(--surface-2);
+}
+
+.knopbestand:hover { border-color: var(--gold); color: var(--ink); }
+.knopbestand input { display: none; }
+
+/* --------------------------------------------------------------------------
+   Dagboek
+   -------------------------------------------------------------------------- */
+
+.dag { padding: 15px 16px; border-top: 1px solid var(--line); }
+.dag:first-child { border-top: 0; }
+.dag__datum { font-size: 12px; color: var(--ink-3); font-weight: 600; }
+.dag__titel { font-size: 15px; font-weight: 600; margin: 3px 0 8px; }
+.dag__punten { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.dag__punten li { font-size: 13.5px; color: var(--ink-2); display: flex; gap: 8px; align-items: flex-start; }
+.dag__punten li::before { content: '✓'; color: var(--green); font-weight: 700; flex: none; }
+
+/* --------------------------------------------------------------------------
+   Meerwerk
+   -------------------------------------------------------------------------- */
+
+.mw { padding: 15px 16px; border-top: 1px solid var(--line); }
+.mw:first-child { border-top: 0; }
+.mw__top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.mw__top > div:first-child { min-width: 0; }
+.mw__nr { font-size: 12.5px; color: var(--ink-3); font-weight: 600; line-height: 1.35; }
+.mw__titel { font-size: 15px; font-weight: 600; margin-top: 2px; }
+.mw__prijs { font-size: 17px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.mw__tekst { font-size: 13.5px; color: var(--ink-2); margin: 8px 0 0; white-space: pre-wrap; }
+.mw__knoppen { display: flex; gap: 9px; margin-top: 13px; }
+.mw__knoppen .btn { flex: 1; }
+
+.status { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 3px 11px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.status--ok { background: #e8f6ec; color: #1f7a39; }
+.status--wacht { background: #f7ecd7; color: #8a6a20; }
+.status--nee { background: #fbeae7; color: #a33a26; }
+
+.totaalrij { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--surface-2); font-size: 14px; }
+.totaalrij b { font-size: 16px; font-variant-numeric: tabular-nums; }
+
+/* --------------------------------------------------------------------------
+   Akkoorden
+   -------------------------------------------------------------------------- */
+
+.akkoord { display: grid; grid-template-columns: 34px 1fr auto; gap: 13px; padding: 14px 16px; align-items: start; border-top: 1px solid var(--line); }
+.akkoord:first-child { border-top: 0; }
+.akkoord b { font-size: 14.5px; font-weight: 600; }
+.akkoord p { margin: 3px 0 0; font-size: 13px; color: var(--ink-2); white-space: pre-wrap; }
+.akkoord__ref { font-size: 11.5px; color: var(--ink-3); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.akkoord__bedrag { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; font-size: 14.5px; }

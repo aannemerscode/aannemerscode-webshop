@@ -90,6 +90,78 @@ db.exec(`
   );
 
   CREATE INDEX IF NOT EXISTS idx_berichten_gesprek ON berichten(deelnemer_id, op);
+
+  -- Bouwdagboek: één regel per dag per bedrijf. De punten staan als JSON-lijst
+  -- in één kolom; ze worden altijd als geheel gelezen en geschreven.
+  CREATE TABLE IF NOT EXISTS dagboek (
+    id            TEXT PRIMARY KEY,
+    project_id    TEXT NOT NULL REFERENCES projecten(id) ON DELETE CASCADE,
+    auteur        TEXT NOT NULL,
+    deelnemer_id  TEXT REFERENCES deelnemers(id) ON DELETE SET NULL,
+    auteur_naam   TEXT NOT NULL,
+    datum         TEXT NOT NULL,
+    titel         TEXT NOT NULL,
+    punten        TEXT NOT NULL DEFAULT '[]',
+    uren          TEXT NOT NULL DEFAULT '',
+    op            TEXT NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_dagboek_project ON dagboek(project_id, datum DESC);
+
+  -- Meerwerk: een voorstel met een bedrag waar de eigenaar ja of nee op zegt.
+  -- Bedragen in hele centen, zodat er nooit een halve cent zoekraakt.
+  CREATE TABLE IF NOT EXISTS meerwerk (
+    id                TEXT PRIMARY KEY,
+    project_id        TEXT NOT NULL REFERENCES projecten(id) ON DELETE CASCADE,
+    nummer            INTEGER NOT NULL,
+    titel             TEXT NOT NULL,
+    omschrijving      TEXT NOT NULL DEFAULT '',
+    bedrag_cent       INTEGER NOT NULL,
+    status            TEXT NOT NULL DEFAULT 'wacht',
+    deelnemer_id      TEXT REFERENCES deelnemers(id) ON DELETE SET NULL,
+    voorsteller       TEXT NOT NULL,
+    voorgesteld_op    TEXT NOT NULL,
+    besluit_op        TEXT,
+    gelezen_door_eigenaar INTEGER NOT NULL DEFAULT 0
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_meerwerk_project ON meerwerk(project_id, nummer DESC);
+
+  -- Akkoorden zijn het bewijsspoor: alleen toevoegen, nooit wijzigen of
+  -- verwijderen. Daarom staat hier een kopie van de gegevens in plaats van
+  -- alleen een verwijzing — als het meerwerk later verandert, blijft hier
+  -- staan waar de klant destijds ja tegen zei.
+  CREATE TABLE IF NOT EXISTS akkoorden (
+    id             TEXT PRIMARY KEY,
+    project_id     TEXT NOT NULL REFERENCES projecten(id) ON DELETE CASCADE,
+    soort          TEXT NOT NULL,
+    titel          TEXT NOT NULL,
+    omschrijving   TEXT NOT NULL DEFAULT '',
+    bedrag_cent    INTEGER,
+    meerwerk_id    TEXT,
+    door           TEXT NOT NULL,
+    vastgelegd_op  TEXT NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_akkoorden_project ON akkoorden(project_id, vastgelegd_op DESC);
+
+  -- Foto's horen bij een dagboekregel of bij een meerwerkvoorstel. De bytes
+  -- staan in de objectopslag; hier staat alleen waar ze te vinden zijn.
+  CREATE TABLE IF NOT EXISTS fotos (
+    id            TEXT PRIMARY KEY,
+    project_id    TEXT NOT NULL REFERENCES projecten(id) ON DELETE CASCADE,
+    soort         TEXT NOT NULL,
+    koppeling_id  TEXT NOT NULL,
+    sleutel       TEXT NOT NULL,
+    bestandsnaam  TEXT NOT NULL DEFAULT '',
+    type          TEXT NOT NULL DEFAULT '',
+    grootte       INTEGER NOT NULL DEFAULT 0,
+    door          TEXT NOT NULL DEFAULT '',
+    op            TEXT NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_fotos_koppeling ON fotos(soort, koppeling_id);
+  CREATE INDEX IF NOT EXISTS idx_fotos_project ON fotos(project_id, op DESC);
 `);
 
 /** Ruimt verlopen sessies op. Draait bij het starten en daarna elk uur. */

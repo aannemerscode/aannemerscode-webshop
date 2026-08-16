@@ -15,10 +15,21 @@
  */
 
 const express = require('express');
+const multer = require('multer');
 const { db } = require('./db');
 const A = require('./auth');
+const opslag = require('./opslag');
 
 const router = express.Router();
+
+// Foto's komen door het geheugen; 12 MB is ruim voor een telefoonfoto en
+// voorkomt dat iemand de server volgooit.
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 12 * 1024 * 1024, files: 8 },
+});
+
+const TOEGESTANE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
 
 /* -------------------------------------------------------------------------
    Hulpjes
@@ -436,5 +447,8 @@ router.post('/gesprekken/:deelnemerId', (req, res) => {
 
   res.json({ ok: true, bericht: { id: bericht.id, van: bericht.van, tekst: bericht.tekst, op: bericht.op } });
 });
+
+// Bouwdagboek, foto's, meerwerk en akkoorden staan in een eigen bestand.
+require('./routes-werk')(router, upload);
 
 module.exports = router;

@@ -83,6 +83,11 @@
   <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12.5"/><path d="M12.5 6.5 18.5 12l-6 5.5"/></symbol>
   <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5H18a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5h-3.5"/><path d="M10 8.5 6.5 12l3.5 3.5"/><path d="M6.5 12H15"/></symbol>
   <symbol id="i-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 6.3a3.8 3.8 0 0 0 5 5l-8 8a2.3 2.3 0 0 1-3.3-3.3z"/><path d="M6.2 4.5 9 7.3l-1.7 1.7L4.5 6.2z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.6A6.4 6.4 0 0 0 7.6 9a8 8 0 0 0 0 6 6.4 6.4 0 0 0 9.4 2.4"/><path d="M4.8 10.6h7M4.8 13.6h7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8v5.4l3.4 2"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.8" y="10.5" width="14.4" height="10" rx="2.2"/><path d="M8.2 10.5V7.8a3.8 3.8 0 0 1 7.6 0v2.7"/></symbol>
 </svg>
 
@@ -108,6 +113,12 @@
         <svg width="18" height="18" aria-hidden="true"><use href="#i-chat"></use></svg><span>Berichten</span>
         <span class="nav__badge" id="badgeBerichten" hidden>0</span>
       </button>
+      <button class="nav__item" type="button" data-view="dagboek">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-camera"></use></svg><span>Bouwdagboek</span>
+      </button>
+      <button class="nav__item" type="button" data-view="meerwerk">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-euro"></use></svg><span>Meerwerk</span>
+      </button>
     </nav>
 
     <div class="zijbalk__voet">
@@ -132,6 +143,8 @@
 
     <section class="view" id="v-project"></section>
     <section class="view" id="v-berichten" hidden></section>
+    <section class="view" id="v-dagboek" hidden></section>
+    <section class="view" id="v-meerwerk" hidden></section>
   </main>
 </div>
 
@@ -143,7 +156,10 @@
   'use strict';
 
   var $ = App.$, veilig = App.veilig, api = App.api;
-  var S = { deelnemer: null, project: null, eigenaarNaam: '', view: 'project', berichten: [], ongelezen: 0 };
+  var S = {
+    deelnemer: null, project: null, eigenaarNaam: '', view: 'project', berichten: [], ongelezen: 0,
+    dagboek: [], meerwerk: [], goedgekeurd: 0, samenvatting: null, fotoopslag: true,
+  };
 
   function laden() {
     return api('/mij').then(function (d) {
@@ -158,6 +174,23 @@
       var mij = (d.project && d.project.deelnemers || []).filter(function (x) { return x.id === d.deelnemer.id; })[0];
       S.ongelezen = mij ? mij.ongelezen : 0;
 
+      if (!S.project) { teken(); return; }
+      return laadProjectinhoud();
+    });
+  }
+
+  function laadProjectinhoud() {
+    var id = S.project.id;
+    return Promise.all([
+      api('/projecten/' + id + '/dagboek'),
+      api('/projecten/' + id + '/meerwerk'),
+      api('/projecten/' + id + '/samenvatting'),
+    ]).then(function (r) {
+      S.dagboek = r[0].dagboek;
+      S.meerwerk = r[1].meerwerk;
+      S.goedgekeurd = r[1].goedgekeurd;
+      S.samenvatting = r[2];
+      S.fotoopslag = r[2].fotoopslag;
       teken();
     });
   }
@@ -192,6 +225,8 @@
 
     if (S.view === 'project') tekenProject();
     if (S.view === 'berichten') tekenBerichten();
+    if (S.view === 'dagboek') tekenDagboek();
+    if (S.view === 'meerwerk') tekenMeerwerk();
   }
 
   function slotmelding() {
@@ -209,8 +244,8 @@
       slotmelding() +
       '<div class="stats">' +
         '<div class="stat"><div class="stat__waarde">' + p.voortgang + '%</div><div class="stat__label">Voortgang</div></div>' +
-        '<div class="stat"><div class="stat__waarde">' + p.deelnemers.length + '</div><div class="stat__label">Bedrijven op dit project</div></div>' +
-        '<div class="stat"><div class="stat__waarde">' + (S.ongelezen || 0) + '</div><div class="stat__label">Nieuwe berichten</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + (S.samenvatting ? S.samenvatting.dagen : 0) + '</div><div class="stat__label">Dagen in het bouwdagboek</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + (S.samenvatting ? S.samenvatting.openMeerwerk.length : 0) + '</div><div class="stat__label">Meerwerk wacht op de klant</div></div>' +
       '</div>' +
 
       '<div class="kaart">' +
@@ -233,8 +268,8 @@
       '</div>' +
 
       '<div class="binnenkort">' +
-        '<b>Wordt hierna gebouwd:</b> dagrapporten met foto\'s en meerwerk voorstellen. ' +
-        'De chat met de eigenaar werkt nu al echt.' +
+        '<b>Wordt hierna gebouwd:</b> documenten delen met de eigenaar. ' +
+        'Dagrapporten, meerwerk en de chat werken nu al echt.' +
       '</div>';
   }
 
@@ -301,8 +336,196 @@
       .catch(function (err) { knop.disabled = false; App.melding(err.message); });
   }
 
+  /* ---------- Bouwdagboek ---------- */
+
+  function bestandenLijst(invoerId, doelId) {
+    var invoer = $('#' + invoerId);
+    if (!invoer) return;
+    invoer.addEventListener('change', function () {
+      $('#' + doelId).innerHTML = Array.prototype.map.call(this.files, function (f) {
+        return '<span class="bestandje">' + veilig(f.name) + '</span>';
+      }).join('');
+    });
+  }
+
+  function tekenDagboek() {
+    var afgesloten = S.project && S.project.status === 'afgesloten';
+    var vandaag = new Date().toISOString().slice(0, 10);
+
+    $('#v-dagboek').innerHTML =
+      slotmelding() +
+      (afgesloten ? '' :
+        '<div class="kaart" style="margin-bottom:20px">' +
+          '<div class="kaart__kop"><h2>Dagrapport plaatsen</h2><span class="meta">de klant ziet dit meteen</span></div>' +
+          '<div style="padding:4px 20px 20px">' +
+            '<p class="fout" id="dagFout" hidden></p>' +
+            '<div class="veld"><label for="dTitel">Wat is er vandaag gedaan?</label>' +
+              '<input id="dTitel" type="text" placeholder="Tegelwerk badkamer gestart"></div>' +
+            '<div class="veld veld--rij">' +
+              '<div><label for="dDatum">Datum</label><input id="dDatum" type="date" value="' + vandaag + '"></div>' +
+              '<div><label for="dUren">Gewerkte uren</label><input id="dUren" type="text" placeholder="8 uur"></div>' +
+            '</div>' +
+            '<div class="veld"><label for="dPunten">Punten <span class="toelichting">Eén per regel.</span></label>' +
+              '<textarea id="dPunten" rows="3" placeholder="Wanden voorbehandeld&#10;Eerste rij tegels gezet"></textarea></div>' +
+            (S.fotoopslag
+              ? '<label class="knopbestand" style="margin-bottom:14px">' +
+                '<svg width="17" height="17" aria-hidden="true"><use href="#i-camera"></use></svg>Foto\'s van vandaag' +
+                '<input id="dFotos" type="file" accept="image/*" multiple></label>' +
+                '<div class="bestanden" id="dBestanden" style="margin-bottom:14px"></div>'
+              : '<p class="notitie" style="margin-bottom:14px">Foto\'s toevoegen kan zodra de fotoopslag is ingesteld.</p>') +
+            '<button class="btn btn--gold" type="button" id="plaatsDag">Dagrapport plaatsen</button>' +
+          '</div>' +
+        '</div>') +
+
+      '<div class="kaart">' +
+        '<div class="kaart__kop"><h2>Bouwdagboek</h2><span class="meta">' + S.dagboek.length + ' dagen</span></div>' +
+        (S.dagboek.length
+          ? S.dagboek.map(function (d) {
+              return '<div class="dag">' +
+                '<div class="dag__datum">' + veilig(App.datumVoluit(d.datum)) +
+                  (App.weekdag(d.datum) ? ' · ' + veilig(App.weekdag(d.datum)) : '') + '</div>' +
+                '<div class="dag__titel">' + veilig(d.titel) + '</div>' +
+                (d.punten.length
+                  ? '<ul class="dag__punten">' + d.punten.map(function (punt) {
+                      return '<li>' + veilig(punt) + '</li>';
+                    }).join('') + '</ul>'
+                  : '') +
+                '<div style="display:flex;gap:7px;flex-wrap:wrap">' +
+                  (d.fotos.length ? '<span class="chip">' + d.fotos.length + ' foto\'s</span>' : '') +
+                  (d.uren ? '<span class="chip">' + veilig(d.uren) + '</span>' : '') +
+                  '<span class="chip">' + veilig(d.auteurNaam) + '</span>' +
+                '</div>' +
+                App.fotoRaster(d.fotos) +
+              '</div>';
+            }).join('')
+          : '<div class="leeg">Nog geen dagrapporten geplaatst.</div>') +
+      '</div>';
+
+    bestandenLijst('dFotos', 'dBestanden');
+  }
+
+  function plaatsDagrapport() {
+    var titel = $('#dTitel').value.trim();
+    if (!titel) { App.toonFout('#dagFout', 'Vul in wat er is gedaan.'); $('#dTitel').focus(); return; }
+
+    var knop = $('#plaatsDag');
+    knop.disabled = true;
+    knop.textContent = 'Bezig…';
+
+    var vd = new FormData();
+    vd.append('titel', titel);
+    vd.append('datum', $('#dDatum').value);
+    vd.append('uren', $('#dUren').value.trim());
+    vd.append('punten', $('#dPunten').value);
+    var invoer = $('#dFotos');
+    if (invoer) Array.prototype.forEach.call(invoer.files, function (f) { vd.append('fotos', f); });
+
+    App.apiFormulier('/projecten/' + S.project.id + '/dagboek', vd)
+      .then(function () { App.melding('Geplaatst — de klant ziet het in zijn bouwdagboek'); return laadProjectinhoud(); })
+      .catch(function (err) {
+        knop.disabled = false;
+        knop.textContent = 'Dagrapport plaatsen';
+        App.toonFout('#dagFout', err.message);
+      });
+  }
+
+  /* ---------- Meerwerk ---------- */
+
+  function statusLabel(status) {
+    if (status === 'akkoord') return '<span class="status status--ok"><svg width="13" height="13" aria-hidden="true"><use href="#i-check"></use></svg>Akkoord</span>';
+    if (status === 'afgewezen') return '<span class="status status--nee"><svg width="13" height="13" aria-hidden="true"><use href="#i-x"></use></svg>Afgewezen</span>';
+    return '<span class="status status--wacht"><svg width="13" height="13" aria-hidden="true"><use href="#i-clock"></use></svg>Wacht op de klant</span>';
+  }
+
+  function tekenMeerwerk() {
+    var afgesloten = S.project && S.project.status === 'afgesloten';
+    var volgend = S.meerwerk.length ? S.meerwerk[0].nummer + 1 : 1;
+
+    $('#v-meerwerk').innerHTML =
+      slotmelding() +
+      (afgesloten ? '' :
+        '<div class="kaart" style="margin-bottom:20px">' +
+          '<div class="kaart__kop"><h2>Meerwerk voorstellen</h2><span class="meta">wordt #' + volgend + '</span></div>' +
+          '<div style="padding:4px 20px 20px">' +
+            '<p class="fout" id="mwFout" hidden></p>' +
+            '<div class="veld"><label for="mTitel">Omschrijving</label>' +
+              '<input id="mTitel" type="text" placeholder="Extra stucwerk trapkast"></div>' +
+            '<div class="veld"><label for="mOms">Toelichting voor de klant</label>' +
+              '<textarea id="mOms" rows="2" placeholder="Wat is er nodig en waarom?"></textarea></div>' +
+            '<div class="veld veld--rij">' +
+              '<div><label for="mBedrag">Bedrag excl. btw</label><input id="mBedrag" type="text" inputmode="decimal" placeholder="850,00"></div>' +
+              '<div></div>' +
+            '</div>' +
+            (S.fotoopslag
+              ? '<label class="knopbestand" style="margin-bottom:14px">' +
+                '<svg width="17" height="17" aria-hidden="true"><use href="#i-camera"></use></svg>Foto erbij' +
+                '<input id="mFotos" type="file" accept="image/*" multiple></label>' +
+                '<div class="bestanden" id="mBestanden" style="margin-bottom:14px"></div>'
+              : '') +
+            '<button class="btn btn--gold" type="button" id="stuurMeerwerk">Voorstel naar de klant sturen</button>' +
+            '<p class="notitie">De klant ziet het bedrag vóórdat je het werk uitvoert. Dat scheelt discussie achteraf.</p>' +
+          '</div>' +
+        '</div>') +
+
+      '<div class="kaart">' +
+        '<div class="kaart__kop"><h2>Alle meerwerk</h2><span class="meta">' + App.euro(S.goedgekeurd || 0) + ' goedgekeurd</span></div>' +
+        (S.meerwerk.length
+          ? S.meerwerk.map(function (m) {
+              return '<div class="mw">' +
+                '<div class="mw__top">' +
+                  '<div><div class="mw__nr">#' + m.nummer + ' · ' + veilig(m.voorsteller) + ' · ' +
+                    veilig(new Date(m.voorgesteldOp).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })) + '</div>' +
+                  '<div class="mw__titel">' + veilig(m.titel) + '</div></div>' +
+                  '<div class="mw__prijs">' + App.euro(m.bedrag) + '</div>' +
+                '</div>' +
+                (m.omschrijving ? '<p class="mw__tekst">' + veilig(m.omschrijving) + '</p>' : '') +
+                App.fotoRaster(m.fotos) +
+                '<div style="margin-top:10px">' + statusLabel(m.status) + '</div>' +
+              '</div>';
+            }).join('')
+          : '<div class="leeg">Nog geen meerwerk voorgesteld.</div>') +
+      '</div>';
+
+    bestandenLijst('mFotos', 'mBestanden');
+  }
+
+  function stuurMeerwerk() {
+    var titel = $('#mTitel').value.trim();
+    var bedrag = $('#mBedrag').value.trim();
+
+    if (!titel) { App.toonFout('#mwFout', 'Geef het meerwerk een korte omschrijving.'); $('#mTitel').focus(); return; }
+    if (!bedrag) { App.toonFout('#mwFout', 'Vul een bedrag in.'); $('#mBedrag').focus(); return; }
+
+    var knop = $('#stuurMeerwerk');
+    knop.disabled = true;
+    knop.textContent = 'Bezig…';
+
+    var vd = new FormData();
+    vd.append('titel', titel);
+    vd.append('omschrijving', $('#mOms').value.trim());
+    vd.append('bedrag', bedrag);
+    var invoer = $('#mFotos');
+    if (invoer) Array.prototype.forEach.call(invoer.files, function (f) { vd.append('fotos', f); });
+
+    App.apiFormulier('/projecten/' + S.project.id + '/meerwerk', vd)
+      .then(function (d) {
+        App.melding('Voorstel #' + d.meerwerk.nummer + ' staat klaar bij de klant');
+        return laadProjectinhoud();
+      })
+      .catch(function (err) {
+        knop.disabled = false;
+        knop.textContent = 'Voorstel naar de klant sturen';
+        App.toonFout('#mwFout', err.message);
+      });
+  }
+
   document.querySelector('main').addEventListener('click', function (e) {
-    if (e.target.closest('#verstuur')) stuurBericht();
+    if (e.target.closest('#verstuur')) { stuurBericht(); return; }
+    if (e.target.closest('#plaatsDag')) { plaatsDagrapport(); return; }
+    if (e.target.closest('#stuurMeerwerk')) { stuurMeerwerk(); return; }
+
+    var foto = e.target.closest('[data-foto]');
+    if (foto) App.toonFoto(foto.getAttribute('data-foto'));
   });
 
   document.querySelector('main').addEventListener('keydown', function (e) {
