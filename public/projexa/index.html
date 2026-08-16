@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projexa — zou jij dit gebruiken bij je verbouwing?</title>
+<meta name="description" content="Alles rondom je verbouwing op één plek: chat met je aannemer, bouwdagboek met foto's, meerwerk met akkoord. Laat weten wat je ervan vindt.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Projexa — jouw verbouwing, jouw dossier">
+<meta property="og:description" content="Alles rondom je verbouwing overzichtelijk vastgelegd. Zou jij dit gebruiken?">
+<meta property="og:type" content="website">
+
+<style>
+/* ==========================================================================
+   Projexa — landingspagina om de vraag te toetsen
+   Eén scherm: drie opties aanvinken, vier korte vragen, klaar.
+   ========================================================================== */
+
+:root {
+  --black: #090b0c;
+  --gold: #b5955e;
+  --gold-light: #d8b778;
+  --gold-bright: #e7cb8e;
+  --gold-dark: #8c7343;
+
+  --surface: #ffffff;
+  --surface-2: #f7f6f4;
+  --line: #e6e3df;
+  --ink: #16181a;
+  --ink-2: #55595e;
+  --ink-3: #8b9096;
+  --green: #2fa84f;
+
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --shadow-lg: 0 30px 70px rgba(0, 0, 0, .5);
+
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background:
+    radial-gradient(900px 480px at 50% 0%, rgba(181, 149, 94, .16), transparent 60%),
+    var(--black);
+  color: #fff;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: .001ms !important; }
+}
+
+.pagina { max-width: 600px; margin: 0 auto; padding: 34px 20px 56px; }
+
+.voorbeeldbalk {
+  background: #3a2f14;
+  color: var(--gold-bright);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  padding: 8px 20px;
+}
+
+/* --------------------------------------------------------------------------
+   Kop: wat het is, in één blik
+   -------------------------------------------------------------------------- */
+
+.kop { text-align: center; margin-bottom: 26px; }
+
+.logo { display: inline-flex; align-items: center; gap: 14px; font-size: 17px; margin-bottom: 22px; }
+.logo__type { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+.logo__name { letter-spacing: .28em; line-height: 1; }
+.logo__name b { font-weight: 400; color: var(--gold-light); }
+.logo__tag { font-size: .34em; letter-spacing: .34em; color: var(--gold); line-height: 1; }
+
+h1 {
+  font-size: clamp(26px, 6vw, 34px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  margin: 0 0 12px;
+  text-wrap: balance;
+}
+
+h1 b { font-weight: 600; color: var(--gold-light); }
+
+.kop p { margin: 0 auto; font-size: 15.5px; color: rgba(255, 255, 255, .72); max-width: 40ch; }
+
+.punten { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 20px 0 0; padding: 0; list-style: none; }
+
+.punten li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, .78);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 999px;
+  padding: 5px 11px;
+}
+
+.punten svg { color: var(--gold); flex: none; }
+
+.demolink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gold-light);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(216, 183, 120, .4);
+  padding-bottom: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   Kaart met de vragen
+   -------------------------------------------------------------------------- */
+
+.kaart {
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg);
+  padding: 26px 24px 22px;
+}
+
+.vraag { margin-bottom: 24px; }
+.vraag:last-of-type { margin-bottom: 20px; }
+
+fieldset { border: 0; margin: 0; padding: 0; }
+
+legend, .vraag > label {
+  display: block;
+  font-size: 15.5px;
+  font-weight: 600;
+  margin-bottom: 11px;
+  padding: 0;
+  text-wrap: balance;
+}
+
+/* Prijskeuze: drie tegels naast elkaar, in één oogopslag te vergelijken */
+.pakketten { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+
+.pakket {
+  position: relative;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 15px 12px 14px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--surface);
+  transition: border-color .12s ease, background .12s ease;
+}
+
+.pakket:hover { border-color: var(--gold); }
+.pakket input { position: absolute; opacity: 0; pointer-events: none; }
+.pakket:has(input:checked) { border-color: var(--gold); background: #fdfaf4; box-shadow: inset 0 0 0 1px var(--gold); }
+
+.pakket__naam { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
+.pakket__prijs { display: block; font-size: 21px; font-weight: 700; margin: 5px 0 1px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pakket__per { display: block; font-size: 12px; color: var(--ink-3); }
+.pakket__voor { display: block; font-size: 12.5px; color: var(--ink-3); margin-top: 8px; line-height: 1.4; }
+
+.pakket__vlag {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+.geen {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.geen:hover { border-color: var(--gold); }
+.geen input { accent-color: var(--gold-dark); margin: 0; flex: none; }
+.geen:has(input:checked) { border-color: var(--gold); background: #fdfaf4; }
+
+/* Korte vragen: drie antwoorden naast elkaar */
+.keuzes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+.keuze {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 11px 10px;
+  font-size: 13.5px;
+  cursor: pointer;
+  background: var(--surface);
+  transition: border-color .12s ease, background .12s ease;
+  min-height: 46px;
+}
+
+.keuze:hover { border-color: var(--gold); }
+.keuze input { position: absolute; opacity: 0; pointer-events: none; }
+.keuze:has(input:checked) { border-color: var(--gold); background: #fdfaf4; box-shadow: inset 0 0 0 1px var(--gold); font-weight: 600; }
+
+@media (max-width: 460px) {
+  .pakketten { grid-template-columns: 1fr; }
+  .pakket { display: flex; align-items: center; gap: 12px; text-align: left; padding: 13px 14px; }
+  .pakket__vlag { top: 50%; left: auto; right: 12px; transform: translateY(-50%); }
+  .pakket__prijs { margin: 0; font-size: 18px; }
+  .pakket__voor { display: none; }
+  .pakket__tekst { flex: 1; }
+  .keuzes { grid-template-columns: 1fr; }
+  .keuze { justify-content: flex-start; text-align: left; min-height: 0; }
+}
+
+/* Overig */
+.vraag input[type=email], .vraag textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 15px;
+  outline: none;
+}
+
+.vraag input:focus, .vraag textarea:focus { border-color: var(--gold); }
+.vraag textarea { resize: vertical; min-height: 66px; }
+.toelichting { display: block; font-size: 12.5px; color: var(--ink-3); font-weight: 400; margin-top: 3px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border: 1px solid var(--gold-dark);
+  border-radius: var(--r-md);
+  padding: 14px 20px;
+  font-size: 15.5px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  text-decoration: none;
+}
+
+.btn:hover { filter: brightness(1.06); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn--stil { background: var(--surface); color: var(--ink); border-color: var(--line); }
+
+.fout {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #a33a26;
+  background: #fbeae7;
+  border: 1px solid #f0d2cb;
+  border-radius: 8px;
+  padding: 10px 13px;
+}
+
+.klein { margin: 12px 0 0; font-size: 12px; color: var(--ink-3); text-align: center; line-height: 1.5; }
+
+.bedankt { text-align: center; }
+.bedankt__vink { width: 52px; height: 52px; border-radius: 50%; background: #e8f6ec; color: var(--green); display: grid; place-items: center; margin: 6px auto 16px; }
+.bedankt h2 { margin: 0 0 8px; font-size: 21px; font-weight: 600; }
+.bedankt p { margin: 0 auto 20px; font-size: 14.5px; color: var(--ink-2); max-width: 40ch; }
+
+.voet { text-align: center; margin-top: 22px; font-size: 12px; color: rgba(255, 255, 255, .4); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7cb8e"/>
+      <stop offset="1" stop-color="#a98449"/>
+    </linearGradient>
+  </defs>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-5.5 4V6.5a1 1 0 0 1 1-1z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.6A6.4 6.4 0 0 0 7.6 9a8 8 0 0 0 0 6 6.4 6.4 0 0 0 9.4 2.4"/><path d="M4.8 10.6h7M4.8 13.6h7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+  <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="M13.5 6 19.5 12l-6 6"/></symbol>
+</svg>
+
+<div class="voorbeeldbalk" id="voorbeeldbalk" hidden>
+  Voorbeeldweergave — antwoorden worden hier niet opgeslagen.
+</div>
+
+<div class="pagina">
+
+  <header class="kop">
+    <span class="logo">
+      <svg width="34" height="38" viewBox="0 0 72 80" aria-hidden="true">
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </span>
+
+    <h1>Alles van je verbouwing <b>op één plek</b></h1>
+    <p>Jij start het project, je aannemer en vakmensen doen gratis mee.</p>
+
+    <ul class="punten">
+      <li><svg width="15" height="15" aria-hidden="true"><use href="#i-chat"></use></svg>Chat per vakman</li>
+      <li><svg width="15" height="15" aria-hidden="true"><use href="#i-camera"></use></svg>Foto's per dag</li>
+      <li><svg width="15" height="15" aria-hidden="true"><use href="#i-euro"></use></svg>Meerwerk met akkoord</li>
+    </ul>
+
+    <a class="demolink" href="demo.html">Bekijk de demo <svg width="15" height="15" aria-hidden="true"><use href="#i-arrow-r"></use></svg></a>
+  </header>
+
+  <form class="kaart" id="form" novalidate>
+
+    <p class="fout" id="fout" hidden></p>
+
+    <div class="vraag">
+      <fieldset>
+        <legend>Welke zou je kiezen?</legend>
+        <div class="pakketten">
+          <label class="pakket">
+            <input type="radio" name="pakket" value="basis">
+            <span class="pakket__tekst">
+              <span class="pakket__naam">Basis</span>
+              <span class="pakket__prijs">€&nbsp;149,95</span>
+              <span class="pakket__per">per jaar</span>
+              <span class="pakket__voor">Eén verbouwing, tot 3 bedrijven</span>
+            </span>
+          </label>
+
+          <label class="pakket">
+            <input type="radio" name="pakket" value="compleet">
+            <span class="pakket__vlag">Populair</span>
+            <span class="pakket__tekst">
+              <span class="pakket__naam">Compleet</span>
+              <span class="pakket__prijs">€&nbsp;249,95</span>
+              <span class="pakket__per">per jaar</span>
+              <span class="pakket__voor">Grote verbouwing, onbeperkt bedrijven</span>
+            </span>
+          </label>
+
+          <label class="pakket">
+            <input type="radio" name="pakket" value="nieuwbouw">
+            <span class="pakket__tekst">
+              <span class="pakket__naam">Nieuwbouw</span>
+              <span class="pakket__prijs">€&nbsp;399,95</span>
+              <span class="pakket__per">per jaar</span>
+              <span class="pakket__voor">Met architect en constructeur</span>
+            </span>
+          </label>
+        </div>
+
+        <label class="geen">
+          <input type="radio" name="pakket" value="geen">
+          Geen van deze — hier zou ik niet voor betalen
+        </label>
+      </fieldset>
+    </div>
+
+    <div class="vraag">
+      <fieldset>
+        <legend>Zou je dit voor je eigen woning gebruiken?</legend>
+        <div class="keuzes">
+          <label class="keuze"><input type="radio" name="gebruik" value="ja">Ja</label>
+          <label class="keuze"><input type="radio" name="gebruik" value="misschien">Misschien</label>
+          <label class="keuze"><input type="radio" name="gebruik" value="nee">Nee</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="vraag">
+      <fieldset>
+        <legend>Gebruik je nu al zoiets?</legend>
+        <div class="keuzes">
+          <label class="keuze"><input type="radio" name="heeftAl" value="ja">Ja</label>
+          <label class="keuze"><input type="radio" name="heeftAl" value="appjes">Nee, appjes en mail</label>
+          <label class="keuze"><input type="radio" name="heeftAl" value="nee">Nee, niets</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="vraag">
+      <fieldset>
+        <legend>Ben je hier naar op zoek?</legend>
+        <div class="keuzes">
+          <label class="keuze"><input type="radio" name="zoekt" value="ja">Ja, nu</label>
+          <label class="keuze"><input type="radio" name="zoekt" value="later">Later wel</label>
+          <label class="keuze"><input type="radio" name="zoekt" value="nee">Nee</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="vraag">
+      <label for="email">E-mailadres <span class="toelichting">Optioneel — alleen om je te laten weten wanneer het klaar is.</span></label>
+      <input id="email" type="email" placeholder="jij@voorbeeld.nl" autocomplete="email">
+    </div>
+
+    <div class="vraag">
+      <label for="opmerking">Nog iets kwijt? <span class="toelichting">Optioneel.</span></label>
+      <textarea id="opmerking" placeholder="Wat zou je missen, of wat houdt je tegen?"></textarea>
+    </div>
+
+    <button class="btn" type="submit" id="verstuur">Versturen</button>
+    <p class="klein">
+      Projexa is in ontwikkeling — je koopt hier nog niets. We gebruiken je antwoord
+      alleen om het product te verbeteren.
+    </p>
+  </form>
+
+  <div class="kaart bedankt" id="bedankt" hidden>
+    <div class="bedankt__vink"><svg width="26" height="26" aria-hidden="true"><use href="#i-check"></use></svg></div>
+    <h2>Bedankt — dit helpt echt</h2>
+    <p id="bedanktTekst">Je antwoord is binnen. Als Projexa er komt, laten we het je als eerste weten.</p>
+    <a class="btn btn--stil" href="demo.html">Bekijk de demo</a>
+  </div>
+
+  <p class="voet">Projexa · voorlopig alleen een idee dat we toetsen</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (s) { return document.querySelector(s); };
+
+  /* Anonieme id per browser, om bezoeken te tellen zonder iets persoonlijks. */
+  var bezoeker;
+  try {
+    bezoeker = localStorage.getItem('projexa-bezoeker');
+    if (!bezoeker) {
+      bezoeker = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      localStorage.setItem('projexa-bezoeker', bezoeker);
+    }
+  } catch (e) {
+    bezoeker = 'b-onbekend';
+  }
+
+  var serverAanwezig = true;
+
+  function stuur(pad, gegevens) {
+    return fetch(pad, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(gegevens)
+    }).then(function (r) {
+      if (!r.ok) throw new Error('mislukt');
+      return r.json();
+    });
+  }
+
+  stuur('/api/projexa/gebeurtenis', {
+    soort: 'bezoek',
+    bezoeker: bezoeker,
+    verwijzer: document.referrer || '',
+    zoekcode: location.search || ''
+  }).catch(function () {
+    serverAanwezig = false;
+    $('#voorbeeldbalk').hidden = false;
+  });
+
+  /* Een aangevinkt pakket is het eerste echte signaal — meteen doorgeven,
+     ook als iemand het formulier daarna niet afmaakt. */
+  var gemeld = {};
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=pakket]'), function (knop) {
+    knop.addEventListener('change', function () {
+      if (!serverAanwezig || gemeld[knop.value]) return;
+      gemeld[knop.value] = true;
+      stuur('/api/projexa/gebeurtenis', { soort: 'prijsklik', bezoeker: bezoeker, pakket: knop.value }).catch(function () {});
+    });
+  });
+
+  function gekozen(naam) {
+    var el = document.querySelector('input[name="' + naam + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  $('#form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var fout = $('#fout');
+    var email = $('#email').value.trim();
+
+    if (!gekozen('gebruik')) {
+      fout.textContent = 'Eén vraag is genoeg om te beantwoorden: zou je dit voor je eigen woning gebruiken?';
+      fout.hidden = false;
+      fout.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (email && email.indexOf('@') < 0) {
+      fout.textContent = 'Dit e-mailadres klopt niet. Laat het leeg als je liever geen bericht krijgt.';
+      fout.hidden = false;
+      $('#email').focus();
+      return;
+    }
+
+    fout.hidden = true;
+
+    var knop = $('#verstuur');
+    knop.disabled = true;
+    knop.textContent = 'Bezig…';
+
+    var klaar = function () {
+      $('#form').hidden = true;
+      $('#bedankt').hidden = false;
+      if (!email) {
+        $('#bedanktTekst').textContent =
+          'Je antwoord is binnen. Je hebt geen e-mailadres achtergelaten, dus we sturen je niets — je mening telt gewoon mee.';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    if (!serverAanwezig) { klaar(); return; }
+
+    stuur('/api/projexa/aanmelding', {
+      bezoeker: bezoeker,
+      pakket: gekozen('pakket'),
+      gebruik: gekozen('gebruik'),
+      heeftAl: gekozen('heeftAl'),
+      zoekt: gekozen('zoekt'),
+      opmerking: $('#opmerking').value.trim(),
+      email: email
+    })
+      .then(klaar)
+      .catch(function () {
+        knop.disabled = false;
+        knop.textContent = 'Versturen';
+        fout.textContent = 'Het versturen lukte niet. Probeer het zo nog eens — je antwoorden staan nog ingevuld.';
+        fout.hidden = false;
+      });
+  });
+}());
+</script>
+</body>
+</html>

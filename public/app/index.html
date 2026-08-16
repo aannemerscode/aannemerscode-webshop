@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projexa — inloggen</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="stijl.css">
+<style>
+  .loginpg {
+    background:
+      radial-gradient(1000px 540px at 50% -5%, rgba(181, 149, 94, .14), transparent 62%),
+      var(--black);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 44px 20px 52px;
+  }
+
+  .wikkel { width: 100%; max-width: 400px; display: grid; justify-items: center; gap: 24px; }
+  .wikkel__kop { display: grid; justify-items: center; gap: 10px; }
+  .wikkel__kop .logo { font-size: 24px; gap: 16px; }
+
+  .kaart--login { width: 100%; background: var(--surface); color: var(--ink); border-radius: var(--r-xl); box-shadow: var(--shadow-lg); padding: 28px 26px 24px; border: 0; }
+  .kaart--login h1 { margin: 0 0 4px; font-size: 21px; font-weight: 600; }
+  .kaart--login .onder { margin: 0 0 20px; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+
+  .wissel { margin: 14px 0 0; font-size: 13.5px; color: var(--ink-2); text-align: center; }
+  .wissel button { background: none; border: 0; color: var(--gold-dark); font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0; font-size: inherit; }
+
+  /* De uitgenodigde partij logt kleiner en rustiger in — hij is te gast. */
+  .partner { width: 100%; border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 22px; }
+  .partner h2 { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, .9); }
+  .partner > p { margin: 0 0 14px; font-size: 12.5px; line-height: 1.6; color: rgba(255, 255, 255, .48); }
+  .partner label { color: rgba(255, 255, 255, .5); font-size: 11.5px; }
+  .partner input { background: rgba(255, 255, 255, .05); border-color: rgba(255, 255, 255, .14); color: #fff; font-size: 13.5px; padding: 9px 12px; }
+  .partner input:focus { border-color: var(--gold); }
+  .partner .veld { margin-bottom: 12px; }
+  .partner .btn { font-size: 13.5px; padding: 9px 16px; }
+  .partner .fout { background: rgba(211, 81, 59, .14); border-color: rgba(211, 81, 59, .34); color: #eba393; }
+</style>
+</head>
+<body class="loginpg">
+
+<div class="wikkel">
+
+  <div class="wikkel__kop">
+    <span class="logo">
+      <svg class="logo__mark" width="50" height="55" viewBox="0 0 72 80" aria-hidden="true">
+        <defs>
+          <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e7cb8e"/><stop offset="1" stop-color="#a98449"/>
+          </linearGradient>
+        </defs>
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </span>
+  </div>
+
+  <!-- Inloggen -->
+  <form class="kaart--login" id="inlogKaart">
+    <h1>Mijn verbouwing</h1>
+    <p class="onder">Log in met het account waarmee je je project hebt aangemaakt.</p>
+
+    <p class="fout" id="inlogFout" hidden></p>
+
+    <div class="veld">
+      <label for="inlogEmail">E-mailadres</label>
+      <input id="inlogEmail" type="email" autocomplete="username" required>
+    </div>
+    <div class="veld">
+      <label for="inlogWw">Wachtwoord</label>
+      <input id="inlogWw" type="password" autocomplete="current-password" required>
+    </div>
+
+    <button class="btn btn--gold btn--breed" type="submit">Inloggen</button>
+    <p class="wissel">Nog geen account? <button type="button" id="naarRegistreren">Maak er een aan</button></p>
+  </form>
+
+  <!-- Registreren -->
+  <form class="kaart--login" id="registreerKaart" hidden>
+    <h1>Account aanmaken</h1>
+    <p class="onder">Je maakt hierna je eerste project aan en nodigt je aannemer uit.</p>
+
+    <p class="fout" id="regFout" hidden></p>
+
+    <div class="veld">
+      <label for="regNaam">Je naam</label>
+      <input id="regNaam" type="text" autocomplete="name" required>
+    </div>
+    <div class="veld">
+      <label for="regEmail">E-mailadres</label>
+      <input id="regEmail" type="email" autocomplete="username" required>
+    </div>
+    <div class="veld">
+      <label for="regWw">Wachtwoord <span class="toelichting">Minstens 8 tekens.</span></label>
+      <input id="regWw" type="password" autocomplete="new-password" required>
+    </div>
+
+    <button class="btn btn--gold btn--breed" type="submit">Account aanmaken</button>
+    <p class="wissel">Heb je al een account? <button type="button" id="naarInloggen">Inloggen</button></p>
+  </form>
+
+  <!-- Uitgenodigde partij -->
+  <form class="partner" id="partnerKaart">
+    <h2>Uitgenodigd als aannemer of vakman?</h2>
+    <p>Je krijgt een projectcode en wachtwoord van de eigenaar zodra hij je toevoegt. Meedoen kost je niets.</p>
+
+    <p class="fout" id="partnerFout" hidden></p>
+
+    <div class="veld veld--rij">
+      <div>
+        <label for="partnerCode">Projectcode</label>
+        <input id="partnerCode" class="mono" type="text" placeholder="PRJ-XXXX" autocomplete="off">
+      </div>
+      <div>
+        <label for="partnerWw">Wachtwoord</label>
+        <input id="partnerWw" type="password" autocomplete="off">
+      </div>
+    </div>
+
+    <button class="btn btn--ghost btn--breed" type="submit">Inloggen op het project</button>
+  </form>
+
+</div>
+
+<div class="melding" id="melding" role="status" aria-live="polite"></div>
+
+<script src="deel.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = App.$;
+
+  /* Al ingelogd? Dan meteen door naar de juiste app. */
+  App.api('/mij').then(function (d) {
+    if (!d.ingelogd) return;
+    location.href = d.rol === 'eigenaar' ? 'mijn-verbouwing.html' : 'werk.html';
+  }).catch(function () {});
+
+  function wissel(naarRegistreren) {
+    $('#inlogKaart').hidden = naarRegistreren;
+    $('#registreerKaart').hidden = !naarRegistreren;
+    App.toonFout('#inlogFout', '');
+    App.toonFout('#regFout', '');
+    var eerste = naarRegistreren ? $('#regNaam') : $('#inlogEmail');
+    if (eerste) eerste.focus();
+  }
+
+  $('#naarRegistreren').addEventListener('click', function () { wissel(true); });
+  $('#naarInloggen').addEventListener('click', function () { wissel(false); });
+
+  function bezig(knop, aan, tekstAan) {
+    knop.disabled = aan;
+    if (aan) {
+      knop.dataset.eerder = knop.textContent;
+      knop.textContent = tekstAan || 'Bezig…';
+    } else if (knop.dataset.eerder) {
+      knop.textContent = knop.dataset.eerder;
+    }
+  }
+
+  $('#inlogKaart').addEventListener('submit', function (e) {
+    e.preventDefault();
+    App.toonFout('#inlogFout', '');
+    var knop = e.target.querySelector('button[type=submit]');
+    bezig(knop, true);
+
+    App.api('/inloggen', {
+      method: 'POST',
+      body: { email: $('#inlogEmail').value.trim(), wachtwoord: $('#inlogWw').value },
+    })
+      .then(function () { location.href = 'mijn-verbouwing.html'; })
+      .catch(function (err) { bezig(knop, false); App.toonFout('#inlogFout', err.message); });
+  });
+
+  $('#registreerKaart').addEventListener('submit', function (e) {
+    e.preventDefault();
+    App.toonFout('#regFout', '');
+    var knop = e.target.querySelector('button[type=submit]');
+    bezig(knop, true);
+
+    App.api('/registreren', {
+      method: 'POST',
+      body: {
+        naam: $('#regNaam').value.trim(),
+        email: $('#regEmail').value.trim(),
+        wachtwoord: $('#regWw').value,
+      },
+    })
+      .then(function () { location.href = 'mijn-verbouwing.html'; })
+      .catch(function (err) { bezig(knop, false); App.toonFout('#regFout', err.message); });
+  });
+
+  $('#partnerKaart').addEventListener('submit', function (e) {
+    e.preventDefault();
+    App.toonFout('#partnerFout', '');
+    var knop = e.target.querySelector('button[type=submit]');
+    bezig(knop, true);
+
+    App.api('/partner/inloggen', {
+      method: 'POST',
+      body: { code: $('#partnerCode').value.trim(), wachtwoord: $('#partnerWw').value.trim() },
+    })
+      .then(function () { location.href = 'werk.html'; })
+      .catch(function (err) { bezig(knop, false); App.toonFout('#partnerFout', err.message); });
+  });
+}());
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@ require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const nodemailer = require('nodemailer');
 const PDFDocument = require('pdfkit');
 const { createMollieClient } = require('@mollie/api-client');
@@ -75,6 +76,10 @@ const PRODUCTS = {
 const ORDERS_FILE = path.join(__dirname, 'data', 'orders.json');
 const INVOICE_COUNTER_FILE = path.join(__dirname, 'data', 'invoice-counter.json');
 
+// Losse opslag voor de Projexa-landingspagina: hier komen de reacties in terecht
+// waarmee je toetst of er vraag naar Projexa is.
+const PROJEXA_FILE = path.join(__dirname, 'data', 'projexa-reacties.json');
+
 function ensureDataDir() {
   const dir = path.dirname(ORDERS_FILE);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -82,8 +87,27 @@ function ensureDataDir() {
   if (!fs.existsSync(INVOICE_COUNTER_FILE)) {
     fs.writeFileSync(INVOICE_COUNTER_FILE, JSON.stringify({ year: new Date().getFullYear(), next: 1 }));
   }
+  if (!fs.existsSync(PROJEXA_FILE)) {
+    fs.writeFileSync(PROJEXA_FILE, JSON.stringify({ bezoeken: [], prijsklikken: [], aanmeldingen: [] }, null, 2));
+  }
 }
 ensureDataDir();
+
+function readProjexa() {
+  try {
+    const data = JSON.parse(fs.readFileSync(PROJEXA_FILE, 'utf8'));
+    return {
+      bezoeken: data.bezoeken || [],
+      prijsklikken: data.prijsklikken || [],
+      aanmeldingen: data.aanmeldingen || [],
+    };
+  } catch {
+    return { bezoeken: [], prijsklikken: [], aanmeldingen: [] };
+  }
+}
+function writeProjexa(data) {
+  fs.writeFileSync(PROJEXA_FILE, JSON.stringify(data, null, 2));
+}
 
 // Simpel doorlopend factuurnummer per jaar: 2026-0001, 2026-0002, ...
 // Let op: bij meerdere gelijktijdige bestellingen op een drukke dag kan dit in
@@ -304,7 +328,12 @@ async function sendDownloadEmail(order) {
 // ---------- Routes ----------
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Mollie webhook stuurt form-encoded data
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ---------- Projexa: de echte app ----------
+// Eigen database (SQLite) en eigen routes, los van de webshop hierboven.
+app.use('/api/app', require('./projexa-app/routes'));
 
 // Checkout starten
 app.post('/api/checkout', async (req, res) => {
@@ -390,6 +419,152 @@ app.get('/api/order/:id', (req, res) => {
   const order = orders[req.params.id];
   if (!order) return res.status(404).json({ error: 'Niet gevonden' });
   res.json({ status: order.status, productId: order.productId });
+});
+
+
+// ---------- Projexa: vraag toetsen via de landingspagina ----------
+// De landingspagina staat op /projexa/. Hier komen drie dingen binnen:
+// een bezoek, een klik op een prijskaart en een ingevuld formulier. Samen
+// vertellen ze hoeveel mensen kijken, welk bedrag ze aanklikken en wat ze
+// zeggen te willen betalen.
+
+const PROJEXA_PAKKETTEN = {
+  basis: { naam: 'Basis', prijs: '149,95' },
+  compleet: { naam: 'Compleet', prijs: '249,95' },
+  nieuwbouw: { naam: 'Nieuwbouw', prijs: '399,95' },
+  geen: { naam: 'Geen van deze', prijs: '0' },
+};
+
+function kort(waarde, max) {
+  return String(waarde == null ? '' : waarde).slice(0, max);
+}
+
+app.post('/api/projexa/gebeurtenis', (req, res) => {
+  try {
+    const { soort, bezoeker, pakket, verwijzer, zoekcode } = req.body || {};
+    const data = readProjexa();
+    const nu = new Date().toISOString();
+
+    if (soort === 'bezoek') {
+      // Eén bezoek per browser per dag telt; herladen blaast de cijfers anders op.
+      const vandaag = nu.slice(0, 10);
+      const alGeteld = data.bezoeken.some(
+        (b) => b.bezoeker === bezoeker && String(b.op).slice(0, 10) === vandaag
+      );
+      if (!alGeteld) {
+        data.bezoeken.push({
+          bezoeker: kort(bezoeker, 40),
+          op: nu,
+          verwijzer: kort(verwijzer, 200),
+          zoekcode: kort(zoekcode, 200),
+        });
+        writeProjexa(data);
+      }
+      return res.json({ ok: true });
+    }
+
+    if (soort === 'prijsklik') {
+      if (!PROJEXA_PAKKETTEN[pakket]) return res.status(400).json({ error: 'Onbekend pakket.' });
+      data.prijsklikken.push({ bezoeker: kort(bezoeker, 40), pakket, op: nu });
+      writeProjexa(data);
+      return res.json({ ok: true });
+    }
+
+    return res.status(400).json({ error: 'Onbekende gebeurtenis.' });
+  } catch (err) {
+    console.error('Projexa-gebeurtenis mislukt:', err);
+    return res.status(500).json({ error: 'Kon dit niet opslaan.' });
+  }
+});
+
+app.post('/api/projexa/aanmelding', async (req, res) => {
+  try {
+    const { bezoeker, pakket, gebruik, heeftAl, zoekt, opmerking, email } = req.body || {};
+
+    if (!gebruik) {
+      return res.status(400).json({ error: 'Laat in elk geval weten of je Projexa zou gebruiken.' });
+    }
+
+    const data = readProjexa();
+    const reactie = {
+      id: 'r' + Date.now().toString(36),
+      op: new Date().toISOString(),
+      bezoeker: kort(bezoeker, 40),
+      pakket: PROJEXA_PAKKETTEN[pakket] ? pakket : '',
+      gebruik: kort(gebruik, 20),
+      heeftAl: kort(heeftAl, 20),
+      zoekt: kort(zoekt, 20),
+      opmerking: kort(opmerking, 2000),
+      email: kort(email, 200),
+    };
+
+    data.aanmeldingen.push(reactie);
+    writeProjexa(data);
+
+    // Zelf even een seintje krijgen, zodat je niet elke dag het dashboard hoeft te checken.
+    const transporter = buildTransporter();
+    if (transporter && process.env.OWNER_EMAIL) {
+      const pakketNaam = reactie.pakket ? PROJEXA_PAKKETTEN[reactie.pakket].naam : 'geen';
+      transporter
+        .sendMail({
+          from: process.env.MAIL_FROM || 'Projexa <no-reply@aannemerscode.nl>',
+          to: process.env.OWNER_EMAIL,
+          subject: `Projexa: nieuwe reactie (${reactie.gebruik}, ${pakketNaam})`,
+          text:
+            `Zou gebruiken: ${reactie.gebruik}\n` +
+            `Gekozen pakket: ${pakketNaam}\n` +
+            `Gebruikt al iets: ${reactie.heeftAl || 'niet ingevuld'}\n` +
+            `Zoekt hiernaar: ${reactie.zoekt || 'niet ingevuld'}\n` +
+            `E-mail: ${reactie.email || 'niet achtergelaten'}\n\n` +
+            `Opmerking:\n${reactie.opmerking || '—'}\n\n` +
+            `Totaal aantal reacties: ${data.aanmeldingen.length}`,
+        })
+        .catch((err) => console.error('Projexa-melding mailen mislukt:', err));
+    }
+
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error('Projexa-aanmelding mislukt:', err);
+    return res.status(500).json({ error: 'Kon je antwoord niet opslaan.' });
+  }
+});
+
+// Resultaten bekijken. Beveiligd met een sleutel uit .env, want hier staan
+// e-mailadressen in. Zonder PROJEXA_SLEUTEL is dit endpoint dicht.
+app.get('/api/projexa/resultaten', (req, res) => {
+  const sleutel = process.env.PROJEXA_SLEUTEL;
+  if (!sleutel) {
+    return res.status(503).json({ error: 'Stel eerst PROJEXA_SLEUTEL in bij je omgevingsvariabelen.' });
+  }
+  if (req.query.sleutel !== sleutel) {
+    return res.status(401).json({ error: 'Onjuiste sleutel.' });
+  }
+
+  const data = readProjexa();
+  const tel = (lijst, veld) =>
+    lijst.reduce((totaal, item) => {
+      const waarde = item[veld] || 'onbekend';
+      totaal[waarde] = (totaal[waarde] || 0) + 1;
+      return totaal;
+    }, {});
+
+  const bezoekers = new Set(data.bezoeken.map((b) => b.bezoeker)).size;
+  const klikkers = new Set(data.prijsklikken.map((k) => k.bezoeker)).size;
+
+  return res.json({
+    bezoeken: data.bezoeken.length,
+    bezoekers,
+    klikkers,
+    aanmeldingen: data.aanmeldingen.length,
+    metEmail: data.aanmeldingen.filter((a) => a.email).length,
+    prijsklikken: tel(data.prijsklikken, 'pakket'),
+    pakket: tel(data.aanmeldingen, 'pakket'),
+    gebruik: tel(data.aanmeldingen, 'gebruik'),
+    heeftAl: tel(data.aanmeldingen, 'heeftAl'),
+    zoekt: tel(data.aanmeldingen, 'zoekt'),
+    verwijzers: tel(data.bezoeken, 'verwijzer'),
+    reacties: data.aanmeldingen.slice().reverse(),
+  });
 });
 
 app.listen(PORT, () => {

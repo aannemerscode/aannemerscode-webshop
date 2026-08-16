@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projexa — mijn werk</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#090b0c">
+<link rel="stylesheet" href="stijl.css">
+<style>
+  body { background: var(--app-bg); color: var(--ink); }
+
+  .shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  .zijbalk { background: var(--black); color: #fff; padding: 24px 15px; display: flex; flex-direction: column; gap: 22px; }
+  .zijbalk .logo { font-size: 13px; gap: 10px; padding: 0 8px; }
+
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav__item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--r-md); background: none; border: 0; width: 100%; text-align: left; color: rgba(255,255,255,.68); font-size: 14px; cursor: pointer; }
+  .nav__item:hover { background: rgba(255,255,255,.06); color: #fff; }
+  .nav__item[aria-current="page"] { background: var(--black-3); color: #fff; font-weight: 600; }
+  .nav__item[aria-current="page"] svg { color: var(--gold-light); }
+  .nav__badge { margin-left: auto; background: var(--gold); color: #221b0c; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 1px 7px; }
+
+  .zijbalk__voet { margin-top: auto; border-top: 1px solid rgba(255,255,255,.08); padding: 14px 8px 0; font-size: 12px; color: rgba(255,255,255,.45); line-height: 1.6; }
+  .zijbalk__voet b { color: var(--gold-light); font-weight: 600; }
+  .gebruiker { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13px; margin-bottom: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(180deg, var(--gold-light), var(--gold-dark)); color: #1a1509; display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none; }
+
+  main { padding: 26px 30px 50px; max-width: 900px; }
+  .topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
+  .topbar h1 { font-size: 24px; font-weight: 600; margin: 0; }
+  .topbar__sub { font-size: 13px; color: var(--ink-3); }
+
+  .view[hidden] { display: none; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 15px 17px; box-shadow: var(--shadow); }
+  .stat__waarde { font-size: 22px; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .stat__label { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+
+  .kaart__kop { padding: 16px 20px 12px; display: flex; align-items: center; gap: 12px; }
+  .kaart__kop h2 { margin: 0; font-size: 16px; font-weight: 600; }
+  .kaart__kop .meta { margin-left: auto; font-size: 12.5px; color: var(--ink-3); }
+
+  .chat { display: flex; flex-direction: column; height: min(560px, calc(100vh - 240px)); }
+  .chat__berichten { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; background: var(--surface-2); }
+  .bubbel { max-width: 70%; padding: 9px 13px 6px; border-radius: 14px; font-size: 14.5px; background: var(--surface); border: 1px solid var(--line); align-self: flex-start; white-space: pre-wrap; word-break: break-word; }
+  .bubbel--ik { align-self: flex-end; background: #f4ece0; border-color: #e8dcc8; }
+  .bubbel__tijd { display: block; text-align: right; font-size: 11px; color: var(--ink-3); margin-top: 3px; }
+  .dagstreep { align-self: center; font-size: 12px; font-weight: 600; color: var(--ink-3); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; }
+
+  .opsteller { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--surface); }
+  .opsteller input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px; padding: 10px 15px; outline: none; font-size: 14.5px; }
+  .rond { width: 40px; height: 40px; flex: none; border-radius: 50%; border: 0; background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #221b0c; display: grid; place-items: center; cursor: pointer; }
+  .rond:disabled { opacity: .5; }
+
+  .slotmelding { display: flex; align-items: center; gap: 10px; background: #f7efe2; border: 1px solid #e8d9bd; color: #7a5f24; border-radius: var(--r-md); padding: 11px 14px; font-size: 13.5px; font-weight: 600; margin-bottom: 16px; }
+  .binnenkort { margin-top: 18px; padding: 14px 16px; border: 1px dashed var(--line); border-radius: var(--r-lg); font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+  .binnenkort b { color: var(--ink-2); }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; min-height: 0; }
+    .zijbalk { flex-direction: row; align-items: center; gap: 12px; overflow-x: auto; padding: 12px 14px; }
+    .zijbalk .logo, .zijbalk__voet { display: none; }
+    .nav { flex-direction: row; gap: 6px; }
+    .nav__item { padding: 9px 12px; white-space: nowrap; }
+    main { padding: 20px 16px 40px; }
+    .stats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7cb8e"/><stop offset="1" stop-color="#a98449"/>
+    </linearGradient>
+  </defs>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-5.5 4V6.5a1 1 0 0 1 1-1z"/><circle cx="8.6" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12.5"/><path d="M12.5 6.5 18.5 12l-6 5.5"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5H18a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5h-3.5"/><path d="M10 8.5 6.5 12l3.5 3.5"/><path d="M6.5 12H15"/></symbol>
+  <symbol id="i-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 6.3a3.8 3.8 0 0 0 5 5l-8 8a2.3 2.3 0 0 1-3.3-3.3z"/><path d="M6.2 4.5 9 7.3l-1.7 1.7L4.5 6.2z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.6A6.4 6.4 0 0 0 7.6 9a8 8 0 0 0 0 6 6.4 6.4 0 0 0 9.4 2.4"/><path d="M4.8 10.6h7M4.8 13.6h7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8v5.4l3.4 2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.8" y="10.5" width="14.4" height="10" rx="2.2"/><path d="M8.2 10.5V7.8a3.8 3.8 0 0 1 7.6 0v2.7"/></symbol>
+</svg>
+
+<div class="shell">
+  <aside class="zijbalk">
+    <span class="logo">
+      <svg class="logo__mark" width="24" height="27" viewBox="0 0 72 80" aria-hidden="true">
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </span>
+
+    <nav class="nav" aria-label="Onderdelen">
+      <button class="nav__item" type="button" data-view="project" aria-current="page">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-home"></use></svg><span>Project</span>
+      </button>
+      <button class="nav__item" type="button" data-view="berichten">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-chat"></use></svg><span>Berichten</span>
+        <span class="nav__badge" id="badgeBerichten" hidden>0</span>
+      </button>
+      <button class="nav__item" type="button" data-view="dagboek">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-camera"></use></svg><span>Bouwdagboek</span>
+      </button>
+      <button class="nav__item" type="button" data-view="meerwerk">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-euro"></use></svg><span>Meerwerk</span>
+      </button>
+    </nav>
+
+    <div class="zijbalk__voet">
+      <div class="gebruiker">
+        <span class="avatar" id="avatar">?</span>
+        <span id="wie"></span>
+      </div>
+      Je bent <b>uitgenodigd</b> door de eigenaar. Meedoen aan dit project kost je niets.
+      <button class="btn btn--outline-gold btn--breed" type="button" id="uitloggen" style="margin-top:12px">
+        <svg width="16" height="16" aria-hidden="true"><use href="#i-logout"></use></svg>Uitloggen
+      </button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <h1 id="titel">…</h1>
+        <div class="topbar__sub" id="subtitel"></div>
+      </div>
+    </div>
+
+    <section class="view" id="v-project"></section>
+    <section class="view" id="v-berichten" hidden></section>
+    <section class="view" id="v-dagboek" hidden></section>
+    <section class="view" id="v-meerwerk" hidden></section>
+  </main>
+</div>
+
+<div class="melding" id="melding" role="status" aria-live="polite"></div>
+
+<script src="deel.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var $ = App.$, veilig = App.veilig, api = App.api;
+  var S = {
+    deelnemer: null, project: null, eigenaarNaam: '', view: 'project', berichten: [], ongelezen: 0,
+    dagboek: [], meerwerk: [], goedgekeurd: 0, samenvatting: null, fotoopslag: true,
+  };
+
+  function laden() {
+    return api('/mij').then(function (d) {
+      if (!d.ingelogd) { location.href = '/app/'; return; }
+      if (d.rol !== 'deelnemer') { location.href = 'mijn-verbouwing.html'; return; }
+
+      S.deelnemer = d.deelnemer;
+      S.project = d.project;
+      S.eigenaarNaam = d.eigenaarNaam;
+
+      // Het aantal ongelezen berichten van de eigenaar staat bij mijn eigen rij.
+      var mij = (d.project && d.project.deelnemers || []).filter(function (x) { return x.id === d.deelnemer.id; })[0];
+      S.ongelezen = mij ? mij.ongelezen : 0;
+
+      if (!S.project) { teken(); return; }
+      return laadProjectinhoud();
+    });
+  }
+
+  function laadProjectinhoud() {
+    var id = S.project.id;
+    return Promise.all([
+      api('/projecten/' + id + '/dagboek'),
+      api('/projecten/' + id + '/meerwerk'),
+      api('/projecten/' + id + '/samenvatting'),
+    ]).then(function (r) {
+      S.dagboek = r[0].dagboek;
+      S.meerwerk = r[1].meerwerk;
+      S.goedgekeurd = r[1].goedgekeurd;
+      S.samenvatting = r[2];
+      S.fotoopslag = r[2].fotoopslag;
+      teken();
+    });
+  }
+
+  App.$$('.nav__item').forEach(function (k) {
+    k.addEventListener('click', function () {
+      S.view = k.getAttribute('data-view');
+      if (S.view === 'berichten') return openChat();
+      teken();
+    });
+  });
+
+  $('#uitloggen').addEventListener('click', function () { App.uitloggen(); });
+
+  function teken() {
+    var p = S.project;
+
+    $('#titel').textContent = p ? p.naam : 'Project';
+    $('#subtitel').textContent = p
+      ? (p.adres ? p.adres + ' · ' : '') + 'eigenaar: ' + S.eigenaarNaam
+      : '';
+    $('#wie').textContent = S.deelnemer.bedrijfsnaam;
+    $('#avatar').textContent = App.initialen(S.deelnemer.bedrijfsnaam);
+
+    App.$$('.nav__item').forEach(function (x) {
+      x.setAttribute('aria-current', x.getAttribute('data-view') === S.view ? 'page' : 'false');
+    });
+    App.$$('.view').forEach(function (v) { v.hidden = v.id !== 'v-' + S.view; });
+
+    $('#badgeBerichten').hidden = !S.ongelezen;
+    $('#badgeBerichten').textContent = S.ongelezen;
+
+    if (S.view === 'project') tekenProject();
+    if (S.view === 'berichten') tekenBerichten();
+    if (S.view === 'dagboek') tekenDagboek();
+    if (S.view === 'meerwerk') tekenMeerwerk();
+  }
+
+  function slotmelding() {
+    return S.project && S.project.status === 'afgesloten'
+      ? '<div class="slotmelding"><svg width="17" height="17" aria-hidden="true"><use href="#i-lock"></use></svg>' +
+        'De eigenaar heeft het project afgesloten. Je kunt alles teruglezen, maar niets meer toevoegen.</div>'
+      : '';
+  }
+
+  function tekenProject() {
+    var p = S.project;
+    if (!p) { $('#v-project').innerHTML = '<div class="kaart"><div class="leeg">Dit project bestaat niet meer.</div></div>'; return; }
+
+    $('#v-project').innerHTML =
+      slotmelding() +
+      '<div class="stats">' +
+        '<div class="stat"><div class="stat__waarde">' + p.voortgang + '%</div><div class="stat__label">Voortgang</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + (S.samenvatting ? S.samenvatting.dagen : 0) + '</div><div class="stat__label">Dagen in het bouwdagboek</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + (S.samenvatting ? S.samenvatting.openMeerwerk.length : 0) + '</div><div class="stat__label">Meerwerk wacht op de klant</div></div>' +
+      '</div>' +
+
+      '<div class="kaart">' +
+        '<div class="kaart__kop"><h2>Projectgegevens</h2><span class="meta">bijgehouden door de eigenaar</span></div>' +
+        '<div class="rij"><span><b>' + veilig(p.naam) + '</b><small>' + (veilig(p.adres) || 'Geen adres ingevuld') + '</small></span></div>' +
+        '<div class="rij"><span><b>' + (veilig(p.start) || '—') + ' → ' + (veilig(p.oplevering) || '—') + '</b><small>Planning</small></span></div>' +
+        '<div class="rij"><span><b>' + veilig(S.deelnemerRol()) + '</b><small>Jouw rol op dit project</small></span></div>' +
+      '</div>' +
+
+      '<div class="kaart" style="margin-top:18px">' +
+        '<div class="kaart__kop"><h2>Wie doen er mee</h2><span class="meta">gratis uitgenodigd</span></div>' +
+        '<div class="rij"><span class="ico ico--goud"><svg width="17" height="17" aria-hidden="true"><use href="#i-home"></use></svg></span>' +
+        '<span><b>' + veilig(S.eigenaarNaam) + '</b><small>Eigenaar — betaalt dit project</small></span></div>' +
+        p.deelnemers.map(function (d) {
+          return '<div class="rij"><span class="ico">' +
+            '<svg width="17" height="17" aria-hidden="true"><use href="#i-tools"></use></svg></span>' +
+            '<span><b>' + veilig(d.bedrijfsnaam) + (d.id === S.deelnemer.id ? ' <span class="chip chip--goud">jij</span>' : '') +
+            '</b><small>' + (veilig(d.rol) || 'Geen rol') + '</small></span></div>';
+        }).join('') +
+      '</div>' +
+
+      '<div class="binnenkort">' +
+        '<b>Wordt hierna gebouwd:</b> documenten delen met de eigenaar. ' +
+        'Dagrapporten, meerwerk en de chat werken nu al echt.' +
+      '</div>';
+  }
+
+  S.deelnemerRol = function () { return S.deelnemer.rol || 'Geen rol ingevuld'; };
+
+  function openChat() {
+    return api('/gesprekken/' + S.deelnemer.id)
+      .then(function (d) {
+        S.berichten = d.berichten;
+        S.ongelezen = 0;
+        S.view = 'berichten';
+        teken();
+      })
+      .catch(function (err) { App.melding(err.message); });
+  }
+
+  function tekenBerichten() {
+    var afgesloten = S.project && S.project.status === 'afgesloten';
+    var vorigeDag = '';
+
+    var bubbels = S.berichten.map(function (b) {
+      var streep = '';
+      var dag = App.dagLabel(b.op);
+      if (dag !== vorigeDag) { vorigeDag = dag; streep = '<div class="dagstreep">' + veilig(dag) + '</div>'; }
+      return streep +
+        '<div class="bubbel' + (b.van === 'deelnemer' ? ' bubbel--ik' : '') + '">' +
+          veilig(b.tekst) + '<span class="bubbel__tijd">' + App.tijd(b.op) + '</span>' +
+        '</div>';
+    }).join('');
+
+    $('#v-berichten').innerHTML =
+      slotmelding() +
+      '<div class="kaart chat">' +
+        '<div class="chat__berichten" id="chat">' +
+          (bubbels || '<p class="leeg">Nog geen berichten. Stuur de eerste naar ' + veilig(S.eigenaarNaam) + '.</p>') +
+        '</div>' +
+        (afgesloten ? '' :
+          '<div class="opsteller">' +
+            '<input type="text" id="bericht" placeholder="Bericht aan ' + veilig(S.eigenaarNaam) + '" aria-label="Bericht">' +
+            '<button class="rond" type="button" id="verstuur" aria-label="Versturen">' +
+            '<svg width="18" height="18" aria-hidden="true"><use href="#i-send"></use></svg></button>' +
+          '</div>') +
+      '</div>';
+
+    var chat = $('#chat');
+    if (chat) chat.scrollTop = chat.scrollHeight;
+  }
+
+  function stuurBericht() {
+    var veld = $('#bericht');
+    if (!veld) return;
+    var tekst = veld.value.trim();
+    if (!tekst) return;
+
+    var knop = $('#verstuur');
+    knop.disabled = true;
+
+    api('/gesprekken/' + S.deelnemer.id, { method: 'POST', body: { tekst: tekst } })
+      .then(function (d) {
+        S.berichten.push(d.bericht);
+        veld.value = '';
+        teken();
+      })
+      .catch(function (err) { knop.disabled = false; App.melding(err.message); });
+  }
+
+  /* ---------- Bouwdagboek ---------- */
+
+  function bestandenLijst(invoerId, doelId) {
+    var invoer = $('#' + invoerId);
+    if (!invoer) return;
+    invoer.addEventListener('change', function () {
+      $('#' + doelId).innerHTML = Array.prototype.map.call(this.files, function (f) {
+        return '<span class="bestandje">' + veilig(f.name) + '</span>';
+      }).join('');
+    });
+  }
+
+  function tekenDagboek() {
+    var afgesloten = S.project && S.project.status === 'afgesloten';
+    var vandaag = new Date().toISOString().slice(0, 10);
+
+    $('#v-dagboek').innerHTML =
+      slotmelding() +
+      (afgesloten ? '' :
+        '<div class="kaart" style="margin-bottom:20px">' +
+          '<div class="kaart__kop"><h2>Dagrapport plaatsen</h2><span class="meta">de klant ziet dit meteen</span></div>' +
+          '<div style="padding:4px 20px 20px">' +
+            '<p class="fout" id="dagFout" hidden></p>' +
+            '<div class="veld"><label for="dTitel">Wat is er vandaag gedaan?</label>' +
+              '<input id="dTitel" type="text" placeholder="Tegelwerk badkamer gestart"></div>' +
+            '<div class="veld veld--rij">' +
+              '<div><label for="dDatum">Datum</label><input id="dDatum" type="date" value="' + vandaag + '"></div>' +
+              '<div><label for="dUren">Gewerkte uren</label><input id="dUren" type="text" placeholder="8 uur"></div>' +
+            '</div>' +
+            '<div class="veld"><label for="dPunten">Punten <span class="toelichting">Eén per regel.</span></label>' +
+              '<textarea id="dPunten" rows="3" placeholder="Wanden voorbehandeld&#10;Eerste rij tegels gezet"></textarea></div>' +
+            (S.fotoopslag
+              ? '<label class="knopbestand" style="margin-bottom:14px">' +
+                '<svg width="17" height="17" aria-hidden="true"><use href="#i-camera"></use></svg>Foto\'s van vandaag' +
+                '<input id="dFotos" type="file" accept="image/*" multiple></label>' +
+                '<div class="bestanden" id="dBestanden" style="margin-bottom:14px"></div>'
+              : '<p class="notitie" style="margin-bottom:14px">Foto\'s toevoegen kan zodra de fotoopslag is ingesteld.</p>') +
+            '<button class="btn btn--gold" type="button" id="plaatsDag">Dagrapport plaatsen</button>' +
+          '</div>' +
+        '</div>') +
+
+      '<div class="kaart">' +
+        '<div class="kaart__kop"><h2>Bouwdagboek</h2><span class="meta">' + S.dagboek.length + ' dagen</span></div>' +
+        (S.dagboek.length
+          ? S.dagboek.map(function (d) {
+              return '<div class="dag">' +
+                '<div class="dag__datum">' + veilig(App.datumVoluit(d.datum)) +
+                  (App.weekdag(d.datum) ? ' · ' + veilig(App.weekdag(d.datum)) : '') + '</div>' +
+                '<div class="dag__titel">' + veilig(d.titel) + '</div>' +
+                (d.punten.length
+                  ? '<ul class="dag__punten">' + d.punten.map(function (punt) {
+                      return '<li>' + veilig(punt) + '</li>';
+                    }).join('') + '</ul>'
+                  : '') +
+                '<div style="display:flex;gap:7px;flex-wrap:wrap">' +
+                  (d.fotos.length ? '<span class="chip">' + d.fotos.length + ' foto\'s</span>' : '') +
+                  (d.uren ? '<span class="chip">' + veilig(d.uren) + '</span>' : '') +
+                  '<span class="chip">' + veilig(d.auteurNaam) + '</span>' +
+                '</div>' +
+                App.fotoRaster(d.fotos) +
+              '</div>';
+            }).join('')
+          : '<div class="leeg">Nog geen dagrapporten geplaatst.</div>') +
+      '</div>';
+
+    bestandenLijst('dFotos', 'dBestanden');
+  }
+
+  function plaatsDagrapport() {
+    var titel = $('#dTitel').value.trim();
+    if (!titel) { App.toonFout('#dagFout', 'Vul in wat er is gedaan.'); $('#dTitel').focus(); return; }
+
+    var knop = $('#plaatsDag');
+    knop.disabled = true;
+    knop.textContent = 'Bezig…';
+
+    var vd = new FormData();
+    vd.append('titel', titel);
+    vd.append('datum', $('#dDatum').value);
+    vd.append('uren', $('#dUren').value.trim());
+    vd.append('punten', $('#dPunten').value);
+    var invoer = $('#dFotos');
+    if (invoer) Array.prototype.forEach.call(invoer.files, function (f) { vd.append('fotos', f); });
+
+    App.apiFormulier('/projecten/' + S.project.id + '/dagboek', vd)
+      .then(function () { App.melding('Geplaatst — de klant ziet het in zijn bouwdagboek'); return laadProjectinhoud(); })
+      .catch(function (err) {
+        knop.disabled = false;
+        knop.textContent = 'Dagrapport plaatsen';
+        App.toonFout('#dagFout', err.message);
+      });
+  }
+
+  /* ---------- Meerwerk ---------- */
+
+  function statusLabel(status) {
+    if (status === 'akkoord') return '<span class="status status--ok"><svg width="13" height="13" aria-hidden="true"><use href="#i-check"></use></svg>Akkoord</span>';
+    if (status === 'afgewezen') return '<span class="status status--nee"><svg width="13" height="13" aria-hidden="true"><use href="#i-x"></use></svg>Afgewezen</span>';
+    return '<span class="status status--wacht"><svg width="13" height="13" aria-hidden="true"><use href="#i-clock"></use></svg>Wacht op de klant</span>';
+  }
+
+  function tekenMeerwerk() {
+    var afgesloten = S.project && S.project.status === 'afgesloten';
+    var volgend = S.meerwerk.length ? S.meerwerk[0].nummer + 1 : 1;
+
+    $('#v-meerwerk').innerHTML =
+      slotmelding() +
+      (afgesloten ? '' :
+        '<div class="kaart" style="margin-bottom:20px">' +
+          '<div class="kaart__kop"><h2>Meerwerk voorstellen</h2><span class="meta">wordt #' + volgend + '</span></div>' +
+          '<div style="padding:4px 20px 20px">' +
+            '<p class="fout" id="mwFout" hidden></p>' +
+            '<div class="veld"><label for="mTitel">Omschrijving</label>' +
+              '<input id="mTitel" type="text" placeholder="Extra stucwerk trapkast"></div>' +
+            '<div class="veld"><label for="mOms">Toelichting voor de klant</label>' +
+              '<textarea id="mOms" rows="2" placeholder="Wat is er nodig en waarom?"></textarea></div>' +
+            '<div class="veld veld--rij">' +
+              '<div><label for="mBedrag">Bedrag excl. btw</label><input id="mBedrag" type="text" inputmode="decimal" placeholder="850,00"></div>' +
+              '<div></div>' +
+            '</div>' +
+            (S.fotoopslag
+              ? '<label class="knopbestand" style="margin-bottom:14px">' +
+                '<svg width="17" height="17" aria-hidden="true"><use href="#i-camera"></use></svg>Foto erbij' +
+                '<input id="mFotos" type="file" accept="image/*" multiple></label>' +
+                '<div class="bestanden" id="mBestanden" style="margin-bottom:14px"></div>'
+              : '') +
+            '<button class="btn btn--gold" type="button" id="stuurMeerwerk">Voorstel naar de klant sturen</button>' +
+            '<p class="notitie">De klant ziet het bedrag vóórdat je het werk uitvoert. Dat scheelt discussie achteraf.</p>' +
+          '</div>' +
+        '</div>') +
+
+      '<div class="kaart">' +
+        '<div class="kaart__kop"><h2>Alle meerwerk</h2><span class="meta">' + App.euro(S.goedgekeurd || 0) + ' goedgekeurd</span></div>' +
+        (S.meerwerk.length
+          ? S.meerwerk.map(function (m) {
+              return '<div class="mw">' +
+                '<div class="mw__top">' +
+                  '<div><div class="mw__nr">#' + m.nummer + ' · ' + veilig(m.voorsteller) + ' · ' +
+                    veilig(new Date(m.voorgesteldOp).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })) + '</div>' +
+                  '<div class="mw__titel">' + veilig(m.titel) + '</div></div>' +
+                  '<div class="mw__prijs">' + App.euro(m.bedrag) + '</div>' +
+                '</div>' +
+                (m.omschrijving ? '<p class="mw__tekst">' + veilig(m.omschrijving) + '</p>' : '') +
+                App.fotoRaster(m.fotos) +
+                '<div style="margin-top:10px">' + statusLabel(m.status) + '</div>' +
+              '</div>';
+            }).join('')
+          : '<div class="leeg">Nog geen meerwerk voorgesteld.</div>') +
+      '</div>';
+
+    bestandenLijst('mFotos', 'mBestanden');
+  }
+
+  function stuurMeerwerk() {
+    var titel = $('#mTitel').value.trim();
+    var bedrag = $('#mBedrag').value.trim();
+
+    if (!titel) { App.toonFout('#mwFout', 'Geef het meerwerk een korte omschrijving.'); $('#mTitel').focus(); return; }
+    if (!bedrag) { App.toonFout('#mwFout', 'Vul een bedrag in.'); $('#mBedrag').focus(); return; }
+
+    var knop = $('#stuurMeerwerk');
+    knop.disabled = true;
+    knop.textContent = 'Bezig…';
+
+    var vd = new FormData();
+    vd.append('titel', titel);
+    vd.append('omschrijving', $('#mOms').value.trim());
+    vd.append('bedrag', bedrag);
+    var invoer = $('#mFotos');
+    if (invoer) Array.prototype.forEach.call(invoer.files, function (f) { vd.append('fotos', f); });
+
+    App.apiFormulier('/projecten/' + S.project.id + '/meerwerk', vd)
+      .then(function (d) {
+        App.melding('Voorstel #' + d.meerwerk.nummer + ' staat klaar bij de klant');
+        return laadProjectinhoud();
+      })
+      .catch(function (err) {
+        knop.disabled = false;
+        knop.textContent = 'Voorstel naar de klant sturen';
+        App.toonFout('#mwFout', err.message);
+      });
+  }
+
+  document.querySelector('main').addEventListener('click', function (e) {
+    if (e.target.closest('#verstuur')) { stuurBericht(); return; }
+    if (e.target.closest('#plaatsDag')) { plaatsDagrapport(); return; }
+    if (e.target.closest('#stuurMeerwerk')) { stuurMeerwerk(); return; }
+
+    var foto = e.target.closest('[data-foto]');
+    if (foto) App.toonFoto(foto.getAttribute('data-foto'));
+  });
+
+  document.querySelector('main').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.id === 'bericht') stuurBericht();
+  });
+
+  laden().catch(function () { location.href = '/app/'; });
+}());
+</script>
+</body>
+</html>

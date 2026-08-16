@@ -1,0 +1,2102 @@
+<title>Projexa — klikbare demo</title>
+
+<style>
+/* ==========================================================================
+   Projexa — klikbare demo van de klantgerichte opzet
+   Eén project, twee kanten: de huiseigenaar (telefoon) en de uitgenodigde
+   aannemer (desktop). Alles draait op één gedeelde staat in het geheugen,
+   zodat je ziet wat er bij de ander verandert.
+   Ontwerp en tokens komen uit de bestaande Projexa-omgeving.
+   ========================================================================== */
+
+:root {
+  --black: #090b0c;
+  --black-2: #0f1214;
+  --black-3: #151a1d;
+  --gold: #b5955e;
+  --gold-light: #d8b778;
+  --gold-bright: #e7cb8e;
+  --gold-dark: #8c7343;
+
+  --app-bg: #f2f1ef;
+  --surface: #ffffff;
+  --surface-2: #f7f6f4;
+  --line: #e6e3df;
+  --ink: #16181a;
+  --ink-2: #55595e;
+  --ink-3: #8b9096;
+
+  --red: #d3513b;
+  --green: #2fa84f;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --shadow: 0 1px 2px rgba(9, 11, 12, .04), 0 8px 24px rgba(9, 11, 12, .06);
+  --shadow-lg: 0 30px 70px rgba(0, 0, 0, .55);
+
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* Sommige componenten hieronder zetten zelf een display; zonder deze regel
+   wint dat van het hidden-attribuut en blijven verborgen dingen zichtbaar. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--black);
+  color: #fff;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* --------------------------------------------------------------------------
+   Logo
+   -------------------------------------------------------------------------- */
+
+.logo { display: inline-flex; align-items: center; gap: 14px; text-decoration: none; }
+.logo__mark { flex: none; }
+.logo__type { display: flex; flex-direction: column; gap: 2px; }
+.logo__name { font-weight: 400; letter-spacing: .28em; line-height: 1; color: #fff; white-space: nowrap; }
+.logo__name b { font-weight: 400; color: var(--gold-light); }
+.logo__tag { font-size: .34em; letter-spacing: .34em; color: var(--gold); line-height: 1; white-space: nowrap; }
+
+/* --------------------------------------------------------------------------
+   Knoppen
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter .15s ease, background .15s ease, border-color .15s ease;
+}
+
+.btn:hover { filter: brightness(1.06); }
+.btn:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+
+.btn--gold { background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #221b0c; border-color: var(--gold-dark); }
+.btn--ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.btn--stil { background: var(--surface-2); color: var(--ink-2); border-color: var(--line); }
+.btn--outline-gold { background: transparent; color: var(--gold-light); border-color: rgba(181, 149, 94, .5); }
+.btn--outline-gold:hover { background: rgba(181, 149, 94, .12); }
+
+/* --------------------------------------------------------------------------
+   Inlogscherm
+   -------------------------------------------------------------------------- */
+
+.pagina[hidden] { display: none; }
+
+.loginpg {
+  background:
+    radial-gradient(1000px 540px at 50% -5%, rgba(181, 149, 94, .14), transparent 62%),
+    var(--black);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 46px 22px 54px;
+}
+
+.loginwrap { width: 100%; max-width: 400px; display: grid; justify-items: center; gap: 26px; }
+
+.loginwrap__kop { display: grid; justify-items: center; gap: 12px; }
+.loginwrap__kop .logo { font-size: 26px; gap: 17px; }
+
+.loginwrap__demo {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  border: 1px solid rgba(181, 149, 94, .35);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+.logincard {
+  width: 100%;
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg);
+  padding: 30px 28px 26px;
+}
+
+.logincard h1 { margin: 0 0 4px; font-size: 21px; font-weight: 600; }
+.logincard__sub { margin: 0 0 22px; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+
+.btn--breed { width: 100%; }
+
+.loginhint { margin: 14px 0 0; font-size: 12px; color: var(--ink-3); text-align: center; line-height: 1.5; }
+
+.loginfout {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a33a26;
+  background: #fbeae7;
+  border: 1px solid #f0d2cb;
+  border-radius: var(--r-sm);
+  padding: 9px 12px;
+}
+
+/* De uitgenodigde partij logt kleiner en rustiger in — hij is te gast. */
+.loginklein {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, .12);
+  padding-top: 24px;
+  text-align: left;
+}
+
+.loginklein h2 { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, .9); }
+.loginklein > p { margin: 0 0 15px; font-size: 12.5px; line-height: 1.6; color: rgba(255, 255, 255, .48); }
+.loginklein label { color: rgba(255, 255, 255, .5); font-size: 11.5px; }
+
+.loginklein input {
+  background: rgba(255, 255, 255, .05);
+  border-color: rgba(255, 255, 255, .14);
+  color: #fff;
+  font-size: 13.5px;
+  padding: 9px 12px;
+}
+
+.loginklein input:focus { border-color: var(--gold); }
+.loginklein .veld { margin-bottom: 12px; }
+.loginklein .btn { font-size: 13.5px; padding: 9px 16px; }
+.loginklein .loginfout { background: rgba(211, 81, 59, .14); border-color: rgba(211, 81, 59, .34); color: #eba393; }
+.loginklein .loginhint { text-align: left; color: rgba(255, 255, 255, .38); }
+
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; }
+
+/* Velden (ook gebruikt in de dialoog en de aannemersformulieren) */
+.veld { margin-bottom: 16px; }
+.veld label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
+
+.veld input, .veld textarea, .veld select {
+  width: 100%;
+  padding: 11px 13px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 14.5px;
+  outline: none;
+}
+
+.veld input:focus, .veld textarea:focus, .veld select:focus { border-color: var(--gold); }
+.veld--rij { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+@media (max-width: 460px) { .veld--rij { grid-template-columns: 1fr; } }
+
+/* Inloggegevens die na een uitnodiging worden getoond */
+.inloggegevens {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+}
+
+.inloggegevens dl { margin: 0; display: grid; gap: 10px; }
+.inloggegevens dt { font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
+.inloggegevens dd { margin: 2px 0 0; font-size: 16px; font-weight: 700; }
+
+/* --------------------------------------------------------------------------
+   Telefoon: de huiseigenaar
+   -------------------------------------------------------------------------- */
+
+.mob { background: var(--app-bg); color: var(--ink); }
+
+.m-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--surface);
+  max-width: 460px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.m-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 13px 18px 11px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.m-top h1 { margin: 0; font-size: 18px; font-weight: 700; line-height: 1.2; }
+.m-top__sub { font-size: 12px; color: var(--ink-3); }
+.m-top__right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+
+.m-icoknop {
+  border: 0;
+  background: none;
+  color: var(--ink);
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  position: relative;
+}
+
+.m-icoknop:hover { background: var(--surface-2); }
+
+.m-main { flex: 1; min-height: 0; padding: 4px 18px 20px; display: flex; flex-direction: column; }
+.m-scherm { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.m-scherm > * { flex-shrink: 0; }
+.m-scherm[hidden] { display: none; }
+
+.m-card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.m-titel { font-size: 15px; font-weight: 700; margin: 22px 0 10px; }
+.m-titel:first-child { margin-top: 16px; }
+
+.m-prog { padding: 15px 16px; border-bottom: 1px solid var(--line); }
+.m-prog__kop { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.m-bar { display: block; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.m-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); }
+
+.m-cijfers { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); }
+.m-cijfer { background: var(--surface); padding: 13px 16px; }
+.m-cijfer dt { font-size: 11.5px; color: var(--ink-3); margin: 0 0 2px; }
+.m-cijfer dd { margin: 0; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.m-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 12px 8px; border-top: 1px solid var(--line); }
+
+.m-quick button {
+  border: 0;
+  background: none;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  padding: 8px 2px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--ink-2);
+}
+
+.m-quick button:hover { background: var(--surface-2); }
+.m-quick svg { color: var(--ink); }
+
+.m-rij {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 16px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.m-rij:first-child { border-top: 0; }
+button.m-rij { cursor: pointer; }
+button.m-rij:hover { background: var(--surface-2); }
+.m-rij b { display: block; font-size: 14.5px; font-weight: 600; }
+.m-rij small { display: block; font-size: 12.5px; color: var(--ink-3); }
+.m-rij__eind { margin-left: auto; color: var(--ink-3); flex: none; display: flex; align-items: center; gap: 8px; }
+
+.m-ico {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--ink);
+}
+
+.m-ico--groen { background: #e8f6ec; color: var(--green); }
+.m-ico--goud { background: #f7efe2; color: var(--gold-dark); }
+.m-ico--rood { background: #fbeae7; color: var(--red); }
+
+.m-leeg { padding: 26px 16px; text-align: center; color: var(--ink-3); font-size: 13.5px; }
+
+/* Chat */
+.m-chat { flex: 1; min-height: 260px; overflow-y: auto; display: flex; flex-direction: column; justify-content: flex-end; gap: 9px; padding: 14px 0 6px; }
+
+.m-bubbel {
+  max-width: 84%;
+  padding: 9px 13px 6px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  align-self: flex-start;
+}
+
+.m-bubbel--ik { align-self: flex-end; background: #f4ece0; border-color: #e8dcc8; }
+.m-bubbel__wie { display: block; font-size: 11.5px; font-weight: 700; color: var(--gold-dark); margin-bottom: 2px; }
+.m-bubbel__tijd { display: block; text-align: right; font-size: 11px; color: var(--ink-3); margin-top: 3px; }
+
+.m-bubbel--systeem {
+  align-self: center;
+  max-width: 92%;
+  text-align: center;
+  background: #f7efe2;
+  border-color: #e8d9bd;
+  color: #7a5f24;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 6px 15px;
+}
+
+.m-opsteller {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+}
+
+.m-opsteller input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 10px 15px;
+  font-size: 14.5px;
+  outline: none;
+}
+
+.m-rond {
+  width: 40px; height: 40px;
+  flex: none;
+  border-radius: 50%;
+  border: 0;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+/* Gesprekkenlijst — je kiest eerst met wie je praat, dan pas de chat zelf. */
+.chatrij {
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  gap: 13px;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.chatrij:first-child { border-top: 0; }
+.chatrij:hover { background: var(--surface-2); }
+
+.chatavatar {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  flex: none;
+}
+
+.chatavatar--a { background: #ece5d6; color: #7a6437; }
+.chatavatar--b { background: #dfe5e7; color: #4c5d64; }
+.chatavatar--c { background: #e2e7dc; color: #566044; }
+
+.chatrij__tekst { min-width: 0; }
+.chatrij__naam { display: block; font-size: 15.5px; font-weight: 600; line-height: 1.3; }
+.chatrij__rol { font-size: 12px; color: var(--ink-3); font-weight: 400; }
+
+.chatrij__prev {
+  display: block;
+  font-size: 13.5px;
+  color: var(--ink-3);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chatrij__prev b { color: var(--ink-2); font-weight: 600; }
+
+.chatrij__meta { display: grid; justify-items: end; gap: 6px; flex: none; }
+.chatrij__tijd { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+.chatrij__ongelezen {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #221b0c;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.chatrij__naam + .chatrij__prev { margin-top: 3px; }
+
+/* Dagboek */
+.m-dag { padding: 14px 16px; border-top: 1px solid var(--line); }
+.m-dag:first-child { border-top: 0; }
+.m-dag__datum { font-size: 12px; color: var(--ink-3); font-weight: 600; }
+.m-dag__titel { font-size: 14.5px; font-weight: 600; margin: 3px 0 8px; }
+.m-dag__punten { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.m-dag__punten li { font-size: 13.5px; color: var(--ink-2); display: flex; gap: 8px; align-items: flex-start; }
+.m-dag__punten svg { flex: none; margin-top: 3px; color: var(--green); }
+
+.chips { display: flex; gap: 7px; flex-wrap: wrap; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 3px 10px;
+  color: var(--ink-2);
+}
+
+.chip--jij { background: #f7efe2; border-color: #e8d9bd; color: #7a5f24; }
+
+.fotos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+.fotos figure { margin: 0; aspect-ratio: 1; border-radius: var(--r-sm); overflow: hidden; background: var(--surface-2); }
+.fotos svg { width: 100%; height: 100%; display: block; }
+
+/* Meerwerk */
+.mwkaart { padding: 15px 16px; border-top: 1px solid var(--line); }
+.mwkaart:first-child { border-top: 0; }
+.mwkaart__top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.mwkaart__nr { font-size: 12.5px; color: var(--ink-3); font-weight: 600; }
+.mwkaart__titel { font-size: 15px; font-weight: 600; margin-top: 2px; }
+.mwkaart__prijs { font-size: 17px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.mwkaart__tekst { font-size: 13.5px; color: var(--ink-2); margin: 8px 0 0; }
+.mwkaart__knoppen { display: flex; gap: 9px; margin-top: 13px; }
+.mwkaart__knoppen .btn { flex: 1; }
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  padding: 3px 11px;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status--ok { background: #e8f6ec; color: #1f7a39; }
+.status--wacht { background: #f7ecd7; color: #8a6a20; }
+.status--nee { background: #fbeae7; color: #a33a26; }
+
+/* Tabbalk */
+.m-tabs {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 6px 4px;
+}
+
+.m-tab {
+  border: 0;
+  background: none;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 7px 2px;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  cursor: pointer;
+  border-radius: var(--r-md);
+  position: relative;
+}
+
+.m-tab[aria-current="page"] { color: var(--gold-dark); font-weight: 700; }
+.m-tab[aria-current="page"] svg { color: var(--gold-dark); }
+
+.stip {
+  position: absolute;
+  top: 4px;
+  right: 20%;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.m-icoknop .stip { top: 0; right: 0; }
+
+/* Telefoonframe op grote schermen */
+@media (min-width: 900px) {
+  .mob {
+    background:
+      radial-gradient(900px 500px at 50% 0%, rgba(181, 149, 94, .12), transparent 60%),
+      var(--black);
+    padding: 28px 20px 40px;
+  }
+
+  .m-app {
+    max-width: 402px;
+    border-radius: 36px;
+    border: 10px solid #16191b;
+    outline: 1px solid #33383b;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    min-height: 660px;
+    height: min(860px, calc(100vh - 118px));
+  }
+
+  .m-main { overflow-y: auto; }
+  .m-status { display: flex; }
+}
+
+.m-status {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 20px 0;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--surface);
+}
+
+.m-notitie {
+  display: none;
+  text-align: center;
+  color: rgba(255, 255, 255, .5);
+  font-size: 13px;
+  margin: 0 auto 20px;
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+@media (min-width: 900px) { .m-notitie { display: block; } }
+
+/* --------------------------------------------------------------------------
+   Desktop: de aannemer
+   -------------------------------------------------------------------------- */
+
+.app { background: var(--app-bg); color: var(--ink); min-height: 100vh; }
+.shell { display: grid; grid-template-columns: 234px 1fr; min-height: 100vh; }
+
+.sidebar {
+  background: var(--black);
+  color: #fff;
+  padding: 24px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sidebar .logo { font-size: 13px; gap: 10px; padding: 0 8px; }
+
+.nav { display: flex; flex-direction: column; gap: 2px; }
+
+.nav__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: none;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  color: rgba(255, 255, 255, .68);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.nav__item:hover { background: rgba(255, 255, 255, .06); color: #fff; }
+.nav__item[aria-current="page"] { background: var(--black-3); color: #fff; font-weight: 600; }
+.nav__item[aria-current="page"] svg { color: var(--gold-light); }
+
+.nav__badge {
+  margin-left: auto;
+  background: var(--gold);
+  color: #221b0c;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.sidebar__voet {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  padding: 14px 8px 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, .45);
+  line-height: 1.6;
+}
+
+.sidebar__voet b { color: var(--gold-light); font-weight: 600; }
+
+.gebruiker { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 13px; margin-bottom: 10px; }
+
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold-dark));
+  color: #1a1509;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex: none;
+}
+
+.main { padding: 26px 30px 50px; max-width: 1080px; }
+.topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
+.topbar h1 { font-size: 24px; font-weight: 600; margin: 0; }
+.topbar__sub { font-size: 13px; color: var(--ink-3); }
+.topbar__rechts { margin-left: auto; display: flex; gap: 10px; }
+
+.view[hidden] { display: none; }
+
+.kaart { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow); }
+.kaart__kop { padding: 16px 20px 12px; display: flex; align-items: center; gap: 12px; }
+.kaart__kop h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.kaart__kop .meta { margin-left: auto; font-size: 12.5px; color: var(--ink-3); }
+.kaart__body { padding: 4px 20px 20px; }
+
+.kolommen { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 15px 17px; box-shadow: var(--shadow); }
+.stat__waarde { font-size: 24px; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.stat__label { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+
+.lijst { display: flex; flex-direction: column; }
+.lijst > * + * { border-top: 1px solid var(--line); }
+
+.rij { display: flex; align-items: center; gap: 12px; padding: 13px 20px; font-size: 14px; }
+.rij b { display: block; font-weight: 600; font-size: 14.5px; }
+.rij small { display: block; font-size: 12.5px; color: var(--ink-3); }
+.rij__eind { margin-left: auto; flex: none; display: flex; align-items: center; gap: 10px; }
+
+.chat-d { display: flex; flex-direction: column; height: 460px; }
+.chat-d__berichten { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; background: var(--surface-2); }
+.chat-d .m-bubbel { max-width: 70%; }
+.opsteller-d { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--surface); }
+.opsteller-d input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px; padding: 10px 15px; outline: none; font-size: 14px; }
+
+@media (max-width: 980px) {
+  .shell { grid-template-columns: 1fr; min-height: 0; }
+  .sidebar { flex-direction: row; align-items: center; gap: 12px; overflow-x: auto; padding: 12px 14px; }
+  .sidebar .logo, .sidebar__voet { display: none; }
+  .nav { flex-direction: row; gap: 6px; }
+  .nav__item { padding: 9px 12px; white-space: nowrap; }
+  .main { padding: 20px 16px 40px; }
+  .kolommen { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   Melding, dialoog
+   -------------------------------------------------------------------------- */
+
+.melding {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translate(-50%, 20px);
+  background: var(--black);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 60;
+  max-width: calc(100% - 40px);
+  text-align: center;
+}
+
+.melding.is-zichtbaar { opacity: 1; transform: translate(-50%, 0); }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 11, 12, .62);
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  z-index: 50;
+}
+
+.overlay[hidden] { display: none; }
+
+.dialoog {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.dialoog__kop { padding: 18px 20px 14px; border-bottom: 1px solid var(--line); }
+.dialoog__kop h3 { margin: 0 0 3px; font-size: 17px; font-weight: 600; }
+.dialoog__kop p { margin: 0; font-size: 13px; color: var(--ink-2); }
+.dialoog__body { padding: 18px 20px; }
+.dialoog__voet { display: flex; gap: 10px; padding: 0 20px 20px; }
+.dialoog__voet .btn { flex: 1; }
+
+.notitie {
+  font-size: 13px;
+  color: var(--ink-2);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  margin: 14px 0 0;
+}
+
+.slot-melding {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f7efe2;
+  border: 1px solid #e8d9bd;
+  color: #7a5f24;
+  border-radius: var(--r-md);
+  padding: 11px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7cb8e"/>
+      <stop offset="1" stop-color="#a98449"/>
+    </linearGradient>
+    <linearGradient id="fotoA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9d3c8"/><stop offset="1" stop-color="#b3aa9c"/></linearGradient>
+    <linearGradient id="fotoB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfd6d8"/><stop offset="1" stop-color="#9aa6ab"/></linearGradient>
+  </defs>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-5.5 4V6.5a1 1 0 0 1 1-1z"/><circle cx="8.6" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.6A1.6 1.6 0 0 1 5.1 6h3.8l2 2.5h8A1.6 1.6 0 0 1 20.5 10v8a1.6 1.6 0 0 1-1.6 1.6H5.1A1.6 1.6 0 0 1 3.5 18z"/></symbol>
+  <symbol id="i-plus-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+  <symbol id="i-checks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.6 6 16.6 13.6 7.4"/><path d="M9.6 14.9 12 17.2 21 6.8"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h7l4.5 4.5V21h-11.5z"/><path d="M13.2 3v5h5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.8" y="10.5" width="14.4" height="10" rx="2.2"/><path d="M8.2 10.5V7.8a3.8 3.8 0 0 1 7.6 0v2.7"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8v5.4l3.4 2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12.5"/><path d="M12.5 6.5 18.5 12l-6 5.5"/></symbol>
+  <symbol id="i-user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.2"/><path d="M3.4 20c0-3.4 3-5.4 6.6-5.4 1 0 2 .16 2.9.47"/><path d="M17.6 14.4v6M14.6 17.4h6"/></symbol>
+  <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="M13.5 6 19.5 12l-6 6"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5l7 7-7 7"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5l-7 7 7 7"/></symbol>
+  <symbol id="i-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 6.3a3.8 3.8 0 0 0 5 5l-8 8a2.3 2.3 0 0 1-3.3-3.3z"/><path d="M6.2 4.5 9 7.3l-1.7 1.7L4.5 6.2z"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.6A6.4 6.4 0 0 0 7.6 9a8 8 0 0 0 0 6 6.4 6.4 0 0 0 9.4 2.4"/><path d="M4.8 10.6h7M4.8 13.6h7"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="4.5" width="17.2" height="4.2" rx="1.4"/><path d="M5.2 8.7V19a1.4 1.4 0 0 0 1.4 1.4h10.8a1.4 1.4 0 0 0 1.4-1.4V8.7"/><path d="M10 12.4h4"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 10.2a5.6 5.6 0 0 1 11.2 0c0 4 1.6 5.6 1.6 5.6H4.8s1.6-1.6 1.6-5.6z"/><path d="M9.9 19a2.3 2.3 0 0 0 4.2 0"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5H18a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5h-3.5"/><path d="M10 8.5 6.5 12l3.5 3.5"/><path d="M6.5 12H15"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="18" cy="12" r="1.2" fill="currentColor"/></symbol>
+</svg>
+
+<!-- ==========================================================================
+     Inloggen
+     ========================================================================== -->
+
+<section class="pagina loginpg" id="pagina-start">
+  <div class="loginwrap">
+
+    <div class="loginwrap__kop">
+      <span class="logo">
+        <svg class="logo__mark" width="54" height="60" viewBox="0 0 72 80" aria-hidden="true">
+          <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+          <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+          <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+        </svg>
+        <span class="logo__type">
+          <span class="logo__name">PROJEX<b>A</b></span>
+          <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+        </span>
+      </span>
+      <p class="loginwrap__demo">Demo · niet live</p>
+    </div>
+
+    <form class="logincard" id="klantForm">
+      <h1>Mijn verbouwing</h1>
+      <p class="logincard__sub">Log in met het account waarmee je je project hebt aangemaakt.</p>
+
+      <p class="loginfout" id="lkFout" hidden></p>
+
+      <div class="veld">
+        <label for="lkMail">E-mailadres</label>
+        <input id="lkMail" type="text" value="thijs@voorbeeld.nl" autocomplete="username">
+      </div>
+      <div class="veld">
+        <label for="lkWw">Wachtwoord</label>
+        <input id="lkWw" type="password" value="demodemo" autocomplete="current-password">
+      </div>
+
+      <button class="btn btn--gold btn--breed" type="submit">Inloggen</button>
+      <p class="loginhint">Demo: de gegevens staan al ingevuld.</p>
+    </form>
+
+    <form class="loginklein" id="aannemerForm">
+      <h2>Uitgenodigd als aannemer of vakman?</h2>
+      <p>Je krijgt een projectcode en wachtwoord van de eigenaar zodra hij je toevoegt. Meedoen kost je niets.</p>
+
+      <p class="loginfout" id="laFout" hidden></p>
+
+      <div class="veld veld--rij">
+        <div>
+          <label for="laCode">Projectcode</label>
+          <input id="laCode" type="text" class="mono" autocomplete="off">
+        </div>
+        <div>
+          <label for="laWw">Wachtwoord</label>
+          <input id="laWw" type="password" autocomplete="off">
+        </div>
+      </div>
+
+      <button class="btn btn--ghost btn--breed" type="submit">Inloggen op het project</button>
+      <p class="loginhint" id="laHint"></p>
+    </form>
+
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Huiseigenaar (telefoon)
+     ========================================================================== -->
+
+<section class="pagina mob" id="pagina-klant" hidden>
+  <p class="m-notitie">
+    Zo ziet de huiseigenaar het op zijn telefoon. Keur het openstaande meerwerk goed of af,
+    stuur een bericht of nodig een vakman uit. Wil je de andere kant zien? Log uit en log in
+    met de <b>projectcode</b> van een van je vakmensen — die staat bij elk bedrijf hieronder.
+  </p>
+
+  <div class="m-app">
+    <div class="m-status"><span>9:41</span><span>Projexa</span></div>
+
+    <div class="m-top">
+      <button class="m-icoknop" type="button" id="kTerug" hidden aria-label="Terug">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+      </button>
+      <div>
+        <h1 id="kTitel">Mijn verbouwing</h1>
+        <div class="m-top__sub" id="kSub">Renovatie woning</div>
+      </div>
+      <div class="m-top__right">
+        <button class="m-icoknop" type="button" id="kUitnodigen" aria-label="Iemand uitnodigen">
+          <svg width="21" height="21" aria-hidden="true"><use href="#i-user-plus"></use></svg>
+        </button>
+        <button class="m-icoknop" type="button" id="kUitloggen" aria-label="Uitloggen">
+          <svg width="21" height="21" aria-hidden="true"><use href="#i-logout"></use></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="m-main">
+      <section class="m-scherm" id="k-start"></section>
+      <section class="m-scherm" id="k-berichten" hidden></section>
+      <section class="m-scherm" id="k-dagboek" hidden></section>
+      <section class="m-scherm" id="k-meerwerk" hidden></section>
+      <section class="m-scherm" id="k-meer" hidden></section>
+      <section class="m-scherm" id="k-documenten" hidden></section>
+      <section class="m-scherm" id="k-akkoorden" hidden></section>
+      <section class="m-scherm" id="k-dossier" hidden></section>
+    </div>
+
+    <nav class="m-tabs" aria-label="Onderdelen">
+      <button class="m-tab" type="button" data-tab="start" aria-current="page">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-home"></use></svg>Start
+      </button>
+      <button class="m-tab" type="button" data-tab="berichten">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-chat"></use></svg>Berichten
+        <span class="stip" id="tabStipBerichten" hidden>1</span>
+      </button>
+      <button class="m-tab" type="button" data-tab="dagboek">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-camera"></use></svg>Dagboek
+      </button>
+      <button class="m-tab" type="button" data-tab="meerwerk">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-euro"></use></svg>Meerwerk
+        <span class="stip" id="tabStipMeerwerk" hidden>1</span>
+      </button>
+      <button class="m-tab" type="button" data-tab="meer">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-dots"></use></svg>Meer
+      </button>
+    </nav>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Aannemer (desktop)
+     ========================================================================== -->
+
+<section class="pagina app" id="pagina-aannemer" hidden>
+  <div class="shell">
+    <aside class="sidebar">
+      <span class="logo">
+        <svg class="logo__mark" width="24" height="27" viewBox="0 0 72 80" aria-hidden="true">
+          <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+          <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+          <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+        </svg>
+        <span class="logo__type">
+          <span class="logo__name">PROJEX<b>A</b></span>
+          <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+        </span>
+      </span>
+
+      <nav class="nav" aria-label="Onderdelen">
+        <button class="nav__item" type="button" data-view="project" aria-current="page">
+          <svg width="18" height="18" aria-hidden="true"><use href="#i-home"></use></svg><span>Project</span>
+        </button>
+        <button class="nav__item" type="button" data-view="meerwerk">
+          <svg width="18" height="18" aria-hidden="true"><use href="#i-euro"></use></svg><span>Meerwerk</span>
+          <span class="nav__badge" id="aBadgeMeerwerk" hidden>1</span>
+        </button>
+        <button class="nav__item" type="button" data-view="dagboek">
+          <svg width="18" height="18" aria-hidden="true"><use href="#i-camera"></use></svg><span>Bouwdagboek</span>
+        </button>
+        <button class="nav__item" type="button" data-view="berichten">
+          <svg width="18" height="18" aria-hidden="true"><use href="#i-chat"></use></svg><span>Berichten</span>
+          <span class="nav__badge" id="aBadgeBerichten" hidden>1</span>
+        </button>
+        <button class="nav__item" type="button" data-view="akkoorden">
+          <svg width="18" height="18" aria-hidden="true"><use href="#i-checks"></use></svg><span>Akkoorden</span>
+        </button>
+      </nav>
+
+      <div class="sidebar__voet">
+        <div class="gebruiker">
+          <span class="avatar" id="aAvatar">VD</span>
+          <span id="aWie">Bouwbedrijf Van Dijk</span>
+        </div>
+        Je bent <b>uitgenodigd</b> door de eigenaar. Meedoen aan dit project kost je niets.
+        <button class="btn btn--outline-gold btn--breed" type="button" id="aUitloggen" style="margin-top:12px">
+          <svg width="16" height="16" aria-hidden="true"><use href="#i-logout"></use></svg>Uitloggen
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1 id="aTitel">Renovatie woning</h1>
+          <div class="topbar__sub" id="aSub">Dorpsstraat 12, Ede · eigenaar: Thijs Broersen</div>
+        </div>
+      </div>
+
+      <section class="view" id="a-project"></section>
+      <section class="view" id="a-meerwerk" hidden></section>
+      <section class="view" id="a-dagboek" hidden></section>
+      <section class="view" id="a-berichten" hidden></section>
+      <section class="view" id="a-akkoorden" hidden></section>
+    </main>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     Dialoog + melding
+     ========================================================================== -->
+
+<div class="overlay" id="overlay" hidden>
+  <div class="dialoog" role="dialog" aria-modal="true" aria-labelledby="dlgTitel">
+    <div class="dialoog__kop">
+      <h3 id="dlgTitel">Iemand uitnodigen</h3>
+      <p id="dlgSub">Wie erbij komt, ziet dit project. Meedoen is gratis.</p>
+    </div>
+    <div class="dialoog__body" id="dlgBody"></div>
+    <div class="dialoog__voet" id="dlgVoet"></div>
+  </div>
+</div>
+
+<div class="melding" id="melding" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------------------
+     Staat: één project, gedeeld door beide rollen
+     ------------------------------------------------------------------------ */
+
+  var S = {
+    project: {
+      naam: 'Renovatie woning',
+      adres: 'Dorpsstraat 12, Ede',
+      som: 184500,
+      start: '1 september 2026',
+      oplevering: '18 maart 2027',
+      voortgang: 78,
+      pakket: 'Groot — € 249',
+      afgesloten: false
+    },
+    eigenaar: 'Thijs Broersen',
+    klant: { mail: 'thijs@voorbeeld.nl', ww: 'demodemo' },
+    deelnemers: [
+      { naam: 'Bouwbedrijf Van Dijk', rol: 'Hoofdaannemer', code: 'PRJ-VDK4', ww: 'K3PT-9WXR-2LMH', actief: true, ongelezen: 2 },
+      { naam: 'Elektro Bertens', rol: 'Elektricien', code: 'PRJ-BRT8', ww: 'Q7HD-4MNP-8TVK', actief: true, ongelezen: 1 },
+      { naam: 'Kuiper Installaties', rol: 'Loodgieter', code: 'PRJ-KPR2', ww: 'R2WM-6XCL-3HQF', actief: true, ongelezen: 0 },
+      { naam: 'Timmerwerk Sanders', rol: 'Timmerman', code: 'PRJ-SND6', ww: 'N9BZ-5TKR-7PWD', actief: false, ongelezen: 0 }
+    ],
+    ingelogdAls: 'Bouwbedrijf Van Dijk',
+    chatOpen: null,
+    berichten: [
+      { partij: 'Bouwbedrijf Van Dijk', van: 'Mark — Van Dijk', tekst: 'Stucwerk woonkamer is klaar. Hal doen we morgen. De stukadoor komt op een punt bij de trapkast dat niet in de offerte zat — ik stuur je zo een voorstel.', tijd: '08:42' },
+      { partij: 'Bouwbedrijf Van Dijk', van: 'ik', tekst: 'Prima. Kun je er een foto bij doen zodat ik zie wat je bedoelt?', tijd: '09:10' },
+      { partij: 'Bouwbedrijf Van Dijk', van: 'Mark — Van Dijk', tekst: 'Gedaan — staat bij de foto’s van vandaag en in meerwerk #036.', tijd: '09:22' },
+      { partij: 'Bouwbedrijf Van Dijk', systeem: true, tekst: 'Meerwerk #036 toegevoegd · € 850 · wacht op jouw akkoord', tijd: '09:25' },
+      { partij: 'Elektro Bertens', van: 'Jeroen — Bertens', tekst: 'Donderdag ben ik er voor de laatste groepen. Wel graag de meterkast vrij houden.', tijd: '16:05' },
+      { partij: 'Kuiper Installaties', van: 'Wim — Kuiper', tekst: 'Afvoer badkamer ligt erin. Volgende week sluit ik de kranen aan.', tijd: '11:30' },
+      { partij: 'Timmerwerk Sanders', van: 'Bas — Sanders', tekst: 'Binnendeuren staan gepland voor week 9.', tijd: '13:12' }
+    ],
+    dagen: [
+      {
+        datum: '12 februari', dag: 'donderdag', titel: 'Elektricien gestart met de laatste groepen',
+        punten: ['Groepenkast uitgebreid naar 3 extra groepen', 'Bedrading zolder getrokken', 'Wandcontactdozen keuken afgemonteerd'],
+        fotos: 4, uren: '6,5 uur', bedrijf: 'Elektro Bertens'
+      },
+      {
+        datum: '11 februari', dag: 'woensdag', titel: 'Stucwerk woonkamer afgerond',
+        punten: ['Woonkamer gestuukt en glad afgewerkt', 'Extra werk bij trapkast gemeld (meerwerk #036)'],
+        fotos: 3, uren: '16 uur', bedrijf: 'Bouwbedrijf Van Dijk'
+      },
+      {
+        datum: '10 februari', dag: 'dinsdag', titel: 'Voorbereiding stucwerk, vloer beschermd',
+        punten: ['Wanden geprimerd, hoekprofielen gezet', 'Vloer afgedekt en trap ingepakt'],
+        fotos: 2, uren: '8 uur', bedrijf: 'Bouwbedrijf Van Dijk'
+      }
+    ],
+    documenten: [
+      { map: 'Afspraken', naam: 'Offerte Bouwbedrijf Van Dijk', meta: 'PDF · 24 juni 2026 · definitief' },
+      { map: 'Afspraken', naam: 'Aannemingsovereenkomst', meta: 'PDF · 8 juli 2026 · ondertekend' },
+      { map: 'Afspraken', naam: 'Bouwtekeningen (5 bladen)', meta: 'PDF · versie 3 · 19 augustus 2026' },
+      { map: 'Afspraken', naam: 'Constructieberekening', meta: 'PDF · Ingenieursbureau Steen' },
+      { map: 'Geld', naam: 'Facturen (7)', meta: 'Laatste termijn · 1 februari 2027' },
+      { map: 'Na oplevering', naam: 'Garantiebewijzen', meta: 'Dak (10 jaar) · kozijnen (8 jaar)', groen: true },
+      { map: 'Na oplevering', naam: 'Installatiegegevens', meta: 'Warmtepomp · groepenkast · vloerverwarming', groen: true },
+      { map: 'Na oplevering', naam: 'Handleidingen', meta: '6 apparaten en installaties', groen: true },
+      { map: 'Na oplevering', naam: 'Kleur- en materiaalstaat', meta: 'Verf, tegels, sanitair' }
+    ],
+    meerwerk: [
+      { nr: 36, titel: 'Extra stucwerk trapkast', tekst: 'Bij het weghalen van de oude betimmering bleek de wand van de trapkast niet vlak. Uitvlakken en stucen, inclusief materiaal.', bedrag: 850, status: 'wacht', door: 'Bouwbedrijf Van Dijk', datum: '10 feb' },
+      { nr: 35, titel: 'Andere tegel badkamer', tekst: 'Alternatieve wandtegel op verzoek besproken; prijsverschil ten opzichte van de offerte.', bedrag: 1240, status: 'nee', door: 'Bouwbedrijf Van Dijk', datum: '6 feb' },
+      { nr: 34, titel: 'Extra stopcontacten keuken', tekst: 'Vier dubbele wandcontactdozen extra bij het keukeneiland.', bedrag: 280, status: 'ok', door: 'Elektro Bertens', datum: '3 feb' },
+      { nr: 31, titel: 'Verzwaring fundering aanbouw', tekst: 'Op advies van de constructeur; berekening staat bij de documenten.', bedrag: 2250, status: 'ok', door: 'Bouwbedrijf Van Dijk', datum: '4 nov' },
+      { nr: 28, titel: 'Extra dakraam slaapkamer', tekst: 'Dakraam 78×98 inclusief plaatsen en afwerken.', bedrag: 1250, status: 'ok', door: 'Bouwbedrijf Van Dijk', datum: '12 okt' }
+    ],
+    akkoorden: [
+      { soort: 'ok', titel: 'Meerwerk #034 — extra stopcontacten keuken', tekst: 'Vier dubbele wandcontactdozen, geplaatst door Elektro Bertens.', ref: '05-02-2027 09:31 · Thijs Broersen', bedrag: 280 },
+      { soort: 'nee', titel: 'Meerwerk #035 — andere tegel badkamer afgewezen', tekst: 'Oorspronkelijke tegel uit de offerte blijft staan.', ref: '07-02-2027 20:14 · Thijs Broersen', bedrag: 1240, extra: 'niet uitgevoerd' },
+      { soort: 'ok', titel: 'Meerwerk #031 — verzwaring fundering aanbouw', tekst: 'Op advies van de constructeur; berekening toegevoegd bij Documenten.', ref: '06-11-2026 12:02 · Thijs Broersen', bedrag: 2250 },
+      { soort: 'doc', titel: 'Keuze tegelwerk badkamer vastgelegd', tekst: 'Wandtegel wit mat 30×60, vloertegel antraciet 60×60.', ref: '21-01-2027 18:47 · Thijs Broersen · geen prijsgevolg' },
+      { soort: 'datum', titel: 'Verschuiving opleverdatum akkoord', tekst: 'Van 4 maart naar 18 maart 2027 wegens levertijd keuken.', ref: '15-12-2026 10:20 · Thijs Broersen · voorstel Van Dijk' }
+    ],
+    ongelezenKlant: { meerwerk: 1 },
+    ongelezenAannemer: { berichten: 0, meerwerk: 0 },
+    volgendMeerwerk: 37
+  };
+
+  /* ------------------------------------------------------------------------
+     Hulpjes
+     ------------------------------------------------------------------------ */
+
+  var $ = function (sel, root) { return (root || document).querySelector(sel); };
+  var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+
+  function euro(n) { return '€ ' + n.toLocaleString('nl-NL'); }
+
+  function veilig(t) {
+    return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function nuTijd() {
+    var d = new Date();
+    return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+
+  function nuStempel() {
+    var d = new Date();
+    var p = function (n) { return ('0' + n).slice(-2); };
+    return p(d.getDate()) + '-' + p(d.getMonth() + 1) + '-' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  var meldingTimer;
+  function melding(tekst) {
+    var el = $('#melding');
+    el.textContent = tekst;
+    el.classList.add('is-zichtbaar');
+    clearTimeout(meldingTimer);
+    meldingTimer = setTimeout(function () { el.classList.remove('is-zichtbaar'); }, 3200);
+  }
+
+  function fotoSvg(i) {
+    var vormen = [
+      '<path d="M6 30l8-10 6 7 5-5 9 8z" fill="#8d8478" opacity=".6"/>',
+      '<rect x="9" y="10" width="22" height="20" fill="#7f8a8f" opacity=".55"/>',
+      '<circle cx="20" cy="19" r="9" fill="#8d8478" opacity=".55"/>',
+      '<path d="M0 26h40v14H0z" fill="#7f8a8f" opacity=".5"/>'
+    ];
+    var vulling = i % 2 ? 'url(#fotoB)' : 'url(#fotoA)';
+    return '<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" fill="' + vulling + '"/>' + vormen[i % 4] + '</svg>';
+  }
+
+  function fotoRij(aantal) {
+    var uit = '';
+    for (var i = 0; i < aantal; i++) uit += '<figure>' + fotoSvg(i) + '</figure>';
+    return '<div class="fotos">' + uit + '</div>';
+  }
+
+  function statusLabel(status) {
+    if (status === 'ok') return '<span class="status status--ok"><svg width="13" height="13" aria-hidden="true"><use href="#i-check"></use></svg>Akkoord</span>';
+    if (status === 'nee') return '<span class="status status--nee"><svg width="13" height="13" aria-hidden="true"><use href="#i-x"></use></svg>Afgewezen</span>';
+    return '<span class="status status--wacht"><svg width="13" height="13" aria-hidden="true"><use href="#i-clock"></use></svg>In afwachting</span>';
+  }
+
+  function goedgekeurd() {
+    return S.meerwerk.reduce(function (t, m) { return m.status === 'ok' ? t + m.bedrag : t; }, 0);
+  }
+
+  function wachtend() {
+    return S.meerwerk.filter(function (m) { return m.status === 'wacht'; });
+  }
+
+  /* ------------------------------------------------------------------------
+     Navigatie tussen de pagina's
+     ------------------------------------------------------------------------ */
+
+  function ga(pagina) {
+    $$('.pagina').forEach(function (p) { p.hidden = p.id !== 'pagina-' + pagina; });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (pagina === 'klant') tekenKlant();
+    if (pagina === 'aannemer') tekenAannemer();
+  }
+
+  /* ------------------------------------------------------------------------
+     Inloggen
+     ------------------------------------------------------------------------ */
+
+  function toonFout(id, tekst) {
+    var el = $(id);
+    el.textContent = tekst;
+    el.hidden = !tekst;
+  }
+
+  function vulAannemerFormulier() {
+    /* In de demo staat de code van de hoofdaannemer vast ingevuld, zodat je
+       met één klik binnen bent. Nodig je iemand nieuw uit, dan tonen we die
+       gegevens meteen na het uitnodigen. */
+    var eerste = S.deelnemers[0];
+    $('#laCode').value = eerste.code;
+    $('#laWw').value = eerste.ww;
+    $('#laHint').textContent = 'Demo: de gegevens van ' + eerste.naam + ' staan al ingevuld.';
+  }
+
+  $('#klantForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var mail = $('#lkMail').value.trim().toLowerCase();
+    var ww = $('#lkWw').value;
+
+    if (mail !== S.klant.mail || ww !== S.klant.ww) {
+      toonFout('#lkFout', 'Dit e-mailadres of wachtwoord klopt niet. In de demo werkt ' + S.klant.mail + ' met wachtwoord demodemo.');
+      return;
+    }
+
+    toonFout('#lkFout', '');
+    kGa('start');
+    ga('klant');
+  });
+
+  $('#aannemerForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var code = $('#laCode').value.trim().toUpperCase();
+    var ww = $('#laWw').value.trim();
+
+    var partij = S.deelnemers.filter(function (d) { return d.code === code; })[0];
+
+    if (!partij || partij.ww !== ww) {
+      toonFout('#laFout', 'Deze projectcode en dit wachtwoord horen niet bij elkaar. Je krijgt ze van de eigenaar zodra hij je toevoegt.');
+      return;
+    }
+
+    toonFout('#laFout', '');
+    partij.actief = true;
+    S.ingelogdAls = partij.naam;
+    aGa('project');
+    ga('aannemer');
+  });
+
+  $('#kUitloggen').addEventListener('click', function () {
+    ga('start');
+    melding('Uitgelogd');
+  });
+
+  $('#aUitloggen').addEventListener('click', function () {
+    ga('start');
+    vulAannemerFormulier();
+    melding('Uitgelogd');
+  });
+
+  /* ------------------------------------------------------------------------
+     Huiseigenaar
+     ------------------------------------------------------------------------ */
+
+  var kTab = 'start';
+
+  var K_TITELS = {
+    start: ['Mijn verbouwing', null],
+    berichten: ['Berichten', 'Met je aannemer en vakmensen'],
+    dagboek: ['Bouwdagboek', 'Wat er elke dag is gebeurd'],
+    meerwerk: ['Meerwerk', 'Voorstellen en jouw besluit'],
+    meer: ['Meer', null],
+    documenten: ['Documenten', 'Alles bij deze woning'],
+    akkoorden: ['Akkoorden', 'Waar jij akkoord op gaf'],
+    dossier: ['Dossier', 'Wat je overhoudt']
+  };
+
+  function kGa(tab) {
+    kTab = tab;
+    if (tab !== 'berichten') S.chatOpen = null;
+
+    $$('.m-scherm').forEach(function (s) { s.hidden = s.id !== 'k-' + tab; });
+    $$('.m-tab').forEach(function (t) {
+      var hoofd = ['documenten', 'akkoorden', 'dossier'].indexOf(tab) >= 0 ? 'meer' : tab;
+      t.setAttribute('aria-current', t.getAttribute('data-tab') === hoofd ? 'page' : 'false');
+    });
+
+    if (tab === 'berichten' && S.chatOpen) {
+      var partij = S.deelnemers.filter(function (d) { return d.naam === S.chatOpen; })[0];
+      $('#kTitel').textContent = partij ? partij.naam : 'Bericht';
+      $('#kSub').textContent = partij ? partij.rol : '';
+    } else {
+      $('#kTitel').textContent = K_TITELS[tab][0];
+      $('#kSub').textContent = K_TITELS[tab][1] || S.project.naam;
+    }
+
+    $('#kTerug').hidden = ['documenten', 'akkoorden', 'dossier'].indexOf(tab) < 0 && !(tab === 'berichten' && S.chatOpen);
+    if (tab === 'meerwerk') S.ongelezenKlant.meerwerk = 0;
+
+    tekenKlant();
+    var main = $('#pagina-klant .m-main');
+    if (main) main.scrollTop = 0;
+  }
+
+  /* Een gesprek openen leest het meteen als gelezen — net als in een chatapp. */
+  function kOpenChat(naam) {
+    var partij = S.deelnemers.filter(function (d) { return d.naam === naam; })[0];
+    if (partij) partij.ongelezen = 0;
+    S.chatOpen = naam;
+    kGa('berichten');
+  }
+
+  $$('.m-tab').forEach(function (t) {
+    t.addEventListener('click', function () { kGa(t.getAttribute('data-tab')); });
+  });
+
+  $('#kTerug').addEventListener('click', function () {
+    if (kTab === 'berichten' && S.chatOpen) { S.chatOpen = null; kGa('berichten'); return; }
+    kGa('meer');
+  });
+
+  function tekenKlantStart() {
+    var open = wachtend();
+    var laatste = S.dagen[0];
+    var slot = S.project.afgesloten
+      ? '<div class="slot-melding"><svg width="17" height="17" aria-hidden="true"><use href="#i-lock"></use></svg>Project afgesloten — het dossier ligt vast</div>'
+      : '';
+
+    var acties = '';
+    if (open.length) {
+      acties += '<button class="m-rij" type="button" data-naar="meerwerk">' +
+        '<span class="m-ico m-ico--goud"><svg width="17" height="17" aria-hidden="true"><use href="#i-euro"></use></svg></span>' +
+        '<span><b>Meerwerk #' + open[0].nr + ' wacht op jou</b><small>' + veilig(open[0].titel) + ' · ' + euro(open[0].bedrag) + '</small></span>' +
+        '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>';
+    }
+    acties += '<button class="m-rij" type="button" data-naar="dagboek">' +
+      '<span class="m-ico m-ico--groen"><svg width="17" height="17" aria-hidden="true"><use href="#i-camera"></use></svg></span>' +
+      '<span><b>' + veilig(laatste.titel) + '</b><small>' + laatste.datum + ' · ' + laatste.bedrijf + '</small></span>' +
+      '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>';
+
+    var onbeantwoord = S.deelnemers.filter(function (d) { return d.ongelezen; });
+    if (onbeantwoord.length) {
+      var totaal = ongelezenTotaal();
+      acties += '<button class="m-rij" type="button" data-chat="' + veilig(onbeantwoord[0].naam) + '">' +
+        '<span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-chat"></use></svg></span>' +
+        '<span><b>' + totaal + (totaal === 1 ? ' nieuw bericht' : ' nieuwe berichten') + '</b>' +
+        '<small>' + onbeantwoord.map(function (d) { return veilig(d.naam) + ' (' + d.ongelezen + ')'; }).join(' · ') + '</small></span>' +
+        '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>';
+    }
+
+    $('#k-start').innerHTML =
+      slot +
+      '<div class="m-card" style="margin-top:12px">' +
+        '<div class="m-prog">' +
+          '<div class="m-prog__kop"><span>' + veilig(S.project.naam) + '</span><span>' + S.project.voortgang + '%</span></div>' +
+          '<span class="m-bar"><i style="width:' + S.project.voortgang + '%"></i></span>' +
+        '</div>' +
+        '<dl class="m-cijfers" style="margin:0">' +
+          '<div class="m-cijfer"><dt>Aanneemsom</dt><dd>' + euro(S.project.som) + '</dd></div>' +
+          '<div class="m-cijfer"><dt>Goedgekeurd meerwerk</dt><dd>' + euro(goedgekeurd()) + '</dd></div>' +
+          '<div class="m-cijfer"><dt>Start</dt><dd style="font-size:13.5px">' + veilig(S.project.start) + '</dd></div>' +
+          '<div class="m-cijfer"><dt>Oplevering</dt><dd style="font-size:13.5px">' + veilig(S.project.oplevering) + '</dd></div>' +
+        '</dl>' +
+        '<div class="m-quick">' +
+          '<button type="button" data-naar="berichten"><svg width="20" height="20" aria-hidden="true"><use href="#i-chat"></use></svg>Berichten</button>' +
+          '<button type="button" data-naar="dagboek"><svg width="20" height="20" aria-hidden="true"><use href="#i-camera"></use></svg>Dagboek</button>' +
+          '<button type="button" data-naar="documenten"><svg width="20" height="20" aria-hidden="true"><use href="#i-folder"></use></svg>Documenten</button>' +
+          '<button type="button" data-naar="akkoorden"><svg width="20" height="20" aria-hidden="true"><use href="#i-checks"></use></svg>Akkoorden</button>' +
+        '</div>' +
+      '</div>' +
+      '<h2 class="m-titel">Wat er speelt</h2>' +
+      '<div class="m-card">' + acties + '</div>' +
+      '<h2 class="m-titel">Wie werken er aan je huis</h2>' +
+      '<div class="m-card">' +
+        '<div class="m-rij"><span class="m-ico m-ico--goud"><svg width="17" height="17" aria-hidden="true"><use href="#i-home"></use></svg></span>' +
+        '<span><b>' + veilig(S.eigenaar) + '</b><small>Eigenaar — jij betaalt het project</small></span></div>' +
+        S.deelnemers.map(function (d) {
+          return '<button class="m-rij" type="button" data-inlog="' + veilig(d.naam) + '">' +
+            '<span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-tools"></use></svg></span>' +
+            '<span><b>' + veilig(d.naam) + '</b><small><span class="mono">' + veilig(d.code) + '</span> · ' +
+            (d.actief ? 'heeft ingelogd' : 'nog niet ingelogd') + '</small></span>' +
+            '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>';
+        }).join('') +
+      '</div>';
+  }
+
+  function chatInitialen(naam) {
+    var woorden = naam.replace(/^(Bouwbedrijf|Schildersbedrijf|Installatiebedrijf|Timmerwerk|Elektro) /i, '').split(/\s+/);
+    return (woorden[0][0] + (woorden[1] ? woorden[1][0] : '')).toUpperCase();
+  }
+
+  function chatTint(naam) {
+    var som = 0;
+    for (var i = 0; i < naam.length; i++) som += naam.charCodeAt(i);
+    return ['a', 'b', 'c'][som % 3];
+  }
+
+  function laatsteVan(naam) {
+    var lijst = S.berichten.filter(function (b) { return b.partij === naam; });
+    return lijst.length ? lijst[lijst.length - 1] : null;
+  }
+
+  function ongelezenTotaal() {
+    return S.deelnemers.reduce(function (t, d) { return t + (d.ongelezen || 0); }, 0);
+  }
+
+  function tekenKlantBerichten() {
+    var vak = $('#k-berichten');
+
+    /* Geen gesprek open: de lijst, zoals je hem uit een chatapp kent. */
+    if (!S.chatOpen) {
+      vak.innerHTML =
+        '<div class="m-card" style="margin-top:14px">' +
+          S.deelnemers.map(function (d) {
+            var laatste = laatsteVan(d.naam);
+            var voorbeeld = laatste
+              ? (laatste.systeem ? veilig(laatste.tekst)
+                 : (laatste.van === 'ik' ? '<b>Jij:</b> ' : '') + veilig(laatste.tekst))
+              : 'Nog geen berichten';
+
+            return '<button class="chatrij" type="button" data-chat="' + veilig(d.naam) + '">' +
+              '<span class="chatavatar chatavatar--' + chatTint(d.naam) + '">' + veilig(chatInitialen(d.naam)) + '</span>' +
+              '<span class="chatrij__tekst">' +
+                '<span class="chatrij__naam">' + veilig(d.naam) + '</span>' +
+                '<span class="chatrij__prev"><span class="chatrij__rol">' + veilig(d.rol) + '</span> · ' + voorbeeld + '</span>' +
+              '</span>' +
+              '<span class="chatrij__meta">' +
+                '<span class="chatrij__tijd">' + (laatste && laatste.tijd ? laatste.tijd : '') + '</span>' +
+                (d.ongelezen ? '<span class="chatrij__ongelezen">' + d.ongelezen + '</span>' : '') +
+              '</span>' +
+            '</button>';
+          }).join('') +
+        '</div>' +
+        '<p class="notitie">Elke partij heeft een eigen gesprek. Alles blijft bij dit project horen, ook als iemand van telefoon of medewerker wisselt.</p>';
+      return;
+    }
+
+    /* Gesprek open: kop met wie het is, daaronder de berichten. */
+    var partij = S.deelnemers.filter(function (d) { return d.naam === S.chatOpen; })[0] || S.deelnemers[0];
+    var lijst = S.berichten.filter(function (b) { return b.partij === partij.naam; });
+
+    var bubbels = lijst.map(function (b) {
+      if (b.systeem) return '<div class="m-bubbel m-bubbel--systeem">' + veilig(b.tekst) + '</div>';
+      if (b.van === 'ik') return '<div class="m-bubbel m-bubbel--ik">' + veilig(b.tekst) + '<span class="m-bubbel__tijd">' + b.tijd + '</span></div>';
+      return '<div class="m-bubbel"><span class="m-bubbel__wie">' + veilig(b.van) + '</span>' + veilig(b.tekst) + '<span class="m-bubbel__tijd">' + b.tijd + '</span></div>';
+    }).join('');
+
+    vak.innerHTML =
+      '<div class="m-chat">' + (bubbels || '<p class="m-leeg">Nog geen berichten met deze partij.</p>') + '</div>' +
+      (S.project.afgesloten ? '<p class="notitie">Het project is afgesloten. Je kunt het gesprek teruglezen, maar niet meer reageren.</p>' :
+      '<div class="m-opsteller">' +
+        '<input type="text" id="kBericht" placeholder="Bericht aan ' + veilig(partij.naam) + '" aria-label="Bericht">' +
+        '<button class="m-rond" type="button" id="kVerstuur" aria-label="Versturen"><svg width="18" height="18" aria-hidden="true"><use href="#i-send"></use></svg></button>' +
+      '</div>');
+  }
+
+  function tekenKlantDagboek() {
+    $('#k-dagboek').innerHTML =
+      '<div class="m-card" style="margin-top:14px">' +
+        S.dagen.map(function (d) {
+          return '<div class="m-dag">' +
+            '<div class="m-dag__datum">' + veilig(d.datum) + ' · ' + veilig(d.dag) + '</div>' +
+            '<div class="m-dag__titel">' + veilig(d.titel) + '</div>' +
+            '<ul class="m-dag__punten">' + d.punten.map(function (p) {
+              return '<li><svg width="14" height="14" aria-hidden="true"><use href="#i-check"></use></svg>' + veilig(p) + '</li>';
+            }).join('') + '</ul>' +
+            '<div class="chips">' +
+              '<span class="chip">' + d.fotos + ' foto’s</span>' +
+              '<span class="chip">' + veilig(d.uren) + ' gewerkt</span>' +
+              '<span class="chip">' + veilig(d.bedrijf) + '</span>' +
+            '</div>' +
+            (d.fotos ? fotoRij(d.fotos) : '') +
+          '</div>';
+        }).join('') +
+      '</div>';
+  }
+
+  function tekenKlantMeerwerk() {
+    var slot = S.project.afgesloten;
+
+    $('#k-meerwerk').innerHTML =
+      '<div class="m-card" style="margin-top:14px">' +
+        S.meerwerk.map(function (m) {
+          var knoppen = '';
+          if (m.status === 'wacht' && !slot) {
+            knoppen = '<div class="mwkaart__knoppen">' +
+              '<button class="btn btn--gold" type="button" data-besluit="ok" data-nr="' + m.nr + '">Akkoord</button>' +
+              '<button class="btn btn--ghost" type="button" data-besluit="nee" data-nr="' + m.nr + '">Afwijzen</button>' +
+            '</div>';
+          }
+          return '<div class="mwkaart">' +
+            '<div class="mwkaart__top">' +
+              '<div><div class="mwkaart__nr">#' + m.nr + ' · voorgesteld ' + veilig(m.datum) + ' door ' + veilig(m.door) + '</div>' +
+              '<div class="mwkaart__titel">' + veilig(m.titel) + '</div></div>' +
+              '<div class="mwkaart__prijs">' + euro(m.bedrag) + '</div>' +
+            '</div>' +
+            '<p class="mwkaart__tekst">' + veilig(m.tekst) + '</p>' +
+            '<div style="margin-top:10px">' + statusLabel(m.status) + '</div>' +
+            knoppen +
+          '</div>';
+        }).join('') +
+      '</div>' +
+      '<div class="m-card" style="margin-top:12px"><div class="m-rij">' +
+        '<span><b>Goedgekeurd meerwerk</b><small>Boven op de aanneemsom, excl. btw</small></span>' +
+        '<span class="m-rij__eind" style="color:var(--ink);font-weight:700">' + euro(goedgekeurd()) + '</span>' +
+      '</div></div>' +
+      '<p class="notitie">Je aannemer ziet dezelfde lijst. Elk besluit komt met datum en tijd bij Akkoorden te staan.</p>';
+  }
+
+  function tekenKlantMeer() {
+    $('#k-meer').innerHTML =
+      '<div class="m-card" style="margin-top:14px">' +
+        '<button class="m-rij" type="button" data-naar="documenten"><span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-folder"></use></svg></span>' +
+        '<span><b>Documenten</b><small>' + S.documenten.length + ' stuks — offerte, contract, garanties</small></span>' +
+        '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>' +
+        '<button class="m-rij" type="button" data-naar="akkoorden"><span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-checks"></use></svg></span>' +
+        '<span><b>Akkoorden</b><small>' + S.akkoorden.length + ' vastgelegde besluiten</small></span>' +
+        '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>' +
+        '<button class="m-rij" type="button" data-naar="dossier"><span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-archive"></use></svg></span>' +
+        '<span><b>Dossier</b><small>' + (S.project.afgesloten ? 'Afgesloten en bewaard' : 'Sluit bij oplevering') + '</small></span>' +
+        '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>' +
+        '<button class="m-rij" type="button" id="kMeerUitnodigen"><span class="m-ico m-ico--goud"><svg width="17" height="17" aria-hidden="true"><use href="#i-user-plus"></use></svg></span>' +
+        '<span><b>Iemand uitnodigen</b><small>Vakmensen doen gratis mee</small></span>' +
+        '<span class="m-rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>' +
+      '</div>' +
+      '<h2 class="m-titel">Dit project</h2>' +
+      '<div class="m-card">' +
+        '<div class="m-rij"><span><b>' + veilig(S.project.naam) + '</b><small>' + veilig(S.project.adres) + '</small></span></div>' +
+        '<div class="m-rij"><span><b>' + veilig(S.project.pakket) + '</b><small>Eenmalig betaald door jou</small></span></div>' +
+        '<div class="m-rij"><span><b>' + (S.deelnemers.length) + ' bedrijven</b><small>Allemaal gratis toegevoegd</small></span></div>' +
+      '</div>';
+  }
+
+  function tekenKlantDocumenten() {
+    var mappen = [];
+    S.documenten.forEach(function (d) { if (mappen.indexOf(d.map) < 0) mappen.push(d.map); });
+
+    $('#k-documenten').innerHTML = mappen.map(function (map) {
+      return '<h2 class="m-titel">' + veilig(map) + '</h2><div class="m-card">' +
+        S.documenten.filter(function (d) { return d.map === map; }).map(function (d) {
+          return '<div class="m-rij"><span class="m-ico' + (d.groen ? ' m-ico--groen' : '') + '">' +
+            '<svg width="17" height="17" aria-hidden="true"><use href="#i-doc"></use></svg></span>' +
+            '<span><b>' + veilig(d.naam) + '</b><small>' + veilig(d.meta) + '</small></span></div>';
+        }).join('') + '</div>';
+    }).join('');
+  }
+
+  function tekenKlantAkkoorden() {
+    var ico = { ok: 'm-ico--groen', nee: 'm-ico--rood', doc: 'm-ico--goud', datum: 'm-ico--goud' };
+    var symbool = { ok: '#i-checks', nee: '#i-x', doc: '#i-doc', datum: '#i-calendar' };
+
+    $('#k-akkoorden').innerHTML =
+      '<div class="m-card" style="margin-top:14px">' +
+        S.akkoorden.map(function (a) {
+          return '<div class="m-rij" style="align-items:flex-start">' +
+            '<span class="m-ico ' + ico[a.soort] + '"><svg width="17" height="17" aria-hidden="true"><use href="' + symbool[a.soort] + '"></use></svg></span>' +
+            '<span><b>' + veilig(a.titel) + '</b>' +
+            '<small style="color:var(--ink-2);margin-top:2px">' + veilig(a.tekst) + '</small>' +
+            '<small style="margin-top:5px">' + veilig(a.ref) + '</small></span>' +
+            '<span class="m-rij__eind" style="color:var(--ink);font-weight:700;align-self:center">' +
+              (a.bedrag ? euro(a.bedrag) : '—') +
+              (a.extra ? '<br><span style="font-weight:400;font-size:11px;color:var(--ink-3)">' + veilig(a.extra) + '</span>' : '') +
+            '</span>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+      '<p class="notitie">Projexa legt vast wie wat wanneer heeft goedgekeurd, met het voorstel erbij. Dat geeft je een compleet overzicht — het is geen juridisch oordeel over wie gelijk heeft.</p>';
+  }
+
+  function tekenKlantDossier() {
+    var vakken = [
+      ['#i-camera', S.dagen.reduce(function (t, d) { return t + d.fotos; }, 0) + ' foto’s', 'Uit het bouwdagboek'],
+      ['#i-doc', S.documenten.length + ' documenten', 'Contract, tekeningen, garanties'],
+      ['#i-euro', S.meerwerk.length + ' meerwerkposten', 'Elk voorstel met besluit'],
+      ['#i-checks', S.akkoorden.length + ' akkoorden', 'Met datum en tijd'],
+      ['#i-chat', S.berichten.length + ' berichten', 'Het hele gesprek'],
+      ['#i-calendar', S.dagen.length + ' bouwdagen', 'Wat wanneer is gebeurd']
+    ];
+
+    var knop = S.project.afgesloten
+      ? '<div class="slot-melding" style="margin:14px 0 0"><svg width="17" height="17" aria-hidden="true"><use href="#i-lock"></use></svg>Afgesloten op ' + veilig(S.project.afgesloten) + '</div>'
+      : '<button class="btn btn--gold" type="button" id="kAfsluiten" style="width:100%;margin-top:14px">Project afsluiten bij oplevering</button>';
+
+    $('#k-dossier').innerHTML =
+      '<div class="m-card" style="margin-top:14px"><div style="padding:16px">' +
+        '<p style="margin:0 0 14px;font-size:14px;color:var(--ink-2)">' +
+          'Bij oplevering sluit je het project. Er kan dan niets meer worden gewijzigd, en jij houdt toegang — ook over vijf jaar.' +
+        '</p>' +
+        '<div class="m-card" style="box-shadow:none">' +
+          vakken.map(function (v) {
+            return '<div class="m-rij"><span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="' + v[0] + '"></use></svg></span>' +
+              '<span><b>' + veilig(v[1]) + '</b><small>' + veilig(v[2]) + '</small></span></div>';
+          }).join('') +
+        '</div>' +
+        knop +
+      '</div></div>' +
+      '<p class="notitie">Dit is feitelijk het onderhouds- en bouwdossier van de woning. Verkoop je het huis, dan is dit precies wat een koper wil zien.</p>';
+  }
+
+  function tekenKlant() {
+    if (kTab === 'berichten' && S.chatOpen) {
+      var open = S.deelnemers.filter(function (d) { return d.naam === S.chatOpen; })[0];
+      if (open) open.ongelezen = 0;
+    }
+    tekenKlantStart();
+    tekenKlantBerichten();
+    tekenKlantDagboek();
+    tekenKlantMeerwerk();
+    tekenKlantMeer();
+    tekenKlantDocumenten();
+    tekenKlantAkkoorden();
+    tekenKlantDossier();
+
+    var sb = $('#tabStipBerichten');
+    sb.hidden = !ongelezenTotaal();
+    sb.textContent = ongelezenTotaal();
+
+    var sm = $('#tabStipMeerwerk');
+    sm.hidden = !S.ongelezenKlant.meerwerk;
+    sm.textContent = S.ongelezenKlant.meerwerk;
+
+    $('#kUitnodigen').hidden = S.project.afgesloten;
+  }
+
+  /* Klikken binnen de klant-app */
+  $('#pagina-klant').addEventListener('click', function (e) {
+    var naar = e.target.closest('[data-naar]');
+    if (naar) { kGa(naar.getAttribute('data-naar')); return; }
+
+    var chat = e.target.closest('[data-chat]');
+    if (chat) { kOpenChat(chat.getAttribute('data-chat')); return; }
+
+    var besluit = e.target.closest('[data-besluit]');
+    if (besluit) { neemBesluit(Number(besluit.getAttribute('data-nr')), besluit.getAttribute('data-besluit')); return; }
+
+    var inlog = e.target.closest('[data-inlog]');
+    if (inlog) {
+      var naam = inlog.getAttribute('data-inlog');
+      var partij = S.deelnemers.filter(function (d) { return d.naam === naam; })[0];
+      if (partij) toonInlog(partij, false);
+      return;
+    }
+
+    if (e.target.closest('#kVerstuur')) { stuurBerichtKlant(); return; }
+    if (e.target.closest('#kMeerUitnodigen') || e.target.closest('#kUitnodigen')) { openUitnodigen(); return; }
+    if (e.target.closest('#kAfsluiten')) { sluitProject(); return; }
+  });
+
+  $('#pagina-klant').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.id === 'kBericht') stuurBerichtKlant();
+  });
+
+  function stuurBerichtKlant() {
+    var veld = $('#kBericht');
+    var tekst = veld.value.trim();
+    if (!tekst) return;
+    S.berichten.push({ partij: S.chatOpen, van: 'ik', tekst: tekst, tijd: nuTijd() });
+    S.ongelezenAannemer.berichten++;
+    veld.value = '';
+    tekenKlantBerichten();
+    var chat = $('#k-berichten .m-chat');
+    if (chat) chat.scrollTop = chat.scrollHeight;
+    melding('Verstuurd naar ' + S.chatOpen);
+    tekenAannemer();
+  }
+
+  function neemBesluit(nr, besluit) {
+    var item = S.meerwerk.filter(function (m) { return m.nr === nr; })[0];
+    if (!item || item.status !== 'wacht') return;
+
+    item.status = besluit;
+
+    S.akkoorden.unshift({
+      soort: besluit,
+      titel: 'Meerwerk #' + nr + ' — ' + item.titel + (besluit === 'nee' ? ' afgewezen' : ''),
+      tekst: item.tekst,
+      ref: nuStempel() + ' · ' + S.eigenaar + ' · voorstel van ' + item.door,
+      bedrag: item.bedrag,
+      extra: besluit === 'nee' ? 'niet uitgevoerd' : null
+    });
+
+    S.berichten.push({
+      partij: item.door,
+      systeem: true,
+      tekst: 'Meerwerk #' + nr + ' ' + (besluit === 'ok' ? 'goedgekeurd' : 'afgewezen') + ' door ' + S.eigenaar
+    });
+
+    S.ongelezenAannemer.meerwerk++;
+    melding(besluit === 'ok'
+      ? 'Akkoord vastgelegd — ' + euro(item.bedrag) + ' toegevoegd'
+      : 'Afwijzing vastgelegd bij Akkoorden');
+
+    tekenKlant();
+    tekenAannemer();
+  }
+
+  function sluitProject() {
+    S.project.afgesloten = nuStempel().slice(0, 10);
+    S.project.voortgang = 100;
+    S.akkoorden.unshift({
+      soort: 'datum',
+      titel: 'Project afgesloten bij oplevering',
+      tekst: 'Het dossier is vastgezet. Niemand kan er nog iets in wijzigen.',
+      ref: nuStempel() + ' · ' + S.eigenaar
+    });
+    melding('Project afgesloten — je dossier blijft bewaard');
+    tekenKlant();
+    tekenAannemer();
+  }
+
+  /* ------------------------------------------------------------------------
+     Uitnodigen
+     ------------------------------------------------------------------------ */
+
+  var LETTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+  function sleutel(lengte) {
+    var uit = '';
+    for (var i = 0; i < lengte; i++) uit += LETTERS[Math.floor(Math.random() * LETTERS.length)];
+    return uit;
+  }
+
+  function nieuweInlog() {
+    return { code: 'PRJ-' + sleutel(4), ww: sleutel(4) + '-' + sleutel(4) + '-' + sleutel(4) };
+  }
+
+  function openUitnodigen() {
+    $('#dlgTitel').textContent = 'Iemand uitnodigen';
+    $('#dlgSub').textContent = 'Wie erbij komt ziet dit project. Meedoen is gratis.';
+    $('#dlgBody').innerHTML =
+      '<div class="veld"><label for="uNaam">Bedrijfsnaam</label><input id="uNaam" type="text" placeholder="Schildersbedrijf De Wit"></div>' +
+      '<div class="veld" style="margin-bottom:0"><label for="uRol">Wat doet dit bedrijf?</label>' +
+      '<select id="uRol">' +
+        '<option>Timmerman</option><option>Elektricien</option><option>Loodgieter</option>' +
+        '<option selected>Schilder</option><option>Stukadoor</option><option>Tegelzetter</option>' +
+        '<option>Architect</option><option>Constructeur</option>' +
+      '</select></div>';
+    $('#dlgVoet').innerHTML =
+      '<button class="btn btn--ghost" type="button" data-dlg="sluit">Annuleren</button>' +
+      '<button class="btn btn--gold" type="button" data-dlg="nodig-uit">Uitnodiging sturen</button>';
+    $('#overlay').hidden = false;
+    setTimeout(function () { var n = $('#uNaam'); if (n) n.focus(); }, 30);
+  }
+
+  /* De inlog van een uitgenodigde partij bestaat zodra hij is toegevoegd —
+     de eigenaar kan hem altijd teruglezen. */
+  function toonInlog(partij, versgemaakt) {
+    $('#dlgTitel').textContent = versgemaakt ? partij.naam + ' is uitgenodigd' : 'Inloggegevens ' + partij.naam;
+    $('#dlgSub').textContent = versgemaakt
+      ? 'Zijn inlog is aangemaakt en gemaild. Meedoen kost hem niets.'
+      : partij.rol + (partij.actief ? ' · heeft ingelogd' : ' · nog niet ingelogd');
+    $('#dlgBody').innerHTML =
+      '<div class="inloggegevens"><dl>' +
+        '<div><dt>Projectcode</dt><dd class="mono">' + veilig(partij.code) + '</dd></div>' +
+        '<div><dt>Wachtwoord</dt><dd class="mono">' + veilig(partij.ww) + '</dd></div>' +
+      '</dl></div>' +
+      '<p style="margin:14px 0 0;font-size:12.5px;color:var(--ink-3);line-height:1.55">' +
+        'Hiermee logt hij in op dit project — en alleen op dit project.' +
+      '</p>';
+    $('#dlgVoet').innerHTML = '<button class="btn btn--gold" type="button" data-dlg="sluit">Klaar</button>';
+    $('#overlay').hidden = false;
+  }
+
+  $('#overlay').addEventListener('click', function (e) {
+    if (e.target === $('#overlay') || e.target.closest('[data-dlg="sluit"]')) {
+      $('#overlay').hidden = true;
+      return;
+    }
+    if (e.target.closest('[data-dlg="nodig-uit"]')) {
+      var naam = ($('#uNaam').value || '').trim();
+      if (!naam) { melding('Vul eerst een bedrijfsnaam in'); $('#uNaam').focus(); return; }
+
+      var inlog = nieuweInlog();
+      var partij = { naam: naam, rol: $('#uRol').value, code: inlog.code, ww: inlog.ww, actief: false, ongelezen: 0 };
+      S.deelnemers.push(partij);
+
+      toonInlog(partij, true);
+      melding(naam + ' is uitgenodigd — inlog aangemaakt');
+      tekenKlant();
+      tekenAannemer();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') $('#overlay').hidden = true;
+  });
+
+  /* ------------------------------------------------------------------------
+     Aannemer
+     ------------------------------------------------------------------------ */
+
+  var aView = 'project';
+
+  /* Wie er is ingelogd met een projectcode — dat bepaalt onder welke naam
+     meerwerk, dagrapporten en berichten worden geplaatst. */
+  function ik() {
+    return S.deelnemers.filter(function (d) { return d.naam === S.ingelogdAls; })[0] || S.deelnemers[0];
+  }
+
+  function initialen(naam) {
+    var woorden = naam.replace(/^(Bouwbedrijf|Schildersbedrijf|Installatiebedrijf) /i, '').split(/\s+/);
+    return (woorden[0][0] + (woorden[1] ? woorden[1][0] : '')).toUpperCase();
+  }
+
+  function aGa(view) {
+    aView = view;
+    $$('.nav__item').forEach(function (x) {
+      x.setAttribute('aria-current', x.getAttribute('data-view') === view ? 'page' : 'false');
+    });
+    $$('.view').forEach(function (v) { v.hidden = v.id !== 'a-' + view; });
+    if (view === 'berichten') S.ongelezenAannemer.berichten = 0;
+    if (view === 'meerwerk') S.ongelezenAannemer.meerwerk = 0;
+    tekenAannemer();
+  }
+
+  $$('.nav__item').forEach(function (k) {
+    k.addEventListener('click', function () { aGa(k.getAttribute('data-view')); });
+  });
+
+  function aSlotMelding() {
+    return S.project.afgesloten
+      ? '<div class="slot-melding"><svg width="17" height="17" aria-hidden="true"><use href="#i-lock"></use></svg>' +
+        'De eigenaar heeft het project afgesloten. Je kunt niets meer toevoegen.</div>'
+      : '';
+  }
+
+  function tekenAannemerProject() {
+    var open = wachtend();
+    $('#a-project').innerHTML =
+      aSlotMelding() +
+      '<div class="stats">' +
+        '<div class="stat"><div class="stat__waarde">' + S.project.voortgang + '%</div><div class="stat__label">Voortgang</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + euro(goedgekeurd()) + '</div><div class="stat__label">Goedgekeurd meerwerk</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + open.length + '</div><div class="stat__label">Wacht op de klant</div></div>' +
+        '<div class="stat"><div class="stat__waarde">' + S.deelnemers.length + '</div><div class="stat__label">Bedrijven op dit project</div></div>' +
+      '</div>' +
+      '<div class="kolommen">' +
+        '<div class="kaart"><div class="kaart__kop"><h3>Laatste besluiten van de klant</h3></div><div class="lijst">' +
+          S.akkoorden.slice(0, 4).map(function (a) {
+            var ico = a.soort === 'nee' ? 'm-ico--rood' : (a.soort === 'ok' ? 'm-ico--groen' : 'm-ico--goud');
+            var sym = a.soort === 'nee' ? '#i-x' : (a.soort === 'ok' ? '#i-checks' : '#i-doc');
+            return '<div class="rij"><span class="m-ico ' + ico + '"><svg width="17" height="17" aria-hidden="true"><use href="' + sym + '"></use></svg></span>' +
+              '<span><b>' + veilig(a.titel) + '</b><small>' + veilig(a.ref) + '</small></span>' +
+              '<span class="rij__eind">' + (a.bedrag ? euro(a.bedrag) : '') + '</span></div>';
+          }).join('') +
+        '</div></div>' +
+        '<div class="kaart"><div class="kaart__kop"><h3>Wie doen er mee</h3><span class="meta">gratis uitgenodigd</span></div><div class="lijst">' +
+          '<div class="rij"><span class="m-ico m-ico--goud"><svg width="17" height="17" aria-hidden="true"><use href="#i-home"></use></svg></span>' +
+          '<span><b>' + veilig(S.eigenaar) + '</b><small>Eigenaar — betaalt het project (' + veilig(S.project.pakket) + ')</small></span></div>' +
+          S.deelnemers.map(function (d) {
+            return '<div class="rij"><span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-tools"></use></svg></span>' +
+              '<span><b>' + veilig(d.naam) + '</b><small>' + veilig(d.rol) + '</small></span></div>';
+          }).join('') +
+        '</div></div>' +
+      '</div>';
+  }
+
+  function tekenAannemerMeerwerk() {
+    var slot = S.project.afgesloten;
+    $('#a-meerwerk').innerHTML =
+      aSlotMelding() +
+      (slot ? '' :
+      '<div class="kaart" style="margin-bottom:20px">' +
+        '<div class="kaart__kop"><h3>Nieuw meerwerk voorstellen</h3><span class="meta">wordt #' + S.volgendMeerwerk + '</span></div>' +
+        '<div class="kaart__body">' +
+          '<div class="veld"><label for="mwTitel">Omschrijving</label><input id="mwTitel" type="text" placeholder="Extra wandcontactdozen zolder"></div>' +
+          '<div class="veld"><label for="mwTekst">Toelichting voor de klant</label><textarea id="mwTekst" rows="2" placeholder="Wat is er nodig en waarom?"></textarea></div>' +
+          '<div class="veld veld--rij" style="margin-bottom:14px"><div><label for="mwBedrag">Bedrag (excl. btw)</label><input id="mwBedrag" type="text" placeholder="450"></div></div>' +
+          '<button class="btn btn--gold" type="button" id="mwStuur">Voorstel naar de klant sturen</button>' +
+        '</div>' +
+      '</div>') +
+      '<div class="kaart"><div class="kaart__kop"><h3>Alle meerwerk</h3><span class="meta">' + euro(goedgekeurd()) + ' goedgekeurd</span></div><div class="lijst">' +
+        S.meerwerk.map(function (m) {
+          return '<div class="rij"><span><b>#' + m.nr + ' · ' + veilig(m.titel) + '</b><small>' + veilig(m.door) + ' · ' + veilig(m.datum) + '</small></span>' +
+            '<span class="rij__eind"><b style="font-variant-numeric:tabular-nums">' + euro(m.bedrag) + '</b>' + statusLabel(m.status) + '</span></div>';
+        }).join('') +
+      '</div></div>';
+  }
+
+  function tekenAannemerDagboek() {
+    var slot = S.project.afgesloten;
+    $('#a-dagboek').innerHTML =
+      aSlotMelding() +
+      (slot ? '' :
+      '<div class="kaart" style="margin-bottom:20px">' +
+        '<div class="kaart__kop"><h3>Dagrapport plaatsen</h3><span class="meta">de klant ziet dit meteen</span></div>' +
+        '<div class="kaart__body">' +
+          '<div class="veld"><label for="dgTitel">Wat is er vandaag gedaan?</label><input id="dgTitel" type="text" placeholder="Tegelwerk badkamer gestart"></div>' +
+          '<div class="veld"><label for="dgPunten">Punten (één per regel)</label><textarea id="dgPunten" rows="3" placeholder="Wanden voorbehandeld&#10;Eerste rij tegels gezet"></textarea></div>' +
+          '<div class="veld veld--rij" style="margin-bottom:14px">' +
+            '<div><label for="dgUren">Gewerkte uren</label><input id="dgUren" type="text" value="8 uur"></div>' +
+            '<div><label for="dgFotos">Aantal foto’s</label><input id="dgFotos" type="text" value="4"></div>' +
+          '</div>' +
+          '<button class="btn btn--gold" type="button" id="dgStuur">Dagrapport plaatsen</button>' +
+        '</div>' +
+      '</div>') +
+      '<div class="kaart"><div class="kaart__kop"><h3>Bouwdagboek</h3><span class="meta">' + S.dagen.length + ' dagen</span></div><div class="lijst">' +
+        S.dagen.map(function (d) {
+          return '<div class="rij"><span class="m-ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-camera"></use></svg></span>' +
+            '<span><b>' + veilig(d.titel) + '</b><small>' + veilig(d.datum) + ' · ' + veilig(d.bedrijf) + ' · ' + d.fotos + ' foto’s · ' + veilig(d.uren) + '</small></span></div>';
+        }).join('') +
+      '</div></div>';
+  }
+
+  function tekenAannemerBerichten() {
+    var lijst = S.berichten.filter(function (b) { return b.partij === ik().naam; });
+
+    $('#a-berichten').innerHTML =
+      '<div class="kaart chat-d">' +
+        '<div class="chat-d__berichten">' +
+          lijst.map(function (b) {
+            if (b.systeem) return '<div class="m-bubbel m-bubbel--systeem">' + veilig(b.tekst) + '</div>';
+            if (b.van === 'ik') return '<div class="m-bubbel"><span class="m-bubbel__wie">' + veilig(S.eigenaar) + '</span>' + veilig(b.tekst) + '<span class="m-bubbel__tijd">' + b.tijd + '</span></div>';
+            return '<div class="m-bubbel m-bubbel--ik">' + veilig(b.tekst) + '<span class="m-bubbel__tijd">' + b.tijd + '</span></div>';
+          }).join('') +
+        '</div>' +
+        (S.project.afgesloten ? '' :
+        '<div class="opsteller-d">' +
+          '<input type="text" id="aBericht" placeholder="Bericht aan ' + veilig(S.eigenaar) + '" aria-label="Bericht">' +
+          '<button class="m-rond" type="button" id="aVerstuur" aria-label="Versturen"><svg width="18" height="18" aria-hidden="true"><use href="#i-send"></use></svg></button>' +
+        '</div>') +
+      '</div>';
+  }
+
+  function tekenAannemerAkkoorden() {
+    $('#a-akkoorden').innerHTML =
+      '<div class="kaart"><div class="kaart__kop"><h3>Wat de klant heeft vastgelegd</h3><span class="meta">' + S.akkoorden.length + ' besluiten</span></div><div class="lijst">' +
+        S.akkoorden.map(function (a) {
+          var ico = a.soort === 'nee' ? 'm-ico--rood' : (a.soort === 'ok' ? 'm-ico--groen' : 'm-ico--goud');
+          var sym = a.soort === 'nee' ? '#i-x' : (a.soort === 'ok' ? '#i-checks' : '#i-doc');
+          return '<div class="rij" style="align-items:flex-start"><span class="m-ico ' + ico + '"><svg width="17" height="17" aria-hidden="true"><use href="' + sym + '"></use></svg></span>' +
+            '<span><b>' + veilig(a.titel) + '</b><small style="color:var(--ink-2)">' + veilig(a.tekst) + '</small><small style="margin-top:4px">' + veilig(a.ref) + '</small></span>' +
+            '<span class="rij__eind" style="align-self:center"><b>' + (a.bedrag ? euro(a.bedrag) : '—') + '</b></span></div>';
+        }).join('') +
+      '</div></div>' +
+      '<p class="notitie">Ook voor jou handig: geen discussie achteraf over wat er is afgesproken.</p>';
+  }
+
+  function tekenAannemer() {
+    $('#aTitel').textContent = S.project.naam;
+    $('#aSub').textContent = S.project.adres + ' · eigenaar: ' + S.eigenaar;
+    $('#aWie').textContent = ik().naam;
+    $('#aAvatar').textContent = initialen(ik().naam);
+
+    tekenAannemerProject();
+    tekenAannemerMeerwerk();
+    tekenAannemerDagboek();
+    tekenAannemerBerichten();
+    tekenAannemerAkkoorden();
+
+    var bm = $('#aBadgeMeerwerk');
+    bm.hidden = !S.ongelezenAannemer.meerwerk;
+    bm.textContent = S.ongelezenAannemer.meerwerk;
+
+    var bb = $('#aBadgeBerichten');
+    bb.hidden = !S.ongelezenAannemer.berichten;
+    bb.textContent = S.ongelezenAannemer.berichten;
+  }
+
+  /* Klikken binnen de aannemer-app */
+  $('#pagina-aannemer').addEventListener('click', function (e) {
+    if (e.target.closest('#mwStuur')) { stuurMeerwerk(); return; }
+    if (e.target.closest('#dgStuur')) { plaatsDagrapport(); return; }
+    if (e.target.closest('#aVerstuur')) { stuurBerichtAannemer(); return; }
+  });
+
+  $('#pagina-aannemer').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.id === 'aBericht') stuurBerichtAannemer();
+  });
+
+  function stuurMeerwerk() {
+    var titel = $('#mwTitel').value.trim();
+    var bedrag = Number(($('#mwBedrag').value || '').replace(/\./g, '').replace(/,/g, '.'));
+
+    if (!titel) { melding('Geef het meerwerk eerst een omschrijving'); $('#mwTitel').focus(); return; }
+    if (!bedrag) { melding('Vul een bedrag in'); $('#mwBedrag').focus(); return; }
+
+    var nr = S.volgendMeerwerk++;
+    var vandaag = new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
+
+    S.meerwerk.unshift({
+      nr: nr,
+      titel: titel,
+      tekst: $('#mwTekst').value.trim() || 'Toegelicht op de bouw.',
+      bedrag: bedrag,
+      status: 'wacht',
+      door: ik().naam,
+      datum: vandaag
+    });
+
+    S.berichten.push({
+      partij: ik().naam,
+      systeem: true,
+      tekst: 'Meerwerk #' + nr + ' toegevoegd · ' + euro(bedrag) + ' · wacht op jouw akkoord'
+    });
+
+    S.ongelezenKlant.meerwerk++;
+    ik().ongelezen = (ik().ongelezen || 0) + 1;
+
+    melding('Voorstel #' + nr + ' staat klaar bij de klant');
+    tekenAannemer();
+    tekenKlant();
+  }
+
+  function plaatsDagrapport() {
+    var titel = $('#dgTitel').value.trim();
+    if (!titel) { melding('Vul in wat er is gedaan'); $('#dgTitel').focus(); return; }
+
+    var punten = ($('#dgPunten').value || '').split('\n').map(function (r) { return r.trim(); }).filter(Boolean);
+    var d = new Date();
+
+    S.dagen.unshift({
+      datum: d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long' }),
+      dag: d.toLocaleDateString('nl-NL', { weekday: 'long' }),
+      titel: titel,
+      punten: punten.length ? punten : ['Werkzaamheden uitgevoerd'],
+      fotos: Math.min(4, Number($('#dgFotos').value) || 0),
+      uren: $('#dgUren').value.trim() || '8 uur',
+      bedrijf: ik().naam
+    });
+
+    melding('Dagrapport geplaatst — de klant ziet het in zijn bouwdagboek');
+    tekenAannemer();
+    tekenKlant();
+  }
+
+  function stuurBerichtAannemer() {
+    var veld = $('#aBericht');
+    var tekst = veld.value.trim();
+    if (!tekst) return;
+
+    S.berichten.push({
+      partij: ik().naam,
+      van: ik().naam,
+      tekst: tekst,
+      tijd: nuTijd()
+    });
+
+    ik().ongelezen = (ik().ongelezen || 0) + 1;
+    veld.value = '';
+    tekenAannemer();
+    tekenKlant();
+
+    var chat = $('#a-berichten .chat-d__berichten');
+    if (chat) chat.scrollTop = chat.scrollHeight;
+    melding('Verstuurd naar ' + S.eigenaar);
+  }
+
+  /* ------------------------------------------------------------------------
+     Starten
+     ------------------------------------------------------------------------ */
+
+  vulAannemerFormulier();
+  tekenKlant();
+  tekenAannemer();
+  ga('start');
+}());
+</script>

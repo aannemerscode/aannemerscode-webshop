@@ -149,3 +149,93 @@ data/orders.json    — simpele bestelhistorie (vervang door een echte database
 - **E-mail-deliverability**: een gewoon Gmail-account werkt voor de start, maar voor
   serieus volume is een dienst als Postmark of Resend betrouwbaarder (minder kans dat je
   downloadmail in de spam belandt).
+
+## Projexa: de vraag toetsen
+
+Naast de webshop draait op deze server een landingspagina waarmee je test of er vraag is
+naar **Projexa** (het verbouwdossier voor huiseigenaren):
+
+- `/projexa/` — één scherm met drie prijzen om aan te vinken (€ 149,95 / € 249,95 / € 399,95
+  per jaar, plus "geen van deze") en drie korte vragen: zou je dit voor je eigen woning
+  gebruiken, gebruik je nu al zoiets, en ben je hiernaar op zoek?
+- `/projexa/demo.html` — de klikbare demo, waar bezoekers vanaf de landingspagina naartoe kunnen
+- `/projexa/resultaten.html` — je eigen overzicht van de uitkomsten
+
+De server slaat drie dingen op in `data/projexa-reacties.json`:
+
+1. **bezoeken** — één per browser per dag, met de verwijzende site
+2. **prijsklikken** — welk pakket iemand aanklikt (het eerste echte signaal, nog vóór het formulier)
+3. **reacties** — het ingevulde formulier: gekozen prijs, of ze het zouden gebruiken, of ze
+   nu al iets gebruiken en of ze er actief naar op zoek zijn
+
+Zet in `.env` (en in Render → Environment) een zelfverzonnen `PROJEXA_SLEUTEL`; zonder die
+sleutel is het resultatenoverzicht dicht, want er staan e-mailadressen van bezoekers in.
+Heb je SMTP en `OWNER_EMAIL` ingevuld, dan krijg je bij elke reactie een mailtje.
+
+Wil je weten waar bezoekers vandaan komen, zet dan een herkenbare code achter de link
+(`/projexa/?bron=facebook`); die wordt bij het bezoek opgeslagen.
+
+Let op: `data/projexa-reacties.json` is een bestand op de server. Render's gratis laag kan
+bij een herstart met een schone schijf beginnen — download je resultaten dus regelmatig, of
+zet er een echte database onder zodra het serieus wordt.
+
+## Projexa: de app
+
+De echte app staat onder `/app/` en draait op dezelfde server als de webshop.
+
+- `/app/` — inloggen: de huiseigenaar met e-mailadres en wachtwoord, de uitgenodigde
+  partij onderaan met de projectcode die hij van de eigenaar krijgt
+- `/app/mijn-verbouwing.html` — de app van de huiseigenaar (telefoonweergave)
+- `/app/werk.html` — de app van het uitgenodigde bedrijf (desktop)
+
+### Wat er nu werkt
+
+- **Accounts** — de eigenaar registreert met e-mailadres en wachtwoord; een uitgenodigd
+  bedrijf logt in met een projectcode
+- **Projecten** — aanmaken, bijwerken, en afsluiten bij oplevering
+- **Uitnodigen** — elk bedrijf krijgt een eigen code en wachtwoord, één keer getoond
+- **Chat** — per bedrijf een apart gesprek, met ongelezen-tellers aan beide kanten
+- **Bouwdagboek** — dagrapporten met punten, uren en foto's; zowel de aannemer als de
+  eigenaar kan iets vastleggen
+- **Meerwerk** — de aannemer stelt voor met bedrag en foto, de eigenaar keurt goed of af.
+  Alleen de eigenaar beslist, en een besluit kan niet worden teruggedraaid
+- **Akkoorden** — elk besluit komt hier met datum, tijd en naam te staan, plus losse
+  afspraken zonder prijskaartje
+
+Nog te bouwen: documenten (offerte, contract, garanties) en het dossier om te downloaden.
+
+### Techniek
+
+- `projexa-app/db.js` — SQLite-schema en verbinding
+- `projexa-app/auth.js` — wachtwoorden (scrypt), sessies in een httpOnly-cookie, poortwachters
+- `projexa-app/routes.js` — accounts, projecten, uitnodigen en chat
+- `projexa-app/routes-werk.js` — bouwdagboek, foto's, meerwerk en akkoorden
+- `projexa-app/opslag.js` — foto's naar Cloudflare R2 of S3
+- `public/app/` — de schermen
+
+Wachtwoorden staan gehasht met scrypt; het wachtwoord van een uitgenodigd bedrijf is na het
+aanmaken niet meer op te vragen — kwijt betekent een nieuw wachtwoord uitgeven, waarmee de
+oude sessies meteen vervallen. Een deelnemer komt nooit verder dan zijn eigen project.
+
+### Belangrijk voor productie
+
+De database is één bestand. Op Render heeft die een **vaste schijf** nodig (Disk toevoegen,
+bijvoorbeeld op `/var/data`) en zet je `PROJEXA_DB=/var/data/projexa.db`. Zonder vaste schijf
+is bij elke herstart alles weg. Zet ook `NODE_ENV=production`, zodat de sessiecookie alleen
+over https wordt verstuurd.
+
+**Foto's** gaan naar objectopslag, niet naar de schijf van de webserver. Maak een bucket bij
+Cloudflare R2 (of S3) en vul in:
+
+```
+S3_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+S3_BUCKET=projexa
+S3_REGION=auto
+S3_KEY=<access key id>
+S3_SECRET=<secret access key>
+```
+
+De bucket blijft dicht: de app maakt per foto een ondertekende link die na een uur vervalt.
+Zolang deze variabelen ontbreken, weigert de app foto's aan te nemen met een duidelijke
+melding. Om lokaal te kunnen proefdraaien kun je `PROJEXA_OPSLAG=lokaal` zetten — dan komen
+de foto's in `data/fotos/`. Gebruik die stand niet voor echte klanten.

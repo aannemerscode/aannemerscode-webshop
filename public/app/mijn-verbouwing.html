@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projexa — mijn verbouwing</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#090b0c">
+<link rel="stylesheet" href="stijl.css">
+<style>
+  body { background: var(--app-bg); }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 460px;
+    margin: 0 auto;
+    background: var(--surface);
+    color: var(--ink);
+    position: relative;
+  }
+
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 13px 18px 11px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .top h1 { margin: 0; font-size: 18px; font-weight: 700; line-height: 1.2; }
+  .top__sub { font-size: 12px; color: var(--ink-3); }
+  .top__rechts { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+
+  .icoknop { border: 0; background: none; color: var(--ink); padding: 6px; border-radius: 50%; cursor: pointer; display: inline-flex; }
+  .icoknop:hover { background: var(--surface-2); }
+
+  main { flex: 1; min-height: 0; padding: 4px 18px 20px; display: flex; flex-direction: column; }
+  .scherm { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .scherm > * { flex-shrink: 0; }
+
+  .titel { font-size: 15px; font-weight: 700; margin: 22px 0 10px; }
+  .titel:first-child { margin-top: 16px; }
+
+  /* Voortgang en cijfers */
+  .voortgang { padding: 15px 16px; border-bottom: 1px solid var(--line); }
+  .voortgang__kop { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .bar { display: block; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); }
+
+  .cijfers { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); }
+  .cijfer { background: var(--surface); padding: 13px 16px; }
+  .cijfer dt { font-size: 11.5px; color: var(--ink-3); margin: 0 0 2px; }
+  .cijfer dd { margin: 0; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Gesprekkenlijst */
+  .chatrij { display: grid; grid-template-columns: 46px 1fr auto; gap: 13px; align-items: center; width: 100%; padding: 12px 16px; border: 0; border-top: 1px solid var(--line); background: none; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+  .chatrij:first-child { border-top: 0; }
+  .chatrij:hover { background: var(--surface-2); }
+
+  .chatavatar { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; font-weight: 700; flex: none; }
+  .chatavatar--a { background: #ece5d6; color: #7a6437; }
+  .chatavatar--b { background: #dfe5e7; color: #4c5d64; }
+  .chatavatar--c { background: #e2e7dc; color: #566044; }
+
+  .chatrij__tekst { min-width: 0; }
+  .chatrij__naam { display: block; font-size: 15.5px; font-weight: 600; line-height: 1.3; }
+  .chatrij__rol { color: var(--ink-3); font-weight: 400; }
+  .chatrij__prev { display: block; font-size: 13.5px; color: var(--ink-3); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chatrij__prev b { color: var(--ink-2); font-weight: 600; }
+  .chatrij__meta { display: grid; justify-items: end; gap: 6px; flex: none; }
+  .chatrij__tijd { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .chatrij__ongelezen { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--gold); color: #221b0c; font-size: 11.5px; font-weight: 700; display: grid; place-items: center; }
+
+  /* Gesprek */
+  .chat { flex: 1; min-height: 240px; overflow-y: auto; display: flex; flex-direction: column; justify-content: flex-end; gap: 9px; padding: 14px 0 6px; }
+  .bubbel { max-width: 84%; padding: 9px 13px 6px; border-radius: 14px; font-size: 14.5px; background: var(--surface-2); border: 1px solid var(--line); align-self: flex-start; white-space: pre-wrap; word-break: break-word; }
+  .bubbel--ik { align-self: flex-end; background: #f4ece0; border-color: #e8dcc8; }
+  .bubbel__tijd { display: block; text-align: right; font-size: 11px; color: var(--ink-3); margin-top: 3px; }
+  .dagstreep { align-self: center; font-size: 12px; font-weight: 600; color: var(--ink-3); background: var(--surface-2); border-radius: 999px; padding: 3px 12px; }
+
+  .opsteller { flex: none; display: flex; align-items: center; gap: 8px; background: var(--surface); border-top: 1px solid var(--line); padding: 10px 0; }
+  .opsteller input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px; padding: 10px 15px; font-size: 14.5px; outline: none; }
+  .rond { width: 40px; height: 40px; flex: none; border-radius: 50%; border: 0; background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #221b0c; display: grid; place-items: center; cursor: pointer; }
+  .rond:disabled { opacity: .5; }
+
+  /* Tabbalk */
+  .tabs { position: sticky; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--surface); border-top: 1px solid var(--line); padding: 6px 4px; }
+  .tab { border: 0; background: none; display: grid; justify-items: center; gap: 3px; padding: 7px 1px; font-size: 10.5px; color: var(--ink-3); cursor: pointer; border-radius: var(--r-md); position: relative; }
+  .tab[aria-current="page"] { color: var(--gold-dark); font-weight: 700; }
+  .stip { position: absolute; top: 4px; right: 18%; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: var(--red); color: #fff; font-size: 10px; font-weight: 700; display: grid; place-items: center; }
+
+  .slotmelding { display: flex; align-items: center; gap: 10px; background: #f7efe2; border: 1px solid #e8d9bd; color: #7a5f24; border-radius: var(--r-md); padding: 11px 14px; font-size: 13.5px; font-weight: 600; margin-top: 14px; }
+
+  .binnenkort { margin-top: 14px; padding: 14px 16px; border: 1px dashed var(--line); border-radius: var(--r-lg); font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+  .binnenkort b { color: var(--ink-2); }
+
+  /* Telefoonframe op grote schermen */
+  @media (min-width: 900px) {
+    body { background: radial-gradient(900px 500px at 50% 0%, rgba(181, 149, 94, .12), transparent 60%), var(--black); padding: 26px 20px 34px; }
+    .app { max-width: 402px; border-radius: 36px; border: 10px solid #16191b; outline: 1px solid #33383b; box-shadow: var(--shadow-lg); overflow: hidden; min-height: 0; height: min(860px, calc(100vh - 60px)); }
+    main { overflow-y: auto; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-5.5 4V6.5a1 1 0 0 1 1-1z"/><circle cx="8.6" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="18" cy="12" r="1.3" fill="currentColor"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+  <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.6A6.4 6.4 0 0 0 7.6 9a8 8 0 0 0 0 6 6.4 6.4 0 0 0 9.4 2.4"/><path d="M4.8 10.6h7M4.8 13.6h7"/></symbol>
+  <symbol id="i-checks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.6 6 16.6 13.6 7.4"/><path d="M9.6 14.9 12 17.2 21 6.8"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5v13M5.5 12h13"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8v5.4l3.4 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+  <symbol id="i-user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.2"/><path d="M3.4 20c0-3.4 3-5.4 6.6-5.4 1 0 2 .16 2.9.47"/><path d="M17.6 14.4v6M14.6 17.4h6"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5H18a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5h-3.5"/><path d="M10 8.5 6.5 12l3.5 3.5"/><path d="M6.5 12H15"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5l-7 7 7 7"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5l7 7-7 7"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12.5"/><path d="M12.5 6.5 18.5 12l-6 5.5"/></symbol>
+  <symbol id="i-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 6.3a3.8 3.8 0 0 0 5 5l-8 8a2.3 2.3 0 0 1-3.3-3.3z"/><path d="M6.2 4.5 9 7.3l-1.7 1.7L4.5 6.2z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.8" y="10.5" width="14.4" height="10" rx="2.2"/><path d="M8.2 10.5V7.8a3.8 3.8 0 0 1 7.6 0v2.7"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3.5M15.5 12v2.5"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h7l4.5 4.5V21h-11.5z"/><path d="M13.2 3v5h5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="top">
+    <button class="icoknop" type="button" id="terug" hidden aria-label="Terug">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+    </button>
+    <div>
+      <h1 id="titel">Mijn verbouwing</h1>
+      <div class="top__sub" id="subtitel"></div>
+    </div>
+    <div class="top__rechts">
+      <button class="icoknop" type="button" id="knopUitnodigen" hidden aria-label="Iemand uitnodigen">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-user-plus"></use></svg>
+      </button>
+      <button class="icoknop" type="button" id="knopUitloggen" aria-label="Uitloggen">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-logout"></use></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="scherm" id="s-start"></section>
+    <section class="scherm" id="s-berichten" hidden></section>
+    <section class="scherm" id="s-dagboek" hidden></section>
+    <section class="scherm" id="s-meerwerk" hidden></section>
+    <section class="scherm" id="s-meer" hidden></section>
+    <section class="scherm" id="s-akkoorden" hidden></section>
+  </main>
+
+  <nav class="tabs" id="tabs" aria-label="Onderdelen" hidden>
+    <button class="tab" type="button" data-tab="start" aria-current="page">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-home"></use></svg>Start
+    </button>
+    <button class="tab" type="button" data-tab="berichten">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-chat"></use></svg>Berichten
+      <span class="stip" id="stipBerichten" hidden>0</span>
+    </button>
+    <button class="tab" type="button" data-tab="dagboek">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-camera"></use></svg>Dagboek
+    </button>
+    <button class="tab" type="button" data-tab="meerwerk">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-euro"></use></svg>Meerwerk
+      <span class="stip" id="stipMeerwerk" hidden>0</span>
+    </button>
+    <button class="tab" type="button" data-tab="meer">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-dots"></use></svg>Meer
+    </button>
+  </nav>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="dialoog" role="dialog" aria-modal="true" aria-labelledby="dlgTitel">
+    <div class="dialoog__kop">
+      <h2 id="dlgTitel"></h2>
+      <p id="dlgSub"></p>
+    </div>
+    <div class="dialoog__body" id="dlgBody"></div>
+    <div class="dialoog__voet" id="dlgVoet"></div>
+  </div>
+</div>
+
+<div class="melding" id="melding" role="status" aria-live="polite"></div>
+
+<script src="deel.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var $ = App.$, veilig = App.veilig, api = App.api;
+
+  var S = {
+    eigenaar: null, projecten: [], project: null, tab: 'start', chatOpen: null, berichten: [],
+    dagboek: [], meerwerk: [], akkoorden: [], samenvatting: null, fotoopslag: true,
+  };
+
+  /* ------------------------------------------------------------------
+     Laden
+     ------------------------------------------------------------------ */
+
+  function laden() {
+    return api('/mij').then(function (d) {
+      if (!d.ingelogd) { location.href = '/app/'; return; }
+      if (d.rol !== 'eigenaar') { location.href = 'werk.html'; return; }
+
+      S.eigenaar = d.eigenaar;
+      S.projecten = d.projecten;
+      S.project = S.projecten.length
+        ? (S.projecten.filter(function (p) { return p.id === (S.project || {}).id; })[0] || S.projecten[0])
+        : null;
+
+      if (!S.project) { teken(); return; }
+      return laadProjectinhoud();
+    });
+  }
+
+  /** Alles wat aan het project hangt in één keer ophalen, zodat de tabs meteen kloppen. */
+  function laadProjectinhoud() {
+    var id = S.project.id;
+    return Promise.all([
+      api('/projecten/' + id + '/dagboek'),
+      api('/projecten/' + id + '/meerwerk'),
+      api('/projecten/' + id + '/akkoorden'),
+      api('/projecten/' + id + '/samenvatting'),
+    ]).then(function (r) {
+      S.dagboek = r[0].dagboek;
+      S.meerwerk = r[1].meerwerk;
+      S.goedgekeurd = r[1].goedgekeurd;
+      S.akkoorden = r[2].akkoorden;
+      S.samenvatting = r[3];
+      S.fotoopslag = r[3].fotoopslag;
+      teken();
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     Navigatie
+     ------------------------------------------------------------------ */
+
+  var TITELS = {
+    start: ['Mijn verbouwing', null],
+    berichten: ['Berichten', 'Met je aannemer en vakmensen'],
+    dagboek: ['Bouwdagboek', 'Wat er elke dag is gebeurd'],
+    meerwerk: ['Meerwerk', 'Voorstellen en jouw besluit'],
+    meer: ['Meer', null],
+    akkoorden: ['Akkoorden', 'Waar jij akkoord op gaf'],
+  };
+
+  function ga(tab) {
+    S.tab = tab;
+    if (tab !== 'berichten') S.chatOpen = null;
+    teken();
+    var m = document.querySelector('main');
+    if (m) m.scrollTop = 0;
+  }
+
+  App.$$('.tab').forEach(function (t) {
+    t.addEventListener('click', function () { ga(t.getAttribute('data-tab')); });
+  });
+
+  $('#terug').addEventListener('click', function () {
+    if (S.tab === 'berichten' && S.chatOpen) { S.chatOpen = null; teken(); return; }
+    if (S.tab === 'akkoorden') { ga('meer'); return; }
+    ga('start');
+  });
+
+  $('#knopUitloggen').addEventListener('click', function () { App.uitloggen(); });
+  $('#knopUitnodigen').addEventListener('click', function () { openUitnodigen(); });
+
+  /* ------------------------------------------------------------------
+     Tekenen
+     ------------------------------------------------------------------ */
+
+  function teken() {
+    var heeftProject = !!S.project;
+
+    $('#tabs').hidden = !heeftProject;
+    $('#knopUitnodigen').hidden = !heeftProject || S.project.status === 'afgesloten';
+
+    App.$$('.scherm').forEach(function (s) { s.hidden = true; });
+
+    if (!heeftProject) {
+      $('#titel').textContent = 'Welkom bij Projexa';
+      $('#subtitel').textContent = S.eigenaar.naam;
+      $('#terug').hidden = true;
+      $('#s-start').hidden = false;
+      tekenNieuwProject();
+      return;
+    }
+
+    var hoofdtab = S.tab === 'akkoorden' ? 'meer' : S.tab;
+    App.$$('.tab').forEach(function (t) {
+      t.setAttribute('aria-current', t.getAttribute('data-tab') === hoofdtab ? 'page' : 'false');
+    });
+
+    if (S.tab === 'berichten' && S.chatOpen) {
+      var d = deelnemer(S.chatOpen);
+      $('#titel').textContent = d ? d.bedrijfsnaam : 'Bericht';
+      $('#subtitel').textContent = d ? d.rol : '';
+      $('#terug').hidden = false;
+    } else {
+      $('#titel').textContent = TITELS[S.tab][0];
+      $('#subtitel').textContent = TITELS[S.tab][1] || S.project.naam;
+      $('#terug').hidden = S.tab !== 'akkoorden';
+    }
+
+    $('#s-' + S.tab).hidden = false;
+
+    if (S.tab === 'start') tekenStart();
+    if (S.tab === 'berichten') tekenBerichten();
+    if (S.tab === 'dagboek') tekenDagboek();
+    if (S.tab === 'meerwerk') tekenMeerwerk();
+    if (S.tab === 'meer') tekenMeer();
+    if (S.tab === 'akkoorden') tekenAkkoorden();
+
+    var totaal = ongelezenTotaal();
+    $('#stipBerichten').hidden = !totaal;
+    $('#stipBerichten').textContent = totaal;
+
+    var open = openMeerwerk().length;
+    $('#stipMeerwerk').hidden = !open;
+    $('#stipMeerwerk').textContent = open;
+  }
+
+  function openMeerwerk() {
+    return S.meerwerk.filter(function (m) { return m.status === 'wacht'; });
+  }
+
+  function deelnemer(id) {
+    return (S.project.deelnemers || []).filter(function (d) { return d.id === id; })[0];
+  }
+
+  function ongelezenTotaal() {
+    return (S.project ? S.project.deelnemers : []).reduce(function (t, d) { return t + (d.ongelezen || 0); }, 0);
+  }
+
+  /* ---------- Nog geen project ---------- */
+
+  function tekenNieuwProject() {
+    $('#s-start').innerHTML =
+      '<h2 class="titel">Start je verbouwing</h2>' +
+      '<div class="kaart" style="padding:18px 16px">' +
+        '<p style="margin:0 0 16px;font-size:14px;color:var(--ink-2);line-height:1.6">' +
+          'Maak je project aan. Daarna nodig je je aannemer uit met een projectcode — meedoen kost hem niets.' +
+        '</p>' +
+        '<p class="fout" id="projectFout" hidden></p>' +
+        '<div class="veld"><label for="pNaam">Wat ga je verbouwen?</label>' +
+          '<input id="pNaam" type="text" placeholder="Renovatie woning"></div>' +
+        '<div class="veld"><label for="pAdres">Adres</label>' +
+          '<input id="pAdres" type="text" placeholder="Dorpsstraat 12, Ede"></div>' +
+        '<div class="veld"><label for="pSom">Aanneemsom <span class="toelichting">Optioneel.</span></label>' +
+          '<input id="pSom" type="text" inputmode="numeric" placeholder="184500"></div>' +
+        '<div class="veld veld--rij">' +
+          '<div><label for="pStart">Start</label><input id="pStart" type="text" placeholder="1 september 2026"></div>' +
+          '<div><label for="pOplever">Oplevering</label><input id="pOplever" type="text" placeholder="18 maart 2027"></div>' +
+        '</div>' +
+        '<button class="btn btn--gold btn--breed" type="button" id="maakProject">Project aanmaken</button>' +
+      '</div>';
+
+    $('#maakProject').addEventListener('click', function () {
+      var naam = $('#pNaam').value.trim();
+      if (!naam) { App.toonFout('#projectFout', 'Geef je project een naam.'); $('#pNaam').focus(); return; }
+
+      var knop = $('#maakProject');
+      knop.disabled = true;
+      knop.textContent = 'Bezig…';
+
+      api('/projecten', {
+        method: 'POST',
+        body: {
+          naam: naam,
+          adres: $('#pAdres').value.trim(),
+          aanneemsom: $('#pSom').value.trim(),
+          start: $('#pStart').value.trim(),
+          oplevering: $('#pOplever').value.trim(),
+        },
+      })
+        .then(function (d) {
+          S.project = d.project;
+          return laden();
+        })
+        .then(function () {
+          App.melding('Project aangemaakt — nodig nu je aannemer uit');
+          openUitnodigen();
+        })
+        .catch(function (err) {
+          knop.disabled = false;
+          knop.textContent = 'Project aanmaken';
+          App.toonFout('#projectFout', err.message);
+        });
+    });
+  }
+
+  /* ---------- Start ---------- */
+
+  function tekenStart() {
+    var p = S.project;
+    var open = ongelezenTotaal();
+    var onbeantwoord = p.deelnemers.filter(function (d) { return d.ongelezen; });
+
+    var slot = p.status === 'afgesloten'
+      ? '<div class="slotmelding"><svg width="17" height="17" aria-hidden="true"><use href="#i-lock"></use></svg>Project afgesloten — het dossier ligt vast</div>'
+      : '';
+
+    var berichtRij = open
+      ? '<button class="rij" type="button" data-chat="' + veilig(onbeantwoord[0].id) + '">' +
+          '<span class="ico ico--goud"><svg width="17" height="17" aria-hidden="true"><use href="#i-chat"></use></svg></span>' +
+          '<span><b>' + open + (open === 1 ? ' nieuw bericht' : ' nieuwe berichten') + '</b><small>' +
+          onbeantwoord.map(function (d) { return veilig(d.bedrijfsnaam) + ' (' + d.ongelezen + ')'; }).join(' · ') +
+          '</small></span>' +
+          '<span class="rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span>' +
+        '</button>'
+      : '<div class="rij"><span class="ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-chat"></use></svg></span>' +
+        '<span><b>Geen nieuwe berichten</b><small>Alles gelezen</small></span></div>';
+
+    $('#s-start').innerHTML =
+      slot +
+      '<div class="kaart" style="margin-top:12px">' +
+        '<div class="voortgang">' +
+          '<div class="voortgang__kop"><span>' + veilig(p.naam) + '</span><span>' + p.voortgang + '%</span></div>' +
+          '<span class="bar"><i style="width:' + p.voortgang + '%"></i></span>' +
+        '</div>' +
+        '<dl class="cijfers" style="margin:0">' +
+          '<div class="cijfer"><dt>Aanneemsom</dt><dd>' + App.euro(p.aanneemsom) + '</dd></div>' +
+          '<div class="cijfer"><dt>Goedgekeurd meerwerk</dt><dd>' + App.euro(S.goedgekeurd || 0) + '</dd></div>' +
+          '<div class="cijfer"><dt>Bouwdagen</dt><dd>' + (S.samenvatting ? S.samenvatting.dagen : 0) +
+            ' <span style="font-weight:400;font-size:12px;color:var(--ink-3)">· ' + (S.samenvatting ? S.samenvatting.fotos : 0) + ' foto\'s</span></dd></div>' +
+          '<div class="cijfer"><dt>Oplevering</dt><dd style="font-size:13.5px">' + (veilig(p.oplevering) || '—') + '</dd></div>' +
+        '</dl>' +
+      '</div>' +
+
+      '<h2 class="titel">Wat er speelt</h2>' +
+      '<div class="kaart">' +
+        openMeerwerk().map(function (m) {
+          return '<button class="rij" type="button" data-naar="meerwerk">' +
+            '<span class="ico ico--goud"><svg width="17" height="17" aria-hidden="true"><use href="#i-euro"></use></svg></span>' +
+            '<span><b>Meerwerk #' + m.nummer + ' wacht op jou</b><small>' + veilig(m.titel) + ' · ' + App.euro(m.bedrag) + '</small></span>' +
+            '<span class="rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>';
+        }).join('') +
+        (S.samenvatting && S.samenvatting.laatsteDag
+          ? '<button class="rij" type="button" data-naar="dagboek">' +
+            '<span class="ico ico--groen"><svg width="17" height="17" aria-hidden="true"><use href="#i-camera"></use></svg></span>' +
+            '<span><b>' + veilig(S.samenvatting.laatsteDag.titel) + '</b><small>' +
+            veilig(App.datumVoluit(S.samenvatting.laatsteDag.datum)) + ' · ' + veilig(S.samenvatting.laatsteDag.auteurNaam) + '</small></span>' +
+            '<span class="rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>'
+          : '') +
+        berichtRij +
+      '</div>' +
+
+      '<h2 class="titel">Wie werken er aan je huis</h2>' +
+      '<div class="kaart">' +
+        '<div class="rij"><span class="ico ico--goud"><svg width="17" height="17" aria-hidden="true"><use href="#i-home"></use></svg></span>' +
+        '<span><b>' + veilig(S.eigenaar.naam) + '</b><small>Eigenaar — dit is jouw project</small></span></div>' +
+        (p.deelnemers.length
+          ? p.deelnemers.map(function (d) {
+              return '<button class="rij" type="button" data-inlog="' + veilig(d.id) + '">' +
+                '<span class="ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-tools"></use></svg></span>' +
+                '<span><b>' + veilig(d.bedrijfsnaam) + '</b><small><span class="mono">' + veilig(d.code) + '</span> · ' +
+                (d.laatstIngelogd ? 'heeft ingelogd' : 'nog niet ingelogd') + '</small></span>' +
+                '<span class="rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>';
+            }).join('')
+          : '<div class="leeg">Nog niemand uitgenodigd.</div>') +
+      '</div>' +
+
+      (p.status === 'afgesloten' ? '' :
+        '<button class="btn btn--ghost btn--breed" type="button" id="nodigUit" style="margin-top:12px">' +
+        '<svg width="17" height="17" aria-hidden="true"><use href="#i-user-plus"></use></svg>Iemand uitnodigen</button>') +
+
+      '<div class="binnenkort">' +
+        '<b>Wordt hierna gebouwd:</b> documenten (offerte, contract, garanties) en het ' +
+        'afgesloten dossier om te downloaden.' +
+      '</div>';
+  }
+
+  /* ---------- Berichten ---------- */
+
+  function tekenBerichten() {
+    var vak = $('#s-berichten');
+
+    if (!S.chatOpen) {
+      var lijst = S.project.deelnemers;
+      vak.innerHTML = lijst.length
+        ? '<div class="kaart" style="margin-top:14px">' +
+            lijst.map(function (d) {
+              var laatste = d.laatsteBericht;
+              var voorbeeld = laatste
+                ? (laatste.van === 'eigenaar' ? '<b>Jij:</b> ' : '') + veilig(laatste.tekst)
+                : 'Nog geen berichten';
+              return '<button class="chatrij" type="button" data-chat="' + veilig(d.id) + '">' +
+                '<span class="chatavatar chatavatar--' + App.tint(d.bedrijfsnaam) + '">' + veilig(App.initialen(d.bedrijfsnaam)) + '</span>' +
+                '<span class="chatrij__tekst">' +
+                  '<span class="chatrij__naam">' + veilig(d.bedrijfsnaam) + '</span>' +
+                  '<span class="chatrij__prev">' + (d.rol ? '<span class="chatrij__rol">' + veilig(d.rol) + '</span> · ' : '') + voorbeeld + '</span>' +
+                '</span>' +
+                '<span class="chatrij__meta">' +
+                  '<span class="chatrij__tijd">' + (laatste ? App.tijd(laatste.op) : '') + '</span>' +
+                  (d.ongelezen ? '<span class="chatrij__ongelezen">' + d.ongelezen + '</span>' : '') +
+                '</span>' +
+              '</button>';
+            }).join('') +
+          '</div>' +
+          '<p class="notitie">Elk bedrijf heeft een eigen gesprek. Alles blijft bij dit project horen.</p>'
+        : '<div class="kaart" style="margin-top:14px"><div class="leeg">Nodig eerst iemand uit; dan kun je hier met hem praten.</div></div>' +
+          '<button class="btn btn--gold btn--breed" type="button" id="nodigUit" style="margin-top:12px">Iemand uitnodigen</button>';
+      return;
+    }
+
+    var d = deelnemer(S.chatOpen);
+    var afgesloten = S.project.status === 'afgesloten';
+    var vorigeDag = '';
+
+    var bubbels = S.berichten.map(function (b) {
+      var streep = '';
+      var dag = App.dagLabel(b.op);
+      if (dag !== vorigeDag) { vorigeDag = dag; streep = '<div class="dagstreep">' + veilig(dag) + '</div>'; }
+      return streep +
+        '<div class="bubbel' + (b.van === 'eigenaar' ? ' bubbel--ik' : '') + '">' +
+          veilig(b.tekst) + '<span class="bubbel__tijd">' + App.tijd(b.op) + '</span>' +
+        '</div>';
+    }).join('');
+
+    vak.innerHTML =
+      '<div class="chat" id="chat">' + (bubbels || '<p class="leeg">Nog geen berichten. Stuur de eerste.</p>') + '</div>' +
+      (afgesloten
+        ? '<p class="notitie">Het project is afgesloten. Je kunt het gesprek teruglezen, maar niet meer reageren.</p>'
+        : '<div class="opsteller">' +
+            '<input type="text" id="bericht" placeholder="Bericht aan ' + veilig(d ? d.bedrijfsnaam : '') + '" aria-label="Bericht">' +
+            '<button class="rond" type="button" id="verstuur" aria-label="Versturen">' +
+            '<svg width="18" height="18" aria-hidden="true"><use href="#i-send"></use></svg></button>' +
+          '</div>');
+
+    var chat = $('#chat');
+    if (chat) chat.scrollTop = chat.scrollHeight;
+  }
+
+  function openChat(deelnemerId) {
+    return api('/gesprekken/' + deelnemerId).then(function (d) {
+      S.chatOpen = deelnemerId;
+      S.berichten = d.berichten;
+      // Het openen heeft ze op de server als gelezen gezet; hier bijwerken
+      // zodat de teller niet blijft hangen.
+      var dl = deelnemer(deelnemerId);
+      if (dl) dl.ongelezen = 0;
+      S.tab = 'berichten';
+      teken();
+    });
+  }
+
+  function stuurBericht() {
+    var veld = $('#bericht');
+    if (!veld) return;
+    var tekst = veld.value.trim();
+    if (!tekst) return;
+
+    var knop = $('#verstuur');
+    knop.disabled = true;
+
+    api('/gesprekken/' + S.chatOpen, { method: 'POST', body: { tekst: tekst } })
+      .then(function (d) {
+        S.berichten.push(d.bericht);
+        var dl = deelnemer(S.chatOpen);
+        if (dl) dl.laatsteBericht = { tekst: d.bericht.tekst, op: d.bericht.op, van: 'eigenaar' };
+        veld.value = '';
+        teken();
+      })
+      .catch(function (err) {
+        knop.disabled = false;
+        App.melding(err.message);
+      });
+  }
+
+  /* ---------- Bouwdagboek ---------- */
+
+  function tekenDagboek() {
+    var afgesloten = S.project.status === 'afgesloten';
+
+    $('#s-dagboek').innerHTML =
+      (afgesloten ? '' :
+        '<button class="btn btn--ghost btn--breed" type="button" id="nieuweDag" style="margin-top:14px">' +
+        '<svg width="17" height="17" aria-hidden="true"><use href="#i-plus"></use></svg>Zelf iets vastleggen</button>') +
+
+      (S.dagboek.length
+        ? '<div class="kaart" style="margin-top:12px">' +
+            S.dagboek.map(function (d) {
+              return '<div class="dag">' +
+                '<div class="dag__datum">' + veilig(App.datumVoluit(d.datum)) +
+                  (App.weekdag(d.datum) ? ' · ' + veilig(App.weekdag(d.datum)) : '') + '</div>' +
+                '<div class="dag__titel">' + veilig(d.titel) + '</div>' +
+                (d.punten.length
+                  ? '<ul class="dag__punten">' + d.punten.map(function (punt) {
+                      return '<li>' + veilig(punt) + '</li>';
+                    }).join('') + '</ul>'
+                  : '') +
+                '<div style="display:flex;gap:7px;flex-wrap:wrap">' +
+                  (d.fotos.length ? '<span class="chip">' + d.fotos.length + ' foto\'s</span>' : '') +
+                  (d.uren ? '<span class="chip">' + veilig(d.uren) + '</span>' : '') +
+                  '<span class="chip">' + veilig(d.auteurNaam) + '</span>' +
+                '</div>' +
+                App.fotoRaster(d.fotos) +
+              '</div>';
+            }).join('') +
+          '</div>'
+        : '<div class="kaart" style="margin-top:12px"><div class="leeg">' +
+          'Nog niets vastgelegd. Zodra je aannemer een dagrapport plaatst, staat het hier — met foto\'s.' +
+          '</div></div>');
+  }
+
+  function openNieuweDag() {
+    var vandaag = new Date().toISOString().slice(0, 10);
+    openDialoog(
+      'Iets vastleggen',
+      'Voor je eigen dossier: wat je hebt gezien of afgesproken.',
+      '<p class="fout" id="dagFout" hidden></p>' +
+      '<div class="veld"><label for="dTitel">Wat is er gebeurd?</label>' +
+        '<input id="dTitel" type="text" placeholder="Tegelwerk badkamer gestart"></div>' +
+      '<div class="veld veld--rij">' +
+        '<div><label for="dDatum">Datum</label><input id="dDatum" type="date" value="' + vandaag + '"></div>' +
+        '<div><label for="dUren">Uren <span class="toelichting">Optioneel.</span></label><input id="dUren" type="text" placeholder="8 uur"></div>' +
+      '</div>' +
+      '<div class="veld"><label for="dPunten">Punten <span class="toelichting">Eén per regel, optioneel.</span></label>' +
+        '<textarea id="dPunten" placeholder="Wanden voorbehandeld&#10;Eerste rij tegels gezet"></textarea></div>' +
+      (S.fotoopslag
+        ? '<label class="knopbestand"><svg width="17" height="17" aria-hidden="true"><use href="#i-camera"></use></svg>' +
+          '<span id="dFotoLabel">Foto\'s kiezen</span>' +
+          '<input id="dFotos" type="file" accept="image/*" multiple></label>' +
+          '<div class="bestanden" id="dBestanden"></div>'
+        : '<p class="notitie">Foto\'s toevoegen kan zodra de fotoopslag is ingesteld.</p>'),
+      '<button class="btn btn--ghost" type="button" data-dlg="sluit">Annuleren</button>' +
+      '<button class="btn btn--gold" type="button" id="bewaarDag">Vastleggen</button>'
+    );
+
+    var invoer = $('#dFotos');
+    if (invoer) {
+      invoer.addEventListener('change', function () {
+        $('#dBestanden').innerHTML = Array.prototype.map.call(this.files, function (f) {
+          return '<span class="bestandje">' + veilig(f.name) + '</span>';
+        }).join('');
+      });
+    }
+
+    $('#bewaarDag').addEventListener('click', function () {
+      var titel = $('#dTitel').value.trim();
+      if (!titel) { App.toonFout('#dagFout', 'Beschrijf kort wat er is gedaan.'); $('#dTitel').focus(); return; }
+
+      var knop = this;
+      knop.disabled = true;
+      knop.textContent = 'Bezig…';
+
+      var vd = new FormData();
+      vd.append('titel', titel);
+      vd.append('datum', $('#dDatum').value);
+      vd.append('uren', $('#dUren').value.trim());
+      vd.append('punten', $('#dPunten').value);
+      if (invoer) {
+        Array.prototype.forEach.call(invoer.files, function (f) { vd.append('fotos', f); });
+      }
+
+      App.apiFormulier('/projecten/' + S.project.id + '/dagboek', vd)
+        .then(function () { sluitDialoog(); App.melding('Vastgelegd'); return laadProjectinhoud(); })
+        .catch(function (err) {
+          knop.disabled = false;
+          knop.textContent = 'Vastleggen';
+          App.toonFout('#dagFout', err.message);
+        });
+    });
+  }
+
+  /* ---------- Meerwerk ---------- */
+
+  function statusLabel(status) {
+    if (status === 'akkoord') return '<span class="status status--ok"><svg width="13" height="13" aria-hidden="true"><use href="#i-check"></use></svg>Akkoord</span>';
+    if (status === 'afgewezen') return '<span class="status status--nee"><svg width="13" height="13" aria-hidden="true"><use href="#i-x"></use></svg>Afgewezen</span>';
+    return '<span class="status status--wacht"><svg width="13" height="13" aria-hidden="true"><use href="#i-clock"></use></svg>Wacht op jou</span>';
+  }
+
+  function tekenMeerwerk() {
+    var afgesloten = S.project.status === 'afgesloten';
+
+    $('#s-meerwerk').innerHTML =
+      (S.meerwerk.length
+        ? '<div class="kaart" style="margin-top:14px">' +
+            S.meerwerk.map(function (m) {
+              return '<div class="mw">' +
+                '<div class="mw__top">' +
+                  '<div><div class="mw__nr">#' + m.nummer + ' · ' + veilig(m.voorsteller) + ' · ' +
+                    veilig(new Date(m.voorgesteldOp).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })) + '</div>' +
+                  '<div class="mw__titel">' + veilig(m.titel) + '</div></div>' +
+                  '<div class="mw__prijs">' + App.euro(m.bedrag) + '</div>' +
+                '</div>' +
+                (m.omschrijving ? '<p class="mw__tekst">' + veilig(m.omschrijving) + '</p>' : '') +
+                App.fotoRaster(m.fotos) +
+                '<div style="margin-top:10px">' + statusLabel(m.status) + '</div>' +
+                (m.status === 'wacht' && !afgesloten
+                  ? '<div class="mw__knoppen">' +
+                      '<button class="btn btn--gold" type="button" data-besluit="akkoord" data-mw="' + veilig(m.id) + '">Akkoord</button>' +
+                      '<button class="btn btn--ghost" type="button" data-besluit="afgewezen" data-mw="' + veilig(m.id) + '">Afwijzen</button>' +
+                    '</div>'
+                  : '') +
+              '</div>';
+            }).join('') +
+            '<div class="totaalrij"><span>Goedgekeurd meerwerk</span><b>' + App.euro(S.goedgekeurd || 0) + '</b></div>' +
+          '</div>'
+        : '<div class="kaart" style="margin-top:14px"><div class="leeg">' +
+          'Nog geen meerwerk. Zodra je aannemer iets voorstelt, staat het hier met het bedrag erbij.' +
+          '</div></div>') +
+
+      '<p class="notitie">Je aannemer ziet dezelfde lijst. Elk besluit komt met datum en tijd bij Akkoorden te staan.</p>';
+  }
+
+  function neemBesluit(id, besluit) {
+    var m = S.meerwerk.filter(function (x) { return x.id === id; })[0];
+    if (!m) return;
+
+    openDialoog(
+      besluit === 'akkoord' ? 'Meerwerk goedkeuren?' : 'Meerwerk afwijzen?',
+      '#' + m.nummer + ' · ' + m.titel,
+      '<div class="inloggegevens"><dl>' +
+        '<div><dt>Bedrag</dt><dd>' + App.euro(m.bedrag) + '</dd></div>' +
+      '</dl></div>' +
+      '<p style="margin:14px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.6">' +
+        (besluit === 'akkoord'
+          ? 'Je legt vast dat je akkoord gaat met dit bedrag, met datum en tijd. Dat besluit blijft staan.'
+          : 'Je legt vast dat je dit niet wilt laten uitvoeren. Ook dat blijft staan.') +
+      '</p>',
+      '<button class="btn btn--ghost" type="button" data-dlg="sluit">Terug</button>' +
+      '<button class="btn ' + (besluit === 'akkoord' ? 'btn--gold' : 'btn--gevaar') + '" type="button" id="bevestigBesluit">' +
+        (besluit === 'akkoord' ? 'Ja, akkoord' : 'Afwijzen') + '</button>'
+    );
+
+    $('#bevestigBesluit').addEventListener('click', function () {
+      this.disabled = true;
+      api('/meerwerk/' + id + '/besluit', { method: 'POST', body: { besluit: besluit } })
+        .then(function () {
+          sluitDialoog();
+          App.melding(besluit === 'akkoord'
+            ? 'Akkoord vastgelegd — ' + App.euro(m.bedrag) + ' toegevoegd'
+            : 'Afwijzing vastgelegd bij Akkoorden');
+          return laadProjectinhoud();
+        })
+        .catch(function (err) { sluitDialoog(); App.melding(err.message); });
+    });
+  }
+
+  /* ---------- Akkoorden ---------- */
+
+  function tekenAkkoorden() {
+    var ico = { akkoord: 'ico--groen', afgewezen: 'ico--rood', afspraak: 'ico--goud' };
+    var symbool = { akkoord: '#i-checks', afgewezen: '#i-x', afspraak: '#i-doc' };
+
+    $('#s-akkoorden').innerHTML =
+      (S.project.status === 'afgesloten' ? '' :
+        '<button class="btn btn--ghost btn--breed" type="button" id="nieuwAkkoord" style="margin-top:14px">' +
+        '<svg width="17" height="17" aria-hidden="true"><use href="#i-plus"></use></svg>Afspraak vastleggen</button>') +
+
+      (S.akkoorden.length
+        ? '<div class="kaart" style="margin-top:12px">' +
+            S.akkoorden.map(function (a) {
+              return '<div class="akkoord">' +
+                '<span class="ico ' + (ico[a.soort] || 'ico--goud') + '">' +
+                  '<svg width="17" height="17" aria-hidden="true"><use href="' + (symbool[a.soort] || '#i-doc') + '"></use></svg></span>' +
+                '<span><b>' + veilig(a.titel) + '</b>' +
+                  (a.omschrijving ? '<p>' + veilig(a.omschrijving) + '</p>' : '') +
+                  '<div class="akkoord__ref">' + veilig(new Date(a.vastgelegdOp).toLocaleString('nl-NL')) + ' · ' + veilig(a.door) + '</div>' +
+                '</span>' +
+                '<span class="akkoord__bedrag">' + (a.bedrag == null ? '—' : App.euro(a.bedrag)) + '</span>' +
+              '</div>';
+            }).join('') +
+          '</div>'
+        : '<div class="kaart" style="margin-top:12px"><div class="leeg">Nog niets vastgelegd.</div></div>') +
+
+      '<p class="notitie">Projexa legt vast wie wat wanneer heeft goedgekeurd, met het voorstel erbij. ' +
+      'Dat geeft je een compleet overzicht — het is geen juridisch oordeel over wie gelijk heeft.</p>';
+  }
+
+  function openNieuwAkkoord() {
+    openDialoog(
+      'Afspraak vastleggen',
+      'Voor keuzes zonder prijskaartje die je later wilt kunnen terugvinden.',
+      '<p class="fout" id="akkFout" hidden></p>' +
+      '<div class="veld"><label for="aTitel">Waar gaat het over?</label>' +
+        '<input id="aTitel" type="text" placeholder="Keuze tegelwerk badkamer"></div>' +
+      '<div class="veld" style="margin-bottom:0"><label for="aOms">Toelichting <span class="toelichting">Optioneel.</span></label>' +
+        '<textarea id="aOms" placeholder="Wandtegel wit mat 30x60, vloertegel antraciet 60x60."></textarea></div>',
+      '<button class="btn btn--ghost" type="button" data-dlg="sluit">Annuleren</button>' +
+      '<button class="btn btn--gold" type="button" id="bewaarAkkoord">Vastleggen</button>'
+    );
+
+    $('#bewaarAkkoord').addEventListener('click', function () {
+      var titel = $('#aTitel').value.trim();
+      if (!titel) { App.toonFout('#akkFout', 'Waar gaat deze afspraak over?'); $('#aTitel').focus(); return; }
+
+      var knop = this;
+      knop.disabled = true;
+      knop.textContent = 'Bezig…';
+
+      api('/projecten/' + S.project.id + '/akkoorden', {
+        method: 'POST',
+        body: { titel: titel, omschrijving: $('#aOms').value.trim() },
+      })
+        .then(function () { sluitDialoog(); App.melding('Vastgelegd'); return laadProjectinhoud(); })
+        .catch(function (err) {
+          knop.disabled = false;
+          knop.textContent = 'Vastleggen';
+          App.toonFout('#akkFout', err.message);
+        });
+    });
+  }
+
+  /* ---------- Meer ---------- */
+
+  function tekenMeer() {
+    var p = S.project;
+
+    $('#s-meer').innerHTML =
+      '<h2 class="titel">Dit project</h2>' +
+      '<div class="kaart">' +
+        '<div class="rij"><span><b>' + veilig(p.naam) + '</b><small>' + (veilig(p.adres) || 'Geen adres ingevuld') + '</small></span></div>' +
+        '<div class="rij"><span><b>' + App.euro(p.aanneemsom) + '</b><small>Aanneemsom</small></span></div>' +
+        '<div class="rij"><span><b>' + (veilig(p.start) || '—') + ' → ' + (veilig(p.oplevering) || '—') + '</b><small>Planning</small></span></div>' +
+        (p.status === 'afgesloten'
+          ? '<div class="rij"><span class="ico ico--goud"><svg width="17" height="17" aria-hidden="true"><use href="#i-lock"></use></svg></span>' +
+            '<span><b>Afgesloten</b><small>' + new Date(p.afgeslotenOp).toLocaleDateString('nl-NL') + '</small></span></div>'
+          : '<button class="rij" type="button" id="bewerkProject"><span class="ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-edit"></use></svg></span>' +
+            '<span><b>Gegevens aanpassen</b><small>Naam, adres, bedrag, planning en voortgang</small></span>' +
+            '<span class="rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span></button>') +
+      '</div>' +
+
+      '<div class="kaart" style="margin-top:12px">' +
+        '<button class="rij" type="button" data-naar="akkoorden">' +
+          '<span class="ico ico--groen"><svg width="17" height="17" aria-hidden="true"><use href="#i-checks"></use></svg></span>' +
+          '<span><b>Akkoorden</b><small>' + S.akkoorden.length + ' vastgelegde besluiten</small></span>' +
+          '<span class="rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg></span>' +
+        '</button>' +
+      '</div>' +
+
+      '<h2 class="titel">Bedrijven op dit project</h2>' +
+      '<div class="kaart">' +
+        (p.deelnemers.length
+          ? p.deelnemers.map(function (d) {
+              return '<button class="rij" type="button" data-inlog="' + veilig(d.id) + '">' +
+                '<span class="ico"><svg width="17" height="17" aria-hidden="true"><use href="#i-tools"></use></svg></span>' +
+                '<span><b>' + veilig(d.bedrijfsnaam) + '</b><small>' + (veilig(d.rol) || 'Geen rol') + ' · <span class="mono">' + veilig(d.code) + '</span></small></span>' +
+                '<span class="rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-key"></use></svg></span></button>';
+            }).join('')
+          : '<div class="leeg">Nog niemand uitgenodigd.</div>') +
+      '</div>' +
+
+      (p.status === 'afgesloten' ? '' :
+        '<button class="btn btn--ghost btn--breed" type="button" id="nodigUit" style="margin-top:12px">Iemand uitnodigen</button>' +
+        '<button class="btn btn--gevaar btn--breed" type="button" id="sluitAf" style="margin-top:10px">Project afsluiten bij oplevering</button>' +
+        '<p class="notitie">Afsluiten zet het dossier vast: daarna kan niemand er nog iets aan veranderen, ook jij niet.</p>') +
+
+      '<h2 class="titel">Account</h2>' +
+      '<div class="kaart">' +
+        '<div class="rij"><span><b>' + veilig(S.eigenaar.naam) + '</b><small>' + veilig(S.eigenaar.email) + '</small></span></div>' +
+        '<button class="rij" type="button" id="uitloggenRij"><span><b>Uitloggen</b></span>' +
+        '<span class="rij__eind"><svg width="18" height="18" aria-hidden="true"><use href="#i-logout"></use></svg></span></button>' +
+      '</div>';
+  }
+
+  /* ------------------------------------------------------------------
+     Dialogen
+     ------------------------------------------------------------------ */
+
+  function sluitDialoog() { $('#overlay').hidden = true; }
+
+  function openDialoog(titel, sub, body, voet) {
+    $('#dlgTitel').textContent = titel;
+    $('#dlgSub').textContent = sub || '';
+    $('#dlgBody').innerHTML = body;
+    $('#dlgVoet').innerHTML = voet;
+    $('#overlay').hidden = false;
+  }
+
+  function openUitnodigen() {
+    if (!S.project) return;
+    openDialoog(
+      'Iemand uitnodigen',
+      'Wie erbij komt ziet dit project. Meedoen is gratis.',
+      '<p class="fout" id="uitFout" hidden></p>' +
+      '<div class="veld"><label for="uNaam">Bedrijfsnaam</label>' +
+        '<input id="uNaam" type="text" placeholder="Bouwbedrijf Van Dijk"></div>' +
+      '<div class="veld"><label for="uRol">Wat doet dit bedrijf?</label>' +
+        '<select id="uRol">' +
+          '<option>Hoofdaannemer</option><option>Timmerman</option><option>Elektricien</option>' +
+          '<option>Loodgieter</option><option>Schilder</option><option>Stukadoor</option>' +
+          '<option>Tegelzetter</option><option>Architect</option><option>Constructeur</option>' +
+        '</select></div>' +
+      '<div class="veld" style="margin-bottom:0"><label for="uEmail">E-mailadres <span class="toelichting">Optioneel.</span></label>' +
+        '<input id="uEmail" type="email" placeholder="mark@vandijk.nl"></div>',
+      '<button class="btn btn--ghost" type="button" data-dlg="sluit">Annuleren</button>' +
+      '<button class="btn btn--gold" type="button" id="dlgUitnodigen">Uitnodigen</button>'
+    );
+    setTimeout(function () { var n = $('#uNaam'); if (n) n.focus(); }, 30);
+  }
+
+  function toonInlog(deelnemerNaam, inlog, versgemaakt) {
+    openDialoog(
+      versgemaakt ? deelnemerNaam + ' is uitgenodigd' : 'Inloggegevens ' + deelnemerNaam,
+      versgemaakt
+        ? 'Geef deze gegevens aan hem door. Ze zijn hierna niet meer op te vragen.'
+        : 'Bewaar deze gegevens; ze zijn hierna niet meer op te vragen.',
+      '<div class="inloggegevens"><dl>' +
+        '<div><dt>Projectcode</dt><dd class="mono">' + veilig(inlog.code) + '</dd></div>' +
+        '<div><dt>Wachtwoord</dt><dd class="mono">' + veilig(inlog.wachtwoord) + '</dd></div>' +
+      '</dl></div>' +
+      '<p style="margin:14px 0 0;font-size:12.5px;color:var(--ink-3);line-height:1.55">' +
+        'Hiermee logt hij in op ' + location.origin + '/app/ — en alleen op dit project.' +
+      '</p>',
+      '<button class="btn btn--gold" type="button" data-dlg="sluit">Klaar</button>'
+    );
+  }
+
+  function openDeelnemer(id) {
+    var d = deelnemer(id);
+    if (!d) return;
+
+    openDialoog(
+      d.bedrijfsnaam,
+      (d.rol || 'Geen rol') + ' · ' + (d.laatstIngelogd ? 'heeft ingelogd' : 'nog niet ingelogd'),
+      '<div class="inloggegevens"><dl>' +
+        '<div><dt>Projectcode</dt><dd class="mono">' + veilig(d.code) + '</dd></div>' +
+      '</dl></div>' +
+      '<p style="margin:14px 0 0;font-size:12.5px;color:var(--ink-3);line-height:1.55">' +
+        'Het wachtwoord staat versleuteld opgeslagen en is niet meer op te vragen. ' +
+        'Kwijt? Geef een nieuw wachtwoord uit — het oude werkt dan niet meer.' +
+      '</p>',
+      '<button class="btn btn--ghost" type="button" data-dlg="sluit">Sluiten</button>' +
+      (S.project.status === 'afgesloten' ? '' :
+        '<button class="btn btn--gold" type="button" data-nieuwww="' + veilig(d.id) + '">Nieuw wachtwoord</button>')
+    );
+  }
+
+  $('#overlay').addEventListener('click', function (e) {
+    if (e.target === $('#overlay') || e.target.closest('[data-dlg="sluit"]')) { sluitDialoog(); return; }
+
+    if (e.target.closest('#dlgUitnodigen')) {
+      var naam = $('#uNaam').value.trim();
+      if (!naam) { App.toonFout('#uitFout', 'Vul de bedrijfsnaam in.'); $('#uNaam').focus(); return; }
+
+      var knop = $('#dlgUitnodigen');
+      knop.disabled = true;
+      knop.textContent = 'Bezig…';
+
+      api('/projecten/' + S.project.id + '/deelnemers', {
+        method: 'POST',
+        body: { bedrijfsnaam: naam, rol: $('#uRol').value, email: $('#uEmail').value.trim() },
+      })
+        .then(function (d) {
+          return laden().then(function () { toonInlog(d.deelnemer.bedrijfsnaam, d.inlog, true); });
+        })
+        .catch(function (err) {
+          knop.disabled = false;
+          knop.textContent = 'Uitnodigen';
+          App.toonFout('#uitFout', err.message);
+        });
+      return;
+    }
+
+    var nieuww = e.target.closest('[data-nieuwww]');
+    if (nieuww) {
+      var id = nieuww.getAttribute('data-nieuwww');
+      var d = deelnemer(id);
+      nieuww.disabled = true;
+      api('/deelnemers/' + id + '/nieuw-wachtwoord', { method: 'POST' })
+        .then(function (r) {
+          toonInlog(d.bedrijfsnaam, r.inlog, false);
+          App.melding('Nieuw wachtwoord aangemaakt — het oude werkt niet meer');
+          return laden();
+        })
+        .catch(function (err) { App.melding(err.message); sluitDialoog(); });
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') sluitDialoog();
+  });
+
+  /* ------------------------------------------------------------------
+     Klikken in de app
+     ------------------------------------------------------------------ */
+
+  document.querySelector('main').addEventListener('click', function (e) {
+    var naar = e.target.closest('[data-naar]');
+    if (naar) { ga(naar.getAttribute('data-naar')); return; }
+
+    var chat = e.target.closest('[data-chat]');
+    if (chat) { openChat(chat.getAttribute('data-chat')).catch(function (err) { App.melding(err.message); }); return; }
+
+    var inlog = e.target.closest('[data-inlog]');
+    if (inlog) { openDeelnemer(inlog.getAttribute('data-inlog')); return; }
+
+    if (e.target.closest('#nodigUit')) { openUitnodigen(); return; }
+    if (e.target.closest('#verstuur')) { stuurBericht(); return; }
+    if (e.target.closest('#uitloggenRij')) { App.uitloggen(); return; }
+    if (e.target.closest('#bewerkProject')) { openBewerken(); return; }
+    if (e.target.closest('#sluitAf')) { bevestigAfsluiten(); return; }
+    if (e.target.closest('#nieuweDag')) { openNieuweDag(); return; }
+    if (e.target.closest('#nieuwAkkoord')) { openNieuwAkkoord(); return; }
+
+    var foto = e.target.closest('[data-foto]');
+    if (foto) { App.toonFoto(foto.getAttribute('data-foto')); return; }
+
+    var besluit = e.target.closest('[data-besluit]');
+    if (besluit) { neemBesluit(besluit.getAttribute('data-mw'), besluit.getAttribute('data-besluit')); return; }
+  });
+
+  document.querySelector('main').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.id === 'bericht') stuurBericht();
+  });
+
+  function openBewerken() {
+    var p = S.project;
+    openDialoog(
+      'Projectgegevens',
+      'Wat je hier aanpast, ziet iedereen op het project.',
+      '<p class="fout" id="bewerkFout" hidden></p>' +
+      '<div class="veld"><label for="bNaam">Naam</label><input id="bNaam" type="text" value="' + veilig(p.naam) + '"></div>' +
+      '<div class="veld"><label for="bAdres">Adres</label><input id="bAdres" type="text" value="' + veilig(p.adres) + '"></div>' +
+      '<div class="veld"><label for="bSom">Aanneemsom</label><input id="bSom" type="text" inputmode="numeric" value="' + (p.aanneemsom == null ? '' : p.aanneemsom) + '"></div>' +
+      '<div class="veld veld--rij">' +
+        '<div><label for="bStart">Start</label><input id="bStart" type="text" value="' + veilig(p.start) + '"></div>' +
+        '<div><label for="bOplever">Oplevering</label><input id="bOplever" type="text" value="' + veilig(p.oplevering) + '"></div>' +
+      '</div>' +
+      '<div class="veld" style="margin-bottom:0"><label for="bVoortgang">Voortgang: <span id="bVoortgangWaarde">' + p.voortgang + '%</span></label>' +
+        '<input id="bVoortgang" type="range" min="0" max="100" step="5" value="' + p.voortgang + '" style="padding:0"></div>',
+      '<button class="btn btn--ghost" type="button" data-dlg="sluit">Annuleren</button>' +
+      '<button class="btn btn--gold" type="button" id="bewaarProject">Bewaren</button>'
+    );
+
+    $('#bVoortgang').addEventListener('input', function () {
+      $('#bVoortgangWaarde').textContent = this.value + '%';
+    });
+
+    $('#bewaarProject').addEventListener('click', function () {
+      var knop = this;
+      knop.disabled = true;
+      knop.textContent = 'Bezig…';
+
+      api('/projecten/' + p.id, {
+        method: 'PATCH',
+        body: {
+          naam: $('#bNaam').value.trim(),
+          adres: $('#bAdres').value.trim(),
+          aanneemsom: $('#bSom').value.trim(),
+          start: $('#bStart').value.trim(),
+          oplevering: $('#bOplever').value.trim(),
+          voortgang: $('#bVoortgang').value,
+        },
+      })
+        .then(function () { sluitDialoog(); App.melding('Opgeslagen'); return laden(); })
+        .catch(function (err) {
+          knop.disabled = false;
+          knop.textContent = 'Bewaren';
+          App.toonFout('#bewerkFout', err.message);
+        });
+    });
+  }
+
+  function bevestigAfsluiten() {
+    openDialoog(
+      'Project afsluiten?',
+      'Doe dit bij de oplevering.',
+      '<p style="margin:0;font-size:14px;color:var(--ink-2);line-height:1.6">' +
+        'Daarna kan niemand nog berichten sturen of iets wijzigen — jij ook niet. ' +
+        'Je houdt wel altijd toegang tot alles wat er staat.' +
+      '</p>',
+      '<button class="btn btn--ghost" type="button" data-dlg="sluit">Nog niet</button>' +
+      '<button class="btn btn--gold" type="button" id="doeAfsluiten">Afsluiten</button>'
+    );
+
+    $('#doeAfsluiten').addEventListener('click', function () {
+      this.disabled = true;
+      api('/projecten/' + S.project.id + '/afsluiten', { method: 'POST' })
+        .then(function () { sluitDialoog(); App.melding('Project afgesloten — je dossier blijft bewaard'); return laden(); })
+        .catch(function (err) { sluitDialoog(); App.melding(err.message); });
+    });
+  }
+
+  laden().catch(function () { location.href = '/app/'; });
+}());
+</script>
+</body>
+</html>

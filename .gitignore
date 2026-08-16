@@ -1,0 +1,13 @@
+# Geheimen: hier staan je Mollie-sleutel en SMTP-wachtwoord in
+.env
+
+# Afhankelijkheden worden op de server zelf geïnstalleerd
+node_modules/
+
+# Systeembestanden
+.DS_Store
+
+# De database van de app (staat op de server, hoort niet in git)
+data/*.db
+data/*.db-wal
+data/*.db-shm
