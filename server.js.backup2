@@ -147,6 +147,7 @@ function generateInvoicePdf(order, product) {
     doc.font('Helvetica-Bold').fontSize(16).text('Factuur', { align: 'right' });
     doc.font('Helvetica').fontSize(10).text(`Factuurnummer: ${order.invoiceNumber}`, { align: 'right' });
     doc.text(`Factuurdatum: ${new Date(order.paidAt).toLocaleDateString('nl-NL')}`, { align: 'right' });
+    doc.text(`Ordernummer: ${order.id}`, { align: 'right' });
 
     doc.moveDown(1.5);
     doc.font('Helvetica-Bold').fontSize(11).text('Factuuradres');
@@ -223,6 +224,7 @@ function buildEmailHtml({ product, order, downloadUrl }) {
       <tr>
         <td style="padding:28px 40px 0;">
           <table role="presentation" width="100%" style="border-collapse:collapse; border-top:1px solid #e2e2e2; padding-top:16px; font-family:Arial,sans-serif; font-size:13px; color:${muted};">
+            <tr><td style="padding:16px 0 4px;">Ordernummer</td><td style="padding:16px 0 4px; text-align:right; color:${navy};">${order.id}</td></tr>
             <tr><td style="padding:4px 0;">Factuurnummer</td><td style="padding:4px 0; text-align:right; color:${navy};">${order.invoiceNumber}</td></tr>
             <tr><td style="padding:4px 0;">Bedrag</td><td style="padding:4px 0; text-align:right; color:${navy};">€ ${Number(product.price).toFixed(2)}</td></tr>
           </table>
@@ -284,6 +286,7 @@ async function sendDownloadEmail(order) {
     from: process.env.MAIL_FROM || 'AannemersCode <no-reply@aannemerscode.nl>',
     to: order.email,
     subject: `Je bestelling: ${product.name} (factuur ${order.invoiceNumber})`,
+    text: `Bedankt voor je bestelling van ${product.name}.\n\n${downloadLine}\n\nOrdernummer: ${order.id}\nFactuurnummer: ${order.invoiceNumber}\n\nDe factuur vind je als PDF-bijlage bij deze e-mail.`,
     html,
     attachments,
   });
