@@ -72,9 +72,8 @@ const PRODUCTS = {
 // Prima voor de start; vervang dit door een echte database (bv. Supabase/Postgres)
 // zodra je op een platform met een ephemeral filesystem draait (zoals Vercel),
 // want daar overleven bestandswijzigingen een herstart niet.
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
-const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
-const INVOICE_COUNTER_FILE = path.join(DATA_DIR, 'invoice-counter.json');
+const ORDERS_FILE = path.join(__dirname, 'data', 'orders.json');
+const INVOICE_COUNTER_FILE = path.join(__dirname, 'data', 'invoice-counter.json');
 
 function ensureDataDir() {
   const dir = path.dirname(ORDERS_FILE);
