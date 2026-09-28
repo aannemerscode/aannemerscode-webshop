@@ -1,0 +1,736 @@
+/* ==========================================================================
+   Projexa — opmaak van het overzichtsformat (de poster als werkende pagina)
+   ========================================================================== */
+
+body.brief {
+  background:
+    radial-gradient(1200px 600px at 78% 6%, rgba(181, 149, 94, .10), transparent 60%),
+    radial-gradient(900px 500px at 4% 60%, rgba(181, 149, 94, .06), transparent 60%),
+    var(--black);
+}
+
+.page {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 28px 70px;
+}
+
+/* --------------------------------------------------------------------------
+   Sticky kop met links naar de werkende versies
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(10px);
+  background: rgba(9, 11, 12, .82);
+  border-bottom: 1px solid rgba(255, 255, 255, .07);
+}
+
+.site-header__inner {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.site-header .logo { font-size: 15px; gap: 10px; }
+.site-header__links { margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap; }
+.site-header .btn { padding: 9px 15px; font-size: 13px; }
+
+/* --------------------------------------------------------------------------
+   Koppen
+   -------------------------------------------------------------------------- */
+
+.eyebrow {
+  font-size: 15px;
+  letter-spacing: .06em;
+  font-weight: 700;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin: 0 0 16px;
+}
+
+.rule {
+  border: 0;
+  border-top: 1px solid rgba(181, 149, 94, .28);
+  margin: 46px 0 34px;
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+  gap: 46px;
+  padding: 44px 0 8px;
+  align-items: start;
+}
+
+.hero__logo { font-size: 30px; margin-bottom: 34px; }
+
+.hero h1 {
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: .01em;
+  margin: 0 0 14px;
+  font-weight: 700;
+}
+
+.hero__intro {
+  color: rgba(255, 255, 255, .76);
+  font-size: 15.5px;
+  margin: 0;
+  max-width: 46ch;
+}
+
+.guidelines { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+
+.guidelines li {
+  position: relative;
+  padding-left: 22px;
+  color: rgba(255, 255, 255, .82);
+  font-size: 15px;
+}
+
+.guidelines li::before {
+  content: "";
+  position: absolute;
+  left: 4px; top: 10px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .55);
+}
+
+/* --------------------------------------------------------------------------
+   Hoofdraster: functies links, schermen rechts
+   -------------------------------------------------------------------------- */
+
+.body-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+  gap: 46px;
+  align-items: start;
+}
+
+.features { display: grid; gap: 26px; }
+
+.feature {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.feature__icon {
+  width: 38px; height: 38px;
+  color: #fff;
+  opacity: .92;
+}
+
+.feature h3 {
+  margin: 2px 0 6px;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.feature h3 em {
+  font-style: normal;
+  font-size: 12.5px;
+  letter-spacing: .06em;
+  color: rgba(255, 255, 255, .6);
+}
+
+.feature p {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, .68);
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   Schermen / devices
+   -------------------------------------------------------------------------- */
+
+.showcase { display: grid; gap: 30px; }
+
+.showcase__row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+.device {
+  background: #16191b;
+  border: 1px solid #2a2e31;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: var(--shadow-lg);
+}
+
+.device__screen {
+  background: var(--app-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  color: var(--ink);
+}
+
+.device__caption {
+  font-size: 12px;
+  color: rgba(255, 255, 255, .45);
+  margin-top: 10px;
+  line-height: 1.7;
+}
+
+.device__caption a { color: var(--gold-light); text-decoration: none; }
+.device__caption a:hover { text-decoration: underline; }
+
+/* Laptop + telefoon combinatie */
+.combo { position: relative; padding-right: 96px; padding-bottom: 118px; }
+
+.laptop { border-radius: 16px 16px 6px 6px; }
+.laptop .device__screen { border-radius: 8px; }
+
+.laptop__base {
+  height: 12px;
+  margin: 8px -34px 0;
+  border-radius: 0 0 14px 14px;
+  background: linear-gradient(180deg, #23272a, #101314);
+  border: 1px solid #2a2e31;
+  border-top: 0;
+  position: relative;
+}
+
+.laptop__base::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 0;
+  transform: translateX(-50%);
+  width: 88px; height: 4px;
+  border-radius: 0 0 6px 6px;
+  background: #2f3437;
+}
+
+.phone {
+  position: absolute;
+  right: 0;
+  top: 44px;
+  width: 208px;
+  background: #16191b;
+  border: 1px solid #33383b;
+  border-radius: 30px;
+  padding: 8px;
+  box-shadow: var(--shadow-lg);
+}
+
+.phone__screen {
+  background: var(--surface);
+  border-radius: 24px;
+  overflow: hidden;
+  color: var(--ink);
+  position: relative;
+}
+
+.phone__notch {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 6px;
+  width: 74px; height: 15px;
+  border-radius: 999px;
+  background: #16191b;
+  z-index: 2;
+}
+
+.phone__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 14px 2px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------------------
+   Compacte namaak-UI in de schermen (mk = mockup)
+   -------------------------------------------------------------------------- */
+
+.mk { font-size: 11px; line-height: 1.4; }
+
+.mk__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface);
+}
+
+.mk__title { font-size: 14px; font-weight: 600; }
+
+.mk__btn {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mk__layout { display: grid; grid-template-columns: 92px 1fr; min-height: 232px; }
+
+.mk__side {
+  background: var(--black);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mk__side .logo { font-size: 7px; gap: 5px; padding-left: 3px; margin-bottom: 12px; }
+
+.mk__nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, .5);
+  font-size: 9px;
+}
+
+.mk__nav svg { width: 11px; height: 11px; flex: none; }
+.mk__nav.is-active { background: #1b2023; color: #fff; }
+.mk__nav.is-active svg { color: var(--gold-light); }
+
+.mk__body { background: var(--surface); padding: 12px 14px 14px; }
+
+.mk__stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+.mk__stat {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 9px;
+  background: var(--surface);
+}
+
+.mk__stat b { display: block; font-size: 18px; font-weight: 600; line-height: 1.1; }
+.mk__stat span { font-size: 9.5px; color: var(--ink-2); }
+
+.mk__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.mk__coltitle { font-size: 11.5px; font-weight: 600; margin-bottom: 6px; }
+
+.mk__card { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.mk__row { display: flex; align-items: center; gap: 7px; padding: 7px 8px; }
+.mk__row + .mk__row { border-top: 1px solid var(--line); }
+.mk__row svg { width: 13px; height: 13px; flex: none; }
+.mk__row b { font-size: 10px; font-weight: 600; display: block; }
+.mk__row small { font-size: 8.5px; color: var(--ink-3); }
+.mk__pct { margin-left: auto; text-align: right; width: 54px; }
+.mk__pct b { font-size: 10px; }
+
+.mk__bar { display: block; height: 3px; border-radius: 99px; background: var(--line); margin-top: 4px; overflow: hidden; }
+.mk__bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); }
+
+.mk__ico {
+  width: 17px; height: 17px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.mk__ico svg { width: 10px; height: 10px; }
+.mk__ico--green { background: #e8f6ec; color: var(--green); }
+.mk__ico--gold { background: #f7efe2; color: var(--gold-dark); }
+
+/* Telefoonscherm */
+.mkp { padding: 4px 12px 14px; }
+.mkp h4 { margin: 6px 0 10px; font-size: 13px; font-weight: 700; }
+
+.mkp__project {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+}
+
+.mkp__project b { font-size: 11.5px; font-weight: 600; display: block; }
+.mkp__project small { font-size: 9.5px; color: var(--ink-3); }
+
+.mkp__prog { padding: 9px 0; border-top: 1px solid var(--line); }
+.mkp__prog div { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 600; }
+
+.mkp__quick {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+
+.mkp__quick span { font-size: 7.5px; color: var(--ink-2); display: block; margin-top: 3px; }
+.mkp__quick svg { width: 15px; height: 15px; }
+
+.mkp__label { font-size: 9.5px; color: var(--ink-3); padding-top: 8px; border-top: 1px solid var(--line); }
+.mkp__title { font-size: 11.5px; font-weight: 700; margin: 8px 0 4px; }
+
+.mkp__upd { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-top: 1px solid var(--line); }
+.mkp__upd b { font-size: 10px; font-weight: 600; display: block; }
+.mkp__upd small { font-size: 8.5px; color: var(--ink-3); }
+
+/* Chatscherm */
+.mkc { display: grid; grid-template-columns: 162px 1fr; min-height: 246px; background: var(--surface); }
+.mkc__aside { border-right: 1px solid var(--line); }
+.mkc__asidehead { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px 6px; font-size: 12px; font-weight: 700; }
+
+.mkc__search {
+  margin: 0 10px 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 7px;
+  padding: 5px 8px;
+  font-size: 9.5px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mkc__item {
+  display: grid;
+  grid-template-columns: 20px 1fr auto;
+  gap: 7px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--line);
+  border-left: 2px solid transparent;
+}
+
+.mkc__item.is-active { background: var(--surface-2); border-left-color: var(--gold); }
+.mkc__item b { font-size: 10px; font-weight: 600; display: block; }
+.mkc__item small { font-size: 8.5px; color: var(--ink-3); }
+.mkc__item time { font-size: 8.5px; color: var(--ink-3); }
+
+.mkc__thread { display: flex; flex-direction: column; background: var(--surface-2); }
+.mkc__msgs { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 7px; }
+
+.mkc__b {
+  max-width: 74%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 7px 9px 5px;
+  font-size: 9.5px;
+  align-self: flex-start;
+}
+
+.mkc__b--me { align-self: flex-end; background: #f4ece0; border-color: #e8dcc8; }
+.mkc__b--photo { padding: 4px; align-self: flex-end; max-width: 60%; }
+.mkc__b--photo svg { border-radius: 6px; width: 100%; display: block; }
+.mkc__t { display: flex; justify-content: flex-end; gap: 4px; font-size: 8px; color: var(--ink-3); margin-top: 3px; }
+
+.mkc__composer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 8px 10px;
+}
+
+.mkc__input {
+  flex: 1;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 99px;
+  padding: 6px 10px;
+  font-size: 9.5px;
+  color: var(--ink-3);
+}
+
+.mkc__send {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.mkc__send svg { width: 11px; height: 11px; }
+
+/* Uren- en meerwerkkaart */
+.mkt { background: var(--surface); min-height: 246px; }
+.mkt__head { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px 8px; font-size: 13px; font-weight: 700; }
+.mkt__timer { background: var(--surface-2); padding: 8px 14px 14px; text-align: center; }
+.mkt__datenav { display: flex; align-items: center; justify-content: space-between; font-size: 10.5px; font-weight: 600; }
+.mkt__big { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.mkt__sub { font-size: 9.5px; color: var(--ink-2); }
+.mkt__btns { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
+
+.mkt__btn {
+  border-radius: 7px;
+  padding: 5px 16px;
+  font-size: 10.5px;
+  font-weight: 700;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.mkt__btn--stop { background: var(--red); color: #fff; border-color: var(--red); }
+.mkt__section { padding: 10px 14px; }
+.mkt__section h5 { margin: 0 0 6px; font-size: 11px; font-weight: 700; }
+
+.mkt__select {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 6px 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mkt__select b { font-size: 10.5px; font-weight: 600; display: block; }
+.mkt__select small { font-size: 9px; color: var(--ink-3); }
+
+.mkt__photos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
+.mkt__photos > * { aspect-ratio: 1; border-radius: 6px; overflow: hidden; }
+.mkt__photos svg { width: 100%; height: 100%; display: block; }
+
+.mkt__add {
+  border: 1px dashed var(--line);
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+}
+
+.mkm { padding: 0 14px 14px; }
+.mkm__card { border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; }
+.mkm__top { display: flex; justify-content: space-between; gap: 10px; }
+.mkm__nr { font-size: 11px; font-weight: 600; }
+.mkm__price { font-size: 12px; font-weight: 700; }
+.mkm__title { font-size: 11px; font-weight: 600; margin-top: 5px; }
+
+.mkm__tag {
+  display: inline-block;
+  margin-left: 8px;
+  background: #f7ecd7;
+  color: #8a6a20;
+  border-radius: 99px;
+  padding: 2px 8px;
+  font-size: 8.5px;
+  font-weight: 700;
+  float: right;
+}
+
+.mkm__label { font-size: 9.5px; color: var(--ink-3); margin-top: 12px; }
+.mkm__text { font-size: 10px; margin-top: 3px; }
+.mkm__row { display: flex; justify-content: space-between; font-size: 10px; padding: 7px 0; border-top: 1px solid var(--line); margin-top: 8px; color: var(--ink-2); }
+.mkm__row b { color: var(--ink); }
+.mkm__btns { display: flex; gap: 8px; margin-top: 10px; }
+
+.mkm__btn {
+  flex: 1;
+  text-align: center;
+  border-radius: 7px;
+  padding: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.mkm__btn--gold {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  border-color: var(--gold-dark);
+}
+
+/* --------------------------------------------------------------------------
+   Onderste blokken
+   -------------------------------------------------------------------------- */
+
+.specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr minmax(0, 300px);
+  gap: 40px;
+  align-items: start;
+}
+
+.speclist { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+
+.speclist li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, .8);
+}
+
+.speclist li::before {
+  content: "";
+  position: absolute;
+  left: 4px; top: 9px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .5);
+}
+
+.speclist--gold li::before { background: var(--gold); }
+
+/* Prijskaart */
+.price {
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: var(--r-lg);
+  padding: 20px 22px 22px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.price__trial { font-size: 12.5px; color: var(--ink-2); }
+.price__trial b { display: block; color: var(--gold-dark); font-weight: 700; }
+
+.price__amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin: 10px 0 14px;
+}
+
+.price__amount strong { font-size: 38px; font-weight: 700; letter-spacing: -.01em; }
+.price__amount span { font-size: 14px; color: var(--ink-2); }
+
+.price__list { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 6px; text-align: left; }
+
+.price__list li {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.price__list svg { width: 14px; height: 14px; color: var(--gold-dark); margin-top: 3px; }
+.price .btn { width: 100%; }
+
+/* Rollen */
+.roles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.role { padding: 18px 22px; }
+.role + .role { border-left: 1px solid rgba(255, 255, 255, .12); }
+
+.role h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.role ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+
+.role li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, .78);
+}
+
+.role li::before {
+  content: "";
+  position: absolute;
+  left: 2px; top: 9px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.roles-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+  gap: 34px;
+  align-items: center;
+}
+
+.brandbox {
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: var(--r-md);
+  padding: 26px;
+  display: grid;
+  place-items: center;
+}
+
+.brandbox .logo { font-size: 22px; }
+
+.site-footer {
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  margin-top: 50px;
+  padding-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, .45);
+}
+
+.site-footer__links { margin-left: auto; display: flex; gap: 18px; }
+.site-footer a { color: var(--gold-light); text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1080px) {
+  .hero, .body-grid { grid-template-columns: 1fr; gap: 34px; }
+  .specs { grid-template-columns: 1fr 1fr; }
+  .specs .price { grid-column: 1 / -1; max-width: 340px; }
+  .roles-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 860px) {
+  .showcase__row { grid-template-columns: 1fr; }
+  .combo { padding-right: 0; padding-bottom: 0; }
+  .phone { position: static; width: 100%; max-width: 260px; margin: 22px auto 0; }
+  .roles { grid-template-columns: 1fr; }
+  .role + .role { border-left: 0; border-top: 1px solid rgba(255, 255, 255, .12); }
+}
+
+@media (max-width: 620px) {
+  .page { padding: 0 18px 54px; }
+  .site-header__inner { padding: 10px 18px; }
+  .site-header .logo__tag { display: none; }
+  .hero { padding-top: 28px; }
+  .hero__logo { font-size: 22px; margin-bottom: 24px; }
+  .hero h1 { font-size: 24px; }
+  .specs { grid-template-columns: 1fr; gap: 32px; }
+  .specs .price { max-width: none; }
+  .mk__layout { grid-template-columns: 62px 1fr; }
+  .mk__nav span { display: none; }
+  .mk__stats { grid-template-columns: repeat(2, 1fr); }
+  .mk__cols { grid-template-columns: 1fr; }
+  .mkc { grid-template-columns: 1fr; }
+  .mkc__aside { border-right: 0; border-bottom: 1px solid var(--line); }
+}

@@ -1,0 +1,4360 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090b0c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2080%2080%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23e7cb8e%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23a98449%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Crect%20width%3D%2280%22%20height%3D%2280%22%20rx%3D%2216%22%20fill%3D%22%23090b0c%22%2F%3E%0A%20%20%3Cg%20transform%3D%22translate(20%204)%20scale(.62)%22%3E%0A%20%20%20%20%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M20%202h18a21%2021%200%200%201%200%2042h-8V32h8a9%209%200%200%200%200-18h-6v64H20z%22%2F%3E%0A%20%20%20%20%3Cpath%20fill%3D%22url(%23g)%22%20d%3D%22M4%2078V46l18-20v32z%22%2F%3E%0A%20%20%20%20%3Cpath%20fill%3D%22url(%23g)%22%20d%3D%22M28%2078V54l10-11v35z%22%20opacity%3D%22.85%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A">
+<title>Projexa — Plan. Bouw. Beheer.</title>
+<style>
+/* ==========================================================================
+   Projexa — basis: kleuren, typografie, logo en gedeelde componenten
+   Kleuren zijn afgeleid uit de originele Projexa-poster (zwart, wit, goud).
+   ========================================================================== */
+
+:root {
+  /* Merkkleuren */
+  --black: #090b0c;
+  --black-2: #0f1214;
+  --black-3: #151a1d;
+  --gold: #b5955e;
+  --gold-light: #d8b778;
+  --gold-bright: #e7cb8e;
+  --gold-dark: #8c7343;
+
+  /* App (licht) */
+  --app-bg: #f2f1ef;
+  --surface: #ffffff;
+  --surface-2: #f7f6f4;
+  --line: #e6e3df;
+  --ink: #16181a;
+  --ink-2: #55595e;
+  --ink-3: #8b9096;
+
+  /* Status */
+  --red: #d3513b;
+  --green: #2fa84f;
+
+  /* Vorm */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --shadow: 0 1px 2px rgba(9, 11, 12, .04), 0 8px 24px rgba(9, 11, 12, .06);
+  --shadow-lg: 0 30px 70px rgba(0, 0, 0, .55);
+
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--black);
+  color: #fff;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; }
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   Logo
+   -------------------------------------------------------------------------- */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  text-decoration: none;
+}
+
+.logo__mark { flex: none; }
+
+.logo__type {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo__name {
+  font-weight: 400;
+  letter-spacing: .28em;
+  line-height: 1;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.logo__name b { font-weight: 400; color: var(--gold-light); }
+
+.logo__tag {
+  font-size: .34em;
+  letter-spacing: .34em;
+  color: var(--gold);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.logo--dark .logo__name { color: var(--ink); }
+.logo--dark .logo__tag { color: var(--gold-dark); }
+
+/* --------------------------------------------------------------------------
+   Knoppen
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter .15s ease, background .15s ease, border-color .15s ease;
+}
+
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: translateY(1px); }
+
+.btn--gold {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  border-color: var(--gold-dark);
+}
+
+.btn--ghost {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.btn--red { background: var(--red); color: #fff; }
+
+.btn--outline-gold {
+  background: transparent;
+  color: var(--gold-light);
+  border-color: rgba(181, 149, 94, .5);
+}
+
+.btn--outline-gold:hover { background: rgba(181, 149, 94, .12); }
+
+/* --------------------------------------------------------------------------
+   Hulpklassen
+   -------------------------------------------------------------------------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+
+/* ==========================================================================
+   Projexa — startscherm: logo en de drie inlogknoppen
+   ========================================================================== */
+
+.startpg {
+  background:
+    radial-gradient(1000px 520px at 50% -5%, rgba(181, 149, 94, .13), transparent 62%),
+    var(--black);
+  min-height: 100vh;
+}
+
+.start__page {
+  min-height: 100vh;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 52px;
+}
+
+.start__head { display: grid; justify-items: center; }
+.start__head .logo { font-size: 30px; gap: 20px; }
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  width: 100%;
+}
+
+.rolecard {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 30px 20px 24px;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .015));
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .18s ease, transform .18s ease;
+}
+
+.rolecard:hover {
+  border-color: rgba(181, 149, 94, .6);
+  transform: translateY(-2px);
+}
+
+.rolecard__icon {
+  width: 52px; height: 52px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: rgba(181, 149, 94, .16);
+  color: var(--gold-light);
+}
+
+.rolecard__naam {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+
+.rolecard__actie {
+  width: 100%;
+  text-align: center;
+  padding: 11px 16px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--gold-dark);
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rolecard:hover .rolecard__actie { filter: brightness(1.06); }
+
+@media (max-width: 700px) {
+  .start__page { gap: 40px; padding: 44px 20px; }
+  .start__head .logo { font-size: 22px; gap: 14px; }
+  .roles-grid { grid-template-columns: 1fr; max-width: 340px; margin: 0 auto; }
+  .rolecard { grid-template-columns: 44px 1fr; justify-items: start; align-items: center; padding: 16px 18px; gap: 14px; }
+  .rolecard__icon { width: 44px; height: 44px; grid-row: span 2; }
+  .rolecard__actie { width: auto; padding: 9px 18px; }
+}
+
+
+/* ==========================================================================
+   Projexa — UI-componenten voor de werkende app (desktop + smartphone)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   App-shell (desktop)
+   -------------------------------------------------------------------------- */
+
+.app {
+  background: var(--app-bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--black);
+  color: #fff;
+  padding: 26px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar .logo { font-size: 15px; gap: 10px; padding: 0 8px; }
+
+.nav { display: flex; flex-direction: column; gap: 2px; }
+
+.nav__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: var(--r-md);
+  background: none;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  color: rgba(255, 255, 255, .68);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+
+.nav__item svg { flex: none; }
+.nav__item:hover { background: rgba(255, 255, 255, .06); color: #fff; }
+
+.nav__item[aria-current="page"] {
+  background: var(--black-3);
+  color: #fff;
+  font-weight: 600;
+}
+
+.nav__item[aria-current="page"] svg { color: var(--gold-light); }
+
+.nav__badge {
+  margin-left: auto;
+  background: var(--gold);
+  color: #221b0c;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.sidebar__foot {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  padding-top: 16px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, .45);
+}
+
+.sidebar__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold-dark));
+  color: #1a1509;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex: none;
+}
+
+.main { padding: 30px 34px 60px; max-width: 1180px; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.topbar h1 {
+  font-size: 26px;
+  line-height: 1.2;
+  margin: 0;
+  font-weight: 600;
+}
+
+.topbar__actions { margin-left: auto; display: flex; gap: 10px; }
+
+/* --------------------------------------------------------------------------
+   Kaarten & panelen
+   -------------------------------------------------------------------------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+
+.stat__value { font-size: 34px; font-weight: 600; line-height: 1.1; }
+.stat__label { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
+
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.panel__title {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.list { display: flex; flex-direction: column; }
+
+.list > * + * { border-top: 1px solid var(--line); }
+
+/* Projectregel */
+.project {
+  display: grid;
+  grid-template-columns: 34px 1fr 150px;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 18px;
+  background: none;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.project:hover { background: var(--surface-2); }
+.project__icon { color: var(--ink); }
+.project__name { display: block; font-weight: 600; font-size: 14.5px; }
+.project__place { display: block; font-size: 12.5px; color: var(--ink-3); }
+.project__pct { display: block; text-align: right; font-size: 13.5px; font-weight: 600; }
+
+.bar {
+  display: block;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+}
+
+/* Activiteit */
+.activity {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 18px;
+}
+
+.activity__icon {
+  width: 30px; height: 30px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.activity__icon--green { background: #e8f6ec; color: var(--green); }
+.activity__icon--gold { background: #f7efe2; color: var(--gold-dark); }
+.activity__text { display: block; font-size: 14px; font-weight: 500; }
+.activity__time { display: block; font-size: 12px; color: var(--ink-3); }
+
+/* --------------------------------------------------------------------------
+   Chat
+   -------------------------------------------------------------------------- */
+
+.chat {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: calc(100vh - 180px);
+  min-height: 520px;
+  overflow: hidden;
+}
+
+.chat__aside {
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.chat__asidehead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 10px;
+  font-weight: 600;
+}
+
+.search {
+  margin: 0 14px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  color: var(--ink-3);
+}
+
+.search input {
+  border: 0;
+  background: none;
+  outline: none;
+  width: 100%;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+
+.chat__list { overflow-y: auto; flex: 1; }
+
+.chat__item {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 12px;
+  padding: 13px 16px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.chat__item:hover { background: var(--surface-2); }
+
+.chat__item[aria-selected="true"] {
+  background: var(--surface-2);
+  border-left-color: var(--gold);
+}
+
+.chat__item h4 { margin: 0; font-size: 14px; font-weight: 600; }
+.chat__item p { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-3); }
+.chat__item time { font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+
+.thumb {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  flex: none;
+}
+
+.chat__thread {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.chat__messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--surface-2);
+}
+
+.bubble {
+  max-width: 72%;
+  padding: 11px 14px 8px;
+  border-radius: 14px;
+  font-size: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  align-self: flex-start;
+  position: relative;
+}
+
+.bubble--me {
+  align-self: flex-end;
+  background: #f4ece0;
+  border-color: #e8dcc8;
+}
+
+.bubble__meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+
+.bubble__meta .read { color: #4a90d9; }
+
+.bubble--photo { padding: 6px 6px 4px; max-width: 62%; }
+.bubble--photo .bubble__meta { padding: 0 6px 2px; }
+.bubble--photo svg, .bubble--photo img { border-radius: 10px; width: 100%; }
+
+.composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.composer input {
+  flex: 1;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 11px 16px;
+  outline: none;
+  font-size: 14px;
+}
+
+.iconbtn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.iconbtn:hover { background: var(--surface-2); }
+
+.iconbtn--send {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+}
+
+/* --------------------------------------------------------------------------
+   Urenregistratie
+   -------------------------------------------------------------------------- */
+
+.timer { padding: 22px; text-align: center; background: var(--surface-2); border-radius: var(--r-lg) var(--r-lg) 0 0; }
+
+.timer__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.timer__nav button {
+  border: 0; background: none; cursor: pointer; color: var(--ink-2);
+  padding: 4px 8px; border-radius: var(--r-sm);
+}
+
+.timer__nav button:hover { background: var(--line); }
+
+.timer__value {
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.timer__label { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+
+.timer__actions { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
+.timer__actions .btn { min-width: 118px; }
+
+.field { padding: 18px 22px; }
+.field > h3 { margin: 0 0 10px; font-size: 15px; font-weight: 600; }
+
+.select {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+}
+
+.select select {
+  border: 0; background: none; outline: none; width: 100%;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+}
+
+.select__sub { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; padding: 0 2px; }
+
+.photos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.photos figure { margin: 0; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 1; }
+.photos svg { width: 100%; height: 100%; }
+
+.photos__add {
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  cursor: pointer;
+  aspect-ratio: 1;
+}
+
+.photos__add:hover { border-color: var(--gold); color: var(--gold-dark); }
+
+.entries { margin-top: 6px; }
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 22px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.entry b { font-variant-numeric: tabular-nums; margin-left: auto; }
+
+/* --------------------------------------------------------------------------
+   Meerwerk
+   -------------------------------------------------------------------------- */
+
+.mw { padding: 20px 22px; }
+
+.mw__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mw__nr { font-size: 15px; font-weight: 600; }
+.mw__title { font-size: 15px; font-weight: 600; margin-top: 6px; }
+.mw__price { font-size: 17px; font-weight: 700; white-space: nowrap; }
+
+.tag {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #f7ecd7;
+  color: #8a6a20;
+  white-space: nowrap;
+}
+
+.tag--sent { background: #e4edf7; color: #2b5c94; }
+.tag--ok { background: #e8f6ec; color: #1f7a39; }
+
+.mw__label { font-size: 13px; color: var(--ink-3); margin-top: 18px; }
+.mw__text { font-size: 14px; margin-top: 4px; }
+
+.mw__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  margin-top: 14px;
+}
+
+.mw__row span:first-child { color: var(--ink-2); }
+.mw__row.is-total { font-weight: 700; }
+
+.mw__actions { display: flex; gap: 12px; margin-top: 16px; }
+.mw__actions .btn { flex: 1; }
+
+/* --------------------------------------------------------------------------
+   Planning & documenten
+   -------------------------------------------------------------------------- */
+
+.timeline { padding: 4px 0; }
+
+.timeline__day {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 16px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--line);
+}
+
+.timeline__day:first-child { border-top: 0; }
+.timeline__date { font-size: 13px; color: var(--ink-3); }
+.timeline__task { font-size: 14px; }
+.timeline__task + .timeline__task { margin-top: 6px; }
+
+.dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.dot--done { background: var(--green); }
+.dot--milestone { background: var(--ink); }
+
+.doc {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 13px 18px;
+  font-size: 14px;
+}
+
+.doc small { display: block; color: var(--ink-3); font-size: 12.5px; }
+
+/* --------------------------------------------------------------------------
+   Toast
+   -------------------------------------------------------------------------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translate(-50%, 20px);
+  background: var(--black);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 60;
+}
+
+.toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+
+/* --------------------------------------------------------------------------
+   Views
+   -------------------------------------------------------------------------- */
+
+.view[hidden] { display: none; }
+
+/* --------------------------------------------------------------------------
+   Responsive: desktop-app op tablet/telefoon
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .cols { grid-template-columns: 1fr; }
+  .chat { grid-template-columns: 1fr; height: auto; }
+  .chat__aside { border-right: 0; border-bottom: 1px solid var(--line); }
+  .chat__list { max-height: 240px; }
+  .chat__messages { min-height: 320px; }
+}
+
+@media (max-width: 760px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    overflow-x: auto;
+  }
+  .sidebar .logo { font-size: 13px; }
+  .nav { flex-direction: row; gap: 6px; }
+  .nav__item span { display: none; }
+  .sidebar__foot { display: none; }
+  .main { padding: 20px 16px 48px; }
+  .topbar h1 { font-size: 21px; }
+  .project { grid-template-columns: 28px 1fr 88px; }
+}
+
+/* --------------------------------------------------------------------------
+   Aanvullingen voor de volledige demo
+   -------------------------------------------------------------------------- */
+
+.nav__group {
+  margin: 18px 0 4px;
+  padding: 0 12px;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .35);
+}
+
+.dotmark {
+  position: absolute;
+  top: 7px; right: 9px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 1.5px solid var(--surface);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.toggle:first-of-type { border-top: 0; }
+.toggle small { display: block; font-size: 12.5px; color: var(--ink-3); font-weight: 400; }
+
+.toggle input {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0 0 0 auto;
+  flex: none;
+  width: 42px; height: 24px;
+  border-radius: 999px;
+  background: var(--line);
+  position: relative;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.toggle input::after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  transition: transform .15s ease;
+}
+
+.toggle input:checked { background: var(--gold); }
+.toggle input:checked::after { transform: translateX(18px); }
+
+@media (max-width: 760px) {
+  .nav__group { display: none; }
+  .cols[style*="repeat(3"] { grid-template-columns: 1fr !important; }
+}
+
+/* --------------------------------------------------------------------------
+   Vrij invulbare velden, bijlagen en projectkiezer
+   -------------------------------------------------------------------------- */
+
+.vrij {
+  border: 0;
+  background: none;
+  outline: none;
+  width: 100%;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.vrij--licht { font-weight: 400; color: var(--ink-2); }
+.vrij::placeholder { color: var(--ink-3); font-weight: 400; }
+
+.veldhint { font-size: 12.5px; color: var(--ink-3); margin: 8px 0 0; }
+
+.select--kop { padding: 8px 12px; min-width: 220px; background: var(--surface); }
+.select--kop select { border: 0; background: none; outline: none; font-size: 14px; font-weight: 600; cursor: pointer; appearance: none; -webkit-appearance: none; width: 100%; }
+
+.upload { cursor: pointer; }
+
+.bijlagen { display: grid; gap: 8px; margin-top: 6px; }
+
+.bijlagen__leeg { margin: 0; font-size: 13.5px; color: var(--ink-3); }
+
+.bijlage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: 14px;
+}
+
+.bijlage small { display: block; font-size: 12px; color: var(--ink-3); }
+.bijlage button { margin-left: auto; border: 0; background: none; color: var(--ink-3); cursor: pointer; padding: 4px; border-radius: 6px; }
+.bijlage button:hover { background: var(--line); color: var(--ink); }
+
+.tabsrij {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.tabsrij button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.tabsrij button:hover { border-color: var(--gold); color: var(--ink); }
+
+.tabsrij button[aria-current="true"] {
+  background: var(--black);
+  border-color: var(--black);
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .select--kop { min-width: 0; }
+  .topbar__actions { flex-wrap: wrap; }
+}
+
+.intern {
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  background: #f7efe2;
+  border-radius: 999px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  vertical-align: 1px;
+}
+
+.uitloggen {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gold-light);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.uitloggen:hover { text-decoration: underline; }
+
+a.avatar { text-decoration: none; }
+a.avatar:hover { filter: brightness(1.08); }
+
+
+/* ==========================================================================
+   Projexa — smartphone-versie (mobile-first)
+   Op een telefoon vult de app het scherm; op een groot scherm wordt hij in
+   een telefoonframe getoond zodat je hem ook op de desktop kunt bekijken.
+   ========================================================================== */
+
+.mob {
+  background: var(--app-bg);
+  color: var(--ink);
+}
+
+.m-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--surface);
+  max-width: 460px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ---- Kop ---------------------------------------------------------------- */
+
+.m-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 18px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.m-top h1 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.m-top__sub { font-size: 12px; color: var(--ink-3); }
+.m-top__right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.m-back {
+  border: 0;
+  background: none;
+  padding: 6px;
+  margin-left: -6px;
+  border-radius: 50%;
+  color: var(--ink);
+  cursor: pointer;
+  display: none;
+}
+
+.m-back.is-visible { display: inline-flex; }
+
+.m-bell {
+  position: relative;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.m-bell::after {
+  content: "";
+  position: absolute;
+  top: 5px; right: 6px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 1.5px solid var(--surface);
+}
+
+/* ---- Inhoud ------------------------------------------------------------- */
+
+.m-main { flex: 1; min-height: 0; padding: 4px 18px 22px; display: flex; flex-direction: column; }
+.m-screen { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.m-screen[hidden] { display: none; }
+.m-chat { flex: 1; min-height: 0; overflow-y: auto; }
+
+.m-card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.m-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 22px 0 10px;
+}
+
+.m-label {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin: 18px 0 6px;
+}
+
+/* Projectregel */
+.m-project {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.m-project:first-of-type { border-top: 0; }
+.m-project b { display: block; font-size: 15px; font-weight: 600; }
+.m-project small { font-size: 12.5px; color: var(--ink-3); }
+.m-project svg:last-child { margin-left: auto; color: var(--ink-3); flex: none; }
+
+.m-prog { padding: 14px 0; border-top: 1px solid var(--line); }
+
+.m-prog__head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.m-bar { display: block; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.m-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); }
+
+/* Snelknoppen */
+.m-quick {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.m-quick button {
+  border: 0;
+  background: none;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 8px 2px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--ink-2);
+}
+
+.m-quick button:hover { background: var(--surface-2); }
+.m-quick svg { color: var(--ink); }
+
+/* Updates */
+.m-update {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.m-update b { display: block; font-size: 14px; font-weight: 600; }
+.m-update small { font-size: 12px; color: var(--ink-3); }
+
+.m-ico {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--ink);
+}
+
+.m-ico--green { background: #e8f6ec; color: var(--green); }
+.m-ico--gold { background: #f7efe2; color: var(--gold-dark); }
+
+/* ---- Chat --------------------------------------------------------------- */
+
+.m-chat { display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; padding: 14px 0 4px; }
+
+.m-bubble {
+  max-width: 82%;
+  padding: 10px 13px 7px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  align-self: flex-start;
+}
+
+.m-bubble--me { align-self: flex-end; background: #f4ece0; border-color: #e8dcc8; }
+.m-bubble--photo { padding: 5px; max-width: 74%; }
+.m-bubble--photo svg { width: 100%; border-radius: 10px; display: block; }
+
+.m-bubble__meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-top: 3px;
+}
+
+.m-bubble__meta .read { color: #4a90d9; }
+
+.m-composer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+}
+
+.m-composer input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 11px 15px;
+  font-size: 14.5px;
+  outline: none;
+}
+
+.m-round {
+  width: 40px; height: 40px;
+  flex: none;
+  border-radius: 50%;
+  border: 0;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.m-round--send { background: linear-gradient(180deg, var(--gold-light), var(--gold)); color: #221b0c; }
+
+/* ---- Uren --------------------------------------------------------------- */
+
+.m-timer { text-align: center; padding: 18px; background: var(--surface-2); }
+
+.m-timer__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.m-timer__nav button { border: 0; background: none; padding: 4px 8px; cursor: pointer; color: var(--ink-2); }
+.m-timer__value { font-size: 40px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.m-timer__label { font-size: 13px; color: var(--ink-2); }
+.m-timer__btns { display: flex; gap: 10px; justify-content: center; margin-top: 14px; }
+.m-timer__btns .btn { flex: 1; max-width: 150px; }
+
+.m-field { padding: 16px 16px; }
+.m-field h3 { margin: 0 0 8px; font-size: 14px; font-weight: 700; }
+
+.m-select {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 10px 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.m-select select { border: 0; background: none; outline: none; width: 100%; font-size: 14.5px; font-weight: 600; appearance: none; -webkit-appearance: none; }
+.m-select__sub { font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+
+.m-photos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
+.m-photos figure { margin: 0; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 1; }
+.m-photos svg { width: 100%; height: 100%; display: block; }
+
+.m-photos__add {
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  cursor: pointer;
+}
+
+/* ---- Meerwerk ----------------------------------------------------------- */
+
+.m-mw { padding: 16px; }
+.m-mw__top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.m-mw__nr { font-size: 14px; font-weight: 600; }
+.m-mw__price { font-size: 17px; font-weight: 700; white-space: nowrap; }
+.m-mw__title { font-size: 15px; font-weight: 600; margin-top: 6px; }
+
+.m-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.m-row span:first-child { color: var(--ink-2); }
+.m-row.is-total { font-weight: 700; }
+.m-mw__btns { display: flex; gap: 10px; margin-top: 14px; }
+.m-mw__btns .btn { flex: 1; }
+
+/* ---- Lijstjes (planning, documenten, foto's) ---------------------------- */
+
+.m-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+}
+
+.m-item:first-child { border-top: 0; }
+.m-item small { display: block; font-size: 12px; color: var(--ink-3); }
+.m-item .tag { margin-left: auto; }
+
+.m-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.m-gallery figure { margin: 0; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 1; }
+.m-gallery svg { width: 100%; height: 100%; display: block; }
+
+/* ---- Tabbalk ------------------------------------------------------------ */
+
+.m-tabs {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+
+.m-tab {
+  border: 0;
+  background: none;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 7px 2px;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  cursor: pointer;
+  border-radius: var(--r-md);
+  position: relative;
+}
+
+.m-tab[aria-current="page"] { color: var(--gold-dark); font-weight: 700; }
+.m-tab[aria-current="page"] svg { color: var(--gold-dark); }
+
+.m-tab__dot {
+  position: absolute;
+  top: 5px;
+  right: 22%;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+/* ---- Telefoonframe op grote schermen ------------------------------------ */
+
+.m-desk-note { display: none; }
+
+@media (min-width: 900px) {
+  .mob {
+    background:
+      radial-gradient(900px 500px at 50% 0%, rgba(181, 149, 94, .12), transparent 60%),
+      var(--black);
+    padding: 30px 20px 40px;
+  }
+
+  .m-app {
+    max-width: 400px;
+    border-radius: 36px;
+    border: 10px solid #16191b;
+    outline: 1px solid #33383b;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    min-height: 640px;
+    height: min(820px, calc(100vh - 130px));
+  }
+
+  .m-main { overflow-y: auto; }
+
+  .m-desk-note {
+    display: block;
+    text-align: center;
+    color: rgba(255, 255, 255, .55);
+    font-size: 13px;
+    margin: 0 auto 22px;
+    max-width: 460px;
+  }
+
+  .m-desk-note a { color: var(--gold-light); }
+}
+
+/* Statusbalk alleen zichtbaar in het frame op desktop */
+.m-status { display: none; }
+
+@media (min-width: 900px) {
+  .m-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px 0;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--surface);
+  }
+}
+
+/* Invoerveld voor werkzaamheden (medewerker-app) */
+.m-textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  padding: 11px 13px;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+}
+
+.m-textarea:focus { border-color: var(--gold); }
+
+/* Met wie chat je? (medewerker-app) */
+.m-contact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.m-contact b { display: block; font-size: 14.5px; font-weight: 600; }
+.m-contact small { font-size: 12px; color: var(--ink-3); }
+
+.m-select .vrij { font-size: 14.5px; }
+
+/* Offerte bij een meerwerkvoorstel (klantportaal) */
+.m-bijlage {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  cursor: pointer;
+}
+
+.m-bijlage span { font-size: 14px; }
+.m-bijlage small { display: block; font-size: 12px; color: var(--ink-3); }
+.m-bijlage:hover { border-color: var(--gold); }
+
+/* Uitloggen onderaan een scherm */
+.m-uitloggen {
+  width: 100%;
+  margin-top: 26px;
+  text-decoration: none;
+}
+
+
+.demo-page[hidden] { display: none; }
+[data-page] { cursor: pointer; }
+</style>
+
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="goldgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e7cb8e"/>
+      <stop offset="1" stop-color="#a98449"/>
+    </linearGradient>
+    <linearGradient id="phshade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity=".28"/>
+      <stop offset=".5" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".35"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M4.8 20c0-3.5 3.3-5.5 7.2-5.5s7.2 2 7.2 5.5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9.5l-5.5 4V6.5a1 1 0 0 1 1-1z"/><circle cx="8.6" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8v5.4l3.4 2"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.2h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+    <symbol id="i-plus-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/><path d="M8 3v4M16 3v4M3.5 10h17"/><circle cx="8.4" cy="14.2" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.6A1.6 1.6 0 0 1 5.1 6h3.8l2 2.5h8A1.6 1.6 0 0 1 20.5 10v8a1.6 1.6 0 0 1-1.6 1.6H5.1A1.6 1.6 0 0 1 3.5 18z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 10.2a5.6 5.6 0 0 1 11.2 0c0 4 1.6 5.6 1.6 5.6H4.8s1.6-1.6 1.6-5.6z"/><path d="M9.9 19a2.3 2.3 0 0 0 4.2 0"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 11.7 8l4.5 1.7-4.5 1.7L10 15.9 8.3 11.4 3.8 9.7 8.3 8z"/><path d="M17.8 3v3M16.3 4.5h3M18.2 15.5V18M17 16.7h2.4"/></symbol>
+    <symbol id="i-chev-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5l7 7-7 7"/></symbol>
+    <symbol id="i-chev-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5l-7 7 7 7"/></symbol>
+    <symbol id="i-chev-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8 20.5 20.5"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 11.3l-8 8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.4 3.4 0 1 1 4.8 4.8l-8.5 8.5a1.8 1.8 0 0 1-2.5-2.5l7.8-7.8"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9.4" y="3" width="5.2" height="11" rx="2.6"/><path d="M6 11.4a6 6 0 0 0 12 0"/><path d="M12 17.4V21"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12.5"/><path d="M12.5 6.5 18.5 12l-6 5.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6 9.6 17.2 19 6.8"/></symbol>
+    <symbol id="i-checks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12.6 6 16.6 13.6 7.4"/><path d="M9.6 14.9 12 17.2 21 6.8"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5v13M5.5 12h13"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h7l4.5 4.5V21h-11.5z"/><path d="M13.2 3v5h5"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.2"/><circle cx="9" cy="10" r="1.5"/><path d="M4.5 17.2 9.4 12.9l3.8 3.2 3-2.4 3.6 3"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V9.2L12 4l8 5.2v11.3"/><path d="M9.6 20.5v-5.2h4.8v5.2"/><path d="M3 20.5h18"/></symbol>
+    <symbol id="i-worker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.4" r="3"/><path d="M5.5 20.5c0-3.3 2.9-5.2 6.5-5.2s6.5 1.9 6.5 5.2"/><path d="M8.4 5.6a4 4 0 0 1 7.2 0"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="16" rx="2.2"/><path d="M9 4.5V3h6v1.5"/><path d="M8 12.5h8M8 16h5"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 5.4h3"/></symbol>
+    <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.5A6.5 6.5 0 0 0 7.5 12 6.5 6.5 0 0 0 17 17.5"/><path d="M5 10.5h7M5 13.5h7"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></symbol>
+  </g>
+
+  <symbol id="ph-beams" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">
+    <rect width="160" height="90" fill="#201915"/>
+    <g fill="#7d6041"><polygon points="0,16 160,0 160,13 0,29"/><polygon points="0,45 160,29 160,42 0,58"/><polygon points="0,74 160,58 160,71 0,87"/></g>
+    <g fill="#b38b5c"><polygon points="16,0 38,0 106,90 84,90"/><polygon points="118,0 138,0 160,28 160,50"/></g>
+    <g fill="#5d4830" opacity=".75"><polygon points="0,29 160,13 160,17 0,33"/><polygon points="0,58 160,42 160,46 0,62"/></g>
+    <rect width="160" height="90" fill="url(#phshade)"/>
+  </symbol>
+  <symbol id="ph-1" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#c9ab86"/><path d="M0 44h60v16H0z" fill="#8f6f4c"/>
+    <path d="M8 12h10v32H8zM42 12h10v32H42z" fill="#a8845c"/><path d="M18 8h24v6H18z" fill="#e0c9a8"/>
+    <path d="M24 24h12v20H24z" fill="#6f5537"/>
+  </symbol>
+  <symbol id="ph-2" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#b99a72"/><path d="M0 0h60v18H0z" fill="#8a6a48"/>
+    <path d="M14 18h8v42h-8zM38 18h8v42h-8z" fill="#d8c0a0"/><path d="M0 50h60v10H0z" fill="#6c5334"/>
+  </symbol>
+  <symbol id="ph-3" viewBox="0 0 60 60" preserveAspectRatio="xMidYMid slice">
+    <rect width="60" height="60" fill="#cfcfcb"/><path d="M0 0h60v14H0z" fill="#e8e8e4"/>
+    <path d="M0 46h60v14H0z" fill="#9d9d98"/><path d="M16 14h6v32h-6zM38 14h6v32h-6z" fill="#b6b6b1"/>
+    <path d="M26 20h8v26h-8z" fill="#7f7f7a"/>
+  </symbol>
+</svg>
+
+<section class="demo-page startpg" id="page-start">
+
+<!-- ==== Iconenset (SVG-sprite) ================================================ -->
+
+<main class="start__page">
+
+  <div class="start__head">
+    <span class="logo">
+      <svg class="logo__mark" width="64" height="71" viewBox="0 0 72 80" aria-hidden="true">
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </span>
+  </div>
+
+  <div class="roles-grid">
+    <a class="rolecard" data-page="web" data-page="web">
+      <span class="rolecard__icon"><svg width="24" height="24" aria-hidden="true"><use href="#i-user"></use></svg></span>
+      <span class="rolecard__naam">Aannemer</span>
+      <span class="rolecard__actie">Inloggen</span>
+    </a>
+
+    <a class="rolecard" data-page="medewerker" data-page="medewerker">
+      <span class="rolecard__icon"><svg width="24" height="24" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+      <span class="rolecard__naam">Medewerker</span>
+      <span class="rolecard__actie">Inloggen</span>
+    </a>
+
+    <a class="rolecard" data-page="klant" data-page="klant">
+      <span class="rolecard__icon"><svg width="24" height="24" aria-hidden="true"><use href="#i-home"></use></svg></span>
+      <span class="rolecard__naam">Klant</span>
+      <span class="rolecard__actie">Inloggen</span>
+    </a>
+  </div>
+
+</main>
+</section>
+
+<section class="demo-page app" id="page-web" hidden>
+
+<!-- ==== Iconenset (SVG-sprite) ================================================ -->
+
+<div class="shell">
+
+  <!-- ==== Zijbalk ============================================================ -->
+  <aside class="sidebar">
+    <a class="logo" href="index.html" aria-label="Projexa">
+      <svg class="logo__mark" width="26" height="29" viewBox="0 0 72 80" aria-hidden="true">
+        <path fill="#fff" d="M20 2h18a21 21 0 0 1 0 42h-8V32h8a9 9 0 0 0 0-18h-6v64H20z"/>
+        <path fill="url(#goldgrad)" d="M4 78V46l18-20v32z"/>
+        <path fill="url(#goldgrad)" d="M28 78V54l10-11v35z" opacity=".85"/>
+      </svg>
+      <span class="logo__type">
+        <span class="logo__name">PROJEX<b>A</b></span>
+        <span class="logo__tag">PLAN. BOUW. BEHEER.</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Hoofdnavigatie">
+      <button class="nav__item" type="button" data-view="dashboard" aria-current="page">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-home"></use></svg><span>Dashboard</span>
+      </button>
+      <button class="nav__item" type="button" data-view="projecten">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-building"></use></svg><span>Projecten</span>
+      </button>
+      <button class="nav__item" type="button" data-view="chat">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-chat"></use></svg><span>Chat</span>
+        <span class="nav__badge" id="chatBadge">2</span>
+      </button>
+      <button class="nav__item" type="button" data-view="uren">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-clock"></use></svg><span>Uren</span>
+      </button>
+      <button class="nav__item" type="button" data-view="meerwerk">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-plus-circle"></use></svg><span>Meerwerk</span>
+      </button>
+      <button class="nav__item" type="button" data-view="planning">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-calendar"></use></svg><span>Planning</span>
+      </button>
+      <button class="nav__item" type="button" data-view="documenten">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-folder"></use></svg><span>Documenten</span>
+      </button>
+      <button class="nav__item" type="button" data-view="notificaties">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-bell"></use></svg><span>Notificaties</span>
+        <span class="nav__badge" id="belBadge">3</span>
+      </button>
+      <button class="nav__item" type="button" data-view="ai">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-sparkle"></use></svg><span>AI assistent</span>
+      </button>
+
+      <p class="nav__group">Beheer</p>
+      <button class="nav__item" type="button" data-view="klanten">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-user"></use></svg><span>Klanten &amp; portaal</span>
+      </button>
+      <button class="nav__item" type="button" data-view="gebruikers">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-worker"></use></svg><span>Gebruikers</span>
+      </button>
+      <button class="nav__item" type="button" data-view="facturatie">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-euro"></use></svg><span>Facturatie</span>
+      </button>
+      <button class="nav__item" type="button" data-view="abonnement">
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-clipboard"></use></svg><span>Abonnement</span>
+      </button>
+    </nav>
+
+    <div class="sidebar__foot">
+      <div class="sidebar__user">
+        <span class="avatar">JB</span>
+        <span>Jan de Boer<br><small style="color:rgba(255,255,255,.45)">Aannemer</small></span>
+      </div>
+      <a class="uitloggen" data-page="start">
+        <svg width="15" height="15" aria-hidden="true"><use href="#i-chev-l"></use></svg> Uitloggen
+      </a>
+    </div>
+  </aside>
+
+  <!-- ==== Hoofdgebied ======================================================== -->
+  <main class="main">
+
+    <!-- ---- Dashboard ------------------------------------------------------- -->
+    <section class="view" id="view-dashboard">
+      <div class="topbar">
+        <h1>Dashboard</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" type="button" data-view-open="notificaties" aria-label="Notificaties" style="position:relative">
+            <svg width="16" height="16" aria-hidden="true"><use href="#i-bell"></use></svg>
+            <span class="dotmark" id="belDot"></span>
+          </button>
+          <button class="btn btn--ghost" type="button" id="addProject">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Project toevoegen
+          </button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat__value" id="statTotaal">12</div><div class="stat__label">Projecten</div></div>
+        <div class="stat"><div class="stat__value" id="statActief">5</div><div class="stat__label">Actief</div></div>
+        <div class="stat"><div class="stat__value">3</div><div class="stat__label">In uitvoering</div></div>
+        <div class="stat"><div class="stat__value">2</div><div class="stat__label">Afgerond</div></div>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h2 class="panel__title">Mijn projecten</h2>
+          <div class="card list" id="projectList">
+            <button class="project" type="button" data-goto="chat">
+              <svg class="project__icon" width="24" height="24" aria-hidden="true"><use href="#i-building"></use></svg>
+              <span><span class="project__name">Verbouwing Jansen</span><span class="project__place">Amsterdam</span></span>
+              <span><span class="project__pct">75%</span><span class="bar"><i style="width:75%"></i></span></span>
+            </button>
+            <button class="project" type="button" data-goto="planning">
+              <svg class="project__icon" width="24" height="24" aria-hidden="true"><use href="#i-home"></use></svg>
+              <span><span class="project__name">Nieuwbouw De Vries</span><span class="project__place">Utrecht</span></span>
+              <span><span class="project__pct">45%</span><span class="bar"><i style="width:45%"></i></span></span>
+            </button>
+            <button class="project" type="button" data-goto="uren">
+              <svg class="project__icon" width="24" height="24" aria-hidden="true"><use href="#i-worker"></use></svg>
+              <span><span class="project__name">Renovatie Bakker</span><span class="project__place">Haarlem</span></span>
+              <span><span class="project__pct">20%</span><span class="bar"><i style="width:20%"></i></span></span>
+            </button>
+            <button class="project" type="button" data-goto="documenten">
+              <svg class="project__icon" width="24" height="24" aria-hidden="true"><use href="#i-building"></use></svg>
+              <span><span class="project__name">Uitbouw Peters</span><span class="project__place">Almere</span></span>
+              <span><span class="project__pct">100%</span><span class="bar"><i style="width:100%"></i></span></span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Laatste activiteit</h2>
+          <div class="card list" id="activityList">
+            <div class="activity">
+              <span class="activity__icon"><svg width="17" height="17" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+              <span><span class="activity__text">Jan heeft een foto toegevoegd</span><span class="activity__time">2 min geleden</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--green"><svg width="17" height="17" aria-hidden="true"><use href="#i-chat"></use></svg></span>
+              <span><span class="activity__text">Meerwerk goedgekeurd</span><span class="activity__time">15 min geleden</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-clipboard"></use></svg></span>
+              <span><span class="activity__text">Nieuw bericht van klant</span><span class="activity__time">1 uur geleden</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-clock"></use></svg></span>
+              <span><span class="activity__text">Uren geregistreerd</span><span class="activity__time">2 uur geleden</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Projecten ------------------------------------------------------- -->
+    <section class="view" id="view-projecten" hidden>
+      <div class="topbar">
+        <h1>Projecten</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" type="button" id="addProject2">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Project toevoegen
+          </button>
+        </div>
+      </div>
+      <div class="card list" id="projectList2"></div>
+    </section>
+
+    <!-- ---- Chat ------------------------------------------------------------ -->
+    <section class="view" id="view-chat" hidden>
+      <div class="topbar"><h1 id="chatTitle">Chat - Verbouwing Jansen</h1></div>
+
+      <div class="card chat">
+        <aside class="chat__aside">
+          <div class="chat__asidehead">
+            <span>Chats</span>
+            <svg width="16" height="16" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-chev-r"></use></svg>
+          </div>
+          <div class="search">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-search"></use></svg>
+            <input type="search" id="chatSearch" placeholder="Zoeken" aria-label="Zoeken in chats">
+          </div>
+          <div class="chat__list" id="chatList" role="listbox" aria-label="Gesprekken"></div>
+        </aside>
+
+        <div class="chat__thread">
+          <div class="chat__messages" id="chatMessages" aria-live="polite"></div>
+          <form class="composer" id="composer">
+            <input type="text" id="chatInput" placeholder="Typ een bericht..." aria-label="Typ een bericht" autocomplete="off">
+            <button class="iconbtn" type="button" id="btnPhoto" title="Foto toevoegen" aria-label="Foto toevoegen">
+              <svg width="19" height="19" aria-hidden="true"><use href="#i-clip"></use></svg>
+            </button>
+            <button class="iconbtn" type="button" id="btnVoice" title="Spraakbericht" aria-label="Spraakbericht">
+              <svg width="19" height="19" aria-hidden="true"><use href="#i-mic"></use></svg>
+            </button>
+            <button class="iconbtn iconbtn--send" type="submit" title="Versturen" aria-label="Versturen">
+              <svg width="19" height="19" aria-hidden="true"><use href="#i-send"></use></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Urenregistratie ------------------------------------------------- -->
+    <section class="view" id="view-uren" hidden>
+      <div class="topbar"><h1>Urenregistratie</h1></div>
+
+      <div class="cols">
+        <div class="card">
+          <div class="timer">
+            <div class="timer__nav">
+              <button type="button" id="dayPrev" aria-label="Vorige dag">
+                <svg width="16" height="16" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+              </button>
+              <span id="dayLabel">Vandaag, 1 mei 2024</span>
+              <button type="button" id="dayNext" aria-label="Volgende dag">
+                <svg width="16" height="16" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+              </button>
+            </div>
+            <div class="timer__value" id="timerValue">07:30:45</div>
+            <div class="timer__label">Uren vandaag</div>
+            <div class="timer__actions">
+              <button class="btn btn--red" type="button" id="btnStop">Stop</button>
+              <button class="btn btn--ghost" type="button" id="btnPause">Pauze</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <h3>Werkzaamheden</h3>
+            <div class="select">
+              <input class="vrij" id="taskSoort" list="soortenWerk" value="Timmerwerk"
+                     placeholder="Kies of typ zelf" aria-label="Soort werk" autocomplete="off">
+              <svg width="16" height="16" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+            </div>
+            <div class="select" style="margin-top:8px">
+              <input class="vrij vrij--licht" id="taskWat" value="Voorzetwand plaatsen"
+                     placeholder="Wat doe je precies?" aria-label="Omschrijving" autocomplete="off">
+            </div>
+            <p class="veldhint">Kies een bekende soort of typ zelf iets anders.</p>
+          </div>
+
+          <datalist id="soortenWerk">
+            <option value="Timmerwerk"></option>
+            <option value="Sloopwerk"></option>
+            <option value="Installatiewerk"></option>
+            <option value="Stucwerk"></option>
+            <option value="Metselwerk"></option>
+            <option value="Tegelwerk"></option>
+            <option value="Dakwerk"></option>
+            <option value="Schilderwerk"></option>
+            <option value="Opruimen &amp; afvoeren"></option>
+          </datalist>
+
+          <div class="field" style="padding-top:0">
+            <h3>Foto&rsquo;s</h3>
+            <div class="photos" id="photoGrid">
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 1"><use href="#ph-1"></use></svg></figure>
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 2"><use href="#ph-2"></use></svg></figure>
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 3"><use href="#ph-3"></use></svg></figure>
+              <button class="photos__add" type="button" id="addPhoto" aria-label="Foto toevoegen">
+                <svg width="20" height="20" aria-hidden="true"><use href="#i-plus"></use></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Geregistreerd vandaag</h2>
+          <div class="card entries" id="entryList">
+            <div class="entry" style="border-top:0">
+              <svg width="18" height="18" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-clock"></use></svg>
+              <span>Timmerwerk — Voorzetwand plaatsen</span><b>07:30:45</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Meerwerk -------------------------------------------------------- -->
+    <section class="view" id="view-meerwerk" hidden>
+      <div class="topbar">
+        <h1>Meerwerk</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" type="button" id="closeMw" aria-label="Sluiten">
+            <svg width="16" height="16" aria-hidden="true"><use href="#i-x"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="cols">
+        <div class="card mw">
+          <div class="mw__head">
+            <div>
+              <div class="mw__nr">MW-2024-001</div>
+              <div class="mw__title">Wand verplaatsen slaapkamer</div>
+            </div>
+            <div style="text-align:right">
+              <div class="mw__price">€685,00</div>
+              <span class="tag" id="mwStatus" style="margin-top:8px">In afwachting</span>
+            </div>
+          </div>
+
+          <div class="mw__label">Omschrijving</div>
+          <p class="mw__text">Verplaatsen van de tussenwand met 20cm i.v.m. leidingwerk.</p>
+
+          <div id="mwDetails" hidden>
+            <div class="mw__row"><span>Arbeid (8 uur × €55,00)</span><span>€440,00</span></div>
+            <div class="mw__row"><span>Materiaal</span><span>€185,00</span></div>
+            <div class="mw__row"><span>Afvoer &amp; afwerking</span><span>€60,00</span></div>
+          </div>
+
+          <div class="mw__label">Offerte</div>
+          <div class="bijlagen" id="mwBijlagen">
+            <p class="bijlagen__leeg" id="mwGeenBijlage">Nog geen offerte toegevoegd.</p>
+          </div>
+          <label class="btn btn--ghost upload" style="margin-top:10px">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-clip"></use></svg>
+            Offerte uploaden
+            <input type="file" id="mwOfferte" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden>
+          </label>
+          <p class="veldhint">PDF, Word of foto. De klant ziet de offerte bij het voorstel.</p>
+
+          <div class="mw__row"><span>Gemaakt op</span><span>1 mei 2024</span></div>
+          <div class="mw__row is-total"><span>Totaal (excl. btw)</span><span>€685,00</span></div>
+
+          <div class="mw__actions">
+            <button class="btn btn--ghost" type="button" id="mwDetailBtn">Bekijk details</button>
+            <button class="btn btn--gold" type="button" id="mwSend">Stuur naar klant</button>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Alle meerwerk</h2>
+          <div class="card list" id="mwList">
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-plus-circle"></use></svg></span>
+              <span>
+                <span class="activity__text">MW-2024-001 · Wand verplaatsen slaapkamer</span>
+                <span class="activity__time">Verbouwing Jansen · €685,00</span>
+              </span>
+              <span class="tag" id="mwStatusList" style="margin-left:auto">In afwachting</span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--green"><svg width="17" height="17" aria-hidden="true"><use href="#i-check"></use></svg></span>
+              <span>
+                <span class="activity__text">MW-2024-002 · Extra dakraam</span>
+                <span class="activity__time">Nieuwbouw De Vries · €1.240,00</span>
+              </span>
+              <span class="tag tag--ok" style="margin-left:auto">Goedgekeurd</span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-clipboard"></use></svg></span>
+              <span>
+                <span class="activity__text">MW-2024-003 · Vloerverwarming badkamer</span>
+                <span class="activity__time">Renovatie Bakker · €2.150,00</span>
+              </span>
+              <span class="tag tag--sent" style="margin-left:auto">Verstuurd</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Planning -------------------------------------------------------- -->
+    <section class="view" id="view-planning" hidden>
+      <div class="topbar">
+        <h1>Planning</h1>
+        <div class="topbar__actions">
+          <div class="select select--kop">
+            <select id="planProject" aria-label="Kies een project"></select>
+            <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+          </div>
+          <button class="btn btn--gold" type="button" id="planTaak">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Taak toevoegen
+          </button>
+        </div>
+      </div>
+
+      <div class="tabsrij" id="planTabs"></div>
+
+      <div class="card timeline" id="planTijdlijn"></div>
+    </section>
+
+    <!-- ---- Documenten ------------------------------------------------------ -->
+    <section class="view" id="view-documenten" hidden>
+      <div class="topbar">
+        <h1>Documenten — Verbouwing Jansen</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" type="button" id="uploadDoc">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Uploaden
+          </button>
+        </div>
+      </div>
+      <div class="card list" id="docList">
+        <div class="doc">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Offerte verbouwing<small>PDF · 1 apr 2024</small></span>
+          <span class="tag tag--ok">Getekend</span>
+        </div>
+        <div class="doc">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-image"></use></svg>
+          <span>Tekening begane grond<small>PDF · 8 apr 2024</small></span>
+        </div>
+        <div class="doc">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Aannemingsovereenkomst<small>PDF · 12 apr 2024</small></span>
+          <span class="tag tag--ok">Getekend</span>
+        </div>
+        <div class="doc">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-euro"></use></svg>
+          <span>Factuur termijn 1<small>PDF · 22 apr 2024</small></span>
+          <span class="tag tag--sent">Verstuurd</span>
+        </div>
+        <div class="doc">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-clipboard"></use></svg>
+          <span>Opleverrapport<small>Nog niet beschikbaar</small></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Klantportaal ---------------------------------------------------- -->
+    <section class="view" id="view-klanten" hidden>
+      <div class="topbar"><h1>Klantportaal</h1></div>
+      <div class="cols">
+        <div class="card" style="padding:22px">
+          <h2 class="panel__title" style="margin-top:0">Wat de klant ziet</h2>
+          <p style="color:var(--ink-2);font-size:14.5px;margin-top:0">
+            Klanten krijgen een eigen inlog en zien de voortgang, foto&rsquo;s, planning,
+            berichten, meerwerk en documenten van hun project.
+          </p>
+          <p style="font-size:14.5px">
+            De klantweergave is mobile-first opgezet en staat klaar als
+            smartphone-versie.
+          </p>
+          <a class="btn btn--gold" data-page="klant">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-phone"></use></svg>
+            Open klantportaal (smartphone)
+          </a>
+        </div>
+        <div>
+          <h2 class="panel__title">Rechten per rol</h2>
+          <div class="card list">
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-user"></use></svg>
+              <span>Aannemer (hoofdgebruiker)<small>Volledige toegang · gebruikers · instellingen &amp; abonnementen · facturatie &amp; rapportages</small></span>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-worker"></use></svg>
+              <span>Medewerker<small>Uren registreren · werkzaamheden invullen · foto&rsquo;s uploaden · chatten binnen projecten</small></span>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-home"></use></svg>
+              <span>Klant<small>Inzien voortgang · chatten met aannemer · meerwerk goedkeuren · documenten bekijken</small></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Projectdetail --------------------------------------------------- -->
+    <section class="view" id="view-project" hidden>
+      <div class="topbar">
+        <button class="btn btn--ghost" type="button" data-view-back="projecten" aria-label="Terug naar projecten">
+          <svg width="16" height="16" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+        </button>
+        <h1 id="pdNaam">Verbouwing Jansen</h1>
+        <span class="tag tag--sent" id="pdStatus">In uitvoering</span>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" type="button" data-goto="chat">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-chat"></use></svg> Chat
+          </button>
+          <button class="btn btn--gold" type="button" data-goto="meerwerk">Meerwerk maken</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat__value" id="pdPct">75%</div><div class="stat__label">Voortgang</div></div>
+        <div class="stat"><div class="stat__value" id="pdTaken">4</div><div class="stat__label">Open taken</div></div>
+        <div class="stat"><div class="stat__value" id="pdUren">186</div><div class="stat__label">Uren geschreven</div></div>
+        <div class="stat"><div class="stat__value" id="pdMeerwerk">€685</div><div class="stat__label">Meerwerk open</div></div>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h2 class="panel__title">Open taken</h2>
+          <div class="card timeline" id="pdTakenLijst"></div>
+
+          <h2 class="panel__title" style="margin-top:24px">Foto&rsquo;s uit het projectlogboek</h2>
+          <div class="card" style="padding:16px">
+            <div class="photos" style="grid-template-columns:repeat(4,1fr)">
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 1"><use href="#ph-1"></use></svg></figure>
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 2"><use href="#ph-2"></use></svg></figure>
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 3"><use href="#ph-3"></use></svg></figure>
+              <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 4"><use href="#ph-beams"></use></svg></figure>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Projectgegevens</h2>
+          <div class="card" style="padding:6px 18px 14px">
+            <div class="mw__row" style="border-top:0"><span>Klant</span><span id="pdKlant">Familie Jansen</span></div>
+            <div class="mw__row"><span>Adres</span><span id="pdAdres">Amsterdam</span></div>
+            <div class="mw__row"><span>Start</span><span>8 april 2024</span></div>
+            <div class="mw__row"><span>Verwachte oplevering</span><span>17 mei 2024</span></div>
+            <div class="mw__row"><span>Aanneemsom</span><span>€48.500,00</span></div>
+            <div class="mw__row"><span>Meerwerk tot nu toe</span><span>€1.925,00</span></div>
+          </div>
+
+          <h2 class="panel__title" style="margin-top:24px">Laatste activiteit</h2>
+          <div class="card list">
+            <div class="activity">
+              <span class="activity__icon"><svg width="17" height="17" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+              <span><span class="activity__text">Jan heeft een foto toegevoegd</span><span class="activity__time">2 min geleden</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-clock"></use></svg></span>
+              <span><span class="activity__text">Piet schreef 7:30 uur op Timmerwerk</span><span class="activity__time">2 uur geleden</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--green"><svg width="17" height="17" aria-hidden="true"><use href="#i-check"></use></svg></span>
+              <span><span class="activity__text">Meerwerk MW-2024-000 goedgekeurd</span><span class="activity__time">gisteren</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Notificaties ---------------------------------------------------- -->
+    <section class="view" id="view-notificaties" hidden>
+      <div class="topbar">
+        <h1>Notificaties</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" type="button" id="allesGelezen">Alles als gelezen markeren</button>
+        </div>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h2 class="panel__title">Nieuw</h2>
+          <div class="card list" id="notiNieuw">
+            <div class="activity">
+              <span class="activity__icon activity__icon--green"><svg width="17" height="17" aria-hidden="true"><use href="#i-check"></use></svg></span>
+              <span><span class="activity__text">Meerwerk goedgekeurd door familie Jansen</span><span class="activity__time">15 min geleden · push + e-mail</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-chat"></use></svg></span>
+              <span><span class="activity__text">Nieuw bericht van klant in Verbouwing Jansen</span><span class="activity__time">1 uur geleden · push</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-calendar"></use></svg></span>
+              <span><span class="activity__text">Taak "Leidingwerk verleggen" staat morgen gepland</span><span class="activity__time">1 uur geleden · e-mail</span></span>
+            </div>
+          </div>
+
+          <h2 class="panel__title" style="margin-top:24px">Eerder</h2>
+          <div class="card list">
+            <div class="activity">
+              <span class="activity__icon"><svg width="17" height="17" aria-hidden="true"><use href="#i-clock"></use></svg></span>
+              <span><span class="activity__text">Uren geregistreerd door Piet</span><span class="activity__time">2 uur geleden</span></span>
+            </div>
+            <div class="activity">
+              <span class="activity__icon"><svg width="17" height="17" aria-hidden="true"><use href="#i-doc"></use></svg></span>
+              <span><span class="activity__text">Factuur termijn 1 verstuurd</span><span class="activity__time">gisteren</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Waar wil je bericht van krijgen?</h2>
+          <div class="card" style="padding:6px 18px 16px">
+            <label class="toggle"><span>Nieuwe berichten<small>Chat in al je projecten</small></span><input type="checkbox" checked></label>
+            <label class="toggle"><span>Meerwerk akkoord<small>Zodra de klant goedkeurt</small></span><input type="checkbox" checked></label>
+            <label class="toggle"><span>Wijzigingen in de planning<small>Taken en mijlpalen</small></span><input type="checkbox" checked></label>
+            <label class="toggle"><span>Nieuwe taken<small>Toegewezen aan jou of je team</small></span><input type="checkbox"></label>
+            <p style="font-size:13px;color:var(--ink-2);margin:14px 0 0">
+              Meldingen komen binnen als push op je telefoon én als e-mail.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- AI assistent ---------------------------------------------------- -->
+    <section class="view" id="view-ai" hidden>
+      <div class="topbar">
+        <h1>AI assistent</h1>
+        <span class="tag">Optioneel</span>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h2 class="panel__title">Samenvatting van het gesprek</h2>
+          <div class="card" style="padding:18px 20px">
+            <p style="font-size:13px;color:var(--ink-3);margin:0 0 8px">Verbouwing Jansen · vandaag 14:28 – 14:32</p>
+            <p style="margin:0 0 12px;font-size:14.5px">
+              Tijdens het slopen bleken de balken vervangen te moeten worden. De aannemer
+              heeft een foto gedeeld; de klant vraagt om een meerwerkvoorstel en de
+              aannemer zegt dat toe.
+            </p>
+            <p class="mw__label" style="margin-top:0">Actiepunten</p>
+            <div class="timeline">
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:8px 0">
+                <span class="dot"></span><span class="timeline__task">Meerwerkvoorstel balklaag opstellen en versturen</span>
+              </div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:8px 0">
+                <span class="dot"></span><span class="timeline__task">Constructeur laten meekijken vóór 2 mei</span>
+              </div>
+            </div>
+            <button class="btn btn--ghost" type="button" id="aiSamenvatting" style="margin-top:14px">Opnieuw samenvatten</button>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Automatisch gevonden meerwerk</h2>
+          <div class="card list">
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-sparkle"></use></svg></span>
+              <span>
+                <span class="activity__text">Balklaag vervangen — uit chat en foto van 1 mei</span>
+                <span class="activity__time">Zekerheid: hoog · geschat €2.400,00</span>
+              </span>
+              <button class="btn btn--gold" type="button" data-goto="meerwerk" style="margin-left:auto;padding:8px 14px">Voorstel maken</button>
+            </div>
+            <div class="activity">
+              <span class="activity__icon activity__icon--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-sparkle"></use></svg></span>
+              <span>
+                <span class="activity__text">Extra wandcontactdozen — uit logboek van 29 april</span>
+                <span class="activity__time">Zekerheid: gemiddeld · geschat €310,00</span>
+              </span>
+              <button class="btn btn--ghost" type="button" data-goto="meerwerk" style="margin-left:auto;padding:8px 14px">Bekijken</button>
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--ink-2);margin-top:14px">
+            De assistent leest mee met chats, logboeken en foto&rsquo;s. Je beslist altijd zelf
+            wat er als meerwerk naar de klant gaat.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Gebruikers ------------------------------------------------------ -->
+    <section class="view" id="view-gebruikers" hidden>
+      <div class="topbar">
+        <h1>Gebruikers</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--gold" type="button" id="nodigUit">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Gebruiker uitnodigen
+          </button>
+        </div>
+      </div>
+
+      <div class="card list" id="gebruikersLijst">
+        <div class="doc">
+          <span class="avatar">JB</span>
+          <span>Jan de Boer<small>jan@debouwers.nl · alle projecten</small></span>
+          <span class="tag tag--ok">Aannemer</span>
+        </div>
+        <div class="doc">
+          <span class="avatar">PV</span>
+          <span>Piet Vermeer<small>piet@debouwers.nl · Verbouwing Jansen, Renovatie Bakker</small></span>
+          <span class="tag tag--sent">Medewerker</span>
+        </div>
+        <div class="doc">
+          <span class="avatar">MK</span>
+          <span>Mark Kuiper<small>mark@debouwers.nl · Uitbouw Peters</small></span>
+          <span class="tag tag--sent">Medewerker</span>
+        </div>
+        <div class="doc">
+          <span class="avatar">FJ</span>
+          <span>Familie Jansen<small>jansen@voorbeeld.nl · Verbouwing Jansen</small></span>
+          <span class="tag">Klant</span>
+        </div>
+        <div class="doc">
+          <span class="avatar">LD</span>
+          <span>Lisa de Vries<small>lisa@voorbeeld.nl · Nieuwbouw De Vries</small></span>
+          <span class="tag">Klant</span>
+        </div>
+      </div>
+
+      <h2 class="panel__title" style="margin-top:26px">Wat mag welke rol?</h2>
+      <div class="cols" style="grid-template-columns:repeat(3,1fr)">
+        <div class="card" style="padding:18px 20px">
+          <h3 style="margin:0 0 10px;font-size:14px;letter-spacing:.04em;text-transform:uppercase">Aannemer</h3>
+          <div class="timeline">
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Volledige toegang tot alle projecten</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Gebruikers beheren</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Instellingen &amp; abonnementen</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Facturatie &amp; rapportages</span></div>
+          </div>
+        </div>
+        <div class="card" style="padding:18px 20px">
+          <h3 style="margin:0 0 10px;font-size:14px;letter-spacing:.04em;text-transform:uppercase">Medewerker</h3>
+          <div class="timeline">
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Uren registreren</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Werkzaamheden invullen</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Foto&rsquo;s uploaden</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Chatten binnen projecten</span></div>
+          </div>
+          <a class="btn btn--ghost" data-page="medewerker" style="margin-top:12px;width:100%">Bekijk de medewerker-app</a>
+        </div>
+        <div class="card" style="padding:18px 20px">
+          <h3 style="margin:0 0 10px;font-size:14px;letter-spacing:.04em;text-transform:uppercase">Klant</h3>
+          <div class="timeline">
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Inzien voortgang</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Chatten met aannemer</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Meerwerk goedkeuren</span></div>
+            <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:6px 0"><span class="dot dot--done"></span><span class="timeline__task">Documenten bekijken</span></div>
+          </div>
+          <a class="btn btn--ghost" data-page="klant" style="margin-top:12px;width:100%">Bekijk het klantportaal</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Facturatie ------------------------------------------------------ -->
+    <section class="view" id="view-facturatie" hidden>
+      <div class="topbar">
+        <h1>Facturatie &amp; rapportages</h1>
+        <div class="topbar__actions">
+          <button class="btn btn--gold" type="button" id="nieuweFactuur">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-plus"></use></svg> Factuur maken
+          </button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat__value">€12.400</div><div class="stat__label">Openstaand</div></div>
+        <div class="stat"><div class="stat__value">€68.150</div><div class="stat__label">Gefactureerd dit jaar</div></div>
+        <div class="stat"><div class="stat__value">€4.075</div><div class="stat__label">Meerwerk dit jaar</div></div>
+        <div class="stat"><div class="stat__value">412</div><div class="stat__label">Uren deze maand</div></div>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h2 class="panel__title">Facturen</h2>
+          <div class="card list" id="factuurLijst">
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-euro"></use></svg>
+              <span>2024-0031 · Verbouwing Jansen<small>Termijn 2 · €12.400,00 · vervalt 14 mei</small></span>
+              <span class="tag tag--sent">Verstuurd</span>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-euro"></use></svg>
+              <span>2024-0030 · Verbouwing Jansen<small>Termijn 1 · €16.200,00</small></span>
+              <span class="tag tag--ok">Betaald</span>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-euro"></use></svg>
+              <span>2024-0029 · Uitbouw Peters<small>Eindafrekening · €9.850,00</small></span>
+              <span class="tag tag--ok">Betaald</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Rapportages</h2>
+          <div class="card list">
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-clock"></use></svg>
+              <span>Urenoverzicht per project<small>Deze maand · per medewerker uit te splitsen</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Urenoverzicht" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-plus-circle"></use></svg>
+              <span>Meerwerkoverzicht<small>Voorstellen, akkoord en omzet</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Meerwerkoverzicht" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-building"></use></svg>
+              <span>Projectrendement<small>Begroot tegenover werkelijk</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Projectrendement" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Abonnement ------------------------------------------------------ -->
+    <section class="view" id="view-abonnement" hidden>
+      <div class="topbar"><h1>Abonnement &amp; betaling</h1></div>
+
+      <div class="cols">
+        <div>
+          <div class="card" style="padding:20px 22px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <span class="tag tag--ok">Proefperiode actief</span>
+              <span style="font-size:13px;color:var(--ink-2)">nog 9 van de 14 dagen gratis</span>
+            </div>
+            <p style="display:flex;align-items:baseline;gap:8px;margin:16px 0 6px">
+              <strong style="font-size:34px;font-weight:700">€69,99</strong>
+              <span style="color:var(--ink-2)">/ maand</span>
+            </p>
+            <p style="margin:0;font-size:14px;color:var(--ink-2)">
+              Eerste incasso op 15 mei 2024 · maandelijks opzegbaar
+            </p>
+
+            <div class="mw__row" style="margin-top:20px"><span>Betaalmethode</span><span>Automatische incasso via Stripe</span></div>
+            <div class="mw__row"><span>Rekening</span><span>NL91 •••• 4321</span></div>
+            <div class="mw__row"><span>Facturatie</span><span>PDF per e-mail, elke 15e</span></div>
+
+            <div class="mw__actions">
+              <button class="btn btn--gold" type="button" id="abonneer">Nu abonneren</button>
+              <button class="btn btn--ghost" type="button" id="opzeggen">Opzeggen</button>
+            </div>
+          </div>
+
+          <h2 class="panel__title" style="margin-top:26px">Facturen van je abonnement</h2>
+          <div class="card list">
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+              <span>Projexa april 2024<small>PDF · €69,99 · betaald</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Factuur april" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+            <div class="doc">
+              <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+              <span>Projexa maart 2024<small>PDF · €69,99 · betaald</small></span>
+              <button class="btn btn--ghost" type="button" data-rapport="Factuur maart" style="margin-left:auto;padding:8px 14px">Download</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="panel__title">Wat zit er in je abonnement?</h2>
+          <div class="card" style="padding:18px 20px">
+            <div class="timeline">
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;border-top:0;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Onbeperkte projecten</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Onbeperkte gebruikers</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Alle functies inbegrepen</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Klantportaal</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Meerwerk &amp; offertes</span></div>
+              <div class="timeline__day" style="grid-template-columns:20px 1fr;padding:7px 0"><span class="dot dot--done"></span><span class="timeline__task">Chat &amp; notificaties</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</section>
+
+<section class="demo-page mob" id="page-medewerker" hidden>
+
+<!-- ==== Iconenset (SVG-sprite) ================================================ -->
+
+<div class="m-app">
+
+  <div class="m-status">
+    <span>7:12</span>
+    <span aria-hidden="true">
+      <svg width="40" height="10" viewBox="0 0 34 9" fill="currentColor"><rect x="0" y="5" width="2" height="4" rx=".5"/><rect x="3.5" y="3.5" width="2" height="5.5" rx=".5"/><rect x="7" y="2" width="2" height="7" rx=".5"/><rect x="10.5" y="0" width="2" height="9" rx=".5"/><path d="M16 3.2a5 5 0 0 1 6 0l-3 3.6z"/><rect x="24" y="1.5" width="8.5" height="6" rx="1.6" fill="none" stroke="currentColor"/><rect x="25.2" y="2.7" width="6" height="3.6" rx=".8"/></svg>
+    </span>
+  </div>
+
+  <header class="m-top">
+    <button class="m-back" type="button" id="wBack" aria-label="Terug">
+      <svg width="22" height="22" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+    </button>
+    <div>
+      <h1 id="wTitle">Mijn werk</h1>
+      <div class="m-top__sub" id="wSub">Piet Vermeer · medewerker</div>
+    </div>
+    <div class="m-top__right">
+      <button class="m-bell" type="button" id="wBell" aria-label="Notificaties">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-bell"></use></svg>
+      </button>
+      <a class="avatar" data-page="start" title="Uitloggen" aria-label="Uitloggen">PV</a>
+    </div>
+  </header>
+
+  <main class="m-main">
+
+    <!-- ---- Vandaag: uren registreren --------------------------------------- -->
+    <section class="m-screen" id="w-vandaag">
+      <p class="m-label" style="margin-top:14px">Ik werk nu aan</p>
+      <div class="m-select">
+        <select id="wProject" aria-label="Project">
+          <option>Verbouwing Jansen · Amsterdam</option>
+          <option>Nieuwbouw De Vries · Utrecht</option>
+          <option>Renovatie Bakker · Haarlem</option>
+          <option>Uitbouw Peters · Almere</option>
+        </select>
+        <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+      </div>
+
+      <div class="m-card" style="margin-top:14px">
+        <div class="m-timer">
+          <div class="m-timer__nav">
+            <button type="button" id="wDayPrev" aria-label="Vorige dag">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+            </button>
+            <span id="wDayLabel">Vandaag, 1 mei 2024</span>
+            <button type="button" id="wDayNext" aria-label="Volgende dag">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+            </button>
+          </div>
+          <div class="m-timer__value" id="wTimer">07:30:45</div>
+          <div class="m-timer__label">Uren vandaag</div>
+          <div class="m-timer__btns">
+            <button class="btn btn--red" type="button" id="wStop">Stop</button>
+            <button class="btn btn--ghost" type="button" id="wPause">Pauze</button>
+          </div>
+        </div>
+
+        <div class="m-field">
+          <h3>Werkzaamheden</h3>
+          <div class="m-select">
+            <input class="vrij" id="wTaskSoort" list="soortenWerk" value="Timmerwerk"
+                   placeholder="Kies of typ zelf" aria-label="Soort werk" autocomplete="off">
+            <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+          </div>
+          <div class="m-select" style="margin-top:8px">
+            <input class="vrij vrij--licht" id="wTaskWat" value="Voorzetwand plaatsen"
+                   placeholder="Wat doe je precies?" aria-label="Omschrijving" autocomplete="off">
+          </div>
+          <p class="veldhint">Kies een bekende soort of typ zelf iets anders.</p>
+        </div>
+
+        <datalist id="soortenWerk">
+          <option value="Timmerwerk"></option>
+          <option value="Sloopwerk"></option>
+          <option value="Installatiewerk"></option>
+          <option value="Stucwerk"></option>
+          <option value="Metselwerk"></option>
+          <option value="Tegelwerk"></option>
+          <option value="Dakwerk"></option>
+          <option value="Schilderwerk"></option>
+          <option value="Opruimen &amp; afvoeren"></option>
+        </datalist>
+
+        <div class="m-field" style="padding-top:0">
+          <button class="btn btn--ghost" type="button" id="wHandmatig" style="width:100%">Uren handmatig invoeren</button>
+        </div>
+      </div>
+
+      <h2 class="m-section-title">Geregistreerd vandaag</h2>
+      <div class="m-card" style="padding:0 16px" id="wVandaagLijst">
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-clock"></use></svg>
+          <span id="wEntryText">Timmerwerk — Voorzetwand plaatsen<small>Verbouwing Jansen</small></span>
+          <b style="margin-left:auto;font-variant-numeric:tabular-nums" id="wEntryTime">07:30:45</b>
+        </div>
+      </div>
+
+      <h2 class="m-section-title">Deze week</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item"><span>maandag 29 april<small>Sloopwerk · Verbouwing Jansen</small></span><b style="margin-left:auto">08:15</b></div>
+        <div class="m-item"><span>dinsdag 30 april<small>Timmerwerk · Verbouwing Jansen</small></span><b style="margin-left:auto">07:45</b></div>
+        <div class="m-item"><span><b>Totaal deze week</b></span><b style="margin-left:auto" id="wWeek">23:30</b></div>
+      </div>
+
+      <a class="btn btn--ghost m-uitloggen" data-page="start">Uitloggen</a>
+    </section>
+
+    <!-- ---- Werkzaamheden invullen ------------------------------------------ -->
+    <section class="m-screen" id="w-werk" hidden>
+      <h2 class="m-section-title" style="margin-top:16px">Wat heb je gedaan?</h2>
+      <div class="m-card" style="padding:4px 16px 16px">
+        <div class="m-field" style="padding:14px 0 0">
+          <h3>Soort werk</h3>
+          <div class="m-select">
+            <input class="vrij" id="wLogSoort" list="soortenWerk" value="Timmerwerk"
+                   placeholder="Kies of typ zelf" aria-label="Soort werk" autocomplete="off">
+            <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+          </div>
+          <p class="veldhint">Staat je werk er niet bij? Typ het gewoon zelf.</p>
+        </div>
+
+        <div class="m-field" style="padding:14px 0 0">
+          <h3>Omschrijving</h3>
+          <textarea id="wLogTekst" rows="3" class="m-textarea"
+            placeholder="Bijvoorbeeld: voorzetwand slaapkamer geplaatst, gips aangebracht"></textarea>
+        </div>
+
+        <div class="m-field" style="padding:14px 0 0">
+          <h3>Foto&rsquo;s bij deze werkzaamheden</h3>
+          <div class="m-photos" id="wLogFotos">
+            <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden"><use href="#ph-1"></use></svg></figure>
+            <button class="m-photos__add" type="button" id="wLogFoto" aria-label="Foto toevoegen">
+              <svg width="20" height="20" aria-hidden="true"><use href="#i-plus"></use></svg>
+            </button>
+          </div>
+        </div>
+
+        <button class="btn btn--gold" type="button" id="wLogOpslaan" style="width:100%;margin-top:16px">
+          Opslaan in projectlogboek
+        </button>
+        <p style="font-size:12.5px;color:var(--ink-3);margin:10px 0 0;text-align:center">
+          Wordt automatisch gelogd bij Verbouwing Jansen.
+        </p>
+      </div>
+
+      <h2 class="m-section-title">Projectlogboek</h2>
+      <div class="m-card" style="padding:0 16px" id="wLogboek">
+        <div class="m-item">
+          <span class="m-ico"><svg width="18" height="18" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+          <span>Timmerwerk<small>1 mei · voorzetwand slaapkamer geplaatst</small></span>
+        </div>
+        <div class="m-item">
+          <span class="m-ico"><svg width="18" height="18" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+          <span>Sloopwerk<small>29 apr · tussenwand gesloopt en puin afgevoerd</small></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Foto's ---------------------------------------------------------- -->
+    <section class="m-screen" id="w-fotos" hidden>
+      <div style="display:flex;gap:10px;margin:16px 0 4px">
+        <button class="btn btn--gold" type="button" id="wFotoMaken" style="flex:1">
+          <svg width="16" height="16" aria-hidden="true"><use href="#i-camera"></use></svg> Foto maken
+        </button>
+        <button class="btn btn--ghost" type="button" id="wFotoUpload" style="flex:1">Uit galerij</button>
+      </div>
+
+      <h2 class="m-section-title">Vandaag toegevoegd</h2>
+      <div class="m-gallery" id="wGalerij">
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 1"><use href="#ph-1"></use></svg></figure>
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 2"><use href="#ph-2"></use></svg></figure>
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 3"><use href="#ph-3"></use></svg></figure>
+      </div>
+
+      <h2 class="m-section-title">Eerder deze week</h2>
+      <div class="m-gallery">
+        <figure style="grid-column:span 3;aspect-ratio:16/9">
+          <svg viewBox="0 0 160 90" role="img" aria-label="Foto van de bestaande balklaag"><use href="#ph-beams"></use></svg>
+        </figure>
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 4"><use href="#ph-2"></use></svg></figure>
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 5"><use href="#ph-3"></use></svg></figure>
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 6"><use href="#ph-1"></use></svg></figure>
+      </div>
+
+      <p style="font-size:12.5px;color:var(--ink-3);margin:16px 0 0;text-align:center">
+        Elke foto komt automatisch in het projectlogboek en is zichtbaar voor de aannemer.
+      </p>
+    </section>
+
+    <!-- ---- Chat met de aannemer -------------------------------------------- -->
+    <section class="m-screen" id="w-chat" hidden>
+      <div class="m-contact">
+        <span class="m-ico"><svg width="18" height="18" aria-hidden="true"><use href="#i-user"></use></svg></span>
+        <span><b>Jan de Boer</b><small>Aannemer · Verbouwing Jansen</small></span>
+      </div>
+      <div class="m-chat" id="wChat" aria-live="polite"></div>
+      <form class="m-composer" id="wComposer">
+        <input type="text" id="wInput" placeholder="Typ een bericht..." aria-label="Typ een bericht" autocomplete="off">
+        <button class="m-round" type="button" id="wPhoto" aria-label="Foto toevoegen">
+          <svg width="19" height="19" aria-hidden="true"><use href="#i-clip"></use></svg>
+        </button>
+        <button class="m-round" type="button" id="wVoice" aria-label="Spraakbericht">
+          <svg width="19" height="19" aria-hidden="true"><use href="#i-mic"></use></svg>
+        </button>
+        <button class="m-round m-round--send" type="submit" aria-label="Versturen">
+          <svg width="19" height="19" aria-hidden="true"><use href="#i-send"></use></svg>
+        </button>
+      </form>
+    </section>
+
+  </main>
+
+  <nav class="m-tabs" aria-label="Hoofdnavigatie">
+    <button class="m-tab" type="button" data-wtab="vandaag" aria-current="page">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-clock"></use></svg><span>Vandaag</span>
+    </button>
+    <button class="m-tab" type="button" data-wtab="werk">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-clipboard"></use></svg><span>Werk</span>
+    </button>
+    <button class="m-tab" type="button" data-wtab="fotos">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-camera"></use></svg><span>Foto&rsquo;s</span>
+    </button>
+    <button class="m-tab" type="button" data-wtab="chat">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-chat"></use></svg><span>Aannemer</span>
+      <span class="m-tab__dot" id="wChatDot"></span>
+    </button>
+  </nav>
+</div>
+
+</section>
+
+<section class="demo-page mob" id="page-klant" hidden>
+
+<!-- ==== Iconenset (SVG-sprite) ================================================ -->
+
+<div class="m-app">
+
+  <div class="m-status">
+    <span>9:41</span>
+    <span aria-hidden="true">
+      <svg width="40" height="10" viewBox="0 0 34 9" fill="currentColor"><rect x="0" y="5" width="2" height="4" rx=".5"/><rect x="3.5" y="3.5" width="2" height="5.5" rx=".5"/><rect x="7" y="2" width="2" height="7" rx=".5"/><rect x="10.5" y="0" width="2" height="9" rx=".5"/><path d="M16 3.2a5 5 0 0 1 6 0l-3 3.6z"/><rect x="24" y="1.5" width="8.5" height="6" rx="1.6" fill="none" stroke="currentColor"/><rect x="25.2" y="2.7" width="6" height="3.6" rx=".8"/></svg>
+    </span>
+  </div>
+
+  <!-- ==== Kop ============================================================== -->
+  <header class="m-top">
+    <button class="m-back" type="button" id="mBack" aria-label="Terug">
+      <svg width="22" height="22" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+    </button>
+    <div>
+      <h1 id="mTitle">Mijn verbouwing</h1>
+      <div class="m-top__sub" id="mSub">Verbouwing Jansen · Amsterdam</div>
+    </div>
+    <div class="m-top__right">
+      <button class="m-bell" type="button" id="mBell" aria-label="Notificaties">
+        <svg width="21" height="21" aria-hidden="true"><use href="#i-bell"></use></svg>
+      </button>
+      <a class="avatar" data-page="start" title="Uitloggen" aria-label="Uitloggen">FJ</a>
+    </div>
+  </header>
+
+  <main class="m-main">
+
+    <!-- ---- Start ---------------------------------------------------------- -->
+    <section class="m-screen" id="m-start">
+      <button class="m-project" type="button" data-tab="meer">
+        <span>
+          <b>Verbouwing Jansen</b>
+          <small>Amsterdam</small>
+        </span>
+        <svg width="18" height="18" aria-hidden="true"><use href="#i-chev-r"></use></svg>
+      </button>
+
+      <div class="m-prog">
+        <div class="m-prog__head"><span>Voortgang</span><span>75%</span></div>
+        <span class="m-bar"><i style="width:75%"></i></span>
+      </div>
+
+      <p class="m-label" style="margin-bottom:0">Laatste update</p>
+
+      <div class="m-quick">
+        <button type="button" data-tab="berichten">
+          <svg width="22" height="22" aria-hidden="true"><use href="#i-chat"></use></svg>
+          <span>Berichten</span>
+        </button>
+        <button type="button" data-tab="meer" data-focus="planning">
+          <svg width="22" height="22" aria-hidden="true"><use href="#i-calendar"></use></svg>
+          <span>Planning</span>
+        </button>
+        <button type="button" data-tab="meer" data-focus="fotos">
+          <svg width="22" height="22" aria-hidden="true"><use href="#i-camera"></use></svg>
+          <span>Foto&rsquo;s</span>
+        </button>
+        <button type="button" data-tab="meer" data-focus="documenten">
+          <svg width="22" height="22" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Documenten</span>
+        </button>
+      </div>
+
+      <h2 class="m-section-title">Laatste updates</h2>
+      <div id="mUpdates"></div>
+
+      <h2 class="m-section-title">Openstaand meerwerk</h2>
+      <div class="m-card m-mw" style="padding:14px 16px">
+        <div class="m-mw__top">
+          <div>
+            <div class="m-mw__nr">MW-2024-001</div>
+            <div class="m-mw__title">Wand verplaatsen slaapkamer</div>
+          </div>
+          <div style="text-align:right">
+            <div class="m-mw__price">€685,00</div>
+            <span class="tag" style="margin-top:6px">In afwachting</span>
+          </div>
+        </div>
+        <div class="m-mw__btns">
+          <button class="btn btn--gold" type="button" data-tab="meerwerk">Bekijk voorstel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Berichten ------------------------------------------------------ -->
+    <section class="m-screen" id="m-berichten" hidden>
+      <div class="m-chat" id="mChat" aria-live="polite"></div>
+      <form class="m-composer" id="mComposer">
+        <input type="text" id="mInput" placeholder="Typ een bericht..." aria-label="Typ een bericht" autocomplete="off">
+        <button class="m-round" type="button" id="mPhoto" aria-label="Foto toevoegen">
+          <svg width="19" height="19" aria-hidden="true"><use href="#i-clip"></use></svg>
+        </button>
+        <button class="m-round" type="button" id="mVoice" aria-label="Spraakbericht">
+          <svg width="19" height="19" aria-hidden="true"><use href="#i-mic"></use></svg>
+        </button>
+        <button class="m-round m-round--send" type="submit" aria-label="Versturen">
+          <svg width="19" height="19" aria-hidden="true"><use href="#i-send"></use></svg>
+        </button>
+      </form>
+    </section>
+
+    <!-- ---- Uren ----------------------------------------------------------- -->
+    <section class="m-screen" id="m-uren" hidden>
+      <div class="m-card" style="margin-top:14px">
+        <div class="m-timer">
+          <div class="m-timer__nav">
+            <button type="button" id="mDayPrev" aria-label="Vorige dag">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-chev-l"></use></svg>
+            </button>
+            <span id="mDayLabel">Vandaag, 1 mei 2024</span>
+            <button type="button" id="mDayNext" aria-label="Volgende dag">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+            </button>
+          </div>
+          <div class="m-timer__value" id="mTimer">07:30:45</div>
+          <div class="m-timer__label">Uren vandaag</div>
+          <div class="m-timer__btns">
+            <button class="btn btn--red" type="button" id="mStop">Stop</button>
+            <button class="btn btn--ghost" type="button" id="mPause">Pauze</button>
+          </div>
+        </div>
+
+        <div class="m-field">
+          <h3>Werkzaamheden</h3>
+          <div class="m-select">
+            <select id="mTask" aria-label="Werkzaamheden">
+              <option value="Voorzetwand plaatsen" selected>Timmerwerk</option>
+              <option value="Tussenwand slopen">Sloopwerk</option>
+              <option value="Leidingwerk verleggen">Installatiewerk</option>
+              <option value="Wanden stucen">Stucwerk</option>
+            </select>
+            <svg width="16" height="16" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-d"></use></svg>
+          </div>
+          <div class="m-select__sub" id="mTaskSub">Voorzetwand plaatsen</div>
+        </div>
+
+        <div class="m-field" style="padding-top:0">
+          <h3>Foto&rsquo;s</h3>
+          <div class="m-photos" id="mPhotos">
+            <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 1"><use href="#ph-1"></use></svg></figure>
+            <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 2"><use href="#ph-2"></use></svg></figure>
+            <figure><svg viewBox="0 0 60 60" role="img" aria-label="Foto werkzaamheden 3"><use href="#ph-3"></use></svg></figure>
+            <button class="m-photos__add" type="button" id="mAddPhoto" aria-label="Foto toevoegen">
+              <svg width="20" height="20" aria-hidden="true"><use href="#i-plus"></use></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="m-section-title">Geregistreerd vandaag</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-3)" aria-hidden="true"><use href="#i-clock"></use></svg>
+          <span id="mEntryText">Timmerwerk — Voorzetwand plaatsen</span>
+          <b style="margin-left:auto;font-variant-numeric:tabular-nums" id="mEntryTime">07:30:45</b>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Meerwerk -------------------------------------------------------- -->
+    <section class="m-screen" id="m-meerwerk" hidden>
+      <div class="m-card m-mw" style="margin-top:14px">
+        <div class="m-mw__top">
+          <div>
+            <div class="m-mw__nr">MW-2024-001</div>
+            <div class="m-mw__title">Wand verplaatsen slaapkamer</div>
+          </div>
+          <div style="text-align:right">
+            <div class="m-mw__price">€685,00</div>
+            <span class="tag" id="mMwStatus" style="margin-top:6px">In afwachting</span>
+          </div>
+        </div>
+
+        <p class="m-label">Omschrijving</p>
+        <p style="margin:0;font-size:14.5px">Verplaatsen van de tussenwand met 20cm i.v.m. leidingwerk.</p>
+
+        <div id="mMwDetails" hidden>
+          <div class="m-row"><span>Arbeid (8 uur × €55,00)</span><span>€440,00</span></div>
+          <div class="m-row"><span>Materiaal</span><span>€185,00</span></div>
+          <div class="m-row"><span>Afvoer &amp; afwerking</span><span>€60,00</span></div>
+        </div>
+
+        <p class="m-label">Offerte</p>
+        <button class="m-bijlage" type="button" id="mMwOfferte">
+          <svg width="20" height="20" style="color:var(--ink-2);flex:none" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Offerte MW-2024-001.pdf<small>PDF · 148 kB</small></span>
+          <svg width="18" height="18" style="color:var(--ink-3);flex:none" aria-hidden="true"><use href="#i-chev-r"></use></svg>
+        </button>
+
+        <div class="m-row" style="margin-top:14px"><span>Gemaakt op</span><span>1 mei 2024</span></div>
+        <div class="m-row is-total"><span>Totaal (excl. btw)</span><span>€685,00</span></div>
+
+        <div class="m-mw__btns">
+          <button class="btn btn--ghost" type="button" id="mMwDetailBtn">Bekijk details</button>
+          <button class="btn btn--gold" type="button" id="mMwOk">Goedkeuren</button>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-3);margin:10px 0 0;text-align:center">
+          Akkoord via één klik — de aannemer krijgt direct een notificatie.
+        </p>
+      </div>
+
+      <h2 class="m-section-title">Eerder meerwerk</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <span class="m-ico m-ico--green"><svg width="17" height="17" aria-hidden="true"><use href="#i-check"></use></svg></span>
+          <span>MW-2024-002 · Extra dakraam<small>Nieuwbouw De Vries · €1.240,00</small></span>
+          <span class="tag tag--ok">Goedgekeurd</span>
+        </div>
+        <div class="m-item">
+          <span class="m-ico m-ico--gold"><svg width="17" height="17" aria-hidden="true"><use href="#i-clipboard"></use></svg></span>
+          <span>MW-2024-003 · Vloerverwarming badkamer<small>Renovatie Bakker · €2.150,00</small></span>
+          <span class="tag tag--sent">Verstuurd</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Meer (planning, foto's, documenten) ----------------------------- -->
+    <section class="m-screen" id="m-meer" hidden>
+
+      <h2 class="m-section-title" id="planning" style="margin-top:16px">Planning</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <span class="dot dot--done"></span>
+          <span>Tussenwand slopen<small>ma 29 apr · afgerond</small></span>
+        </div>
+        <div class="m-item">
+          <span class="dot"></span>
+          <span>Timmerwerk: voorzetwand plaatsen<small>wo 1 mei · vandaag</small></span>
+        </div>
+        <div class="m-item">
+          <span class="dot"></span>
+          <span>Leidingwerk verleggen<small>do 2 mei · installateur</small></span>
+        </div>
+        <div class="m-item">
+          <span class="dot dot--milestone"></span>
+          <span>Mijlpaal: ruwbouw gereed<small>ma 6 mei</small></span>
+        </div>
+        <div class="m-item">
+          <span class="dot dot--milestone"></span>
+          <span>Mijlpaal: oplevering<small>vr 17 mei</small></span>
+        </div>
+      </div>
+
+      <h2 class="m-section-title" id="fotos">Foto&rsquo;s</h2>
+      <div class="m-gallery">
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 1"><use href="#ph-1"></use></svg></figure>
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 2"><use href="#ph-2"></use></svg></figure>
+        <figure><svg viewBox="0 0 60 60" role="img" aria-label="Projectfoto 3"><use href="#ph-3"></use></svg></figure>
+        <figure style="grid-column:span 3;aspect-ratio:16/9">
+          <svg viewBox="0 0 160 90" role="img" aria-label="Foto van de bestaande balklaag"><use href="#ph-beams"></use></svg>
+        </figure>
+      </div>
+
+      <h2 class="m-section-title" id="documenten">Documenten</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Offerte verbouwing<small>PDF · 1 apr 2024</small></span>
+          <span class="tag tag--ok">Getekend</span>
+        </div>
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-image"></use></svg>
+          <span>Tekening begane grond<small>PDF · 8 apr 2024</small></span>
+        </div>
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-doc"></use></svg>
+          <span>Aannemingsovereenkomst<small>PDF · 12 apr 2024</small></span>
+          <span class="tag tag--ok">Getekend</span>
+        </div>
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-euro"></use></svg>
+          <span>Factuur termijn 1<small>PDF · 22 apr 2024</small></span>
+          <span class="tag tag--sent">Verstuurd</span>
+        </div>
+        <div class="m-item">
+          <svg width="20" height="20" style="color:var(--ink-2)" aria-hidden="true"><use href="#i-clipboard"></use></svg>
+          <span>Opleverrapport<small>Nog niet beschikbaar</small></span>
+        </div>
+      </div>
+
+      <h2 class="m-section-title">Contact</h2>
+      <div class="m-card" style="padding:0 16px">
+        <div class="m-item">
+          <span class="m-ico"><svg width="18" height="18" aria-hidden="true"><use href="#i-worker"></use></svg></span>
+          <span>Jan de Boer<small>Aannemer · hoofdgebruiker</small></span>
+          <button class="btn btn--ghost" type="button" style="margin-left:auto;padding:7px 12px" data-tab="berichten">Chat</button>
+        </div>
+      </div>
+
+      <a class="btn btn--ghost m-uitloggen" data-page="start">Uitloggen</a>
+    </section>
+
+  </main>
+
+  <!-- ==== Tabbalk ========================================================== -->
+  <nav class="m-tabs" aria-label="Hoofdnavigatie">
+    <button class="m-tab" type="button" data-tab="start" aria-current="page">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-home"></use></svg><span>Start</span>
+    </button>
+    <button class="m-tab" type="button" data-tab="berichten">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-chat"></use></svg><span>Berichten</span>
+      <span class="m-tab__dot" id="mChatDot"></span>
+    </button>
+    <button class="m-tab" type="button" data-tab="uren">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-clock"></use></svg><span>Uren</span>
+    </button>
+    <button class="m-tab" type="button" data-tab="meerwerk">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-plus-circle"></use></svg><span>Meerwerk</span>
+    </button>
+    <button class="m-tab" type="button" data-tab="meer">
+      <svg width="21" height="21" aria-hidden="true"><use href="#i-grid"></use></svg><span>Meer</span>
+    </button>
+  </nav>
+</div>
+
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ==========================================================================
+   Projexa — demodata
+   De projecten, activiteiten, chatkoppen en het meerwerkvoorstel komen
+   letterlijk uit het Projexa-ontwerp. De losse chatberichten van de drie
+   overige gesprekken zijn aangevuld met plausibele voorbeeldtekst, omdat het
+   ontwerp daarvan alleen de laatste regel toont.
+   ========================================================================== */
+
+window.PROJEXA = (function () {
+  const projecten = [
+    {
+      naam: 'Verbouwing Jansen', plaats: 'Amsterdam', pct: 75, icon: 'i-building',
+      status: 'In uitvoering', klant: 'Familie Jansen', urenTotaal: 186, meerwerk: '€685',
+      taken: [
+        { tekst: 'Voorzetwand slaapkamer plaatsen', wanneer: 'vandaag', staat: 'bezig' },
+        { tekst: 'Leidingwerk verleggen (installateur)', wanneer: 'do 2 mei', staat: 'open' },
+        { tekst: 'Balklaag laten keuren door constructeur', wanneer: 'vr 3 mei', staat: 'open' },
+        { tekst: 'Stucwerk begane grond', wanneer: 'week 19', staat: 'open' }
+      ],
+      planning: [
+        { datum: 'ma 29 apr', taken: [
+          { tekst: 'Tussenwand slopen — afgerond', staat: 'klaar' },
+          { tekst: 'Puin afvoeren — afgerond', staat: 'klaar' } ] },
+        { datum: 'wo 1 mei', taken: [
+          { tekst: 'Timmerwerk: voorzetwand plaatsen', staat: 'bezig' },
+          { tekst: 'Balklaag inmeten voor meerwerk', staat: 'bezig' } ] },
+        { datum: 'do 2 mei', taken: [
+          { tekst: 'Leidingwerk verleggen (installateur)', staat: 'open' } ] },
+        { datum: 'ma 6 mei', taken: [
+          { tekst: 'Mijlpaal: ruwbouw gereed', staat: 'mijlpaal' } ] },
+        { datum: 'vr 17 mei', taken: [
+          { tekst: 'Mijlpaal: oplevering', staat: 'mijlpaal' } ] }
+      ]
+    },
+    {
+      naam: 'Nieuwbouw De Vries', plaats: 'Utrecht', pct: 45, icon: 'i-home',
+      status: 'In uitvoering', klant: 'Lisa de Vries', urenTotaal: 312, meerwerk: '€1.240',
+      taken: [
+        { tekst: 'Dakkapel plaatsen', wanneer: 'week 19', staat: 'bezig' },
+        { tekst: 'Extra dakraam inmeten', wanneer: 'ma 6 mei', staat: 'open' },
+        { tekst: 'Kozijnen leveren', wanneer: 'week 20', staat: 'open' }
+      ],
+      planning: [
+        { datum: 'ma 29 apr', taken: [
+          { tekst: 'Fundering storten — afgerond', staat: 'klaar' } ] },
+        { datum: 'wo 1 mei', taken: [
+          { tekst: 'Dakkapel plaatsen', staat: 'bezig' },
+          { tekst: 'Steiger opbouwen achterzijde', staat: 'bezig' } ] },
+        { datum: 'ma 6 mei', taken: [
+          { tekst: 'Extra dakraam inmeten (meerwerk)', staat: 'open' } ] },
+        { datum: 'week 20', taken: [
+          { tekst: 'Kozijnen leveren en stellen', staat: 'open' } ] },
+        { datum: 'vr 28 jun', taken: [
+          { tekst: 'Mijlpaal: wind- en waterdicht', staat: 'mijlpaal' } ] }
+      ]
+    },
+    {
+      naam: 'Renovatie Bakker', plaats: 'Haarlem', pct: 20, icon: 'i-worker',
+      status: 'Gestart', klant: 'Fam. Bakker', urenTotaal: 64, meerwerk: '€2.150',
+      taken: [
+        { tekst: 'Badkamer strippen', wanneer: 'deze week', staat: 'bezig' },
+        { tekst: 'Vloerverwarming aanleggen', wanneer: 'week 20', staat: 'open' }
+      ],
+      planning: [
+        { datum: 'wo 1 mei', taken: [
+          { tekst: 'Badkamer strippen', staat: 'bezig' } ] },
+        { datum: 'week 20', taken: [
+          { tekst: 'Vloerverwarming aanleggen (meerwerk)', staat: 'open' },
+          { tekst: 'Leidingwerk aanpassen', staat: 'open' } ] },
+        { datum: 'week 22', taken: [
+          { tekst: 'Mijlpaal: badkamer gereed', staat: 'mijlpaal' } ] }
+      ]
+    },
+    {
+      naam: 'Uitbouw Peters', plaats: 'Almere', pct: 100, icon: 'i-building',
+      status: 'Afgerond', klant: 'Mark Peters', urenTotaal: 244, meerwerk: '€0',
+      taken: [
+        { tekst: 'Opleverpunten afhandelen', wanneer: 'afgerond', staat: 'klaar' },
+        { tekst: 'Eindfactuur versturen', wanneer: 'afgerond', staat: 'klaar' }
+      ],
+      planning: [
+        { datum: 'ma 15 apr', taken: [
+          { tekst: 'Opleverpunten afhandelen — afgerond', staat: 'klaar' } ] },
+        { datum: 'vr 19 apr', taken: [
+          { tekst: 'Mijlpaal: opgeleverd', staat: 'mijlpaal' } ] },
+        { datum: 'ma 22 apr', taken: [
+          { tekst: 'Eindfactuur verstuurd', staat: 'klaar' } ] }
+      ]
+    }
+  ];
+
+  const activiteit = [
+    { tekst: 'Jan heeft een foto toegevoegd', tijd: '2 min geleden',  icon: 'i-worker',    stijl: '' },
+    { tekst: 'Meerwerk goedgekeurd',          tijd: '15 min geleden', icon: 'i-chat',      stijl: 'green' },
+    { tekst: 'Nieuw bericht van klant',       tijd: '1 uur geleden',  icon: 'i-clipboard', stijl: 'gold' },
+    { tekst: 'Uren geregistreerd',            tijd: '2 uur geleden',  icon: 'i-clock',     stijl: 'gold' }
+  ];
+
+  const gesprekken = [
+    {
+      id: 'jansen',
+      naam: 'Verbouwing Jansen',
+      preview: 'Jan: Foto toegevoegd',
+      tijd: '14:32',
+      icon: 'i-worker',
+      berichten: [
+        { van: 'ik', tekst: 'Goedemiddag, we hebben tijdens het slopen gezien dat de balken vervangen moeten worden.', tijd: '14:28', gelezen: true },
+        { van: 'ik', foto: 'ph-beams', tijd: '14:29', gelezen: true },
+        { van: 'klant', tekst: 'Dank voor de update en foto. Kunnen jullie een meerwerk voorstel sturen?', tijd: '14:31' },
+        { van: 'ik', tekst: 'Zeker, komt eraan!', tijd: '14:32', gelezen: true }
+      ]
+    },
+    {
+      id: 'devries',
+      naam: 'Nieuwbouw De Vries',
+      preview: 'Lisa: Meerwerk akkoord?',
+      tijd: '13:15',
+      icon: 'i-doc',
+      berichten: [
+        { van: 'ik', tekst: 'Hoi Lisa, het extra dakraam kost €1.240,00 excl. btw. Voorstel staat klaar in het portaal.', tijd: '13:08', gelezen: true },
+        { van: 'klant', tekst: 'Duidelijk, ik kijk er vanavond met Mark naar.', tijd: '13:12' },
+        { van: 'klant', tekst: 'Meerwerk akkoord?', tijd: '13:15' }
+      ]
+    },
+    {
+      id: 'bakker',
+      naam: 'Renovatie Bakker',
+      preview: 'Piet: Uren ingevoerd',
+      tijd: '11:45',
+      icon: 'i-building',
+      berichten: [
+        { van: 'klant', tekst: 'Zijn de uren van vorige week al verwerkt?', tijd: '11:30' },
+        { van: 'ik', tekst: 'Piet is er vanochtend mee bezig geweest.', tijd: '11:42', gelezen: true },
+        { van: 'klant', tekst: 'Piet: Uren ingevoerd', tijd: '11:45' }
+      ]
+    },
+    {
+      id: 'peters',
+      naam: 'Uitbouw Peters',
+      preview: 'Mark: Planning update',
+      tijd: '09:30',
+      icon: 'i-calendar',
+      berichten: [
+        { van: 'ik', tekst: 'De oplevering staat gepland op vrijdag 17 mei.', tijd: '09:12', gelezen: true },
+        { van: 'klant', tekst: 'Mark: Planning update', tijd: '09:30' }
+      ]
+    }
+  ];
+
+  // Interne chat tussen aannemer en medewerker. De klant heeft hier geen
+  // toegang toe; medewerkers chatten alleen met de aannemer.
+  const intern = {
+    id: 'piet',
+    naam: 'Piet Vermeer',
+    rol: 'Medewerker · Verbouwing Jansen',
+    preview: 'Piet: Gips is binnen',
+    tijd: '10:20',
+    icon: 'i-worker',
+    intern: true,
+    berichten: [
+      { van: 'ik', tekst: 'Piet, kun je vandaag de voorzetwand in de slaapkamer afmaken?', tijd: '07:05', gelezen: true },
+      { van: 'medewerker', tekst: 'Ja, ben ermee bezig. Gips is binnen.', tijd: '07:12' },
+      { van: 'medewerker', foto: 'ph-1', tijd: '09:48' },
+      { van: 'ik', tekst: 'Mooi. Schrijf je uren op Verbouwing Jansen.', tijd: '10:18', gelezen: true },
+      { van: 'medewerker', tekst: 'Doe ik.', tijd: '10:20' }
+    ]
+  };
+
+  const meerwerk = {
+    nummer: 'MW-2024-001',
+    titel: 'Wand verplaatsen slaapkamer',
+    bedrag: '€685,00',
+    status: 'In afwachting',
+    omschrijving: 'Verplaatsen van de tussenwand met 20cm i.v.m. leidingwerk.',
+    gemaaktOp: '1 mei 2024'
+  };
+
+  const updates = [
+    { tekst: 'Jan heeft een foto toegevoegd', tijd: '2 min geleden',  icon: 'i-worker',   stijl: '' },
+    { tekst: 'Meerwerk goedgekeurd',          tijd: '15 min geleden', icon: 'i-chat',     stijl: 'green' },
+    { tekst: 'Nieuwe planning beschikbaar',   tijd: '1 uur geleden',  icon: 'i-calendar', stijl: 'gold' }
+  ];
+
+  gesprekken.splice(1, 0, intern);
+
+  return { projecten, activiteit, gesprekken, intern, meerwerk, updates };
+})();
+
+/* ==========================================================================
+   Projexa — werkende webversie
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  const D = window.PROJEXA;
+  const $  = (sel, root) => (root || document).querySelector(sel);
+  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+
+  /* ---- Meldingen -------------------------------------------------------- */
+
+  const toastEl = $('#toast');
+  let toastTimer;
+
+  function toast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('is-visible'), 2600);
+  }
+
+  function icon(name, size) {
+    return '<svg width="' + size + '" height="' + size + '" aria-hidden="true"><use href="#' + name + '"></use></svg>';
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
+  /* ---- Navigatie -------------------------------------------------------- */
+
+  const titels = {
+    dashboard: 'Dashboard', projecten: 'Projecten', project: 'Project', chat: 'Chat',
+    uren: 'Urenregistratie', meerwerk: 'Meerwerk', planning: 'Planning',
+    documenten: 'Documenten', notificaties: 'Notificaties', ai: 'AI assistent',
+    klanten: 'Klanten & portaal', gebruikers: 'Gebruikers', facturatie: 'Facturatie',
+    abonnement: 'Abonnement'
+  };
+
+  function toon(view) {
+    if (!titels[view]) view = 'dashboard';
+    $$('.view').forEach(v => { v.hidden = v.id !== 'view-' + view; });
+    $$('.nav__item').forEach(b => {
+      if (b.dataset.view === view) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+    document.title = 'Projexa — ' + titels[view];
+    if (view === 'chat') {
+      $('#chatBadge').hidden = true;
+      scrollChat();
+    }
+    if (view === 'notificaties') {
+      $('#belBadge').hidden = true;
+      var dot = $('#belDot');
+      if (dot) dot.hidden = true;
+    }
+    window.scrollTo({ top: 0 });
+  }
+
+  $$('.nav__item').forEach(b => {
+    b.addEventListener('click', () => { location.hash = b.dataset.view; });
+  });
+
+  document.addEventListener('click', e => {
+    const ga = e.target.closest('[data-goto]');
+    if (ga) { location.hash = ga.dataset.goto; return; }
+
+    const terug = e.target.closest('[data-view-back]');
+    if (terug) { location.hash = terug.dataset.viewBack; return; }
+
+    const open = e.target.closest('[data-view-open]');
+    if (open) { location.hash = open.dataset.viewOpen; return; }
+
+    const pr = e.target.closest('[data-project]');
+    if (pr) { openProject(Number(pr.dataset.project)); }
+  });
+
+  /* ---- Projectdetail ---------------------------------------------------- */
+
+  function openProject(i) {
+    const p = D.projecten[i];
+    if (!p) return;
+    $('#pdNaam').textContent = p.naam;
+    $('#pdStatus').textContent = p.status || 'In uitvoering';
+    $('#pdStatus').className = 'tag ' + (p.pct === 100 ? 'tag--ok' : 'tag--sent');
+    $('#pdPct').textContent = p.pct + '%';
+    $('#pdUren').textContent = p.urenTotaal || 0;
+    $('#pdMeerwerk').textContent = p.meerwerk || '€0';
+    $('#pdKlant').textContent = p.klant || '—';
+    $('#pdAdres').textContent = p.plaats;
+
+    const taken = p.taken || [];
+    $('#pdTaken').textContent = taken.filter(t => t.staat !== 'klaar').length;
+    $('#pdTakenLijst').innerHTML = taken.map(t =>
+      '<div class="timeline__day" style="grid-template-columns:22px 1fr auto">' +
+      '<span class="dot' + (t.staat === 'klaar' ? ' dot--done' : t.staat === 'bezig' ? '' : ' dot--milestone') + '"></span>' +
+      '<span class="timeline__task">' + escapeHtml(t.tekst) + '</span>' +
+      '<span class="timeline__date">' + escapeHtml(t.wanneer) + '</span></div>'
+    ).join('') || '<p style="padding:16px;color:var(--ink-3)">Geen open taken.</p>';
+
+    location.hash = 'project';
+  }
+
+  window.addEventListener('hashchange', () => toon(location.hash.slice(1)));
+
+  /* ---- Projectenoverzicht ----------------------------------------------- */
+
+  function projectRij(p, i) {
+    return '<button class="project" type="button" data-project="' + i + '">' +
+      '<svg class="project__icon" width="24" height="24" aria-hidden="true"><use href="#' + p.icon + '"></use></svg>' +
+      '<span><span class="project__name">' + escapeHtml(p.naam) + '</span>' +
+      '<span class="project__place">' + escapeHtml(p.plaats) + '</span></span>' +
+      '<span><span class="project__pct">' + p.pct + '%</span>' +
+      '<span class="bar"><i style="width:' + p.pct + '%"></i></span></span></button>';
+  }
+
+  function tekenProjecten() {
+    $('#projectList').innerHTML = D.projecten.map(projectRij).join('');
+    $('#projectList2').innerHTML = D.projecten.map(projectRij).join('');
+    $('#statTotaal').textContent = 8 + D.projecten.length;
+  }
+
+  function nieuwProject() {
+    const naam = prompt('Naam van het project:');
+    if (!naam) return;
+    const plaats = prompt('Plaats:') || '';
+    D.projecten.push({ naam: naam.trim(), plaats: plaats.trim(), pct: 0, icon: 'i-building', view: 'planning' });
+    tekenProjecten();
+    voegActiviteitToe('Project “' + naam.trim() + '” toegevoegd', 'zojuist', 'i-building', 'gold');
+    toast('Project toegevoegd');
+  }
+
+  $('#addProject').addEventListener('click', nieuwProject);
+  $('#addProject2').addEventListener('click', nieuwProject);
+
+  function voegActiviteitToe(tekst, tijd, ico, stijl) {
+    const el = document.createElement('div');
+    el.className = 'activity';
+    el.innerHTML = '<span class="activity__icon' + (stijl ? ' activity__icon--' + stijl : '') + '">' +
+      icon(ico, 17) + '</span><span><span class="activity__text">' + escapeHtml(tekst) +
+      '</span><span class="activity__time">' + escapeHtml(tijd) + '</span></span>';
+    const lijst = $('#activityList');
+    lijst.insertBefore(el, lijst.firstChild);
+  }
+
+  /* ---- Chat ------------------------------------------------------------- */
+
+  let actiefGesprek = D.gesprekken[0].id;
+
+  function tekenChatlijst(filter) {
+    const q = (filter || '').trim().toLowerCase();
+    const items = D.gesprekken.filter(g =>
+      !q || g.naam.toLowerCase().includes(q) || g.preview.toLowerCase().includes(q)
+    );
+    $('#chatList').innerHTML = items.map(g =>
+      '<button class="chat__item" type="button" role="option" data-chat="' + g.id + '"' +
+      ' aria-selected="' + (g.id === actiefGesprek) + '">' +
+      '<span class="thumb">' + icon(g.icon, 17) + '</span>' +
+      '<span><h4>' + escapeHtml(g.naam) +
+      (g.intern ? ' <em class="intern">intern</em>' : '') +
+      '</h4><p>' + escapeHtml(g.preview) + '</p></span>' +
+      '<time>' + g.tijd + '</time></button>'
+    ).join('') || '<p style="padding:16px;color:var(--ink-3);font-size:13.5px">Geen gesprekken gevonden.</p>';
+
+    $$('#chatList .chat__item').forEach(b => {
+      b.addEventListener('click', () => {
+        actiefGesprek = b.dataset.chat;
+        tekenChatlijst($('#chatSearch').value);
+        tekenBerichten();
+      });
+    });
+  }
+
+  function bubbel(m) {
+    const mine = m.van === 'ik';
+    const meta = '<span class="bubble__meta">' + m.tijd +
+      (mine && m.gelezen ? ' <span class="read">' + icon('i-checks', 12) + '</span>' : '') + '</span>';
+    if (m.foto) {
+      return '<div class="bubble bubble--photo' + (mine ? ' bubble--me' : '') + '">' +
+        '<svg viewBox="0 0 160 90" role="img" aria-label="Foto in het gesprek"><use href="#' + m.foto + '"></use></svg>' +
+        meta + '</div>';
+    }
+    return '<div class="bubble' + (mine ? ' bubble--me' : '') + '">' +
+      escapeHtml(m.tekst) + meta + '</div>';
+  }
+
+  function huidigGesprek() {
+    return D.gesprekken.find(g => g.id === actiefGesprek) || D.gesprekken[0];
+  }
+
+  function tekenBerichten() {
+    const g = huidigGesprek();
+    $('#chatTitle').textContent = g.intern
+      ? 'Chat - ' + g.naam + ' (medewerker)'
+      : 'Chat - ' + g.naam;
+    $('#chatMessages').innerHTML = g.berichten.map(bubbel).join('');
+    scrollChat();
+  }
+
+  function scrollChat() {
+    const box = $('#chatMessages');
+    if (box) box.scrollTop = box.scrollHeight;
+  }
+
+  function nu() {
+    const d = new Date();
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  $('#composer').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = $('#chatInput');
+    const tekst = input.value.trim();
+    if (!tekst) return;
+    const g = huidigGesprek();
+    g.berichten.push({ van: 'ik', tekst: tekst, tijd: nu(), gelezen: false });
+    g.preview = 'Jij: ' + tekst;
+    g.tijd = nu();
+    input.value = '';
+    tekenBerichten();
+    tekenChatlijst($('#chatSearch').value);
+
+    // leesbevestiging na een moment
+    setTimeout(() => {
+      const laatste = g.berichten[g.berichten.length - 1];
+      if (laatste) laatste.gelezen = true;
+      if (huidigGesprek().id === g.id) tekenBerichten();
+    }, 1400);
+  });
+
+  $('#chatSearch').addEventListener('input', e => tekenChatlijst(e.target.value));
+
+  $('#btnPhoto').addEventListener('click', () => {
+    const g = huidigGesprek();
+    g.berichten.push({ van: 'ik', foto: 'ph-beams', tijd: nu(), gelezen: false });
+    g.preview = 'Jij: Foto toegevoegd';
+    g.tijd = nu();
+    tekenBerichten();
+    tekenChatlijst($('#chatSearch').value);
+    toast('Foto toegevoegd aan het gesprek');
+  });
+
+  $('#btnVoice').addEventListener('click', () => toast('Spraakbericht opnemen — houd ingedrukt'));
+
+  /* ---- Urenregistratie -------------------------------------------------- */
+
+  const uren = { seconden: 7 * 3600 + 30 * 60 + 45, loopt: true, gepauzeerd: false };
+
+  function formatteer(s) {
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    return [h, m, sec].map(n => String(n).padStart(2, '0')).join(':');
+  }
+
+  function tekenTimer() {
+    $('#timerValue').textContent = formatteer(uren.seconden);
+    const entry = $('#entryList .entry b');
+    if (entry) entry.textContent = formatteer(uren.seconden);
+  }
+
+  setInterval(() => {
+    if (uren.loopt && !uren.gepauzeerd) { uren.seconden++; tekenTimer(); }
+  }, 1000);
+
+  $('#btnStop').addEventListener('click', () => {
+    const btn = $('#btnStop');
+    if (uren.loopt) {
+      uren.loopt = false;
+      uren.gepauzeerd = false;
+      btn.textContent = 'Start';
+      btn.classList.remove('btn--red');
+      btn.classList.add('btn--gold');
+      $('#btnPause').textContent = 'Pauze';
+      voegActiviteitToe('Uren geregistreerd (' + formatteer(uren.seconden) + ')', 'zojuist', 'i-clock', 'gold');
+      toast('Uren opgeslagen: ' + formatteer(uren.seconden));
+    } else {
+      uren.loopt = true;
+      btn.textContent = 'Stop';
+      btn.classList.remove('btn--gold');
+      btn.classList.add('btn--red');
+      toast('Timer gestart');
+    }
+  });
+
+  $('#btnPause').addEventListener('click', () => {
+    if (!uren.loopt) { toast('Timer staat stil — druk op Start'); return; }
+    uren.gepauzeerd = !uren.gepauzeerd;
+    $('#btnPause').textContent = uren.gepauzeerd ? 'Hervat' : 'Pauze';
+    toast(uren.gepauzeerd ? 'Timer gepauzeerd' : 'Timer hervat');
+  });
+
+  const taakSoort = $('#taskSoort');
+  const taakWat = $('#taskWat');
+
+  function tekenTaakregel() {
+    const entry = $('#entryList .entry span');
+    if (!entry) return;
+    const soort = taakSoort.value.trim() || 'Werkzaamheden';
+    const wat = taakWat.value.trim();
+    entry.textContent = wat ? soort + ' — ' + wat : soort;
+  }
+
+  taakSoort.addEventListener('input', tekenTaakregel);
+  taakWat.addEventListener('input', tekenTaakregel);
+
+  const fotoReeks = ['ph-1', 'ph-2', 'ph-3'];
+  let fotoTeller = 0;
+
+  $('#addPhoto').addEventListener('click', () => {
+    const fig = document.createElement('figure');
+    const naam = fotoReeks[fotoTeller++ % fotoReeks.length];
+    fig.innerHTML = '<svg viewBox="0 0 60 60" role="img" aria-label="Nieuwe foto"><use href="#' + naam + '"></use></svg>';
+    $('#photoGrid').insertBefore(fig, $('#addPhoto'));
+    voegActiviteitToe('Foto toegevoegd aan het projectlogboek', 'zojuist', 'i-camera', '');
+    toast('Foto toegevoegd aan het projectlogboek');
+  });
+
+  const dagen = ['ma 29 apr 2024', 'di 30 apr 2024', 'Vandaag, 1 mei 2024', 'do 2 mei 2024', 'vr 3 mei 2024'];
+  let dagIndex = 2;
+
+  function tekenDag() { $('#dayLabel').textContent = dagen[dagIndex]; }
+
+  $('#dayPrev').addEventListener('click', () => {
+    dagIndex = Math.max(0, dagIndex - 1); tekenDag();
+  });
+  $('#dayNext').addEventListener('click', () => {
+    dagIndex = Math.min(dagen.length - 1, dagIndex + 1); tekenDag();
+  });
+
+  /* ---- Meerwerk --------------------------------------------------------- */
+
+  $('#mwDetailBtn').addEventListener('click', () => {
+    const box = $('#mwDetails');
+    box.hidden = !box.hidden;
+    $('#mwDetailBtn').textContent = box.hidden ? 'Bekijk details' : 'Verberg details';
+  });
+
+  const offertes = [];
+
+  function tekenBijlagen() {
+    const box = $('#mwBijlagen');
+    if (!offertes.length) {
+      box.innerHTML = '<p class="bijlagen__leeg" id="mwGeenBijlage">Nog geen offerte toegevoegd.</p>';
+      return;
+    }
+    box.innerHTML = offertes.map((f, i) =>
+      '<div class="bijlage">' + icon('i-doc', 18) +
+      '<span>' + escapeHtml(f.naam) + '<small>' + escapeHtml(f.grootte) + ' · zojuist toegevoegd</small></span>' +
+      '<button type="button" data-offerte-weg="' + i + '" aria-label="Offerte verwijderen">' +
+      icon('i-x', 16) + '</button></div>'
+    ).join('');
+  }
+
+  function leesbareGrootte(bytes) {
+    if (!bytes) return 'bestand';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' kB';
+    return (bytes / 1024 / 1024).toFixed(1).replace('.', ',') + ' MB';
+  }
+
+  $('#mwOfferte').addEventListener('change', e => {
+    const bestand = e.target.files && e.target.files[0];
+    if (!bestand) return;
+    offertes.push({ naam: bestand.name, grootte: leesbareGrootte(bestand.size) });
+    tekenBijlagen();
+    e.target.value = '';
+    toast('Offerte toegevoegd aan het meerwerkvoorstel');
+  });
+
+  document.addEventListener('click', e => {
+    const weg = e.target.closest('[data-offerte-weg]');
+    if (!weg) return;
+    offertes.splice(Number(weg.dataset.offerteWeg), 1);
+    tekenBijlagen();
+    toast('Offerte verwijderd');
+  });
+
+  $('#mwSend').addEventListener('click', () => {
+    const btn = $('#mwSend');
+    if (btn.dataset.sent) { toast('Dit voorstel is al naar de klant gestuurd'); return; }
+    btn.dataset.sent = '1';
+    btn.textContent = 'Verstuurd naar klant';
+    ['#mwStatus', '#mwStatusList'].forEach(sel => {
+      const t = $(sel);
+      t.textContent = 'Verstuurd';
+      t.className = 'tag tag--sent' + (sel === '#mwStatus' ? '' : '');
+      if (sel === '#mwStatus') t.style.marginTop = '8px';
+      else t.style.marginLeft = 'auto';
+    });
+    voegActiviteitToe('Meerwerk MW-2024-001 naar klant gestuurd', 'zojuist', 'i-plus-circle', 'gold');
+    toast(offertes.length
+      ? 'Meerwerkvoorstel met offerte verstuurd — de klant kan met één klik akkoord geven'
+      : 'Meerwerkvoorstel verstuurd — de klant kan met één klik akkoord geven');
+  });
+
+  $('#closeMw').addEventListener('click', () => { location.hash = 'dashboard'; });
+
+  /* ---- Documenten ------------------------------------------------------- */
+
+  $('#uploadDoc').addEventListener('click', () => {
+    const naam = prompt('Naam van het document:');
+    if (!naam) return;
+    const el = document.createElement('div');
+    el.className = 'doc';
+    el.innerHTML = icon('i-doc', 20) +
+      '<span>' + escapeHtml(naam) + '<small>PDF · zojuist geüpload</small></span>';
+    const lijst = $('#docList');
+    lijst.insertBefore(el, lijst.firstChild);
+    toast('Document geüpload');
+  });
+
+  /* ---- Planning ---------------------------------------------------------- */
+
+  let planIndex = 0;
+
+  function tekenPlanningKiezers() {
+    $('#planProject').innerHTML = D.projecten.map((p, i) =>
+      '<option value="' + i + '"' + (i === planIndex ? ' selected' : '') + '>' +
+      escapeHtml(p.naam) + ' · ' + escapeHtml(p.plaats) + '</option>'
+    ).join('');
+
+    $('#planTabs').innerHTML = D.projecten.map((p, i) =>
+      '<button type="button" data-plan="' + i + '" aria-current="' + (i === planIndex) + '">' +
+      escapeHtml(p.naam) + '</button>'
+    ).join('');
+  }
+
+  function tekenPlanning() {
+    const p = D.projecten[planIndex];
+    const dagen = (p && p.planning) || [];
+    $('#planTijdlijn').innerHTML = dagen.length ? dagen.map(d =>
+      '<div class="timeline__day"><span class="timeline__date">' + escapeHtml(d.datum) + '</span><div>' +
+      d.taken.map(t => {
+        const klasse = t.staat === 'klaar' ? ' dot--done' : t.staat === 'mijlpaal' ? ' dot--milestone' : '';
+        const tekst = t.staat === 'mijlpaal'
+          ? '<b>' + escapeHtml(t.tekst) + '</b>'
+          : escapeHtml(t.tekst);
+        return '<div class="timeline__task"><span class="dot' + klasse + '"></span>' + tekst + '</div>';
+      }).join('') + '</div></div>'
+    ).join('') : '<p style="padding:20px;color:var(--ink-3)">Nog geen planning voor dit project.</p>';
+  }
+
+  function kiesPlanning(i) {
+    planIndex = i;
+    tekenPlanningKiezers();
+    tekenPlanning();
+  }
+
+  $('#planProject').addEventListener('change', e => kiesPlanning(Number(e.target.value)));
+
+  document.addEventListener('click', e => {
+    const knop = e.target.closest('[data-plan]');
+    if (knop) kiesPlanning(Number(knop.dataset.plan));
+  });
+
+  $('#planTaak').addEventListener('click', () => {
+    const tekst = prompt('Wat moet er gebeuren?');
+    if (!tekst) return;
+    const wanneer = prompt('Wanneer? (bijvoorbeeld: ma 6 mei)', 'ma 6 mei') || 'nog te plannen';
+    const p = D.projecten[planIndex];
+    p.planning = p.planning || [];
+    p.planning.push({ datum: wanneer.trim(), taken: [{ tekst: tekst.trim(), staat: 'open' }] });
+    tekenPlanning();
+    toast('Taak toegevoegd aan ' + p.naam);
+  });
+
+  /* ---- Notificaties, AI, beheer ----------------------------------------- */
+
+  $('#allesGelezen').addEventListener('click', () => {
+    $('#notiNieuw').innerHTML =
+      '<p style="padding:20px;color:var(--ink-3);font-size:14px">Je bent helemaal bij.</p>';
+    $('#belBadge').hidden = true;
+    const dot = $('#belDot');
+    if (dot) dot.hidden = true;
+    toast('Alle meldingen gelezen');
+  });
+
+  $('#aiSamenvatting').addEventListener('click', () =>
+    toast('Gesprek opnieuw samengevat'));
+
+  $('#nodigUit').addEventListener('click', () => {
+    const naam = prompt('Naam van de nieuwe gebruiker:');
+    if (!naam) return;
+    const rol = prompt('Welke rol? (aannemer, medewerker of klant)', 'medewerker') || 'medewerker';
+    const initialen = naam.trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const el = document.createElement('div');
+    el.className = 'doc';
+    el.innerHTML = '<span class="avatar">' + escapeHtml(initialen) + '</span><span>' +
+      escapeHtml(naam.trim()) + '<small>uitnodiging verstuurd</small></span>' +
+      '<span class="tag">' + escapeHtml(rol.trim()) + '</span>';
+    $('#gebruikersLijst').appendChild(el);
+    toast('Uitnodiging verstuurd naar ' + naam.trim());
+  });
+
+  $('#nieuweFactuur').addEventListener('click', () => {
+    const el = document.createElement('div');
+    el.className = 'doc';
+    el.innerHTML = icon('i-euro', 20) +
+      '<span>2024-0032 · Verbouwing Jansen<small>Concept · nog te verzenden</small></span>' +
+      '<span class="tag">Concept</span>';
+    $('#factuurLijst').insertBefore(el, $('#factuurLijst').firstChild);
+    toast('Conceptfactuur aangemaakt');
+  });
+
+  $('#abonneer').addEventListener('click', () =>
+    toast('Je wordt doorgestuurd naar Stripe om de incasso te regelen'));
+
+  $('#opzeggen').addEventListener('click', () =>
+    toast('Opzeggen kan maandelijks — je houdt toegang tot het einde van de maand'));
+
+  document.addEventListener('click', e => {
+    const r = e.target.closest('[data-rapport]');
+    if (r) toast(r.dataset.rapport + ' wordt als PDF gedownload');
+  });
+
+  /* ---- Start ------------------------------------------------------------ */
+
+  tekenProjecten();
+  tekenPlanningKiezers();
+  tekenPlanning();
+  tekenBijlagen();
+  tekenChatlijst('');
+  tekenBerichten();
+  tekenTimer();
+  tekenDag();
+  toon(location.hash.slice(1) || 'dashboard');
+})();
+
+/* ==========================================================================
+   Projexa — medewerker-app
+   Rechten volgens het ontwerp: uren registreren, werkzaamheden invullen,
+   foto's uploaden en chatten binnen projecten.
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  const D = window.PROJEXA;
+  const $  = (sel, root) => (root || document).querySelector(sel);
+  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+
+  const root = document.getElementById('w-vandaag').closest('.m-app');
+  const toastEl = $('#toast');
+  let toastTimer;
+
+  function toast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('is-visible'), 2600);
+  }
+
+  function icon(name, size) {
+    return '<svg width="' + size + '" height="' + size + '" aria-hidden="true"><use href="#' + name + '"></use></svg>';
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
+  /* ---- Tabs -------------------------------------------------------------- */
+
+  const koppen = {
+    vandaag: ['Mijn werk', 'Piet Vermeer · medewerker'],
+    werk:    ['Werkzaamheden', 'Verbouwing Jansen'],
+    fotos:   ['Foto’s', 'Verbouwing Jansen'],
+    chat:    ['Chat', 'Jan de Boer · aannemer']
+  };
+
+  function toon(tab) {
+    if (!koppen[tab]) tab = 'vandaag';
+    $$('.m-screen', root).forEach(s => { s.hidden = s.id !== 'w-' + tab; });
+    $$('.m-tab', root).forEach(b => {
+      if (b.dataset.wtab === tab) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+    $('#wTitle').textContent = koppen[tab][0];
+    $('#wSub').textContent = koppen[tab][1];
+    $('#wBack').classList.toggle('is-visible', tab !== 'vandaag');
+    document.title = 'Projexa — ' + koppen[tab][0];
+    if (tab === 'chat') { $('#wChatDot').hidden = true; setTimeout(scrollChat, 0); }
+    $('.m-main', root).scrollTop = 0;
+    window.scrollTo({ top: 0 });
+  }
+
+  document.addEventListener('click', e => {
+    const el = e.target.closest('[data-wtab]');
+    if (el) toon(el.dataset.wtab);
+  });
+
+  $('#wBack').addEventListener('click', () => toon('vandaag'));
+  $('#wBell').addEventListener('click', () => toast('Nieuwe planning voor morgen beschikbaar'));
+
+  /* ---- Urenregistratie ---------------------------------------------------- */
+
+  const uren = { seconden: 7 * 3600 + 30 * 60 + 45, loopt: true, gepauzeerd: false };
+
+  function formatteer(s) {
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    return [h, m, sec].map(n => String(n).padStart(2, '0')).join(':');
+  }
+
+  function korteTijd(s) {
+    return String(Math.floor(s / 3600)).padStart(2, '0') + ':' +
+           String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+  }
+
+  function tekenTimer() {
+    $('#wTimer').textContent = formatteer(uren.seconden);
+    $('#wEntryTime').textContent = formatteer(uren.seconden);
+    $('#wWeek').textContent = korteTijd(16 * 3600 + uren.seconden);
+  }
+
+  setInterval(() => {
+    if (uren.loopt && !uren.gepauzeerd) { uren.seconden++; tekenTimer(); }
+  }, 1000);
+
+  $('#wStop').addEventListener('click', () => {
+    const btn = $('#wStop');
+    if (uren.loopt) {
+      uren.loopt = false;
+      uren.gepauzeerd = false;
+      btn.textContent = 'Start';
+      btn.classList.remove('btn--red');
+      btn.classList.add('btn--gold');
+      $('#wPause').textContent = 'Pauze';
+      toast('Uren opgeslagen: ' + formatteer(uren.seconden));
+    } else {
+      uren.loopt = true;
+      btn.textContent = 'Stop';
+      btn.classList.remove('btn--gold');
+      btn.classList.add('btn--red');
+      toast('Timer gestart');
+    }
+  });
+
+  $('#wPause').addEventListener('click', () => {
+    if (!uren.loopt) { toast('Timer staat stil — druk op Start'); return; }
+    uren.gepauzeerd = !uren.gepauzeerd;
+    $('#wPause').textContent = uren.gepauzeerd ? 'Hervat' : 'Pauze';
+    toast(uren.gepauzeerd ? 'Timer gepauzeerd' : 'Timer hervat');
+  });
+
+  const taakSoort = $('#wTaskSoort');
+  const taakWat = $('#wTaskWat');
+  const project = $('#wProject');
+
+  function tekenEntry() {
+    const soort = taakSoort.value.trim() || 'Werkzaamheden';
+    const wat = taakWat.value.trim();
+    $('#wEntryText').innerHTML = escapeHtml(soort) + (wat ? ' — ' + escapeHtml(wat) : '') +
+      '<small>' + escapeHtml(project.value.split(' · ')[0]) + '</small>';
+  }
+
+  taakSoort.addEventListener('input', tekenEntry);
+  taakWat.addEventListener('input', tekenEntry);
+  project.addEventListener('change', () => {
+    tekenEntry();
+    toast('Je schrijft nu op ' + project.value.split(' · ')[0]);
+  });
+
+  $('#wHandmatig').addEventListener('click', () => {
+    const invoer = prompt('Hoeveel uur wil je bijschrijven? (bijvoorbeeld 1:30)', '1:30');
+    if (!invoer) return;
+    const delen = invoer.split(':');
+    const extra = (parseInt(delen[0], 10) || 0) * 3600 + (parseInt(delen[1], 10) || 0) * 60;
+    if (!extra) { toast('Vul een tijd in als 1:30'); return; }
+    uren.seconden += extra;
+    tekenTimer();
+    toast(korteTijd(extra) + ' uur bijgeschreven');
+  });
+
+  const dagen = ['ma 29 apr 2024', 'di 30 apr 2024', 'Vandaag, 1 mei 2024', 'do 2 mei 2024', 'vr 3 mei 2024'];
+  let dagIndex = 2;
+
+  function tekenDag() {
+    $('#wDayLabel').textContent = dagen[dagIndex];
+    if (!$('#w-vandaag').hidden) $('#wSub').textContent = 'Piet Vermeer · medewerker';
+  }
+
+  $('#wDayPrev').addEventListener('click', () => { dagIndex = Math.max(0, dagIndex - 1); tekenDag(); });
+  $('#wDayNext').addEventListener('click', () => { dagIndex = Math.min(dagen.length - 1, dagIndex + 1); tekenDag(); });
+
+  /* ---- Werkzaamheden invullen --------------------------------------------- */
+
+  const fotoReeks = ['ph-1', 'ph-2', 'ph-3'];
+  let fotoTeller = 0;
+
+  function nieuweFoto(doel, voor) {
+    const fig = document.createElement('figure');
+    fig.innerHTML = '<svg viewBox="0 0 60 60" role="img" aria-label="Nieuwe foto"><use href="#' +
+      fotoReeks[fotoTeller++ % fotoReeks.length] + '"></use></svg>';
+    if (voor) doel.insertBefore(fig, voor);
+    else doel.insertBefore(fig, doel.firstChild);
+  }
+
+  $('#wLogFoto').addEventListener('click', () => {
+    nieuweFoto($('#wLogFotos'), $('#wLogFoto'));
+    toast('Foto toegevoegd');
+  });
+
+  $('#wLogOpslaan').addEventListener('click', () => {
+    const soort = $('#wLogSoort').value.trim() || 'Werkzaamheden';
+    const tekst = $('#wLogTekst').value.trim();
+    if (!tekst) { toast('Vul kort in wat je hebt gedaan'); $('#wLogTekst').focus(); return; }
+    const el = document.createElement('div');
+    el.className = 'm-item';
+    el.innerHTML = '<span class="m-ico">' + icon('i-worker', 18) + '</span><span>' +
+      escapeHtml(soort) + '<small>zojuist · ' + escapeHtml(tekst) + '</small></span>';
+    const lijst = $('#wLogboek');
+    lijst.insertBefore(el, lijst.firstChild);
+    $('#wLogTekst').value = '';
+    toast('Opgeslagen in het projectlogboek');
+  });
+
+  /* ---- Foto's -------------------------------------------------------------- */
+
+  $('#wFotoMaken').addEventListener('click', () => {
+    nieuweFoto($('#wGalerij'));
+    toast('Foto gemaakt en gelogd bij Verbouwing Jansen');
+  });
+
+  $('#wFotoUpload').addEventListener('click', () => {
+    nieuweFoto($('#wGalerij'));
+    toast('Foto geüpload');
+  });
+
+  /* ---- Chat ---------------------------------------------------------------- */
+
+  // De medewerker chat alleen met de aannemer — niet met de klant.
+  const gesprek = D.intern;
+
+  function bubbel(m) {
+    const mijn = m.van === 'medewerker';
+    const meta = '<span class="m-bubble__meta">' + m.tijd +
+      (mijn ? ' <span class="read">' + icon('i-checks', 12) + '</span>' : '') + '</span>';
+    if (m.foto) {
+      return '<div class="m-bubble m-bubble--photo' + (mijn ? ' m-bubble--me' : '') + '">' +
+        '<svg viewBox="0 0 160 90" role="img" aria-label="Foto in het gesprek"><use href="#' + m.foto + '"></use></svg>' +
+        meta + '</div>';
+    }
+    return '<div class="m-bubble' + (mijn ? ' m-bubble--me' : '') + '">' +
+      escapeHtml(m.tekst) + meta + '</div>';
+  }
+
+  function tekenChat() {
+    $('#wChat').innerHTML = gesprek.berichten.map(bubbel).join('');
+    scrollChat();
+  }
+
+  function scrollChat() {
+    const laatste = $('#wChat').lastElementChild;
+    if (laatste) laatste.scrollIntoView({ block: 'nearest' });
+  }
+
+  function nu() {
+    const d = new Date();
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  $('#wComposer').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = $('#wInput');
+    const tekst = input.value.trim();
+    if (!tekst) return;
+    gesprek.berichten.push({ van: 'medewerker', tekst: tekst, tijd: nu() });
+    gesprek.preview = 'Piet: ' + tekst;
+    gesprek.tijd = nu();
+    input.value = '';
+    tekenChat();
+  });
+
+  $('#wPhoto').addEventListener('click', () => {
+    gesprek.berichten.push({ van: 'medewerker', foto: 'ph-beams', tijd: nu() });
+    gesprek.preview = 'Piet: Foto toegevoegd';
+    gesprek.tijd = nu();
+    tekenChat();
+    toast('Foto naar de aannemer gestuurd');
+  });
+
+  $('#wVoice').addEventListener('click', () => toast('Spraakbericht opnemen — houd ingedrukt'));
+
+  /* ---- Start ---------------------------------------------------------------- */
+
+  tekenEntry();
+  tekenChat();
+  tekenTimer();
+  tekenDag();
+  toon('vandaag');
+})();
+
+/* ==========================================================================
+   Projexa — smartphone-versie (klantportaal)
+   Dezelfde data als de webversie, maar vanuit het gezichtspunt van de klant:
+   berichten van de aannemer staan links, die van de klant rechts.
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  const D = window.PROJEXA;
+  const $  = (sel, root) => (root || document).querySelector(sel);
+  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+
+  const root = document.getElementById('m-start').closest('.m-app');
+  const toastEl = $('#toast');
+  let toastTimer;
+
+  function toast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('is-visible'), 2600);
+  }
+
+  function icon(name, size) {
+    return '<svg width="' + size + '" height="' + size + '" aria-hidden="true"><use href="#' + name + '"></use></svg>';
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
+  /* ---- Tabs ------------------------------------------------------------- */
+
+  const koppen = {
+    start:     ['Mijn verbouwing', 'Verbouwing Jansen · Amsterdam'],
+    berichten: ['Berichten', 'Verbouwing Jansen'],
+    uren:      ['Urenregistratie', 'Vandaag, 1 mei 2024'],
+    meerwerk:  ['Meerwerk', 'Verbouwing Jansen'],
+    meer:      ['Mijn project', 'Verbouwing Jansen · Amsterdam']
+  };
+
+  function toon(tab, focus) {
+    if (!koppen[tab]) tab = 'start';
+    $$('.m-screen', root).forEach(s => { s.hidden = s.id !== 'm-' + tab; });
+    $$('.m-tab', root).forEach(b => {
+      if (b.dataset.tab === tab) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+    $('#mTitle').textContent = koppen[tab][0];
+    $('#mSub').textContent = koppen[tab][1];
+    $('#mBack').classList.toggle('is-visible', tab !== 'start');
+    document.title = 'Projexa — ' + koppen[tab][0];
+
+    if (tab === 'berichten') {
+      $('#mChatDot').hidden = true;
+      setTimeout(scrollChat, 0);
+    }
+    const main = $('.m-main', root);
+    if (focus) {
+      const doel = document.getElementById(focus);
+      if (doel) { doel.scrollIntoView({ block: 'start' }); return; }
+    }
+    main.scrollTop = 0;
+    window.scrollTo({ top: 0 });
+  }
+
+  document.addEventListener('click', e => {
+    const el = e.target.closest('[data-tab]');
+    if (el) toon(el.dataset.tab, el.dataset.focus);
+  });
+
+  $('#mBack').addEventListener('click', () => toon('start'));
+  $('#mBell').addEventListener('click', () => toast('3 nieuwe meldingen — push en e-mail staan aan'));
+
+  /* ---- Laatste updates --------------------------------------------------- */
+
+  $('#mUpdates').innerHTML = D.updates.map(u =>
+    '<div class="m-update"><span class="m-ico' + (u.stijl ? ' m-ico--' + u.stijl : '') + '">' +
+    icon(u.icon, 18) + '</span><span><b>' + escapeHtml(u.tekst) + '</b><small>' +
+    escapeHtml(u.tijd) + '</small></span></div>'
+  ).join('');
+
+  /* ---- Chat -------------------------------------------------------------- */
+
+  const gesprek = D.gesprekken[0];
+
+  function bubbel(m) {
+    // In het klantportaal is de klant "ik".
+    const mijn = m.van === 'klant';
+    const meta = '<span class="m-bubble__meta">' + m.tijd +
+      (mijn ? ' <span class="read">' + icon('i-checks', 12) + '</span>' : '') + '</span>';
+    if (m.foto) {
+      return '<div class="m-bubble m-bubble--photo' + (mijn ? ' m-bubble--me' : '') + '">' +
+        '<svg viewBox="0 0 160 90" role="img" aria-label="Foto in het gesprek"><use href="#' + m.foto + '"></use></svg>' +
+        meta + '</div>';
+    }
+    return '<div class="m-bubble' + (mijn ? ' m-bubble--me' : '') + '">' +
+      escapeHtml(m.tekst) + meta + '</div>';
+  }
+
+  function tekenChat() {
+    $('#mChat').innerHTML = gesprek.berichten.map(bubbel).join('');
+    scrollChat();
+  }
+
+  function scrollChat() {
+    const laatste = $('#mChat').lastElementChild;
+    if (laatste) laatste.scrollIntoView({ block: 'nearest' });
+  }
+
+  function nu() {
+    const d = new Date();
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  $('#mComposer').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = $('#mInput');
+    const tekst = input.value.trim();
+    if (!tekst) return;
+    gesprek.berichten.push({ van: 'klant', tekst: tekst, tijd: nu() });
+    input.value = '';
+    tekenChat();
+  });
+
+  $('#mPhoto').addEventListener('click', () => {
+    gesprek.berichten.push({ van: 'klant', foto: 'ph-beams', tijd: nu() });
+    tekenChat();
+    toast('Foto verstuurd');
+  });
+
+  $('#mVoice').addEventListener('click', () => toast('Spraakbericht opnemen — houd ingedrukt'));
+
+  /* ---- Urenregistratie ---------------------------------------------------- */
+
+  const uren = { seconden: 7 * 3600 + 30 * 60 + 45, loopt: true, gepauzeerd: false };
+
+  function formatteer(s) {
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    return [h, m, sec].map(n => String(n).padStart(2, '0')).join(':');
+  }
+
+  function tekenTimer() {
+    $('#mTimer').textContent = formatteer(uren.seconden);
+    $('#mEntryTime').textContent = formatteer(uren.seconden);
+  }
+
+  setInterval(() => {
+    if (uren.loopt && !uren.gepauzeerd) { uren.seconden++; tekenTimer(); }
+  }, 1000);
+
+  $('#mStop').addEventListener('click', () => {
+    const btn = $('#mStop');
+    if (uren.loopt) {
+      uren.loopt = false;
+      uren.gepauzeerd = false;
+      btn.textContent = 'Start';
+      btn.classList.remove('btn--red');
+      btn.classList.add('btn--gold');
+      $('#mPause').textContent = 'Pauze';
+      toast('Uren opgeslagen: ' + formatteer(uren.seconden));
+    } else {
+      uren.loopt = true;
+      btn.textContent = 'Stop';
+      btn.classList.remove('btn--gold');
+      btn.classList.add('btn--red');
+      toast('Timer gestart');
+    }
+  });
+
+  $('#mPause').addEventListener('click', () => {
+    if (!uren.loopt) { toast('Timer staat stil — druk op Start'); return; }
+    uren.gepauzeerd = !uren.gepauzeerd;
+    $('#mPause').textContent = uren.gepauzeerd ? 'Hervat' : 'Pauze';
+    toast(uren.gepauzeerd ? 'Timer gepauzeerd' : 'Timer hervat');
+  });
+
+  const taak = $('#mTask');
+  taak.addEventListener('change', () => {
+    $('#mTaskSub').textContent = taak.value;
+    $('#mEntryText').textContent = taak.options[taak.selectedIndex].text + ' — ' + taak.value;
+  });
+
+  const fotoReeks = ['ph-1', 'ph-2', 'ph-3'];
+  let fotoTeller = 0;
+
+  $('#mAddPhoto').addEventListener('click', () => {
+    const fig = document.createElement('figure');
+    fig.innerHTML = '<svg viewBox="0 0 60 60" role="img" aria-label="Nieuwe foto"><use href="#' +
+      fotoReeks[fotoTeller++ % fotoReeks.length] + '"></use></svg>';
+    $('#mPhotos').insertBefore(fig, $('#mAddPhoto'));
+    toast('Foto toegevoegd aan het projectlogboek');
+  });
+
+  const dagen = ['ma 29 apr 2024', 'di 30 apr 2024', 'Vandaag, 1 mei 2024', 'do 2 mei 2024', 'vr 3 mei 2024'];
+  let dagIndex = 2;
+
+  function tekenDag() {
+    $('#mDayLabel').textContent = dagen[dagIndex];
+    if (!$('#m-uren').hidden) $('#mSub').textContent = dagen[dagIndex];
+  }
+
+  $('#mDayPrev').addEventListener('click', () => { dagIndex = Math.max(0, dagIndex - 1); tekenDag(); });
+  $('#mDayNext').addEventListener('click', () => { dagIndex = Math.min(dagen.length - 1, dagIndex + 1); tekenDag(); });
+
+  /* ---- Meerwerk ----------------------------------------------------------- */
+
+  $('#mMwOfferte').addEventListener('click', () =>
+    toast('Offerte wordt geopend — ook terug te vinden bij Documenten'));
+
+  $('#mMwDetailBtn').addEventListener('click', () => {
+    const box = $('#mMwDetails');
+    box.hidden = !box.hidden;
+    $('#mMwDetailBtn').textContent = box.hidden ? 'Bekijk details' : 'Verberg details';
+  });
+
+  $('#mMwOk').addEventListener('click', () => {
+    const btn = $('#mMwOk');
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = 'Goedgekeurd';
+    const tag = $('#mMwStatus');
+    tag.textContent = 'Goedgekeurd';
+    tag.className = 'tag tag--ok';
+    tag.style.marginTop = '6px';
+    $$('#m-start .tag', root).forEach(t => {
+      if (t.textContent === 'In afwachting') { t.textContent = 'Goedgekeurd'; t.className = 'tag tag--ok'; t.style.marginTop = '6px'; }
+    });
+    toast('Meerwerk goedgekeurd — de aannemer krijgt een notificatie');
+  });
+
+  /* ---- Start --------------------------------------------------------------- */
+
+  tekenChat();
+  tekenTimer();
+  tekenDag();
+  toon('start');
+})();
+
+
+/* ---- Wisselen tussen de rollen (via inloggen en uitloggen) ------------- */
+(function () {
+  var titels = {
+    start: 'Projexa',
+    web: 'Projexa — Aannemer',
+    medewerker: 'Projexa — Medewerker',
+    klant: 'Projexa — Klantportaal'
+  };
+
+  function ga(pagina) {
+    if (!titels[pagina]) pagina = 'start';
+    Object.keys(titels).forEach(function (p) {
+      document.getElementById('page-' + p).hidden = p !== pagina;
+    });
+    document.title = titels[pagina];
+    window.scrollTo({ top: 0 });
+  }
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-page]');
+    if (!el) return;
+    e.preventDefault();
+    ga(el.dataset.page);
+  });
+
+  ga('start');
+})();
+</script>
+</body>
+</html>

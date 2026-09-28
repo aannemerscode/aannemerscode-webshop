@@ -1,0 +1,88 @@
+/* ==========================================================================
+   Projexa — startscherm: logo en de drie inlogknoppen
+   ========================================================================== */
+
+.start {
+  background:
+    radial-gradient(1000px 520px at 50% -5%, rgba(181, 149, 94, .13), transparent 62%),
+    var(--black);
+  min-height: 100vh;
+}
+
+.start__page {
+  min-height: 100vh;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 52px;
+}
+
+.start__head { display: grid; justify-items: center; }
+.start__head .logo { font-size: 30px; gap: 20px; }
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  width: 100%;
+}
+
+.rolecard {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 30px 20px 24px;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .015));
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .18s ease, transform .18s ease;
+}
+
+.rolecard:hover {
+  border-color: rgba(181, 149, 94, .6);
+  transform: translateY(-2px);
+}
+
+.rolecard__icon {
+  width: 52px; height: 52px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: rgba(181, 149, 94, .16);
+  color: var(--gold-light);
+}
+
+.rolecard__naam {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+
+.rolecard__actie {
+  width: 100%;
+  text-align: center;
+  padding: 11px 16px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--gold-dark);
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rolecard:hover .rolecard__actie { filter: brightness(1.06); }
+
+@media (max-width: 700px) {
+  .start__page { gap: 40px; padding: 44px 20px; }
+  .start__head .logo { font-size: 22px; gap: 14px; }
+  .roles-grid { grid-template-columns: 1fr; max-width: 340px; margin: 0 auto; }
+  .rolecard { grid-template-columns: 44px 1fr; justify-items: start; align-items: center; padding: 16px 18px; gap: 14px; }
+  .rolecard__icon { width: 44px; height: 44px; grid-row: span 2; }
+  .rolecard__actie { width: auto; padding: 9px 18px; }
+}

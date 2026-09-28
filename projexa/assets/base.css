@@ -1,0 +1,167 @@
+/* ==========================================================================
+   Projexa — basis: kleuren, typografie, logo en gedeelde componenten
+   Kleuren zijn afgeleid uit de originele Projexa-poster (zwart, wit, goud).
+   ========================================================================== */
+
+:root {
+  /* Merkkleuren */
+  --black: #090b0c;
+  --black-2: #0f1214;
+  --black-3: #151a1d;
+  --gold: #b5955e;
+  --gold-light: #d8b778;
+  --gold-bright: #e7cb8e;
+  --gold-dark: #8c7343;
+
+  /* App (licht) */
+  --app-bg: #f2f1ef;
+  --surface: #ffffff;
+  --surface-2: #f7f6f4;
+  --line: #e6e3df;
+  --ink: #16181a;
+  --ink-2: #55595e;
+  --ink-3: #8b9096;
+
+  /* Status */
+  --red: #d3513b;
+  --green: #2fa84f;
+
+  /* Vorm */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --shadow: 0 1px 2px rgba(9, 11, 12, .04), 0 8px 24px rgba(9, 11, 12, .06);
+  --shadow-lg: 0 30px 70px rgba(0, 0, 0, .55);
+
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--black);
+  color: #fff;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; }
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   Logo
+   -------------------------------------------------------------------------- */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  text-decoration: none;
+}
+
+.logo__mark { flex: none; }
+
+.logo__type {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo__name {
+  font-weight: 400;
+  letter-spacing: .28em;
+  line-height: 1;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.logo__name b { font-weight: 400; color: var(--gold-light); }
+
+.logo__tag {
+  font-size: .34em;
+  letter-spacing: .34em;
+  color: var(--gold);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.logo--dark .logo__name { color: var(--ink); }
+.logo--dark .logo__tag { color: var(--gold-dark); }
+
+/* --------------------------------------------------------------------------
+   Knoppen
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter .15s ease, background .15s ease, border-color .15s ease;
+}
+
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: translateY(1px); }
+
+.btn--gold {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #221b0c;
+  border-color: var(--gold-dark);
+}
+
+.btn--ghost {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.btn--red { background: var(--red); color: #fff; }
+
+.btn--outline-gold {
+  background: transparent;
+  color: var(--gold-light);
+  border-color: rgba(181, 149, 94, .5);
+}
+
+.btn--outline-gold:hover { background: rgba(181, 149, 94, .12); }
+
+/* --------------------------------------------------------------------------
+   Hulpklassen
+   -------------------------------------------------------------------------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
