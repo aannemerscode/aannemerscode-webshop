@@ -161,12 +161,12 @@
   /* Het offertevel */
   .vel { padding: 0; overflow: hidden; }
   .vel-kop { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding: 22px 24px 18px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
-  @media (max-width: 560px) { .vel-kop { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 560px) { .vel-kop { grid-template-columns: minmax(0, 1fr); } .stempel { justify-self: start; text-align: left; } }
   .vel-merk { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .vel-merk svg { width: 34px; height: 34px; flex: none; }
   .vel-merk .woordmerk { font-size: 19px; }
   .vel-merk small { display: block; font-size: 12px; color: var(--muted); }
-  .titel-invoer { font-family: var(--display); font-size: clamp(21px, 2.6vw, 27px); font-weight: 700; letter-spacing: -.015em; border: 0; background: transparent; padding: 4px 0; width: 100%; border-bottom: 1px dashed transparent; }
+  .titel-invoer { font-family: var(--display); font-size: clamp(21px, 2.6vw, 27px); font-weight: 700; letter-spacing: -.015em; border: 0; background: transparent; padding: 4px 0; width: 100%; border-bottom: 1px dashed transparent; resize: none; overflow: hidden; min-height: 0; line-height: 1.2; }
   .titel-invoer:hover { border-bottom-color: var(--line); }
   .stempel { border: 2px solid var(--moss); color: var(--moss); border-radius: 8px; padding: 8px 12px; text-align: right; font-family: var(--mono); font-size: 12px; line-height: 1.45; align-self: start; }
   .stempel b { display: block; font-family: var(--display); font-size: 16px; letter-spacing: .14em; }
@@ -356,7 +356,7 @@
         <div class="vel-kop">
           <div>
             <div class="vel-merk" id="v-merk"></div>
-            <input class="titel-invoer" id="v-titel" aria-label="Titel van de offerte">
+            <textarea class="titel-invoer" id="v-titel" rows="1" aria-label="Titel van de offerte"></textarea>
             <div class="pillen" id="v-pillen"></div>
           </div>
           <div class="stempel"><b>OFFERTE</b><span id="v-nummer"></span><br><span id="v-datum"></span></div>
@@ -700,7 +700,7 @@
       laadHistorie();
       $('vel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
-      if (err?.code !== 'cancelled') meld('fout', esc(foutTekst(err)));
+      if (err?.code !== 'cancelled') meld('fout', foutHtml(err));
       else meld(null);
     } finally {
       clearInterval(klokTimer);
@@ -711,20 +711,68 @@
   });
   $('stop').addEventListener('click', () => st.bezig?.abort());
 
+  // Codes die niets met toestemming te maken hebben; bij alle andere fouten in Claude-modus
+  // tonen we een knop om de toestemming te regelen.
+  const GEWONE_FOUTEN = ['rate_limited', 'image_rejected', 'refused', 'invalid_json', 'prompt_too_large', 'cancelled', 'upstream_error', 'empty_completion', 'images_unavailable'];
+  const isToestemmingFout = (err) => st.modus === 'claude' && Boolean(err?.code) && !GEWONE_FOUTEN.includes(err.code);
+
   function foutTekst(err) {
     const codes = {
-      not_granted: 'Je hebt GreenTeam geen toestemming gegeven om Claude te gebruiken. Herlaad de pagina om het opnieuw te proberen.',
-      sampling_disabled: 'Claude is niet beschikbaar voor dit account.',
-      rate_limited: 'Je hebt even te veel aanvragen gedaan. Probeer het over een paar minuten opnieuw.',
+      not_granted: 'GreenTeam heeft nog geen toestemming om Claude te gebruiken. Tik op "Toestemming geven" en zet Claude aan voor deze pagina.',
+      geen_toestemming: 'GreenTeam heeft nog geen toestemming om Claude te gebruiken. Tik op "Toestemming geven" en zet Claude aan voor deze pagina.',
+      niet_beschikbaar: 'De AI is in deze weergave niet beschikbaar. Open de pagina in een browser op claude.ai (computer of telefoon) en probeer het daar.',
+      sampling_disabled: 'Claude is niet beschikbaar voor dit account of deze organisatie.',
+      capability_disabled: 'De AI is in deze weergave uitgeschakeld. Tik op "Toestemming geven", of open de pagina in een browser op claude.ai.',
+      rate_limited: 'Je hebt even te veel aanvragen gedaan, of je Claude-gebruikslimiet is bereikt. Probeer het later opnieuw.',
       session_expired: 'Je bent uitgelogd bij Claude. Log opnieuw in en probeer het nog eens.',
       image_rejected: "Een van de foto's wordt niet geaccepteerd. Gebruik een JPG of PNG kleiner dan 20 MB.",
       images_unavailable: "Foto's kunnen in deze weergave niet naar Claude. Haal de foto's weg en probeer het met alleen een omschrijving.",
       refused: 'Claude wilde deze aanvraag niet verwerken. Pas de omschrijving aan en probeer opnieuw.',
-      invalid_json: 'Het antwoord van de AI was onvolledig. Klik nog eens op "Maak offerte".',
+      invalid_json: 'Het antwoord van de AI was onvolledig. Probeer het nog eens.',
+      empty_completion: 'De AI gaf geen antwoord. Probeer het nog eens, eventueel met een kortere omschrijving.',
+      upstream_error: 'De verbinding met de AI viel weg. Probeer het nog eens.',
       prompt_too_large: 'De omschrijving is te lang. Maak hem korter.',
     };
-    return codes[err?.code] || err?.message || 'Er ging iets mis. Probeer het opnieuw.';
+    if (codes[err?.code]) return codes[err.code];
+    if (isToestemmingFout(err)) {
+      return `Claude gaf deze pagina geen toegang (melding van Claude: "${err.message || err.code}"). Tik op "Toestemming geven" en zet Claude aan, of open de pagina in een browser op claude.ai.`;
+    }
+    return err?.message || 'Er ging iets mis. Probeer het opnieuw.';
   }
+  function foutHtml(err) {
+    return esc(foutTekst(err)) + (isToestemmingFout(err) ? ' <button type="button" class="knop rand klein" data-actie="toestemming">Toestemming geven</button>' : '');
+  }
+
+  // Vraag vóór een AI-aanvraag zelf om toestemming; in sommige apps verschijnt de vraag
+  // anders niet vanzelf.
+  async function vraagToestemming() {
+    const perm = await window.claude?.use?.('permissions').catch(() => null);
+    if (!perm) return;
+    let stand = await perm.state('sample').catch(() => 'prompt');
+    if (stand === 'prompt') {
+      const r = await perm.request(['sample', 'downloads']).catch(() => ({}));
+      stand = r.sample ?? stand;
+    }
+    if (stand === 'denied') throw { code: 'geen_toestemming' };
+    if (stand === 'unavailable') throw { code: 'niet_beschikbaar' };
+  }
+  document.addEventListener('click', async (e) => {
+    const knop = e.target.closest('[data-actie="toestemming"]');
+    if (!knop) return;
+    const perm = await window.claude?.use?.('permissions').catch(() => null);
+    try {
+      if (!perm) throw new Error();
+      await perm.manage();
+      const stand = await perm.state('sample');
+      knop.replaceWith(Object.assign(document.createElement('span'), {
+        textContent: stand === 'granted' ? ' Toestemming staat aan. Probeer het nu opnieuw.' : ' Claude staat nog niet aan voor deze pagina.',
+      }));
+    } catch {
+      knop.replaceWith(Object.assign(document.createElement('span'), {
+        textContent: ' Open het menu van dit artifact (rechtsboven), kies "Permissions" en zet Claude aan. Herlaad daarna de pagina.',
+      }));
+    }
+  });
 
   async function maakViaServer({ omschrijving, plaats, klant }) {
     const fotos = [];
@@ -779,6 +827,7 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
 
   async function maakViaClaude({ omschrijving, plaats, klant }) {
     const metFotos = st.fotosNaarAI && st.fotos.length > 0;
+    await vraagToestemming();
     const data = await st.sample.json(maakPrompt({ omschrijving, plaats, aantalFotos: metFotos ? st.fotos.length : 0 }), {
       images: metFotos ? st.fotos.map((f) => f.file) : undefined,
       modelTier: 'complex',
@@ -874,11 +923,21 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
     return `${LOGO_SVG.replace('width="64" height="64" ', '')}<div><span class="woordmerk">${naam}</span>${b.slogan ? `<small>${esc(b.slogan)}</small>` : ''}</div>`;
   }
 
+  function pasTitelAan() {
+    const t = $('v-titel');
+    t.style.height = 'auto';
+    t.style.height = t.scrollHeight + 'px';
+  }
+  $('v-titel').addEventListener('input', pasTitelAan);
+  window.addEventListener('resize', pasTitelAan);
+  $('v-titel').addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+
   function toonVel() {
     const { offerte: o, nummer, createdAt, voorbeeld } = st.huidig;
     $('voorbeeld-lint').hidden = !voorbeeld;
     $('v-merk').innerHTML = merkHtml(huidigBedrijf());
     $('v-titel').value = o.titel;
+    pasTitelAan();
     $('v-nummer').textContent = nummer;
     $('v-datum').textContent = new Date(createdAt).toLocaleDateString('nl-NL');
     $('v-analyse').textContent = o.fotoanalyse || '—';
@@ -1214,6 +1273,7 @@ Antwoord met alleen één JSON-object in deze vorm:
         st.huidig = await (await api(`/${encodeURIComponent(st.huidig.id)}/visualisatie`, { method: 'POST', body: JSON.stringify({ fotos }) })).json();
       } else {
         const metFotos = st.fotosNaarAI ? st.fotos : [];
+        await vraagToestemming();
         const data = await st.sample.json(visualisatiePrompt(st.huidig.offerte, metFotos.length), {
           images: metFotos.length ? metFotos.map((f) => f.file) : undefined,
           modelTier: 'complex',
@@ -1228,7 +1288,7 @@ Antwoord met alleen één JSON-object in deze vorm:
       $('vis-status').textContent = 'Visualisatie klaar. Hij komt ook op de PDF.';
       vink('visualisatie');
     } catch (err) {
-      $('vis-status').textContent = foutTekst(err);
+      $('vis-status').innerHTML = foutHtml(err);
     } finally {
       st.visBezig = false;
       $('vis-maak').disabled = false;
