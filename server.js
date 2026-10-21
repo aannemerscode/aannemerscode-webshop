@@ -5,6 +5,7 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const PDFDocument = require('pdfkit');
 const { createMollieClient } = require('@mollie/api-client');
+const { createOfferteRouter } = require('./offerte');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -300,6 +301,8 @@ async function sendDownloadEmail(order) {
 }
 
 // ---------- Routes ----------
+// De offerte-agent heeft een eigen (grotere) bodylimiet voor foto's, dus vóór express.json().
+app.use('/api/offerte', createOfferteRouter({ seller: SELLER, dataDir: DATA_DIR }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Mollie webhook stuurt form-encoded data
 app.use(express.static(path.join(__dirname, 'public')));
