@@ -40,9 +40,9 @@ per dag is dat prima; bij hoog volume kun je dit later vervangen door een factuu
 uit een echte database of boekhoudpakket (bijvoorbeeld Moneybird), zoals ook al
 genoemd staat bij "Nog te doen voor een echte webshop" hieronder.
 
-## GroenBestek: offertes voor hoveniers uit foto's + tekst
+## GreenTeam: offertes voor hoveniers uit foto's + tekst
 
-Op `/groenbestek` staat **GroenBestek**, een AI-agent die voor tuinklussen, timmerwerk,
+Op `/greenteam` staat **GreenTeam**, een AI-agent die voor tuinklussen, timmerwerk,
 tuinhuizen en overkappingen een volledige offerte opstelt. Je uploadt een paar foto's, typt in
 twee zinnen wat de klant wil, en de agent:
 
@@ -53,8 +53,11 @@ twee zinnen wat de klant wil, en de agent:
    uitsluitingen, vergunningsadvies en een lijst met dingen die je nog moet navragen of inmeten.
 
 Alle totalen en btw rekent de server zelf uit, niet de AI. Je kunt elke regel aanpassen,
-groepen hernoemen, regels toevoegen of weghalen, en de offerte als PDF downloaden (met
-offertenummer `OFF-2026-0001`, geldigheidsdatum en een akkoordblok om te tekenen). Elke regel
+groepen hernoemen, regels toevoegen of weghalen, en de offerte als PDF downloaden in de
+GreenTeam-huisstijl: logo en briefhoofd, kerngegevens (offertenummer `OFF-2026-0001`, datum,
+geldigheid), prijstabel per onderdeel, totaal incl. btw, voorwaarden en een akkoordblok om te
+tekenen. Zet je bedrijfsgegevens voor de PDF in `.env` (`OFFERTE_BEDRIJF_*`, zie `.env.example`).
+Heet je bedrijf anders, zet dan `OFFERTE_BEDRIJF_NAAM`; het logo blijft, de naam verandert mee. Elke regel
 laat zien of de prijs uit je prijslijst komt (**lijst**) of door de AI geschat is
 (**schatting**). Controleer geschatte prijzen altijd voordat je de offerte verstuurt.
 
@@ -65,7 +68,7 @@ npm install
 npm run demo
 ```
 
-Open `http://localhost:3000/groenbestek`. Bovenaan staat een **testronde** met vijf stappen
+Open `http://localhost:3000/greenteam`. Bovenaan staat een **testronde** met vijf stappen
 (foto toevoegen, klus beschrijven, offerte maken, regel aanpassen, PDF downloaden) die vanzelf
 afvinken. In demo-modus wordt de AI nagebootst: je foto's worden ontvangen maar niet bekeken,
 en de offerte komt uit de trefwoorden (schutting, overkapping, tuinhuis, terras) en maten
@@ -89,8 +92,9 @@ kijker in plaats van je API-sleutel, en bewaart hij offertes in de browser.
 
 **Bestanden:** `offerte/agent.js` (de agent en de systeeminstructie), `offerte/demo.js`
 (nagebootste agent voor de demo-modus), `offerte/schema.js` (de vorm van een offerte +
-totaalberekening), `offerte/pdf.js` (PDF), `offerte/index.js` (routes en opslag in
-`offertes.json`), `public/groenbestek.html` (de pagina), `demo.js` (start in demo-modus).
+totaalberekening), `offerte/index.js` (routes en opslag in
+`offertes.json`), `public/greenteam.html` (de pagina, maakt ook de PDF), `demo.js` (start in
+demo-modus).
 
 ## Hoe het werkt
 

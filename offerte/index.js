@@ -4,10 +4,9 @@ const crypto = require('crypto');
 const express = require('express');
 const { OfferteSchema, KlantSchema, berekenTotalen } = require('./schema');
 const { stelOfferteOp, AgentFout, Anthropic } = require('./agent');
-const { genereerOffertePdf } = require('./pdf');
 const { stelDemoOfferteOp } = require('./demo');
 
-// ---------- GroenBestek (offerte-agent): routes en opslag ----------
+// ---------- GreenTeam (offerte-agent): routes en opslag ----------
 // Alleen voor jezelf (de vakman): elke aanvraag kost API-tegoed, dus alle
 // routes vragen om OFFERTE_TOKEN, die je in .env / Render -> Environment zet.
 // Zonder ANTHROPIC_API_KEY (of met OFFERTE_DEMO=1) draait de demo-modus: de agent
@@ -16,7 +15,24 @@ const { stelDemoOfferteOp } = require('./demo');
 const MAX_FOTOS = 10;
 const TOEGESTANE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
-function createOfferteRouter({ seller, dataDir }) {
+// Bedrijfsgegevens die op de offerte (PDF) komen. Los van de webshop-gegevens (SELLER_*).
+function bedrijfUitEnv() {
+  const e = process.env;
+  return {
+    naam: e.OFFERTE_BEDRIJF_NAAM || 'GreenTeam',
+    slogan: e.OFFERTE_BEDRIJF_SLOGAN || 'Hoveniers · Tuinhuizen · Overkappingen',
+    adres: e.OFFERTE_BEDRIJF_ADRES || '',
+    postcode_plaats: e.OFFERTE_BEDRIJF_POSTCODE_PLAATS || '',
+    telefoon: e.OFFERTE_BEDRIJF_TELEFOON || '',
+    email: e.OFFERTE_BEDRIJF_EMAIL || '',
+    website: e.OFFERTE_BEDRIJF_WEBSITE || '',
+    kvk: e.OFFERTE_BEDRIJF_KVK || '',
+    btw: e.OFFERTE_BEDRIJF_BTW || '',
+    iban: e.OFFERTE_BEDRIJF_IBAN || '',
+  };
+}
+
+function createOfferteRouter({ dataDir }) {
   const router = express.Router();
   const OFFERTES_FILE = path.join(dataDir, 'offertes.json');
   const COUNTER_FILE = path.join(dataDir, 'offerte-counter.json');
@@ -56,7 +72,7 @@ function createOfferteRouter({ seller, dataDir }) {
 
   // Zonder toegangscode: vertelt de pagina welke modus actief is.
   router.get('/status', (req, res) => {
-    res.json({ demo: isDemo(), tokenNodig: Boolean(process.env.OFFERTE_TOKEN) || !isDemo(), bedrijf: seller.name });
+    res.json({ demo: isDemo(), tokenNodig: Boolean(process.env.OFFERTE_TOKEN) || !isDemo(), bedrijf: bedrijfUitEnv() });
   });
 
   router.use((req, res, next) => {
@@ -172,20 +188,6 @@ function createOfferteRouter({ seller, dataDir }) {
     r.updatedAt = new Date().toISOString();
     schrijfOffertes(alle);
     res.json(r);
-  });
-
-  router.get('/:id/pdf', async (req, res) => {
-    const r = leesOffertes()[req.params.id];
-    if (!r) return res.status(404).json({ error: 'Niet gevonden' });
-    try {
-      const pdf = await genereerOffertePdf(r, seller);
-      res.set('Content-Type', 'application/pdf');
-      res.set('Content-Disposition', `attachment; filename="Offerte-${r.nummer}.pdf"`);
-      res.send(pdf);
-    } catch (err) {
-      console.error('Offerte-PDF fout:', err);
-      res.status(500).json({ error: 'Kon de PDF niet maken.' });
-    }
   });
 
   return router;

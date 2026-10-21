@@ -1,4 +1,5 @@
-<title>GroenBestek</title>
+<title>GreenTeam</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%232D5A39%22/%3E%3Cpath%20d%3D%22M32%2051V31%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223.6%22%20stroke-linecap%3D%22round%22/%3E%3Cpath%20d%3D%22M31%2037C18.5%2037.5%2011%2029.5%2011%2017C23.5%2016.5%2031%2024.5%2031%2037Z%22%20fill%3D%22%23fff%22/%3E%3Cpath%20d%3D%22M33%2031C33%2018%2041%2010%2054%2010C54.5%2023%2046%2031.5%2033%2031Z%22%20fill%3D%22%23A9D98B%22/%3E%3Cpath%20d%3D%22M17%2052.5Q32%2046.5%2047%2052.5%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223.6%22%20stroke-linecap%3D%22round%22%20fill%3D%22none%22/%3E%3C/svg%3E">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,9 +58,11 @@
   /* Kop */
   header.top { padding-block: 18px 6px; }
   header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 800; font-size: 21px; letter-spacing: -.01em; }
-  .brand svg { width: 30px; height: 30px; flex: none; }
-  .brand small { font-family: var(--body); font-weight: 500; font-size: 13px; color: var(--muted); letter-spacing: 0; }
+  .brand { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .brand svg { width: 36px; height: 36px; flex: none; }
+  .brand small { font-size: 13px; color: var(--muted); padding-left: 10px; border-left: 1px solid var(--line); }
+  .woordmerk { font-family: var(--display); font-weight: 800; font-size: 23px; letter-spacing: -.02em; color: var(--ink); }
+  .woordmerk .g { color: var(--moss); }
   .modus { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
   .modus::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
   .modus.live::before { background: var(--ok); }
@@ -158,7 +161,10 @@
   .vel { padding: 0; overflow: hidden; }
   .vel-kop { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding: 22px 24px 18px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
   @media (max-width: 560px) { .vel-kop { grid-template-columns: minmax(0, 1fr); } }
-  .vel-kop .bedrijf { font-size: 13px; color: var(--muted); }
+  .vel-merk { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .vel-merk svg { width: 34px; height: 34px; flex: none; }
+  .vel-merk .woordmerk { font-size: 19px; }
+  .vel-merk small { display: block; font-size: 12px; color: var(--muted); }
   .titel-invoer { font-family: var(--display); font-size: clamp(21px, 2.6vw, 27px); font-weight: 700; letter-spacing: -.015em; border: 0; background: transparent; padding: 4px 0; width: 100%; border-bottom: 1px dashed transparent; }
   .titel-invoer:hover { border-bottom-color: var(--line); }
   .stempel { border: 2px solid var(--moss); color: var(--moss); border-radius: 8px; padding: 8px 12px; text-align: right; font-family: var(--mono); font-size: 12px; line-height: 1.45; align-self: start; }
@@ -215,8 +221,9 @@
 <header class="top">
   <div class="wrap">
     <div class="brand">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--moss)"/><path d="M9 23c0-8 5-13 14-14-1 9-6 14-14 14Z" fill="var(--on-moss)"/><path d="M9 23l8-8" stroke="var(--moss)" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>
-      <span>GroenBestek <small>offertes voor hoveniers</small></span>
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#2D5A39"/><path d="M32 51V31" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/><path d="M31 37C18.5 37.5 11 29.5 11 17C23.5 16.5 31 24.5 31 37Z" fill="#fff"/><path d="M33 31C33 18 41 10 54 10C54.5 23 46 31.5 33 31Z" fill="#A9D98B"/><path d="M17 52.5Q32 46.5 47 52.5" stroke="#fff" stroke-width="3.6" stroke-linecap="round" fill="none"/></svg>
+      <span class="woordmerk"><span class="g">Green</span>Team</span>
+      <small>offertes voor hoveniers</small>
     </div>
     <span class="modus" id="modus">Verbinding zoeken…</span>
   </div>
@@ -225,7 +232,7 @@
 <main class="wrap">
   <section class="intro">
     <h1>Van tuinfoto naar complete offerte</h1>
-    <p>Maak een paar foto's van de klus, schrijf in twee zinnen wat de klant wil, en GroenBestek schat de maten, rekent materiaal en uren door en zet alles op een offerte die je zelf nog kunt aanpassen.</p>
+    <p>Maak een paar foto's van de klus, schrijf in twee zinnen wat de klant wil, en GreenTeam schat de maten, rekent materiaal en uren door en zet alles op een offerte die je zelf nog kunt aanpassen.</p>
   </section>
 
   <div class="banner" id="banner" hidden></div>
@@ -281,14 +288,18 @@
       </details>
 
       <details class="uitklap" id="bedrijf-blok" hidden>
-        <summary>Jouw bedrijf (op de PDF)</summary>
+        <summary>Bedrijfsgegevens (op de PDF)</summary>
         <div class="rij">
-          <input type="text" id="b-naam" placeholder="Bedrijfsnaam" aria-label="Bedrijfsnaam">
-          <input type="text" id="b-adres" placeholder="Adres" aria-label="Adres bedrijf">
+          <input type="text" id="b-naam" placeholder="Bedrijfsnaam (standaard GreenTeam)" aria-label="Bedrijfsnaam">
+          <input type="text" id="b-slogan" placeholder="Hoveniers · Tuinhuizen · Overkappingen" aria-label="Slogan">
+          <input type="text" id="b-adres" placeholder="Straat en huisnummer" aria-label="Adres bedrijf">
           <input type="text" id="b-pp" placeholder="Postcode en plaats" aria-label="Postcode en plaats bedrijf">
+          <input type="text" id="b-tel" placeholder="Telefoon" aria-label="Telefoon bedrijf">
+          <input type="email" id="b-email" placeholder="E-mail" aria-label="E-mail bedrijf">
+          <input type="text" id="b-web" placeholder="Website" aria-label="Website">
           <input type="text" id="b-kvk" placeholder="KVK-nummer" aria-label="KVK-nummer">
           <input type="text" id="b-btw" placeholder="Btw-id" aria-label="Btw-id">
-          <input type="text" id="b-contact" placeholder="Telefoon of e-mail" aria-label="Contactgegevens bedrijf">
+          <input type="text" id="b-iban" placeholder="IBAN" aria-label="IBAN">
         </div>
       </details>
 
@@ -325,7 +336,7 @@
         <div class="voorbeeld-lint" id="voorbeeld-lint">Voorbeeldofferte. Zo ziet een resultaat eruit; je eigen offerte verschijnt hier zodra je op "Maak offerte" klikt.</div>
         <div class="vel-kop">
           <div>
-            <div class="bedrijf" id="v-bedrijf"></div>
+            <div class="vel-merk" id="v-merk"></div>
             <input class="titel-invoer" id="v-titel" aria-label="Titel van de offerte">
             <div class="pillen" id="v-pillen"></div>
           </div>
@@ -333,7 +344,7 @@
         </div>
 
         <div class="vel-deel">
-          <h3>Wat GroenBestek op de foto's ziet</h3>
+          <h3>Wat de AI op de foto's ziet</h3>
           <p class="analyse" id="v-analyse"></p>
         </div>
 
@@ -388,8 +399,8 @@
   const euro = (n) => '€ ' + (Number(n) || 0).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const getal = (n) => (Number(n) || 0).toLocaleString('nl-NL', { maximumFractionDigits: 2 });
   const opslag = {
-    lees(k, d) { try { const v = localStorage.getItem('groenbestek:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
-    schrijf(k, v) { try { localStorage.setItem('groenbestek:' + k, JSON.stringify(v)); } catch {} },
+    lees(k, d) { try { const v = localStorage.getItem('greenteam:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    schrijf(k, v) { try { localStorage.setItem('greenteam:' + k, JSON.stringify(v)); } catch {} },
   };
 
   // ---------- Voorbeeldklussen ----------
@@ -478,7 +489,7 @@
         st.modus = 'server';
         st.demo = s.demo;
         st.tokenNodig = s.tokenNodig;
-        st.bedrijfServer = s.bedrijf;
+        st.bedrijfServer = s.bedrijf || null;
         return;
       }
     } catch {}
@@ -509,7 +520,7 @@
       m.className = 'modus uit';
       m.textContent = 'Geen verbinding';
       b.hidden = false; b.className = 'banner uit';
-      b.innerHTML = '<span><b>Geen AI beschikbaar.</b> Open deze pagina in Claude, of start je eigen server met <span class="mono">npm run demo</span> en ga naar <span class="mono">/groenbestek</span>.</span>';
+      b.innerHTML = '<span><b>Geen AI beschikbaar.</b> Open deze pagina in Claude, of start je eigen server met <span class="mono">npm run demo</span> en ga naar <span class="mono">/greenteam</span>.</span>';
       $('maak').disabled = true;
     }
     $('token-blok').hidden = !(st.modus === 'server' && st.tokenNodig);
@@ -570,7 +581,7 @@
   $('omschrijving').addEventListener('input', () => { if ($('omschrijving').value.trim().length >= 15) vink('omschrijving'); });
 
   const klantVelden = { naam: 'k-naam', adres: 'k-adres', postcode_plaats: 'k-pp', email: 'k-email', telefoon: 'k-tel' };
-  const bedrijfVelden = { naam: 'b-naam', adres: 'b-adres', postcode_plaats: 'b-pp', kvk: 'b-kvk', btw: 'b-btw', contact: 'b-contact' };
+  const bedrijfVelden = { naam: 'b-naam', slogan: 'b-slogan', adres: 'b-adres', postcode_plaats: 'b-pp', telefoon: 'b-tel', email: 'b-email', website: 'b-web', kvk: 'b-kvk', btw: 'b-btw', iban: 'b-iban' };
   const leesVelden = (map) => Object.fromEntries(Object.entries(map).map(([k, id]) => [k, $(id).value.trim()]));
   const vulVelden = (map, data) => Object.entries(map).forEach(([k, id]) => { $(id).value = data?.[k] || ''; });
   vulVelden(bedrijfVelden, opslag.lees('bedrijf', {}));
@@ -656,7 +667,7 @@
 
   function foutTekst(err) {
     const codes = {
-      not_granted: 'Je hebt GroenBestek geen toestemming gegeven om Claude te gebruiken. Herlaad de pagina om het opnieuw te proberen.',
+      not_granted: 'Je hebt GreenTeam geen toestemming gegeven om Claude te gebruiken. Herlaad de pagina om het opnieuw te proberen.',
       sampling_disabled: 'Claude is niet beschikbaar voor dit account.',
       rate_limited: 'Je hebt even te veel aanvragen gedaan. Probeer het over een paar minuten opnieuw.',
       session_expired: 'Je bent uitgelogd bij Claude. Log opnieuw in en probeer het nog eens.',
@@ -797,15 +808,26 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
   }
 
   // ---------- Offertevel tonen en bewerken ----------
-  function bedrijfsnaam() {
-    if (st.modus === 'server') return st.bedrijfServer || '';
-    return leesVelden(bedrijfVelden).naam || 'Jouw bedrijf';
+  // ---------- Huisstijl ----------
+  const LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#2D5A39"/><path d="M32 51V31" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/><path d="M31 37C18.5 37.5 11 29.5 11 17C23.5 16.5 31 24.5 31 37Z" fill="#fff"/><path d="M33 31C33 18 41 10 54 10C54.5 23 46 31.5 33 31Z" fill="#A9D98B"/><path d="M17 52.5Q32 46.5 47 52.5" stroke="#fff" stroke-width="3.6" stroke-linecap="round" fill="none"/></svg>';
+  const STANDAARD_BEDRIJF = { naam: 'GreenTeam', slogan: 'Hoveniers · Tuinhuizen · Overkappingen' };
+  const isGreenTeam = (naam) => /^green\s*team$/i.test(String(naam || '').trim());
+
+  function huidigBedrijf() {
+    const eigen = st.modus === 'server' ? (st.bedrijfServer || {}) : leesVelden(bedrijfVelden);
+    const b = { ...STANDAARD_BEDRIJF };
+    for (const [k, v] of Object.entries(eigen)) if (v) b[k] = v;
+    return b;
+  }
+  function merkHtml(b) {
+    const naam = isGreenTeam(b.naam) ? '<span class="g">Green</span>Team' : esc(b.naam);
+    return `${LOGO_SVG.replace('width="64" height="64" ', '')}<div><span class="woordmerk">${naam}</span>${b.slogan ? `<small>${esc(b.slogan)}</small>` : ''}</div>`;
   }
 
   function toonVel() {
     const { offerte: o, nummer, createdAt, voorbeeld } = st.huidig;
     $('voorbeeld-lint').hidden = !voorbeeld;
-    $('v-bedrijf').textContent = bedrijfsnaam();
+    $('v-merk').innerHTML = merkHtml(huidigBedrijf());
     $('v-titel').value = o.titel;
     $('v-nummer').textContent = nummer;
     $('v-datum').textContent = new Date(createdAt).toLocaleDateString('nl-NL');
@@ -941,32 +963,24 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
   });
 
   // ---------- PDF ----------
+  // De PDF wordt altijd in de browser gemaakt, zodat hij op je eigen server en in Claude hetzelfde oogt.
   $('pdf').addEventListener('click', async () => {
     const knop = $('pdf');
     knop.disabled = true;
     $('vel-status').textContent = 'PDF maken…';
     try {
       await bewaar();
-      if (st.modus === 'server' && !st.huidig.voorbeeld) {
-        const blob = await (await api('/' + st.huidig.id + '/pdf')).blob();
+      const blob = await maakPdf(st.huidig);
+      const naam = `Offerte-${st.huidig.nummer}.pdf`;
+      if (st.downloads) {
+        await st.downloads.save({ filename: naam, data: blob });
+        $('vel-status').textContent = 'PDF opgeslagen.';
+      } else {
         const url = URL.createObjectURL(blob);
-        const a = Object.assign(document.createElement('a'), { href: url, download: `Offerte-${st.huidig.nummer}.pdf` });
+        const a = Object.assign(document.createElement('a'), { href: url, download: naam });
         document.body.append(a); a.click(); a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 4000);
         $('vel-status').textContent = 'PDF gedownload.';
-      } else {
-        const blob = await maakPdfInBrowser(st.huidig);
-        const naam = `Offerte-${st.huidig.nummer}.pdf`;
-        if (st.downloads) {
-          await st.downloads.save({ filename: naam, data: blob });
-          $('vel-status').textContent = 'PDF opgeslagen.';
-        } else {
-          const url = URL.createObjectURL(blob);
-          const a = Object.assign(document.createElement('a'), { href: url, download: naam });
-          document.body.append(a); a.click(); a.remove();
-          setTimeout(() => URL.revokeObjectURL(url), 4000);
-          $('vel-status').textContent = 'PDF gedownload.';
-        }
       }
       vink('pdf');
       laadHistorie();
@@ -977,105 +991,245 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
     }
   });
 
+  const JSPDF_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  const laadScript = (src) => new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.append(s);
+  });
   let jspdfLaden = null;
   function laadJsPdf() {
     if (window.jspdf) return Promise.resolve(window.jspdf);
-    jspdfLaden ??= new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-      s.onload = () => resolve(window.jspdf);
-      s.onerror = () => { jspdfLaden = null; reject(new Error('De PDF-module kon niet laden. Controleer je internetverbinding.')); };
-      document.head.append(s);
-    });
+    jspdfLaden ??= (async () => {
+      // Op je eigen server eerst de meegeleverde kopie, anders (en in Claude) de CDN.
+      const bronnen = st.modus === 'server' ? ['/vendor/jspdf.umd.min.js', JSPDF_CDN] : [JSPDF_CDN];
+      for (const bron of bronnen) {
+        try { await laadScript(bron); if (window.jspdf) return window.jspdf; } catch {}
+      }
+      jspdfLaden = null;
+      throw new Error('De PDF-module kon niet laden. Controleer je internetverbinding.');
+    })();
     return jspdfLaden;
   }
 
-  async function maakPdfInBrowser(rec) {
-    const { jsPDF } = await laadJsPdf();
+  let logoPngCache = null;
+  async function logoPng() {
+    if (logoPngCache) return logoPngCache;
+    const img = new Image();
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(LOGO_SVG);
+    await img.decode();
+    const c = document.createElement('canvas');
+    c.width = c.height = 256;
+    c.getContext('2d').drawImage(img, 0, 0, 256, 256);
+    return (logoPngCache = c.toDataURL('image/png'));
+  }
+
+  async function maakPdf(rec) {
+    const [{ jsPDF }, logo] = await Promise.all([laadJsPdf(), logoPng()]);
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    doc.setLineHeightFactor(1.22);
     const o = rec.offerte;
     const t = totalen(o);
-    const L = 50, R = 545, ONDER = 790;
-    const bedrijf = st.modus === 'server' ? { naam: st.bedrijfServer } : leesVelden(bedrijfVelden);
-    let y = 60;
-    const nieuw = (h) => { if (y + h > ONDER) { doc.addPage(); y = 60; return true; } return false; };
-    const lettertype = (stijl, grootte, kleur = 20) => { doc.setFont('helvetica', stijl); doc.setFontSize(grootte); doc.setTextColor(kleur); };
-    const alinea = (tekst, breedte = R - L, x = L) => {
-      for (const regel of doc.splitTextToSize(tekst, breedte)) { nieuw(14); doc.text(regel, x, y); y += 13; }
-    };
-    const kop = (tekst) => { nieuw(40); y += 14; lettertype('bold', 11, 30); doc.text(tekst, L, y); y += 16; lettertype('normal', 9.5); };
+    const b = huidigBedrijf();
+    const K = { moss: [45, 90, 57], blad: [169, 217, 139], salie: [238, 244, 234], inkt: [23, 35, 27], grijs: [104, 118, 108], lijn: [216, 224, 211], wit: [255, 255, 255] };
+    const L = 50, R = 545, B = R - L, ONDER = 772;
+    let y = 0;
 
-    lettertype('bold', 18, 30); doc.text(bedrijf.naam || 'Jouw bedrijf', L, y);
-    lettertype('normal', 9, 110);
-    let yb = y + 14;
-    for (const regel of [bedrijf.adres, bedrijf.postcode_plaats, bedrijf.kvk && `KVK: ${bedrijf.kvk}`, bedrijf.btw && `Btw-id: ${bedrijf.btw}`, bedrijf.contact].filter(Boolean)) { doc.text(regel, L, yb); yb += 12; }
-    lettertype('bold', 16, 20); doc.text('Offerte', R, y, { align: 'right' });
-    lettertype('normal', 9.5, 60);
+    const font = (stijl, grootte, kleur = 'inkt', spatie = 0) => {
+      doc.setFont('helvetica', stijl); doc.setFontSize(grootte); doc.setTextColor(...K[kleur]); doc.setCharSpace(spatie);
+    };
+    const vul = (k) => doc.setFillColor(...K[k]);
+    const lijn = (k, dikte = 0.6) => { doc.setDrawColor(...K[k]); doc.setLineWidth(dikte); };
+    const label = (tekst, x, yy) => { font('bold', 7.2, 'grijs', 1.1); doc.text(tekst.toUpperCase(), x, yy); doc.setCharSpace(0); };
+    const nlDatum = (d) => d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+    const woordmerk = (x, yy, grootte) => {
+      if (isGreenTeam(b.naam)) {
+        font('bold', grootte, 'moss'); doc.text('Green', x, yy);
+        const w = doc.getTextWidth('Green');
+        font('bold', grootte, 'inkt'); doc.text('Team', x + w, yy);
+      } else {
+        font('bold', grootte, 'inkt'); doc.text(b.naam, x, yy);
+      }
+    };
+
+    // Vervolgpagina's krijgen een smal briefhoofd.
+    const nieuw = (h) => {
+      if (y + h <= ONDER) return false;
+      doc.addPage();
+      doc.addImage(logo, 'PNG', L, 34, 20, 20);
+      woordmerk(L + 27, 48.5, 11);
+      font('normal', 8.5, 'grijs'); doc.text(`Offerte ${rec.nummer}`, R, 48.5, { align: 'right' });
+      lijn('lijn'); doc.line(L, 64, R, 64);
+      y = 90;
+      return true;
+    };
+    const kop = (tekst) => {
+      nieuw(48);
+      y += 10;
+      font('bold', 8.5, 'moss', 1.4); doc.text(tekst.toUpperCase(), L, y); doc.setCharSpace(0);
+      y += 7; lijn('lijn'); doc.line(L, y, R, y);
+      y += 15;
+    };
+    const alinea = (tekst) => {
+      font('normal', 9.5, 'inkt');
+      const delen = String(tekst || '').split(/\n\s*\n|\n/).filter((d) => d.trim());
+      delen.forEach((deel, i) => {
+        for (const regel of doc.splitTextToSize(deel.trim(), B)) { nieuw(14); doc.text(regel, L, y); y += 13.5; }
+        if (i < delen.length - 1) y += 4;
+      });
+    };
+    const opsomming = (items) => {
+      for (const item of items) {
+        const regels = doc.splitTextToSize(item, B - 14);
+        nieuw(regels.length * 13.5);
+        vul('blad'); doc.rect(L + 1, y - 6, 4.5, 4.5, 'F');
+        font('normal', 9.5, 'inkt');
+        regels.forEach((r) => { doc.text(r, L + 14, y); y += 13.5; });
+        y += 2;
+      }
+    };
+
+    // --- Briefhoofd ---
+    doc.addImage(logo, 'PNG', L, 40, 48, 48);
+    woordmerk(L + 60, 64, 22);
+    if (b.slogan) { font('normal', 8.5, 'grijs'); doc.text(b.slogan, L + 60, 79); }
+    font('normal', 8.5, 'grijs');
+    [b.adres, b.postcode_plaats, b.telefoon, b.email, b.website].filter(Boolean)
+      .forEach((r, i) => doc.text(r, R, 47 + i * 11.5, { align: 'right' }));
+    vul('moss'); doc.rect(L, 104, B, 2, 'F');
+    vul('blad'); doc.rect(L, 106, 64, 2, 'F');
+
+    // --- Titel, opdrachtgever en kerngegevens ---
+    font('bold', 26, 'moss', 3); doc.text('OFFERTE', L, 150); doc.setCharSpace(0);
+    font('bold', 12.5, 'inkt');
+    const titel = doc.splitTextToSize(o.titel, 265);
+    doc.text(titel, L, 171);
+    let yl = 171 + titel.length * 15.5 + 14;
+    const k = rec.klant || {};
+    const klant = [k.naam, k.adres, k.postcode_plaats, k.email, k.telefoon].filter(Boolean);
+    if (klant.length) {
+      label('Opdrachtgever', L, yl); yl += 14;
+      font('normal', 9.5, 'inkt');
+      klant.forEach((r) => { doc.text(r, L, yl); yl += 12.5; });
+    }
     const datum = new Date(rec.createdAt);
     const geldig = new Date(datum.getTime() + 30 * 864e5);
-    doc.text(`Offertenummer: ${rec.nummer}`, R, y + 16, { align: 'right' });
-    doc.text(`Datum: ${datum.toLocaleDateString('nl-NL')}`, R, y + 29, { align: 'right' });
-    doc.text(`Geldig tot: ${geldig.toLocaleDateString('nl-NL')}`, R, y + 42, { align: 'right' });
-    y = Math.max(yb, y + 50) + 14;
+    const kern = [['Offertenummer', rec.nummer], ['Datum', nlDatum(datum)], ['Geldig tot', nlDatum(geldig)],
+      ['Uitvoering', `ca. ${getal(o.uitvoering.werkdagen)} werkdag(en)`]];
+    const bx = 335, bh = 22 + kern.length * 18;
+    vul('salie'); doc.roundedRect(bx, 128, R - bx, bh, 5, 5, 'F');
+    kern.forEach(([l, w], i) => {
+      const ry = 147 + i * 18;
+      font('normal', 8.5, 'grijs'); doc.text(l, bx + 14, ry);
+      font('bold', 9.5, 'inkt'); doc.text(String(w), R - 14, ry, { align: 'right' });
+    });
+    y = Math.max(yl, 128 + bh) + 22;
 
-    const k = rec.klant || {};
-    const klantRegels = [k.naam, k.adres, k.postcode_plaats, k.email, k.telefoon].filter(Boolean);
-    if (klantRegels.length) {
-      lettertype('bold', 10); doc.text('Aan', L, y); y += 13; lettertype('normal', 9.5);
-      klantRegels.forEach((x) => { doc.text(x, L, y); y += 12; });
-      y += 8;
-    }
-    lettertype('bold', 14, 30); alinea(o.titel); y += 2;
-    kop('Werkomschrijving'); alinea(o.werkomschrijving);
+    // --- Werkomschrijving ---
+    kop('Werkomschrijving');
+    alinea(o.werkomschrijving);
+    y += 6;
 
+    // --- Prijsspecificatie ---
     kop('Prijsspecificatie');
+    const kol = { oms: L + 10, aantal: 374, eenh: 384, prijs: 470, bedrag: R - 10 };
     const tabelKop = () => {
-      lettertype('bold', 8.5, 100);
-      doc.text('Omschrijving', L, y); doc.text('Aantal', 330, y, { align: 'right' }); doc.text('Eenh.', 338, y);
-      doc.text('Prijs', 450, y, { align: 'right' }); doc.text('Totaal', R, y, { align: 'right' });
-      doc.setDrawColor(200); doc.line(L, y + 4, R, y + 4); y += 16; lettertype('normal', 9);
+      vul('moss'); doc.rect(L, y, B, 20, 'F');
+      font('bold', 7.2, 'wit', 0.9);
+      doc.text('OMSCHRIJVING', kol.oms, y + 13);
+      doc.text('AANTAL', kol.aantal, y + 13, { align: 'right' });
+      doc.text('EENHEID', kol.eenh, y + 13);
+      doc.text('PRIJS', kol.prijs, y + 13, { align: 'right' });
+      doc.text('BEDRAG', kol.bedrag, y + 13, { align: 'right' });
+      doc.setCharSpace(0);
+      y += 20;
     };
     tabelKop();
     const groepen = [];
-    t.regels.forEach((x) => { let g = groepen.find((q) => q.naam === x.groep); if (!g) groepen.push(g = { naam: x.groep, regels: [] }); g.regels.push(x); });
+    t.regels.forEach((x) => {
+      let g = groepen.find((q) => q.naam === x.groep);
+      if (!g) groepen.push((g = { naam: x.groep, regels: [] }));
+      g.regels.push(x);
+    });
     for (const g of groepen) {
-      if (nieuw(30)) tabelKop();
-      lettertype('bold', 9.5, 30); doc.text(g.naam, L, y); y += 13; lettertype('normal', 9);
+      if (nieuw(46)) tabelKop();
+      vul('salie'); doc.rect(L, y, B, 19, 'F');
+      font('bold', 9, 'inkt'); doc.text(g.naam, kol.oms, y + 12.8);
+      font('bold', 8.5, 'grijs'); doc.text(euro(g.regels.reduce((s, x) => s + x.totaal, 0)), kol.bedrag, y + 12.8, { align: 'right' });
+      y += 19;
       for (const x of g.regels) {
-        const label = doc.splitTextToSize(x.soort === 'stelpost' ? `${x.omschrijving} (stelpost)` : x.omschrijving, 250);
-        if (nieuw(label.length * 11 + 4)) tabelKop();
-        doc.text(label, L + 8, y);
-        doc.text(getal(x.aantal), 330, y, { align: 'right' }); doc.text(x.eenheid, 338, y);
-        doc.text(euro(x.prijs_per_eenheid), 450, y, { align: 'right' }); doc.text(euro(x.totaal), R, y, { align: 'right' });
-        y += label.length * 11 + 3;
+        font('normal', 9, 'inkt');
+        const oms = doc.splitTextToSize(x.soort === 'stelpost' ? `${x.omschrijving} (stelpost)` : x.omschrijving, 265);
+        const h = oms.length * 11 + 9;
+        if (nieuw(h)) tabelKop();
+        font('normal', 9, 'inkt');
+        doc.text(oms, kol.oms, y + 13);
+        doc.text(getal(x.aantal), kol.aantal, y + 13, { align: 'right' });
+        doc.text(x.eenheid, kol.eenh, y + 13);
+        doc.text(euro(x.prijs_per_eenheid), kol.prijs, y + 13, { align: 'right' });
+        doc.text(euro(x.totaal), kol.bedrag, y + 13, { align: 'right' });
+        y += h;
+        lijn('lijn', 0.5); doc.line(L, y, R, y);
       }
-      lettertype('italic', 8.5, 110);
-      doc.text(`Subtotaal ${g.naam.toLowerCase()}: ${euro(g.regels.reduce((s, x) => s + x.totaal, 0))}`, R, y, { align: 'right' });
-      y += 14; lettertype('normal', 9);
     }
-    nieuw(30 + t.btw.length * 14);
-    doc.setDrawColor(200); doc.line(330, y, R, y); y += 14;
-    const totaalRegel = (label, bedrag, vet) => { lettertype(vet ? 'bold' : 'normal', vet ? 11 : 9.5, 20); doc.text(label, 450, y, { align: 'right' }); doc.text(euro(bedrag), R, y, { align: 'right' }); y += vet ? 16 : 13; };
-    totaalRegel('Totaal excl. btw', t.subtotaal);
-    t.btw.forEach((b) => totaalRegel(`Btw ${b.percentage}% over ${euro(b.grondslag)}`, b.bedrag));
-    totaalRegel('Totaal incl. btw', t.totaal, true);
 
+    // --- Totalen ---
+    y += 18;
+    nieuw(36 + t.btw.length * 16 + 30);
+    const tx = 330;
+    const totaalRegel = (l, w) => {
+      font('normal', 9.5, 'grijs'); doc.text(l, tx, y);
+      font('normal', 9.5, 'inkt'); doc.text(euro(w), R - 10, y, { align: 'right' });
+      y += 16;
+    };
+    totaalRegel('Subtotaal excl. btw', t.subtotaal);
+    t.btw.forEach((x) => totaalRegel(`Btw ${x.percentage}% over ${euro(x.grondslag)}`, x.bedrag));
+    y -= 4;
+    vul('moss'); doc.roundedRect(tx - 10, y, R - tx + 10, 28, 4, 4, 'F');
+    font('bold', 11, 'wit'); doc.text('Totaal incl. btw', tx, y + 18);
+    doc.text(euro(t.totaal), R - 10, y + 18, { align: 'right' });
+    y += 46;
+
+    // --- Voorwaarden en toelichting ---
     kop('Planning');
-    alinea(`Geschatte uitvoeringsduur: ${getal(o.uitvoering.werkdagen)} werkdag(en) met ${getal(o.uitvoering.aantal_personen)} man, afhankelijk van het weer.`);
-    if (o.aannames.length) { kop('Uitgangspunten'); o.aannames.forEach((a) => alinea('•  ' + a)); }
-    if (o.uitsluitingen.length) { kop('Niet inbegrepen'); o.uitsluitingen.forEach((a) => alinea('•  ' + a)); }
+    alinea(`De werkzaamheden duren naar verwachting ${getal(o.uitvoering.werkdagen)} werkdag(en) met ${getal(o.uitvoering.aantal_personen)} vakmensen. In overleg plannen wij een startdatum; bij slecht weer kan de planning schuiven.`);
+    if (o.aannames.length) { kop('Uitgangspunten'); opsomming(o.aannames); }
+    if (o.uitsluitingen.length) { kop('Niet inbegrepen'); opsomming(o.uitsluitingen); }
     if (o.vergunning_advies) { kop('Vergunning'); alinea(o.vergunning_advies); }
     kop('Voorwaarden');
-    [`Deze offerte is geldig tot ${geldig.toLocaleDateString('nl-NL')}.`, 'Stelposten worden verrekend op basis van werkelijk gemaakte kosten.', 'Meer- en minderwerk wordt vooraf met u afgestemd en apart verrekend.'].forEach((a) => alinea('•  ' + a));
+    opsomming([
+      `Deze offerte is geldig tot en met ${nlDatum(geldig)}. Alle bedragen zijn in euro's.`,
+      'Stelposten worden verrekend op basis van de werkelijk gemaakte kosten.',
+      'Meer- en minderwerk stemmen wij vooraf met u af en verrekenen wij apart.',
+      `Betaling binnen 14 dagen na factuurdatum${b.iban ? ` op ${b.iban} t.n.v. ${b.naam}` : ''}.`,
+    ]);
 
-    nieuw(90); y += 26;
-    lettertype('normal', 9.5, 30);
-    doc.text('Voor akkoord opdrachtgever:', L, y); doc.text(`Namens ${bedrijf.naam || 'opdrachtnemer'}:`, 320, y);
-    doc.setDrawColor(150); doc.line(L, y + 46, 250, y + 46); doc.line(320, y + 46, R, y + 46);
-    lettertype('normal', 8, 120); doc.text('Naam, datum en handtekening', L, y + 58);
+    // --- Akkoord ---
+    nieuw(150);
+    kop('Akkoord');
+    alinea('Gaat u akkoord? Onderteken deze offerte en stuur hem naar ons terug. Daarna nemen wij contact met u op om de werkzaamheden in te plannen.');
+    y += 8;
+    const vw = (B - 18) / 2;
+    [['Opdrachtgever', L], [`Namens ${b.naam}`, L + vw + 18]].forEach(([kopje, x]) => {
+      lijn('lijn', 0.8); doc.roundedRect(x, y, vw, 92, 5, 5, 'S');
+      label(kopje, x + 12, y + 18);
+      ['Naam', 'Datum', 'Handtekening'].forEach((v, i) => {
+        const ly = y + 40 + i * 20;
+        font('normal', 8.5, 'grijs'); doc.text(v, x + 12, ly);
+        lijn('lijn', 0.5); doc.line(x + 80, ly + 2, x + vw - 12, ly + 2);
+      });
+    });
 
+    // --- Voettekst op elke pagina ---
+    const voet = [b.naam, b.kvk && `KVK ${b.kvk}`, b.btw && `Btw ${b.btw}`, b.iban && `IBAN ${b.iban}`].filter(Boolean).join('   ·   ');
     const n = doc.getNumberOfPages();
-    for (let i = 1; i <= n; i++) { doc.setPage(i); lettertype('normal', 8, 150); doc.text(`${rec.nummer}  ·  pagina ${i} van ${n}`, (L + R) / 2, 815, { align: 'center' }); }
+    for (let i = 1; i <= n; i++) {
+      doc.setPage(i);
+      lijn('moss', 0.8); doc.line(L, 800, R, 800);
+      font('normal', 7.5, 'grijs');
+      doc.text(voet, L, 813);
+      doc.text(`Offerte ${rec.nummer}   ·   pagina ${i} van ${n}`, R, 813, { align: 'right' });
+    }
     return doc.output('blob');
   }
 

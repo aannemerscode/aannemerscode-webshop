@@ -301,18 +301,19 @@ async function sendDownloadEmail(order) {
 }
 
 // ---------- Routes ----------
-// GroenBestek (offerte-agent) heeft een eigen (grotere) bodylimiet voor foto's, dus vóór express.json().
-app.use('/api/offerte', createOfferteRouter({ seller: SELLER, dataDir: DATA_DIR }));
+// GreenTeam (offerte-agent) heeft een eigen (grotere) bodylimiet voor foto's, dus vóór express.json().
+app.use('/api/offerte', createOfferteRouter({ dataDir: DATA_DIR }));
 
-// De GroenBestek-pagina is zonder <html>/<head> geschreven (zo kan hij ook als Claude-artifact
-// draaien); hier krijgt hij het documentkader. prijslijst.json is voor de artifact-versie.
-app.get(['/groenbestek', '/groenbestek.html'], (req, res) => {
-  const inhoud = fs.readFileSync(path.join(__dirname, 'public', 'groenbestek.html'), 'utf8');
+// De GreenTeam-pagina is zonder <html>/<head> geschreven (zo kan hij ook als Claude-artifact
+// draaien); hier krijgt hij het documentkader. De PDF wordt in de browser gemaakt met jsPDF.
+app.get(['/greenteam', '/greenteam.html'], (req, res) => {
+  const inhoud = fs.readFileSync(path.join(__dirname, 'public', 'greenteam.html'), 'utf8');
   res.type('html').send(
     `<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex"></head><body>${inhoud}</body></html>`
   );
 });
-app.get('/offerte.html', (req, res) => res.redirect(301, '/groenbestek'));
+app.get('/vendor/jspdf.umd.min.js', (req, res) => res.sendFile(require.resolve('jspdf/dist/jspdf.umd.min.js')));
+app.get(['/offerte.html', '/groenbestek', '/groenbestek.html'], (req, res) => res.redirect(301, '/greenteam'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Mollie webhook stuurt form-encoded data
 app.use(express.static(path.join(__dirname, 'public')));
