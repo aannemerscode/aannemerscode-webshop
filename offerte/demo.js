@@ -158,4 +158,121 @@ async function stelDemoOfferteOp({ omschrijving, fotos, prijslijstBestand }) {
   return { offerte, totalen: berekenTotalen(offerte), model: 'demo' };
 }
 
-module.exports = { stelDemoOfferteOp, kiesScenario, leesMaten };
+// ---------- Demo-visualisatie ----------
+// Bouwt een nette werktekening uit het soort klus en de maten in de titel; de schets op de
+// foto is in demo-modus een vaste markering, omdat de foto niet echt bekeken wordt.
+const P = (x, y) => ({ x: round2(x), y: round2(y) });
+const rechthoek = (x1, y1, x2, y2) => [P(x1, y1), P(x2, y1), P(x2, y2), P(x1, y2)];
+const vlak = (punten, materiaal, label = null) => ({ type: 'vlak', punten, materiaal, label });
+const lijn = (punten, materiaal, label = null) => ({ type: 'lijn', punten, materiaal, label });
+const maat = (a, b, waarde) => ({ type: 'maatlijn', punten: [a, b], materiaal: 'bestaand', label: `${nl(round2(waarde).toFixed(2))} m` });
+const tekst = (p, label) => ({ type: 'tekst', punten: [p], materiaal: 'bestaand', label });
+
+const TEKENING = {
+  overkapping(m) {
+    const a = m.a || 4, b = m.b || 3, h = 2.5;
+    const n = a > 4.5 ? 3 : 2;
+    const xs = Array.from({ length: n }, (_, i) => 0.05 + (i * (a - 0.22)) / (n - 1));
+    const gordingen = Array.from({ length: Math.floor(a / 0.6) + 1 }, (_, i) => Math.min(a, i * 0.6));
+    return {
+      boven: { breedte_m: a, hoogte_m: b, elementen: [
+        lijn([P(-0.6, 0), P(a + 0.6, 0)], 'bestaand', 'achtergevel'),
+        vlak(rechthoek(0, 0, a, b), 'dak'),
+        ...gordingen.map((x) => lijn([P(x, 0.05), P(x, b - 0.05)], 'hout')),
+        lijn([P(0, b - 0.1), P(a, b - 0.1)], 'hout'),
+        ...xs.map((x) => vlak(rechthoek(x, b - 0.17, x + 0.12, b - 0.05), 'hout')),
+        maat(P(0, b + 0.5), P(a, b + 0.5), a), maat(P(a + 0.5, 0), P(a + 0.5, b), b),
+        tekst(P(a / 2, b / 2), 'EPDM-dak'),
+      ] },
+      voor: { breedte_m: a, hoogte_m: h + 0.25, elementen: [
+        vlak(rechthoek(-0.6, 0, -0.05, h + 0.6), 'bestaand', 'gevel'),
+        ...xs.map((x) => vlak(rechthoek(x, 0, x + 0.12, h), 'hout')),
+        vlak(rechthoek(-0.05, h, a + 0.1, h + 0.25), 'dak'),
+        lijn([P(a - 0.1, h), P(a - 0.1, 0.05)], 'staal', 'hwa'),
+        maat(P(a + 0.6, 0), P(a + 0.6, h + 0.25), h + 0.25), maat(P(0, -0.45), P(a, -0.45), a),
+        tekst(P(a / 2, h / 2), 'douglas staanders 12×12'),
+      ] },
+      foto: 'dak',
+    };
+  },
+  schutting(m) {
+    const L = m.lengte || 12, velden = Math.ceil(L / 1.84), w = L / velden;
+    const xs = Array.from({ length: velden + 1 }, (_, i) => i * w);
+    return {
+      boven: { breedte_m: L, hoogte_m: 0.6, elementen: [
+        lijn([P(0, 0.05), P(L, 0.05)], 'hout'),
+        ...xs.map((x) => vlak(rechthoek(x - 0.05, 0, x + 0.05, 0.1), 'beton')),
+        maat(P(0, 0.6), P(L, 0.6), L), tekst(P(L / 2, -0.35), 'erfgrens'),
+      ] },
+      voor: { breedte_m: L, hoogte_m: 1.8, elementen: [
+        ...xs.slice(0, -1).flatMap((x) => [
+          vlak(rechthoek(x + 0.05, 0, x + w - 0.05, 0.26), 'beton'),
+          vlak(rechthoek(x + 0.05, 0.26, x + w - 0.05, 1.8), 'hout'),
+          ...[0.45, 0.65, 0.85, 1.05, 1.25, 1.45, 1.65].map((y) => lijn([P(x + 0.05, y), P(x + w - 0.05, y)], 'hout')),
+        ]),
+        ...xs.map((x) => vlak(rechthoek(x - 0.05, 0, x + 0.05, 1.85), 'beton')),
+        maat(P(-0.5, 0), P(-0.5, 1.8), 1.8), maat(P(0, -0.4), P(w, -0.4), w),
+        tekst(P(L / 2, 2.15), `${velden} velden hout-beton`),
+      ] },
+      foto: 'hout',
+    };
+  },
+  tuinhuis(m) {
+    const a = m.a || 3, b = m.b || 2.5, h = 2.3, d = 0.1;
+    return {
+      boven: { breedte_m: a, hoogte_m: b, elementen: [
+        vlak(rechthoek(0, 0, a, d), 'hout'), vlak(rechthoek(0, b - d, a * 0.2, b), 'hout'),
+        vlak(rechthoek(a * 0.2 + 0.9, b - d, a, b), 'hout'),
+        vlak(rechthoek(0, 0, d, b), 'hout'), vlak(rechthoek(a - d, 0, a, b), 'hout'),
+        lijn([P(a * 0.2, b), P(a * 0.2 + 0.6, b + 0.6)], 'hout', 'deur'),
+        maat(P(0, b + 0.9), P(a, b + 0.9), a), maat(P(a + 0.5, 0), P(a + 0.5, b), b),
+        tekst(P(a / 2, b / 2), `${nl(round2(a * b))} m² vloer`),
+      ] },
+      voor: { breedte_m: a, hoogte_m: h + 0.15, elementen: [
+        vlak(rechthoek(0, 0, a, h), 'hout'),
+        ...Array.from({ length: Math.floor(a / 0.25) }, (_, i) => lijn([P(0.12 + i * 0.25, 0.05), P(0.12 + i * 0.25, h - 0.05)], 'hout')),
+        vlak(rechthoek(-0.15, h, a + 0.15, h + 0.15), 'dak'),
+        vlak(rechthoek(a * 0.2, 0, a * 0.2 + 0.9, 2.05), 'staal', 'deur'),
+        vlak(rechthoek(a * 0.6, 1.05, a * 0.6 + 0.6, 1.95), 'glas', 'raam'),
+        maat(P(a + 0.5, 0), P(a + 0.5, h + 0.15), h + 0.15), maat(P(0, -0.4), P(a, -0.4), a),
+      ] },
+      foto: 'hout',
+    };
+  },
+  terras(m) {
+    const a = m.a || 5, b = m.b || 6;
+    return {
+      boven: { breedte_m: a, hoogte_m: b, elementen: [
+        vlak(rechthoek(0, 0, a, b), 'tegels'),
+        lijn([P(0, 0), P(a, 0), P(a, b), P(0, b), P(0, 0)], 'beton', 'opsluitband'),
+        maat(P(0, b + 0.5), P(a, b + 0.5), a), maat(P(a + 0.5, 0), P(a + 0.5, b), b),
+        tekst(P(a / 2, b / 2), 'tegels 60×60'),
+      ] },
+      voor: { breedte_m: a, hoogte_m: 0.4, elementen: [
+        vlak(rechthoek(0, -0.12, a, 0), 'grond', 'zandbed / split'),
+        vlak(rechthoek(0, 0, a, 0.04), 'tegels'),
+        vlak(rechthoek(-0.06, -0.2, 0, 0.06), 'beton'), vlak(rechthoek(a, -0.2, a + 0.06, 0.06), 'beton'),
+        maat(P(0, 0.35), P(a, 0.35), a), tekst(P(a / 2, -0.35), 'doorsnede terras'),
+      ] },
+      foto: 'tegels',
+    };
+  },
+};
+
+function maakDemoVisualisatie(offerte, aantalFotos) {
+  const soort = { overkapping: 'overkapping', tuinhuis: 'tuinhuis' }[offerte.type_klus] || kiesScenario(offerte.titel);
+  const t = TEKENING[soort](leesMaten(offerte.titel));
+  const fotoschets = aantalFotos
+    ? {
+        foto: 1,
+        elementen: [
+          vlak([P(280, 560), P(720, 560), P(800, 820), P(200, 820)], t.foto),
+          tekst(P(500, 500), `Demo: hier komt ${offerte.titel.toLowerCase()}`),
+        ],
+        toelichting: 'Demo-modus: een vaste markering op de eerste foto. Met de echte AI wordt het nieuwe werk in perspectief op de juiste plek getekend.',
+      }
+    : { foto: null, elementen: [], toelichting: "Geen foto's beschikbaar; alleen de werktekening is gemaakt." };
+  return { bovenaanzicht: t.boven, vooraanzicht: t.voor, fotoschets };
+}
+
+module.exports = { stelDemoOfferteOp, maakDemoVisualisatie, kiesScenario, leesMaten };

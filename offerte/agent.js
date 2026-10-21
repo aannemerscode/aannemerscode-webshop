@@ -1,8 +1,8 @@
 const fs = require('fs');
 const Anthropic = require('@anthropic-ai/sdk');
-const { betaZodTool } = require('@anthropic-ai/sdk/helpers/beta/zod');
+const { betaZodTool, betaZodOutputFormat } = require('@anthropic-ai/sdk/helpers/beta/zod');
 const { z } = require('zod');
-const { OfferteSchema, berekenTotalen } = require('./schema');
+const { OfferteSchema, VisualisatieSchema, berekenTotalen } = require('./schema');
 
 // ---------- De offerte-agent ----------
 // Claude bekijkt de foto's en de omschrijving, zoekt zelf prijzen en arbeidsnormen
@@ -160,6 +160,62 @@ async function stelOfferteOp({ omschrijving, fotos, plaats, prijslijstBestand })
   };
 }
 
+// ---------- Visualisatie ----------
+// Zelfde instructie als in public/greenteam.html (Claude-modus); houd die twee gelijk.
+function visualisatiePrompt(offerte, aantalFotos) {
+  const kern = {
+    titel: offerte.titel,
+    type_klus: offerte.type_klus,
+    fotoanalyse: offerte.fotoanalyse,
+    werkomschrijving: offerte.werkomschrijving,
+    regels: offerte.regels.map((r) => ({ groep: r.groep, omschrijving: r.omschrijving, aantal: r.aantal, eenheid: r.eenheid, toelichting: r.toelichting })),
+    aannames: offerte.aannames,
+  };
+  return `Maak een visualisatie bij deze offerte voor een tuinklus: (1) een werktekening met bovenaanzicht en vooraanzicht op schaal, (2) een schets van het nieuwe werk over een van de foto's.
+
+Werktekening
+- Coördinaten in meters. Bovenaanzicht: x naar rechts, y naar beneden (van achter naar voor), oorsprong linksboven. Vooraanzicht: x naar rechts, y is de hoogte boven het maaiveld (0 = grond, omhoog positief).
+- breedte_m en hoogte_m zijn de afmetingen van het object in dat aanzicht (in het bovenaanzicht is hoogte_m de diepte).
+- Gebruik de maten uit de offerte. Teken het nieuwe werk met het juiste materiaal (hout, beton, tegels, gras, grond, dak, glas, staal) en wat er al is (gevel, bestaande schutting) met materiaal "bestaand".
+- Elementen: "vlak" (gesloten veelhoek, minstens 3 punten), "lijn" (2 of meer punten), "maatlijn" (precies 2 punten, label zoals "4,00 m", iets buiten het object) en "tekst" (1 punt met een kort label). Teken palen en staanders als kleine vlakken op hun echte plek, planken of gordingen als lijnen, een tegelvlak als één vlak. Zet maatlijnen voor de hoofdmaten. Maximaal ongeveer 40 elementen per aanzicht.
+
+Schets op de foto
+- ${aantalFotos ? `Er zijn ${aantalFotos} foto('s). Kies de foto waarop de plek van het nieuwe werk het best te zien is (foto = nummer, 1 = de eerste).` : 'Er zijn geen foto\'s: zet foto op null en laat de elementen leeg.'}
+- Coördinaten van 0 tot 1000 over de breedte (x) en hoogte (y) van die foto, 0,0 is linksboven.
+- Teken het nieuwe werk in perspectief op de plek waar het komt, passend bij de lijnen in de foto (gevel, grond, bestaande schutting). Gebruik vlakken met het juiste materiaal; markeer wat verdwijnt met materiaal "sloop". Zet er 2 tot 4 korte labels bij ("tekst"), bijvoorbeeld "Nieuwe overkapping 4 × 3 m".
+- toelichting: één zin over wat de schets laat zien.
+
+De offerte:
+${JSON.stringify(kern)}`;
+}
+
+/** Laat de AI een werktekening en een schets op de foto maken. */
+async function maakVisualisatie({ offerte, fotos }) {
+  const content = [];
+  fotos.forEach((foto, i) => {
+    content.push({ type: 'text', text: `Foto ${i + 1}:` });
+    content.push({ type: 'image', source: { type: 'base64', media_type: foto.mediaType, data: foto.data } });
+  });
+  content.push({ type: 'text', text: visualisatiePrompt(offerte, fotos.length) });
+
+  const response = await getClient().beta.messages.parse({
+    model: MODEL,
+    max_tokens: 16000,
+    thinking: { type: 'adaptive' },
+    output_config: { effort: EFFORT, format: betaZodOutputFormat(VisualisatieSchema) },
+    betas: ['server-side-fallback-2026-07-01'],
+    fallbacks: 'default',
+    messages: [{ role: 'user', content }],
+  });
+  if (response.stop_reason === 'refusal') {
+    throw new AgentFout('De AI weigerde deze visualisatie te maken. Probeer het opnieuw met andere foto\'s.');
+  }
+  if (!response.parsed_output) {
+    throw new AgentFout('De AI gaf geen bruikbare tekening terug. Probeer het opnieuw.');
+  }
+  return response.parsed_output;
+}
+
 class AgentFout extends Error {}
 
-module.exports = { stelOfferteOp, zoekInPrijslijst, AgentFout, Anthropic };
+module.exports = { stelOfferteOp, maakVisualisatie, zoekInPrijslijst, AgentFout, Anthropic };

@@ -57,7 +57,16 @@ groepen hernoemen, regels toevoegen of weghalen, en de offerte als PDF downloade
 GreenTeam-huisstijl: logo en briefhoofd, kerngegevens (offertenummer `OFF-2026-0001`, datum,
 geldigheid), prijstabel per onderdeel, totaal incl. btw, voorwaarden en een akkoordblok om te
 tekenen. Zet je bedrijfsgegevens voor de PDF in `.env` (`OFFERTE_BEDRIJF_*`, zie `.env.example`).
-Heet je bedrijf anders, zet dan `OFFERTE_BEDRIJF_NAAM`; het logo blijft, de naam verandert mee. Elke regel
+Heet je bedrijf anders, zet dan `OFFERTE_BEDRIJF_NAAM`; het logo blijft, de naam verandert mee.
+
+**Visualisatie.** Onder "Visualisatie" op het offerteblad laat je de AI een werktekening maken
+(bovenaanzicht en vooraanzicht op schaal, met maatlijnen) en een schets van het nieuwe werk over
+je eigen foto. De AI levert alleen vlakken, lijnen, maten en labels; de app tekent ze zelf, zodat
+het er altijd netjes uitziet. Beide komen als bijlage op de PDF (uit te zetten met "Meenemen op
+de PDF"). Het is een getekende schets, geen fotorealistisch beeld. De visualisatie gebruikt de
+foto's die op dat moment in het invoerscherm staan; zonder foto's krijg je alleen de werktekening.
+In demo-modus is de werktekening opgebouwd uit het soort klus en de maten, en is de schets op de
+foto een vaste markering. Elke regel
 laat zien of de prijs uit je prijslijst komt (**lijst**) of door de AI geschat is
 (**schatting**). Controleer geschatte prijzen altijd voordat je de offerte verstuurt.
 

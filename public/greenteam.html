@@ -83,7 +83,8 @@
   .testronde-kop { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .testronde-kop h2 { font-size: 16px; font-weight: 700; }
   .testronde-kop span { font-size: 13px; color: var(--muted); }
-  .checks { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .checks { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+  @media (max-width: 1240px) { .checks { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   @media (max-width: 900px) { .checks { grid-template-columns: 1fr; } }
   .checks li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 8px; background: var(--surface-2); font-size: 13.5px; line-height: 1.35; }
   .checks li .bol { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--muted); background: var(--surface); }
@@ -209,6 +210,23 @@
   @media (max-width: 640px) { .twee { grid-template-columns: minmax(0, 1fr); } }
   .acties { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 
+  .vis-raster { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 1150px) { .vis-raster { grid-template-columns: minmax(0, 1fr); } }
+  .vis-raster figure { margin: 0; display: grid; gap: 8px; }
+  .vis-raster.zonder-foto { grid-template-columns: minmax(0, 1fr); }
+  .vis-raster.zonder-foto .vis-tekeningen { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 800px) { .vis-raster.zonder-foto .vis-tekeningen { grid-template-columns: minmax(0, 1fr); } }
+  .vis-kader { position: relative; border-radius: 10px; overflow: hidden; background: var(--surface-2); }
+  .vis-kader img { display: block; width: 100%; height: auto; }
+  .vis-kader svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .vis-tekeningen { display: grid; gap: 12px; }
+  .vis-tekeningen svg { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; }
+  .vis-raster figcaption { font-size: 12.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .schakel { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--ink); cursor: pointer; }
+  .vis-leeg { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; background: var(--surface-2); border-radius: 10px; padding: 14px 16px; font-size: 14px; }
+  .vis-leeg p { margin: 0; flex: 1 1 260px; color: var(--muted); }
+  .bezig-tekst::before { content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 8px; border: 2px solid var(--moss); border-right-color: transparent; border-radius: 50%; animation: draai .9s linear infinite; vertical-align: -1px; }
+  @media (prefers-reduced-motion: reduce) { .bezig-tekst::before { animation: none; } }
   .historie { padding: 18px 20px; }
   .historie h2 { font-size: 17px; margin-bottom: 8px; }
   .historie ul { list-style: none; margin: 0; padding: 0; }
@@ -240,14 +258,15 @@
   <section class="testronde" aria-labelledby="testronde-titel">
     <div class="testronde-kop">
       <h2 id="testronde-titel">Testronde</h2>
-      <span id="testronde-stand">0 van 5 gedaan</span>
+      <span id="testronde-stand">0 van 6 gedaan</span>
     </div>
     <ol class="checks" id="checks">
       <li data-check="foto"><span class="bol">1</span><span><b>Foto toevoegen</b>Sleep een foto van een tuin, schutting of schuurtje in het vak.</span></li>
       <li data-check="omschrijving"><span class="bol">2</span><span><b>Klus beschrijven</b>Typ zelf of tik op een voorbeeldklus.</span></li>
       <li data-check="offerte"><span class="bol">3</span><span><b>Offerte maken</b>Klik op "Maak offerte" en kijk mee.</span></li>
       <li data-check="aangepast"><span class="bol">4</span><span><b>Regel aanpassen</b>Wijzig een aantal of prijs; het totaal rekent mee.</span></li>
-      <li data-check="pdf"><span class="bol">5</span><span><b>PDF downloaden</b>Bekijk hoe de klant de offerte krijgt.</span></li>
+      <li data-check="visualisatie"><span class="bol">5</span><span><b>Visualisatie maken</b>Laat een werktekening en een schets op je foto maken.</span></li>
+      <li data-check="pdf"><span class="bol">6</span><span><b>PDF downloaden</b>Bekijk hoe de klant de offerte krijgt.</span></li>
     </ol>
   </section>
 
@@ -348,6 +367,30 @@
           <p class="analyse" id="v-analyse"></p>
         </div>
 
+        <div class="vel-deel" id="vis-deel">
+          <h3>Visualisatie</h3>
+          <div class="vis-leeg" id="vis-leeg">
+            <p>Laat een werktekening (boven- en vooraanzicht met maten) en een schets van het nieuwe werk op je foto maken. Gebruikt de foto's die nu in het invoerscherm staan.</p>
+          </div>
+          <div id="vis-inhoud" hidden>
+            <div class="vis-raster">
+              <figure id="vis-foto">
+                <div class="vis-kader"><img id="vis-foto-img" alt="Foto van de huidige situatie met een schets van het nieuwe werk"><div id="vis-overlay"></div></div>
+                <figcaption><span id="vis-toelichting"></span><label class="schakel"><input type="checkbox" id="vis-schets-aan" checked> Schets tonen</label></figcaption>
+              </figure>
+              <div class="vis-tekeningen">
+                <figure id="vis-boven" aria-label="Werktekening bovenaanzicht"></figure>
+                <figure id="vis-voor" aria-label="Werktekening vooraanzicht"></figure>
+              </div>
+            </div>
+          </div>
+          <div class="acties">
+            <button type="button" class="knop rand klein" id="vis-maak">Maak visualisatie</button>
+            <label class="schakel"><input type="checkbox" id="vis-pdf" checked> Meenemen op de PDF</label>
+            <span class="hint" id="vis-status"></span>
+          </div>
+        </div>
+
         <div class="vel-deel">
           <h3>Prijsspecificatie</h3>
           <div class="tabel-scroll">
@@ -400,7 +443,7 @@
   const getal = (n) => (Number(n) || 0).toLocaleString('nl-NL', { maximumFractionDigits: 2 });
   const opslag = {
     lees(k, d) { try { const v = localStorage.getItem('greenteam:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
-    schrijf(k, v) { try { localStorage.setItem('greenteam:' + k, JSON.stringify(v)); } catch {} },
+    schrijf(k, v) { try { localStorage.setItem('greenteam:' + k, JSON.stringify(v)); return true; } catch { return false; } },
   };
 
   // ---------- Voorbeeldklussen ----------
@@ -412,6 +455,7 @@
   };
 
   // ---------- Voorbeeldofferte (getoond bij het openen) ----------
+  const VOORBEELD_VIS = {"bovenaanzicht":{"breedte_m":14,"hoogte_m":0.6,"elementen":[{"type":"lijn","punten":[{"x":0,"y":0.05},{"x":14,"y":0.05}],"materiaal":"hout","label":null},{"type":"vlak","punten":[{"x":-0.05,"y":0},{"x":0.05,"y":0},{"x":0.05,"y":0.1},{"x":-0.05,"y":0.1}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":1.7,"y":0},{"x":1.8,"y":0},{"x":1.8,"y":0.1},{"x":1.7,"y":0.1}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":3.45,"y":0},{"x":3.55,"y":0},{"x":3.55,"y":0.1},{"x":3.45,"y":0.1}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":5.2,"y":0},{"x":5.3,"y":0},{"x":5.3,"y":0.1},{"x":5.2,"y":0.1}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":6.95,"y":0},{"x":7.05,"y":0},{"x":7.05,"y":0.1},{"x":6.95,"y":0.1}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":8.7,"y":0},{"x":8.8,"y":0},{"x":8.8,"y":0.1},{"x":8.7,"y":0.1}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":10.45,"y":0},{"x":10.55,"y":0},{"x":10.55,"y":0.1},{"x":10.45,"y":0.1}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":12.2,"y":0},{"x":12.3,"y":0},{"x":12.3,"y":0.1},{"x":12.2,"y":0.1}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":13.95,"y":0},{"x":14.05,"y":0},{"x":14.05,"y":0.1},{"x":13.95,"y":0.1}],"materiaal":"beton","label":null},{"type":"maatlijn","punten":[{"x":0,"y":0.6},{"x":14,"y":0.6}],"materiaal":"bestaand","label":"14,00 m"},{"type":"tekst","punten":[{"x":7,"y":-0.35}],"materiaal":"bestaand","label":"erfgrens"}]},"vooraanzicht":{"breedte_m":14,"hoogte_m":1.8,"elementen":[{"type":"vlak","punten":[{"x":0.05,"y":0},{"x":1.7,"y":0},{"x":1.7,"y":0.26},{"x":0.05,"y":0.26}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":0.05,"y":0.26},{"x":1.7,"y":0.26},{"x":1.7,"y":1.8},{"x":0.05,"y":1.8}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":0.05,"y":0.45},{"x":1.7,"y":0.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":0.05,"y":0.65},{"x":1.7,"y":0.65}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":0.05,"y":0.85},{"x":1.7,"y":0.85}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":0.05,"y":1.05},{"x":1.7,"y":1.05}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":0.05,"y":1.25},{"x":1.7,"y":1.25}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":0.05,"y":1.45},{"x":1.7,"y":1.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":0.05,"y":1.65},{"x":1.7,"y":1.65}],"materiaal":"hout","label":null},{"type":"vlak","punten":[{"x":1.8,"y":0},{"x":3.45,"y":0},{"x":3.45,"y":0.26},{"x":1.8,"y":0.26}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":1.8,"y":0.26},{"x":3.45,"y":0.26},{"x":3.45,"y":1.8},{"x":1.8,"y":1.8}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":1.8,"y":0.45},{"x":3.45,"y":0.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":1.8,"y":0.65},{"x":3.45,"y":0.65}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":1.8,"y":0.85},{"x":3.45,"y":0.85}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":1.8,"y":1.05},{"x":3.45,"y":1.05}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":1.8,"y":1.25},{"x":3.45,"y":1.25}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":1.8,"y":1.45},{"x":3.45,"y":1.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":1.8,"y":1.65},{"x":3.45,"y":1.65}],"materiaal":"hout","label":null},{"type":"vlak","punten":[{"x":3.55,"y":0},{"x":5.2,"y":0},{"x":5.2,"y":0.26},{"x":3.55,"y":0.26}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":3.55,"y":0.26},{"x":5.2,"y":0.26},{"x":5.2,"y":1.8},{"x":3.55,"y":1.8}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":3.55,"y":0.45},{"x":5.2,"y":0.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":3.55,"y":0.65},{"x":5.2,"y":0.65}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":3.55,"y":0.85},{"x":5.2,"y":0.85}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":3.55,"y":1.05},{"x":5.2,"y":1.05}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":3.55,"y":1.25},{"x":5.2,"y":1.25}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":3.55,"y":1.45},{"x":5.2,"y":1.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":3.55,"y":1.65},{"x":5.2,"y":1.65}],"materiaal":"hout","label":null},{"type":"vlak","punten":[{"x":5.3,"y":0},{"x":6.95,"y":0},{"x":6.95,"y":0.26},{"x":5.3,"y":0.26}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":5.3,"y":0.26},{"x":6.95,"y":0.26},{"x":6.95,"y":1.8},{"x":5.3,"y":1.8}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":5.3,"y":0.45},{"x":6.95,"y":0.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":5.3,"y":0.65},{"x":6.95,"y":0.65}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":5.3,"y":0.85},{"x":6.95,"y":0.85}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":5.3,"y":1.05},{"x":6.95,"y":1.05}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":5.3,"y":1.25},{"x":6.95,"y":1.25}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":5.3,"y":1.45},{"x":6.95,"y":1.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":5.3,"y":1.65},{"x":6.95,"y":1.65}],"materiaal":"hout","label":null},{"type":"vlak","punten":[{"x":7.05,"y":0},{"x":8.7,"y":0},{"x":8.7,"y":0.26},{"x":7.05,"y":0.26}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":7.05,"y":0.26},{"x":8.7,"y":0.26},{"x":8.7,"y":1.8},{"x":7.05,"y":1.8}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":7.05,"y":0.45},{"x":8.7,"y":0.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":7.05,"y":0.65},{"x":8.7,"y":0.65}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":7.05,"y":0.85},{"x":8.7,"y":0.85}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":7.05,"y":1.05},{"x":8.7,"y":1.05}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":7.05,"y":1.25},{"x":8.7,"y":1.25}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":7.05,"y":1.45},{"x":8.7,"y":1.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":7.05,"y":1.65},{"x":8.7,"y":1.65}],"materiaal":"hout","label":null},{"type":"vlak","punten":[{"x":8.8,"y":0},{"x":10.45,"y":0},{"x":10.45,"y":0.26},{"x":8.8,"y":0.26}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":8.8,"y":0.26},{"x":10.45,"y":0.26},{"x":10.45,"y":1.8},{"x":8.8,"y":1.8}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":8.8,"y":0.45},{"x":10.45,"y":0.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":8.8,"y":0.65},{"x":10.45,"y":0.65}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":8.8,"y":0.85},{"x":10.45,"y":0.85}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":8.8,"y":1.05},{"x":10.45,"y":1.05}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":8.8,"y":1.25},{"x":10.45,"y":1.25}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":8.8,"y":1.45},{"x":10.45,"y":1.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":8.8,"y":1.65},{"x":10.45,"y":1.65}],"materiaal":"hout","label":null},{"type":"vlak","punten":[{"x":10.55,"y":0},{"x":12.2,"y":0},{"x":12.2,"y":0.26},{"x":10.55,"y":0.26}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":10.55,"y":0.26},{"x":12.2,"y":0.26},{"x":12.2,"y":1.8},{"x":10.55,"y":1.8}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":10.55,"y":0.45},{"x":12.2,"y":0.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":10.55,"y":0.65},{"x":12.2,"y":0.65}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":10.55,"y":0.85},{"x":12.2,"y":0.85}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":10.55,"y":1.05},{"x":12.2,"y":1.05}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":10.55,"y":1.25},{"x":12.2,"y":1.25}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":10.55,"y":1.45},{"x":12.2,"y":1.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":10.55,"y":1.65},{"x":12.2,"y":1.65}],"materiaal":"hout","label":null},{"type":"vlak","punten":[{"x":12.3,"y":0},{"x":13.95,"y":0},{"x":13.95,"y":0.26},{"x":12.3,"y":0.26}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":12.3,"y":0.26},{"x":13.95,"y":0.26},{"x":13.95,"y":1.8},{"x":12.3,"y":1.8}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":12.3,"y":0.45},{"x":13.95,"y":0.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":12.3,"y":0.65},{"x":13.95,"y":0.65}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":12.3,"y":0.85},{"x":13.95,"y":0.85}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":12.3,"y":1.05},{"x":13.95,"y":1.05}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":12.3,"y":1.25},{"x":13.95,"y":1.25}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":12.3,"y":1.45},{"x":13.95,"y":1.45}],"materiaal":"hout","label":null},{"type":"lijn","punten":[{"x":12.3,"y":1.65},{"x":13.95,"y":1.65}],"materiaal":"hout","label":null},{"type":"vlak","punten":[{"x":-0.05,"y":0},{"x":0.05,"y":0},{"x":0.05,"y":1.85},{"x":-0.05,"y":1.85}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":1.7,"y":0},{"x":1.8,"y":0},{"x":1.8,"y":1.85},{"x":1.7,"y":1.85}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":3.45,"y":0},{"x":3.55,"y":0},{"x":3.55,"y":1.85},{"x":3.45,"y":1.85}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":5.2,"y":0},{"x":5.3,"y":0},{"x":5.3,"y":1.85},{"x":5.2,"y":1.85}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":6.95,"y":0},{"x":7.05,"y":0},{"x":7.05,"y":1.85},{"x":6.95,"y":1.85}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":8.7,"y":0},{"x":8.8,"y":0},{"x":8.8,"y":1.85},{"x":8.7,"y":1.85}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":10.45,"y":0},{"x":10.55,"y":0},{"x":10.55,"y":1.85},{"x":10.45,"y":1.85}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":12.2,"y":0},{"x":12.3,"y":0},{"x":12.3,"y":1.85},{"x":12.2,"y":1.85}],"materiaal":"beton","label":null},{"type":"vlak","punten":[{"x":13.95,"y":0},{"x":14.05,"y":0},{"x":14.05,"y":1.85},{"x":13.95,"y":1.85}],"materiaal":"beton","label":null},{"type":"maatlijn","punten":[{"x":-0.5,"y":0},{"x":-0.5,"y":1.8}],"materiaal":"bestaand","label":"1,80 m"},{"type":"maatlijn","punten":[{"x":0,"y":-0.4},{"x":1.75,"y":-0.4}],"materiaal":"bestaand","label":"1,75 m"},{"type":"tekst","punten":[{"x":7,"y":2.15}],"materiaal":"bestaand","label":"8 velden hout-beton"}]},"fotoschets":{"foto":null,"elementen":[],"toelichting":"Bij je eigen offerte staat hier je foto, met het nieuwe werk erop geschetst."}};
   const r = (groep, soort, omschrijving, aantal, eenheid, prijs, toelichting, prijsbron = 'prijslijst') =>
     ({ groep, soort, omschrijving, aantal, eenheid, prijs_per_eenheid: prijs, btw_percentage: 21, prijsbron, artikelcode: null, toelichting });
   const VOORBEELD = {
@@ -439,6 +483,7 @@
       uitvoering: { werkdagen: 2, aantal_personen: 2 },
       betrouwbaarheid: 'gemiddeld', betrouwbaarheid_toelichting: 'Lengte geschat aan de hand van tegels op de foto.',
     },
+    visualisatie: { ...VOORBEELD_VIS, fotoData: null },
   };
 
   // ---------- Staat ----------
@@ -463,7 +508,8 @@
     st.checks[naam] = true;
     document.querySelector(`[data-check="${naam}"]`)?.classList.add('klaar');
     const n = Object.keys(st.checks).length;
-    $('testronde-stand').textContent = n === 5 ? 'Alles werkt. Klaar!' : `${n} van 5 gedaan`;
+    const totaal = document.querySelectorAll('#checks li').length;
+    $('testronde-stand').textContent = n === totaal ? 'Alles werkt. Klaar!' : `${n} van ${totaal} gedaan`;
     document.querySelector(`[data-check="${naam}"] .bol`).textContent = '✓';
   }
 
@@ -556,15 +602,15 @@
   document.addEventListener('paste', (e) => { const f = [...(e.clipboardData?.files || [])]; if (f.length) voegFotosToe(f); });
 
   // Verklein naar max. 1568 px voor verzending naar de eigen server.
-  function naarDataUrl(file) {
+  function naarDataUrl(file, max = 1568, kwaliteit = 0.85) {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
-        const s = Math.min(1, 1568 / Math.max(img.width, img.height));
+        const s = Math.min(1, max / Math.max(img.width, img.height));
         const c = document.createElement('canvas');
         c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
         c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-        resolve(c.toDataURL('image/jpeg', 0.85));
+        resolve(c.toDataURL('image/jpeg', kwaliteit));
       };
       img.onerror = () => reject(new Error(`Kon ${file.name} niet lezen.`));
       img.src = URL.createObjectURL(file);
@@ -792,7 +838,11 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
   function bewaarLokaal(record) {
     const alle = opslag.lees('offertes', []).filter((x) => x.id !== record.id);
     alle.unshift(record);
-    opslag.schrijf('offertes', alle.slice(0, 30));
+    // Foto's maken de opslag groot; als de browser vol zit, houden alleen de nieuwste hun foto.
+    if (!opslag.schrijf('offertes', alle.slice(0, 30))) {
+      const zonderFotos = alle.slice(0, 30).map((x, i) => (i === 0 || !x.visualisatie ? x : { ...x, visualisatie: { ...x.visualisatie, fotoData: null } }));
+      opslag.schrijf('offertes', zonderFotos);
+    }
   }
 
   // ---------- Totalen ----------
@@ -838,7 +888,9 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
     $('v-vragen').value = o.vragen_aan_klant.join('\n');
     $('v-vergunning').value = o.vergunning_advies;
     $('vel-status').textContent = '';
+    $('vis-status').textContent = '';
     toonRegels();
+    toonVisualisatie().catch(() => {});
   }
 
   function toonRegels() {
@@ -962,6 +1014,228 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
     } catch (err) { $('vel-status').textContent = err.message; }
   });
 
+  // ---------- Visualisatie: werktekening + schets op de foto ----------
+  // De AI levert vlakken, lijnen, maatlijnen en labels; de app tekent ze zelf als SVG,
+  // zodat de tekening altijd in dezelfde nette stijl staat (ook op de PDF).
+  const MAT = {
+    hout: { f: '#C79A62', s: '#7A5332' }, beton: { f: '#BFC3BD', s: '#6E746E' }, tegels: { f: '#DAD5C8', s: '#8C8677' },
+    gras: { f: '#9DC47C', s: '#5D8742' }, grond: { f: '#BC9F7A', s: '#7C6446' }, dak: { f: '#4B5652', s: '#2C3331' },
+    glas: { f: '#CDE5EF', s: '#6A97AB' }, staal: { f: '#7F898E', s: '#454D51' }, bestaand: { f: '#EEF0EC', s: '#9AA39C' },
+    sloop: { f: '#E06A55', s: '#A3392A' },
+  };
+  const TYPES = ['vlak', 'lijn', 'maatlijn', 'tekst'];
+  const SVG_FONT = 'Helvetica, Arial, sans-serif';
+  const INKT = '#26332B';
+  const halo = (kleur = '#fff', breedte = 3) => `paint-order="stroke" stroke="${kleur}" stroke-width="${breedte}" stroke-linejoin="round"`;
+  const pt = (p) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`;
+
+  function tekeningSvg(aanzicht, soort) {
+    const W = 640, H = soort === 'boven' ? 430 : 340, marge = 48, kop = 26;
+    const boven = soort === 'boven';
+    const alle = [{ x: 0, y: 0 }, { x: aanzicht.breedte_m, y: aanzicht.hoogte_m }, ...aanzicht.elementen.flatMap((e) => e.punten)];
+    const minX = Math.min(...alle.map((p) => p.x)), maxX = Math.max(...alle.map((p) => p.x));
+    const minY = Math.min(...alle.map((p) => p.y)), maxY = Math.max(...alle.map((p) => p.y));
+    const bw = Math.max(maxX - minX, 0.5), bh = Math.max(maxY - minY, 0.5);
+    const ruimteH = H - 2 * marge - kop;
+    const s = Math.min((W - 2 * marge) / bw, ruimteH / bh);
+    const ox = (W - bw * s) / 2, oy = marge + kop + (ruimteH - bh * s) / 2;
+    const X = (x) => ox + (x - minX) * s;
+    const Y = (y) => (boven ? oy + (y - minY) * s : oy + (maxY - y) * s);
+    const P = (p) => [X(p.x), Y(p.y)];
+    const delen = [];
+
+    // Ruitjespapier per meter (of per 2/5 m bij grote objecten).
+    const stap = s >= 22 ? 1 : s >= 9 ? 2 : 5;
+    for (let x = Math.ceil(minX / stap) * stap; x <= maxX; x += stap) delen.push(`<line x1="${X(x).toFixed(1)}" y1="${oy - 6}" x2="${X(x).toFixed(1)}" y2="${(oy + bh * s + 6).toFixed(1)}" stroke="#E3EADF" stroke-width="1"/>`);
+    for (let y = Math.ceil(minY / stap) * stap; y <= maxY; y += stap) delen.push(`<line x1="${ox - 6}" y1="${Y(y).toFixed(1)}" x2="${(ox + bw * s + 6).toFixed(1)}" y2="${Y(y).toFixed(1)}" stroke="#E3EADF" stroke-width="1"/>`);
+    if (!boven) {
+      const gy = Y(0);
+      delen.push(`<rect x="16" y="${gy.toFixed(1)}" width="${W - 32}" height="7" fill="#D9CBB4"/>`, `<line x1="16" y1="${gy.toFixed(1)}" x2="${W - 16}" y2="${gy.toFixed(1)}" stroke="#7C6446" stroke-width="2"/>`);
+    }
+
+    const volgorde = { vlak: 0, lijn: 1, maatlijn: 2, tekst: 3 };
+    for (const e of [...aanzicht.elementen].sort((a, b) => volgorde[a.type] - volgorde[b.type])) {
+      const m = MAT[e.materiaal] || MAT.bestaand;
+      const streep = e.materiaal === 'bestaand' || e.materiaal === 'sloop' ? ' stroke-dasharray="5 4"' : '';
+      const ps = e.punten.map(P);
+      if (e.type === 'vlak' && ps.length >= 3) {
+        delen.push(`<polygon points="${ps.map(pt).join(' ')}" fill="${m.f}"${e.materiaal === 'sloop' ? ' fill-opacity=".45"' : ''} stroke="${m.s}" stroke-width="1.2"${streep}/>`);
+        if (e.label) {
+          const c = ps.reduce((a, p) => [a[0] + p[0] / ps.length, a[1] + p[1] / ps.length], [0, 0]);
+          delen.push(`<text x="${c[0].toFixed(1)}" y="${(c[1] + 5).toFixed(1)}" font-size="13" text-anchor="middle" fill="${INKT}" ${halo()}>${esc(e.label)}</text>`);
+        }
+      } else if (e.type === 'lijn' && ps.length >= 2) {
+        delen.push(`<polyline points="${ps.map(pt).join(' ')}" fill="none" stroke="${m.s}" stroke-width="${e.materiaal === 'bestaand' ? 2.2 : 1.4}"${streep}/>`);
+        if (e.label) delen.push(`<text x="${(ps[0][0] + 4).toFixed(1)}" y="${(ps[0][1] - 5).toFixed(1)}" font-size="12.5" fill="#6B776F" ${halo()}>${esc(e.label)}</text>`);
+      } else if (e.type === 'maatlijn' && ps.length >= 2) {
+        const [a, b] = ps;
+        const hoek = Math.atan2(b[1] - a[1], b[0] - a[0]);
+        const tik = (p) => `<line x1="${(p[0] - 5).toFixed(1)}" y1="${(p[1] + 5).toFixed(1)}" x2="${(p[0] + 5).toFixed(1)}" y2="${(p[1] - 5).toFixed(1)}" stroke="${INKT}" stroke-width="1.3"/>`;
+        delen.push(`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${INKT}" stroke-width=".9"/>`, tik(a), tik(b));
+        if (e.label) {
+          let graden = (hoek * 180) / Math.PI;
+          if (graden > 90 || graden < -90) graden += 180;
+          const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+          delen.push(`<text transform="translate(${mx.toFixed(1)} ${my.toFixed(1)}) rotate(${graden.toFixed(1)})" y="-6" font-size="14" font-weight="bold" text-anchor="middle" fill="${INKT}" ${halo()}>${esc(e.label)}</text>`);
+        }
+      } else if (e.type === 'tekst' && ps.length >= 1 && e.label) {
+        delen.push(`<text x="${ps[0][0].toFixed(1)}" y="${ps[0][1].toFixed(1)}" font-size="14" text-anchor="middle" fill="${INKT}" ${halo()}>${esc(e.label)}</text>`);
+      }
+    }
+
+    // Kop en schaalstok
+    const schaal = s >= 22 ? 1 : s >= 9 ? 2 : 5;
+    const sx = 22, sy = H - 18;
+    delen.push(
+      `<text x="22" y="30" font-size="15" font-weight="bold" fill="#2D5A39" letter-spacing=".8">${boven ? 'BOVENAANZICHT' : 'VOORAANZICHT'}</text>`,
+      `<rect x="${sx}" y="${sy - 4}" width="${(schaal * s).toFixed(1)}" height="4" fill="${INKT}"/>`,
+      `<text x="${(sx + schaal * s + 6).toFixed(1)}" y="${sy}" font-size="12.5" fill="#6B776F">${schaal} m</text>`,
+    );
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="${SVG_FONT}"><rect width="${W}" height="${H}" fill="#FFFFFF"/>${delen.join('')}</svg>`;
+  }
+
+  function fotoschetsSvg(schets, w, h) {
+    const X = (p) => [(p.x * w) / 1000, (p.y * h) / 1000];
+    const sw = Math.max(2, w / 320);
+    const fs = Math.max(12, w / 46);
+    const delen = [];
+    const volgorde = { vlak: 0, lijn: 1, maatlijn: 2, tekst: 3 };
+    for (const e of [...schets.elementen].sort((a, b) => volgorde[a.type] - volgorde[b.type])) {
+      const m = MAT[e.materiaal] || MAT.bestaand;
+      const ps = e.punten.map(X);
+      if (e.type === 'vlak' && ps.length >= 3) {
+        const sloop = e.materiaal === 'sloop';
+        delen.push(`<polygon points="${ps.map(pt).join(' ')}" fill="${m.f}" fill-opacity="${sloop ? 0.42 : 0.66}" stroke="#fff" stroke-width="${(sw * 1.3).toFixed(1)}"${sloop ? ` stroke-dasharray="${sw * 4} ${sw * 3}"` : ''} stroke-linejoin="round"/>`);
+      } else if ((e.type === 'lijn' || e.type === 'maatlijn') && ps.length >= 2) {
+        const pts = ps.map(pt).join(' ');
+        delen.push(`<polyline points="${pts}" fill="none" stroke="#fff" stroke-width="${(sw * 2.4).toFixed(1)}" stroke-linecap="round" stroke-linejoin="round"/>`,
+          `<polyline points="${pts}" fill="none" stroke="${e.type === 'maatlijn' ? '#2D5A39' : m.s}" stroke-width="${sw.toFixed(1)}" stroke-linecap="round" stroke-linejoin="round"/>`);
+      }
+      // Labels als groene kaartjes, binnen de foto gehouden.
+      if (e.label && ps.length && (e.type === 'tekst' || e.type === 'maatlijn' || e.type === 'vlak')) {
+        const c = e.type === 'tekst' ? ps[0] : ps.reduce((a, p) => [a[0] + p[0] / ps.length, a[1] + p[1] / ps.length], [0, 0]);
+        const bw = e.label.length * fs * 0.56 + fs * 1.2, bh = fs * 1.75;
+        const x = Math.min(Math.max(c[0] - bw / 2, 6), w - bw - 6), y = Math.min(Math.max(c[1] - bh / 2, 6), h - bh - 6);
+        delen.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${(bh / 2).toFixed(1)}" fill="#2D5A39" fill-opacity=".93"/>`,
+          `<text x="${(x + bw / 2).toFixed(1)}" y="${(y + bh * 0.66).toFixed(1)}" font-size="${fs.toFixed(1)}" font-weight="bold" text-anchor="middle" fill="#fff">${esc(e.label)}</text>`);
+      }
+    }
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" font-family="${SVG_FONT}">${delen.join('')}</svg>`;
+  }
+
+  const laadBeeld = (src) => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('Afbeelding kon niet worden geladen.'));
+    img.src = src;
+  });
+  const svgUrl = (svg) => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+
+  async function toonVisualisatie() {
+    const vis = st.huidig.visualisatie;
+    $('vis-leeg').hidden = Boolean(vis);
+    $('vis-inhoud').hidden = !vis;
+    $('vis-maak').textContent = vis ? 'Opnieuw maken' : 'Maak visualisatie';
+    $('vis-maak').hidden = Boolean(st.huidig.voorbeeld);
+    if (!vis) return;
+    $('vis-boven').innerHTML = tekeningSvg(vis.bovenaanzicht, 'boven');
+    $('vis-voor').innerHTML = tekeningSvg(vis.vooraanzicht, 'voor');
+    $('vis-toelichting').textContent = vis.fotoschets.toelichting || '';
+    $('vis-foto').hidden = !vis.fotoData;
+    document.querySelector('.vis-raster').classList.toggle('zonder-foto', !vis.fotoData);
+    if (vis.fotoData) {
+      const img = await laadBeeld(vis.fotoData);
+      $('vis-foto-img').src = vis.fotoData;
+      $('vis-overlay').innerHTML = fotoschetsSvg(vis.fotoschets, img.naturalWidth, img.naturalHeight);
+    }
+  }
+  $('vis-schets-aan').addEventListener('change', (e) => { $('vis-overlay').hidden = !e.target.checked; });
+
+  function visualisatiePrompt(offerte, aantalFotos) {
+    const kern = {
+      titel: offerte.titel, type_klus: offerte.type_klus, fotoanalyse: offerte.fotoanalyse, werkomschrijving: offerte.werkomschrijving,
+      regels: offerte.regels.map((r) => ({ groep: r.groep, omschrijving: r.omschrijving, aantal: r.aantal, eenheid: r.eenheid, toelichting: r.toelichting })),
+      aannames: offerte.aannames,
+    };
+    return `Maak een visualisatie bij deze offerte voor een tuinklus: (1) een werktekening met bovenaanzicht en vooraanzicht op schaal, (2) een schets van het nieuwe werk over een van de foto's.
+
+Werktekening
+- Coördinaten in meters. Bovenaanzicht: x naar rechts, y naar beneden (van achter naar voor), oorsprong linksboven. Vooraanzicht: x naar rechts, y is de hoogte boven het maaiveld (0 = grond, omhoog positief).
+- breedte_m en hoogte_m zijn de afmetingen van het object in dat aanzicht (in het bovenaanzicht is hoogte_m de diepte).
+- Gebruik de maten uit de offerte. Teken het nieuwe werk met het juiste materiaal (hout, beton, tegels, gras, grond, dak, glas, staal) en wat er al is (gevel, bestaande schutting) met materiaal "bestaand".
+- Elementen: "vlak" (gesloten veelhoek, minstens 3 punten), "lijn" (2 of meer punten), "maatlijn" (precies 2 punten, label zoals "4,00 m", iets buiten het object) en "tekst" (1 punt met een kort label). Teken palen en staanders als kleine vlakken op hun echte plek, planken of gordingen als lijnen, een tegelvlak als één vlak. Zet maatlijnen voor de hoofdmaten. Maximaal ongeveer 40 elementen per aanzicht.
+
+Schets op de foto
+- ${aantalFotos ? `Er zijn ${aantalFotos} foto('s). Kies de foto waarop de plek van het nieuwe werk het best te zien is (foto = nummer, 1 = de eerste).` : 'Er zijn geen foto\'s: zet foto op null en laat de elementen leeg.'}
+- Coördinaten van 0 tot 1000 over de breedte (x) en hoogte (y) van die foto, 0,0 is linksboven.
+- Teken het nieuwe werk in perspectief op de plek waar het komt, passend bij de lijnen in de foto (gevel, grond, bestaande schutting). Gebruik vlakken met het juiste materiaal; markeer wat verdwijnt met materiaal "sloop". Zet er 2 tot 4 korte labels bij ("tekst"), bijvoorbeeld "Nieuwe overkapping 4 × 3 m".
+- toelichting: één zin over wat de schets laat zien.
+
+De offerte:
+${JSON.stringify(kern)}
+
+Antwoord met alleen één JSON-object in deze vorm:
+{"bovenaanzicht": {"breedte_m": number, "hoogte_m": number, "elementen": [{"type": "vlak"|"lijn"|"maatlijn"|"tekst", "punten": [{"x": number, "y": number}], "materiaal": "hout"|"beton"|"tegels"|"gras"|"grond"|"dak"|"glas"|"staal"|"bestaand"|"sloop", "label": string|null}]}, "vooraanzicht": {zelfde vorm}, "fotoschets": {"foto": number|null, "elementen": [zelfde vorm als hierboven], "toelichting": string}}`;
+  }
+
+  // Controleer wat de AI teruggeeft; onbruikbare elementen vallen weg in plaats van de tekening te breken.
+  function normaliseerVis(d, aantalFotos) {
+    const elementen = (lijst) => (Array.isArray(lijst) ? lijst : []).map((e) => ({
+      type: TYPES.includes(e?.type) ? e.type : 'lijn',
+      punten: (Array.isArray(e?.punten) ? e.punten : []).map((p) => ({ x: Number(p?.x), y: Number(p?.y) })).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y)),
+      materiaal: MAT[e?.materiaal] ? e.materiaal : 'bestaand',
+      label: e?.label ? String(e.label).slice(0, 60) : null,
+    })).filter((e) => e.punten.length).slice(0, 120);
+    const aanzicht = (a) => ({ breedte_m: Number(a?.breedte_m) || 1, hoogte_m: Number(a?.hoogte_m) || 1, elementen: elementen(a?.elementen) });
+    if (!d || !d.bovenaanzicht || !d.vooraanzicht) throw new Error('De AI gaf geen bruikbare tekening terug. Probeer het opnieuw.');
+    const nr = Number(d.fotoschets?.foto);
+    const foto = Number.isInteger(nr) && nr >= 1 && nr <= aantalFotos ? nr : null;
+    return {
+      bovenaanzicht: aanzicht(d.bovenaanzicht),
+      vooraanzicht: aanzicht(d.vooraanzicht),
+      fotoschets: { foto, elementen: foto ? elementen(d.fotoschets?.elementen) : [], toelichting: String(d.fotoschets?.toelichting || '') },
+    };
+  }
+
+  $('vis-maak').addEventListener('click', async () => {
+    if (st.huidig.voorbeeld || st.visBezig) return;
+    st.visBezig = true;
+    $('vis-maak').disabled = true;
+    $('vis-status').textContent = st.fotos.length
+      ? `Bezig met de tekening en de schets op je foto… dit duurt meestal 1 à 2 minuten.`
+      : "Bezig met de werktekening… (geen foto's in het invoerscherm, dus geen schets op een foto)";
+    $('vis-status').classList.add('bezig-tekst');
+    try {
+      // Eerst bewaren, anders overschrijft het antwoord van de server net gemaakte wijzigingen.
+      await bewaar();
+      if (st.modus === 'server') {
+        const fotos = [];
+        for (const f of st.fotos) fotos.push(await naarDataUrl(f.file));
+        st.huidig = await (await api(`/${encodeURIComponent(st.huidig.id)}/visualisatie`, { method: 'POST', body: JSON.stringify({ fotos }) })).json();
+      } else {
+        const metFotos = st.fotosNaarAI ? st.fotos : [];
+        const data = await st.sample.json(visualisatiePrompt(st.huidig.offerte, metFotos.length), {
+          images: metFotos.length ? metFotos.map((f) => f.file) : undefined,
+          modelTier: 'complex',
+          cache: false,
+        });
+        const vis = normaliseerVis(data, metFotos.length);
+        const fotoData = vis.fotoschets.foto ? await naarDataUrl(metFotos[vis.fotoschets.foto - 1].file, 1100, 0.8) : null;
+        st.huidig.visualisatie = { ...vis, fotoData, createdAt: new Date().toISOString() };
+        bewaarLokaal(st.huidig);
+      }
+      await toonVisualisatie();
+      $('vis-status').textContent = 'Visualisatie klaar. Hij komt ook op de PDF.';
+      vink('visualisatie');
+    } catch (err) {
+      $('vis-status').textContent = foutTekst(err);
+    } finally {
+      st.visBezig = false;
+      $('vis-maak').disabled = false;
+      $('vis-status').classList.remove('bezig-tekst');
+    }
+  });
+
   // ---------- PDF ----------
   // De PDF wordt altijd in de browser gemaakt, zodat hij op je eigen server en in Claude hetzelfde oogt.
   $('pdf').addEventListener('click', async () => {
@@ -1012,6 +1286,34 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
     return jspdfLaden;
   }
 
+  // Tekeningen en de foto met schets omzetten naar afbeeldingen voor de PDF.
+  async function svgNaarPng(svg, w, h, schaal = 2) {
+    const img = await laadBeeld(svgUrl(svg));
+    const c = document.createElement('canvas');
+    c.width = w * schaal; c.height = h * schaal;
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return c.toDataURL('image/png');
+  }
+  async function visBeelden(vis) {
+    const [boven, voor] = await Promise.all([
+      svgNaarPng(tekeningSvg(vis.bovenaanzicht, 'boven'), 640, 430),
+      svgNaarPng(tekeningSvg(vis.vooraanzicht, 'voor'), 640, 340),
+    ]);
+    let impressie = null;
+    if (vis.fotoData) {
+      const foto = await laadBeeld(vis.fotoData);
+      const w = foto.naturalWidth, h = foto.naturalHeight;
+      const schets = await laadBeeld(svgUrl(fotoschetsSvg(vis.fotoschets, w, h)));
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(foto, 0, 0);
+      ctx.drawImage(schets, 0, 0, w, h);
+      impressie = { data: c.toDataURL('image/jpeg', 0.86), w, h };
+    }
+    return { boven, voor, impressie };
+  }
+
   let logoPngCache = null;
   async function logoPng() {
     if (logoPngCache) return logoPngCache;
@@ -1025,7 +1327,8 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
   }
 
   async function maakPdf(rec) {
-    const [{ jsPDF }, logo] = await Promise.all([laadJsPdf(), logoPng()]);
+    const vis = rec.visualisatie && $('vis-pdf').checked ? rec.visualisatie : null;
+    const [{ jsPDF }, logo, beelden] = await Promise.all([laadJsPdf(), logoPng(), vis ? visBeelden(vis) : null]);
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
     doc.setLineHeightFactor(1.22);
     const o = rec.offerte;
@@ -1053,14 +1356,17 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
     };
 
     // Vervolgpagina's krijgen een smal briefhoofd.
-    const nieuw = (h) => {
-      if (y + h <= ONDER) return false;
+    const volgPagina = () => {
       doc.addPage();
       doc.addImage(logo, 'PNG', L, 34, 20, 20);
       woordmerk(L + 27, 48.5, 11);
       font('normal', 8.5, 'grijs'); doc.text(`Offerte ${rec.nummer}`, R, 48.5, { align: 'right' });
       lijn('lijn'); doc.line(L, 64, R, 64);
       y = 90;
+    };
+    const nieuw = (h) => {
+      if (y + h <= ONDER) return false;
+      volgPagina();
       return true;
     };
     const kop = (tekst) => {
@@ -1219,6 +1525,37 @@ Antwoord met alleen één JSON-object, velden in deze volgorde:
         lijn('lijn', 0.5); doc.line(x + 80, ly + 2, x + vw - 12, ly + 2);
       });
     });
+
+    // --- Bijlage: impressie en werktekening ---
+    if (beelden) {
+      volgPagina();
+      if (beelden.impressie) {
+        kop('Bijlage · Impressie');
+        const { data, w, h } = beelden.impressie;
+        let iw = B, ih = (B * h) / w;
+        if (ih > 255) { ih = 255; iw = (ih * w) / h; }
+        doc.addImage(data, 'JPEG', L + (B - iw) / 2, y, iw, ih);
+        y += ih + 14;
+        if (vis.fotoschets.toelichting) {
+          font('italic', 8.5, 'grijs');
+          for (const r of doc.splitTextToSize(vis.fotoschets.toelichting, B)) { doc.text(r, L, y); y += 11.5; }
+        }
+        y += 4;
+      }
+      // Tekeningen iets smaller en gecentreerd; de kop gaat alleen mee als de eerste tekening er ook nog past.
+      const tw = 420, tx0 = L + (B - tw) / 2;
+      nieuw(48 + (tw * 430) / 640);
+      kop(beelden.impressie ? 'Werktekening' : 'Bijlage · Werktekening');
+      for (const [img, w, h] of [[beelden.boven, 640, 430], [beelden.voor, 640, 340]]) {
+        const ih = (tw * h) / w;
+        nieuw(ih + 12);
+        doc.addImage(img, 'PNG', tx0, y, tw, ih);
+        lijn('lijn', 0.6); doc.roundedRect(tx0, y, tw, ih, 4, 4, 'S');
+        y += ih + 12;
+      }
+      font('italic', 8.5, 'grijs');
+      doc.text('Indicatieve tekening. De maten en aantallen in de prijsspecificatie zijn leidend.', L, y);
+    }
 
     // --- Voettekst op elke pagina ---
     const voet = [b.naam, b.kvk && `KVK ${b.kvk}`, b.btw && `Btw ${b.btw}`, b.iban && `IBAN ${b.iban}`].filter(Boolean).join('   ·   ');

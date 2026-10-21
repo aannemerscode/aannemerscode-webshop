@@ -3,8 +3,8 @@ const fs = require('fs');
 const crypto = require('crypto');
 const express = require('express');
 const { OfferteSchema, KlantSchema, berekenTotalen } = require('./schema');
-const { stelOfferteOp, AgentFout, Anthropic } = require('./agent');
-const { stelDemoOfferteOp } = require('./demo');
+const { stelOfferteOp, maakVisualisatie, AgentFout, Anthropic } = require('./agent');
+const { stelDemoOfferteOp, maakDemoVisualisatie } = require('./demo');
 
 // ---------- GreenTeam (offerte-agent): routes en opslag ----------
 // Alleen voor jezelf (de vakman): elke aanvraag kost API-tegoed, dus alle
@@ -14,6 +14,33 @@ const { stelDemoOfferteOp } = require('./demo');
 
 const MAX_FOTOS = 10;
 const TOEGESTANE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+// Foto's komen binnen als data-URL's; geeft null terug als er een ongeldige tussen zit.
+function leesFotos(fotos) {
+  const verwerkt = [];
+  for (const f of fotos) {
+    const m = /^data:(image\/[a-z]+);base64,(.+)$/.exec(String(f));
+    if (!m || !TOEGESTANE_TYPES.includes(m[1])) return null;
+    verwerkt.push({ mediaType: m[1], data: m[2] });
+  }
+  return verwerkt;
+}
+
+function stuurAgentFout(res, err, wat) {
+  if (err instanceof AgentFout) return res.status(422).json({ error: err.message });
+  if (err instanceof Anthropic.AuthenticationError) {
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY ontbreekt of is ongeldig.' });
+  }
+  if (err instanceof Anthropic.RateLimitError) {
+    return res.status(429).json({ error: 'Te veel aanvragen tegelijk bij de AI — probeer het over een minuut opnieuw.' });
+  }
+  if (err instanceof Anthropic.APIError) {
+    console.error('Offerte-agent API-fout:', err.status, err.message);
+    return res.status(502).json({ error: `De AI-dienst gaf een fout (${err.status ?? 'verbinding'}). Probeer het opnieuw.` });
+  }
+  console.error('Offerte-agent fout:', err);
+  return res.status(500).json({ error: `Er ging iets mis bij het maken van de ${wat}.` });
+}
 
 // Bedrijfsgegevens die op de offerte (PDF) komen. Los van de webshop-gegevens (SELLER_*).
 function bedrijfUitEnv() {
@@ -101,14 +128,8 @@ function createOfferteRouter({ dataDir }) {
       return res.status(400).json({ error: `Maximaal ${MAX_FOTOS} foto's per offerte.` });
     }
 
-    const verwerkt = [];
-    for (const f of fotos) {
-      const m = /^data:(image\/[a-z]+);base64,(.+)$/.exec(String(f));
-      if (!m || !TOEGESTANE_TYPES.includes(m[1])) {
-        return res.status(400).json({ error: "Foto's moeten JPG, PNG, WebP of GIF zijn." });
-      }
-      verwerkt.push({ mediaType: m[1], data: m[2] });
-    }
+    const verwerkt = leesFotos(fotos);
+    if (!verwerkt) return res.status(400).json({ error: "Foto's moeten JPG, PNG, WebP of GIF zijn." });
 
     try {
       const resultaat = await (isDemo() ? stelDemoOfferteOp : stelOfferteOp)({
@@ -135,19 +156,35 @@ function createOfferteRouter({ dataDir }) {
       schrijfOffertes(alle);
       return res.json(record);
     } catch (err) {
-      if (err instanceof AgentFout) return res.status(422).json({ error: err.message });
-      if (err instanceof Anthropic.AuthenticationError) {
-        return res.status(500).json({ error: 'ANTHROPIC_API_KEY ontbreekt of is ongeldig.' });
-      }
-      if (err instanceof Anthropic.RateLimitError) {
-        return res.status(429).json({ error: 'Te veel aanvragen tegelijk bij de AI — probeer het over een minuut opnieuw.' });
-      }
-      if (err instanceof Anthropic.APIError) {
-        console.error('Offerte-agent API-fout:', err.status, err.message);
-        return res.status(502).json({ error: `De AI-dienst gaf een fout (${err.status ?? 'verbinding'}). Probeer het opnieuw.` });
-      }
-      console.error('Offerte-agent fout:', err);
-      return res.status(500).json({ error: 'Er ging iets mis bij het opstellen van de offerte.' });
+      return stuurAgentFout(res, err, 'offerte');
+    }
+  });
+
+  // Werktekening + schets op een foto. De foto's stuurt de pagina opnieuw mee (ze worden niet
+  // bij de offerte bewaard); de gekozen foto wordt wel bij de visualisatie opgeslagen.
+  router.post('/:id/visualisatie', async (req, res) => {
+    const record = leesOffertes()[req.params.id];
+    if (!record) return res.status(404).json({ error: 'Niet gevonden' });
+    const fotos = Array.isArray(req.body?.fotos) ? req.body.fotos.slice(0, MAX_FOTOS) : [];
+    const verwerkt = leesFotos(fotos);
+    if (!verwerkt) return res.status(400).json({ error: "Foto's moeten JPG, PNG, WebP of GIF zijn." });
+    try {
+      const vis = isDemo()
+        ? maakDemoVisualisatie(record.offerte, verwerkt.length)
+        : await maakVisualisatie({ offerte: record.offerte, fotos: verwerkt });
+      const nr = vis.fotoschets.foto;
+      const alle = leesOffertes();
+      const actueel = alle[req.params.id];
+      actueel.visualisatie = {
+        ...vis,
+        fotoData: nr && fotos[nr - 1] ? String(fotos[nr - 1]) : null,
+        createdAt: new Date().toISOString(),
+      };
+      actueel.updatedAt = new Date().toISOString();
+      schrijfOffertes(alle);
+      return res.json(actueel);
+    } catch (err) {
+      return stuurAgentFout(res, err, 'visualisatie');
     }
   });
 

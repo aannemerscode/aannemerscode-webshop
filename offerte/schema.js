@@ -47,6 +47,32 @@ const OfferteSchema = z.object({
   betrouwbaarheid_toelichting: z.string(),
 });
 
+// ---------- Visualisatie ----------
+// Werktekening (bovenaanzicht + vooraanzicht, in meters) en een schets over een van de foto's
+// (coördinaten 0-1000 over breedte en hoogte van die foto). De app tekent dit zelf als SVG.
+const MATERIALEN = ['hout', 'beton', 'tegels', 'gras', 'grond', 'dak', 'glas', 'staal', 'bestaand', 'sloop'];
+const PuntSchema = z.object({ x: z.number(), y: z.number() });
+const ElementSchema = z.object({
+  type: z.enum(['vlak', 'lijn', 'maatlijn', 'tekst']),
+  punten: z.array(PuntSchema),
+  materiaal: z.enum(MATERIALEN),
+  label: z.string().nullable(),
+});
+const AanzichtSchema = z.object({
+  breedte_m: z.number(),
+  hoogte_m: z.number(),
+  elementen: z.array(ElementSchema),
+});
+const VisualisatieSchema = z.object({
+  bovenaanzicht: AanzichtSchema,
+  vooraanzicht: AanzichtSchema,
+  fotoschets: z.object({
+    foto: z.number().nullable().describe('Nummer van de gekozen foto (1 = eerste), of null zonder foto'),
+    elementen: z.array(ElementSchema),
+    toelichting: z.string(),
+  }),
+});
+
 const KlantSchema = z.object({
   naam: z.string().default(''),
   adres: z.string().default(''),
@@ -89,4 +115,4 @@ function berekenTotalen(offerte) {
   };
 }
 
-module.exports = { OfferteSchema, RegelSchema, KlantSchema, berekenTotalen, round2 };
+module.exports = { OfferteSchema, RegelSchema, KlantSchema, VisualisatieSchema, MATERIALEN, berekenTotalen, round2 };
