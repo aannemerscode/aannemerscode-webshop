@@ -40,28 +40,43 @@ per dag is dat prima; bij hoog volume kun je dit later vervangen door een factuu
 uit een echte database of boekhoudpakket (bijvoorbeeld Moneybird), zoals ook al
 genoemd staat bij "Nog te doen voor een echte webshop" hieronder.
 
-## Offerte-agent (foto's + tekst → complete offerte)
+## GroenBestek: offertes voor hoveniers uit foto's + tekst
 
-Op `/offerte.html` staat een AI-agent die voor tuinklussen, timmerwerk, tuinhuizen en
-overkappingen een volledige offerte opstelt. Je uploadt een paar foto's, typt in een paar
-zinnen wat de klant wil, en de agent:
+Op `/groenbestek` staat **GroenBestek**, een AI-agent die voor tuinklussen, timmerwerk,
+tuinhuizen en overkappingen een volledige offerte opstelt. Je uploadt een paar foto's, typt in
+twee zinnen wat de klant wil, en de agent:
 
 1. bekijkt de foto's en schat de maten (aan de hand van tegels, deuren, schuttingschermen, ...);
-2. zoekt zelf materiaalprijzen en arbeidsnormen op in **jouw prijslijst** (`data/prijslijst.json`);
+2. zoekt materiaalprijzen en arbeidsnormen op in **jouw prijslijst** (`data/prijslijst.json`);
 3. rekent hoeveelheden uit als een vakman (zaagverlies, palen per 1,8 m, poeren, lagen beits);
 4. levert een offerte met regels per onderdeel, werkomschrijving voor de klant, uitgangspunten,
    uitsluitingen, vergunningsadvies en een lijst met dingen die je nog moet navragen of inmeten.
 
-Alle totalen en btw rekent de server zelf uit, niet de AI. Je kunt elke regel daarna aanpassen,
-regels toevoegen of weghalen, en de offerte als PDF downloaden (met offertenummer
-`OFF-2026-0001`, geldigheidsdatum en een akkoordblok om te tekenen). Elke regel laat zien of de
-prijs uit je prijslijst komt (**lijst**) of door de AI geschat is (**schatting**). Controleer
-geschatte prijzen altijd voordat je de offerte verstuurt.
+Alle totalen en btw rekent de server zelf uit, niet de AI. Je kunt elke regel aanpassen,
+groepen hernoemen, regels toevoegen of weghalen, en de offerte als PDF downloaden (met
+offertenummer `OFF-2026-0001`, geldigheidsdatum en een akkoordblok om te tekenen). Elke regel
+laat zien of de prijs uit je prijslijst komt (**lijst**) of door de AI geschat is
+(**schatting**). Controleer geschatte prijzen altijd voordat je de offerte verstuurt.
 
-**Instellen**
+### Uitproberen zonder API-sleutel (demo-modus)
+
+```bash
+npm install
+npm run demo
+```
+
+Open `http://localhost:3000/groenbestek`. Bovenaan staat een **testronde** met vijf stappen
+(foto toevoegen, klus beschrijven, offerte maken, regel aanpassen, PDF downloaden) die vanzelf
+afvinken. In demo-modus wordt de AI nagebootst: je foto's worden ontvangen maar niet bekeken,
+en de offerte komt uit de trefwoorden (schutting, overkapping, tuinhuis, terras) en maten
+("4 x 3 m", "14 m") in je omschrijving. Alle andere onderdelen werken echt. Zonder
+`ANTHROPIC_API_KEY` start de app altijd in demo-modus.
+
+### Echte offertes
+
 - Zet `ANTHROPIC_API_KEY` (van console.anthropic.com) en een zelfgekozen `OFFERTE_TOKEN` in `.env`
-  en in Render → Environment. Zonder `OFFERTE_TOKEN` staat de agent uit, zodat bezoekers van je
-  webshop er niet op jouw kosten mee kunnen spelen.
+  en in Render → Environment. Met een API-sleutel is de toegangscode verplicht, zodat bezoekers
+  van je webshop niet op jouw kosten offertes kunnen laten maken.
 - **Pas `data/prijslijst.json` aan naar je eigen prijzen.** De meegeleverde prijzen zijn
   voorbeelden. Daar staan ook je uurtarief, voorrijkosten, afvoerkosten en arbeidsnormen
   (uren per m1/m2/stuk). Hoe vollediger deze lijst, hoe minder de agent hoeft te schatten. Wil je
@@ -69,9 +84,13 @@ geschatte prijzen altijd voordat je de offerte verstuurt.
   die gaat voor.
 - Een offerte opstellen duurt meestal 1 à 3 minuten.
 
-**Bestanden:** `offerte/agent.js` (de agent en de systeeminstructie), `offerte/schema.js`
-(de vorm van een offerte + totaalberekening), `offerte/pdf.js` (PDF), `offerte/index.js`
-(routes en opslag in `offertes.json`), `public/offerte.html` (de pagina).
+De pagina werkt ook als Claude-artifact: daar gebruikt hij de AI van het Claude-account van de
+kijker in plaats van je API-sleutel, en bewaart hij offertes in de browser.
+
+**Bestanden:** `offerte/agent.js` (de agent en de systeeminstructie), `offerte/demo.js`
+(nagebootste agent voor de demo-modus), `offerte/schema.js` (de vorm van een offerte +
+totaalberekening), `offerte/pdf.js` (PDF), `offerte/index.js` (routes en opslag in
+`offertes.json`), `public/groenbestek.html` (de pagina), `demo.js` (start in demo-modus).
 
 ## Hoe het werkt
 

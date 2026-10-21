@@ -1,0 +1,1117 @@
+<title>GroenBestek</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* Layout: werkbank. Invoer links (foto's + klus), het offertevel rechts als bestekblad met regels per onderdeel; op de telefoon onder elkaar. */
+  :root {
+    --bg: #ECF0E8;
+    --surface: #FFFFFF;
+    --surface-2: #F5F8F1;
+    --ink: #17231B;
+    --muted: #5A6A5F;
+    --line: #D3DCCD;
+    --moss: #2D5A39;
+    --moss-hover: #24492E;
+    --on-moss: #FFFFFF;
+    --moss-soft: #DCE9D8;
+    --straw: #A87A1E;
+    --straw-soft: #F6EBD2;
+    --danger: #A3392A;
+    --danger-soft: #F8E2DC;
+    --ok: #2C7647;
+    --ok-soft: #DCEFE2;
+    --shadow: 0 1px 2px rgba(23, 35, 27, .06), 0 8px 24px rgba(23, 35, 27, .06);
+    --display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+    --body: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101813; --surface: #17211B; --surface-2: #1D2A22; --ink: #E3EAE2; --muted: #9AAB9F; --line: #2B3A30;
+      --moss: #86BC93; --moss-hover: #9ACBA6; --on-moss: #0E1A12; --moss-soft: #223727;
+      --straw: #E2B75A; --straw-soft: #352B19; --danger: #EE927F; --danger-soft: #3B221D; --ok: #84CBA0; --ok-soft: #1E3426;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #101813; --surface: #17211B; --surface-2: #1D2A22; --ink: #E3EAE2; --muted: #9AAB9F; --line: #2B3A30;
+    --moss: #86BC93; --moss-hover: #9ACBA6; --on-moss: #0E1A12; --moss-soft: #223727;
+    --straw: #E2B75A; --straw-soft: #352B19; --danger: #EE927F; --danger-soft: #3B221D; --ok: #84CBA0; --ok-soft: #1E3426;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--moss); outline-offset: 2px; }
+  .mono, .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* Kop */
+  header.top { padding-block: 18px 6px; }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 800; font-size: 21px; letter-spacing: -.01em; }
+  .brand svg { width: 30px; height: 30px; flex: none; }
+  .brand small { font-family: var(--body); font-weight: 500; font-size: 13px; color: var(--muted); letter-spacing: 0; }
+  .modus { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+  .modus::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .modus.live::before { background: var(--ok); }
+  .modus.demo::before { background: var(--straw); }
+  .modus.uit::before { background: var(--danger); }
+
+  .intro { padding-block: 18px 22px; display: grid; gap: 8px; }
+  .intro h1 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 800; letter-spacing: -.025em; line-height: 1.05; }
+  .intro p { margin: 0; color: var(--muted); max-width: 64ch; font-size: 16px; }
+
+  .banner { border-radius: 10px; padding: 12px 16px; font-size: 14px; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start; }
+  .banner.demo { background: var(--straw-soft); color: var(--ink); border: 1px solid color-mix(in srgb, var(--straw) 40%, transparent); }
+  .banner.uit { background: var(--danger-soft); border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent); }
+  .banner b { font-weight: 700; }
+
+  /* Testronde */
+  .testronde { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; }
+  .testronde-kop { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .testronde-kop h2 { font-size: 16px; font-weight: 700; }
+  .testronde-kop span { font-size: 13px; color: var(--muted); }
+  .checks { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  @media (max-width: 900px) { .checks { grid-template-columns: 1fr; } }
+  .checks li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 8px; background: var(--surface-2); font-size: 13.5px; line-height: 1.35; }
+  .checks li .bol { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--muted); background: var(--surface); }
+  .checks li.klaar .bol { background: var(--moss); border-color: var(--moss); color: var(--on-moss); }
+  .checks li.klaar { color: var(--muted); }
+  .checks li b { display: block; color: var(--ink); font-weight: 600; }
+
+  /* Werkbank */
+  .werkbank { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 20px; align-items: start; padding-bottom: 60px; }
+  @media (max-width: 980px) { .werkbank { grid-template-columns: minmax(0, 1fr); } }
+  .paneel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+  .invoer { padding: 20px; display: grid; gap: 22px; position: sticky; top: 16px; }
+  @media (max-width: 980px) { .invoer { position: static; } }
+  .veld { display: grid; gap: 8px; }
+  .label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+  .label em { font-style: normal; font-weight: 500; text-transform: none; letter-spacing: 0; }
+  input[type=text], input[type=email], input[type=password], textarea, select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); font-size: 14.5px;
+  }
+  textarea { min-height: 120px; resize: vertical; line-height: 1.5; }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--moss); outline-offset: -1px; background: var(--surface); }
+
+  .drop { border: 1.5px dashed color-mix(in srgb, var(--moss) 45%, var(--line)); border-radius: 12px; padding: 22px 16px; text-align: center; cursor: pointer; background: var(--surface-2); transition: background .15s, border-color .15s; display: grid; gap: 4px; justify-items: center; }
+  .drop:hover, .drop.over { background: var(--moss-soft); border-color: var(--moss); }
+  .drop svg { width: 34px; height: 34px; color: var(--moss); }
+  .drop strong { font-size: 15px; }
+  .drop span { font-size: 12.5px; color: var(--muted); max-width: 30ch; }
+  .thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .thumbs:empty { display: none; }
+  .thumb { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 8px; overflow: hidden; background: var(--surface-2); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb span { position: absolute; left: 5px; bottom: 5px; font: 600 10.5px var(--mono); background: rgba(14, 26, 18, .72); color: #fff; padding: 1px 6px; border-radius: 4px; }
+  .thumb button { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 50%; border: 0; background: rgba(14, 26, 18, .72); color: #fff; cursor: pointer; line-height: 1; font-size: 15px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 11px; font-size: 13px; cursor: pointer; }
+  .chip:hover { border-color: var(--moss); color: var(--moss); }
+  details.uitklap { border-top: 1px solid var(--line); padding-top: 14px; }
+  details.uitklap summary { cursor: pointer; font-weight: 600; font-size: 14px; list-style: none; display: flex; justify-content: space-between; }
+  details.uitklap summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 18px; line-height: 1; }
+  details.uitklap[open] summary::after { content: "−"; }
+  details.uitklap .rij { display: grid; gap: 8px; margin-top: 12px; }
+
+  .knop { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 15px; border-radius: 9px; padding: 12px 18px; cursor: pointer; border: 1px solid transparent; }
+  .knop.hoofd { background: var(--moss); color: var(--on-moss); }
+  .knop.hoofd:hover { background: var(--moss-hover); }
+  .knop.rand { background: var(--surface); border-color: var(--line); }
+  .knop.rand:hover { border-color: var(--moss); }
+  .knop.klein { font-size: 13px; padding: 7px 12px; }
+  .knop:disabled { opacity: .55; cursor: not-allowed; }
+  .knop.breed { width: 100%; }
+  .hint { font-size: 12.5px; color: var(--muted); margin: 0; }
+
+  /* Uitvoer */
+  .uitvoer { display: grid; gap: 16px; min-width: 0; }
+  .bezig { padding: 20px; display: grid; gap: 14px; }
+  .bezig-kop { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+  .bezig-kop h2 { font-size: 19px; }
+  .stappen { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .stappen li { display: flex; gap: 10px; align-items: center; font-size: 14px; color: var(--muted); }
+  .stappen li .bol { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); flex: none; }
+  .stappen li.actief { color: var(--ink); font-weight: 600; }
+  .stappen li.actief .bol { border-color: var(--moss); border-right-color: transparent; animation: draai .9s linear infinite; }
+  .stappen li.klaar { color: var(--ink); }
+  .stappen li.klaar .bol { background: var(--moss); border-color: var(--moss); }
+  @keyframes draai { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .stappen li.actief .bol { animation: none; } }
+  .live-analyse { background: var(--surface-2); border-radius: 8px; padding: 12px 14px; font-size: 13.5px; white-space: pre-wrap; max-height: 160px; overflow: auto; }
+  .live-analyse:empty { display: none; }
+  .melding { border-radius: 10px; padding: 12px 16px; font-size: 14px; }
+  .melding.fout { background: var(--danger-soft); color: var(--ink); border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent); }
+  .melding.goed { background: var(--ok-soft); border: 1px solid color-mix(in srgb, var(--ok) 30%, transparent); }
+
+  /* Het offertevel */
+  .vel { padding: 0; overflow: hidden; }
+  .vel-kop { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding: 22px 24px 18px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+  @media (max-width: 560px) { .vel-kop { grid-template-columns: minmax(0, 1fr); } }
+  .vel-kop .bedrijf { font-size: 13px; color: var(--muted); }
+  .titel-invoer { font-family: var(--display); font-size: clamp(21px, 2.6vw, 27px); font-weight: 700; letter-spacing: -.015em; border: 0; background: transparent; padding: 4px 0; width: 100%; border-bottom: 1px dashed transparent; }
+  .titel-invoer:hover { border-bottom-color: var(--line); }
+  .stempel { border: 2px solid var(--moss); color: var(--moss); border-radius: 8px; padding: 8px 12px; text-align: right; font-family: var(--mono); font-size: 12px; line-height: 1.45; align-self: start; }
+  .stempel b { display: block; font-family: var(--display); font-size: 16px; letter-spacing: .14em; }
+  .voorbeeld-lint { background: var(--straw-soft); color: var(--ink); font-size: 13px; padding: 8px 24px; border-bottom: 1px solid var(--line); }
+  .pillen { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pil { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); color: var(--muted); }
+  .pil.hoog { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+  .pil.gemiddeld, .pil.let-op { color: var(--straw); border-color: color-mix(in srgb, var(--straw) 50%, transparent); }
+  .pil.laag { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
+
+  .vel-deel { padding: 18px 24px; border-bottom: 1px solid var(--line); display: grid; gap: 10px; }
+  .vel-deel:last-child { border-bottom: 0; }
+  .vel-deel h3 { font-family: var(--body); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .analyse { font-size: 14px; white-space: pre-wrap; max-width: 80ch; margin: 0; }
+
+  .tabel-scroll { overflow-x: auto; margin-inline: -8px; }
+  table { width: 100%; min-width: 700px; border-collapse: collapse; table-layout: fixed; font-size: 13.5px; }
+  th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  th.r, td.r { text-align: right; }
+  td { padding: 3px 8px; vertical-align: top; }
+  tr.groep td { padding-top: 14px; padding-bottom: 4px; font-family: var(--display); font-weight: 700; font-size: 14.5px; }
+  tr.groep td input { font-family: var(--display); font-weight: 700; font-size: 15px; padding-left: 8px; margin-left: -8px; width: calc(100% + 8px); }
+  tr.groep .sub { font-family: var(--mono); font-weight: 500; font-size: 12.5px; color: var(--muted); display: inline-block; padding-top: 7px; }
+  td input, td select { width: 100%; padding: 6px 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; font-size: 13.5px; }
+  td input:hover, td select:hover { border-color: var(--line); background: var(--surface-2); }
+  td input.num { text-align: right; }
+  td.totaal { font-family: var(--mono); font-variant-numeric: tabular-nums; padding-top: 9px; }
+  .toel { font-size: 11.5px; color: var(--muted); padding: 0 9px 4px; }
+  .bron { display: inline-block; margin-top: 7px; font: 600 10.5px var(--mono); padding: 2px 6px; border-radius: 4px; }
+  .bron.prijslijst { background: var(--ok-soft); color: var(--ok); }
+  .bron.schatting { background: var(--straw-soft); color: var(--straw); }
+  .weg { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 17px; padding: 6px 4px; border-radius: 6px; }
+  .weg:hover { color: var(--danger); }
+  .totalen { display: grid; justify-content: end; }
+  .totalen dl { margin: 0; display: grid; grid-template-columns: auto auto; gap: 4px 0; font-size: 14.5px; }
+  .totalen dd { padding-left: 28px; }
+  .totalen dt { color: var(--muted); }
+  .totalen dd { margin: 0; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .totalen .eind { font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--ink); border-top: 2px solid var(--ink); padding-top: 8px; margin-top: 4px; }
+  .twee { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 640px) { .twee { grid-template-columns: minmax(0, 1fr); } }
+  .acties { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+  .historie { padding: 18px 20px; }
+  .historie h2 { font-size: 17px; margin-bottom: 8px; }
+  .historie ul { list-style: none; margin: 0; padding: 0; }
+  .historie li button { width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: baseline; text-align: left; padding: 10px 4px; border: 0; border-bottom: 1px solid var(--line); background: none; cursor: pointer; font-size: 14px; }
+  .historie li:last-child button { border-bottom: 0; }
+  .historie li button:hover { color: var(--moss); }
+  .historie .titel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--moss)"/><path d="M9 23c0-8 5-13 14-14-1 9-6 14-14 14Z" fill="var(--on-moss)"/><path d="M9 23l8-8" stroke="var(--moss)" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>
+      <span>GroenBestek <small>offertes voor hoveniers</small></span>
+    </div>
+    <span class="modus" id="modus">Verbinding zoeken…</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <h1>Van tuinfoto naar complete offerte</h1>
+    <p>Maak een paar foto's van de klus, schrijf in twee zinnen wat de klant wil, en GroenBestek schat de maten, rekent materiaal en uren door en zet alles op een offerte die je zelf nog kunt aanpassen.</p>
+  </section>
+
+  <div class="banner" id="banner" hidden></div>
+
+  <section class="testronde" aria-labelledby="testronde-titel">
+    <div class="testronde-kop">
+      <h2 id="testronde-titel">Testronde</h2>
+      <span id="testronde-stand">0 van 5 gedaan</span>
+    </div>
+    <ol class="checks" id="checks">
+      <li data-check="foto"><span class="bol">1</span><span><b>Foto toevoegen</b>Sleep een foto van een tuin, schutting of schuurtje in het vak.</span></li>
+      <li data-check="omschrijving"><span class="bol">2</span><span><b>Klus beschrijven</b>Typ zelf of tik op een voorbeeldklus.</span></li>
+      <li data-check="offerte"><span class="bol">3</span><span><b>Offerte maken</b>Klik op "Maak offerte" en kijk mee.</span></li>
+      <li data-check="aangepast"><span class="bol">4</span><span><b>Regel aanpassen</b>Wijzig een aantal of prijs; het totaal rekent mee.</span></li>
+      <li data-check="pdf"><span class="bol">5</span><span><b>PDF downloaden</b>Bekijk hoe de klant de offerte krijgt.</span></li>
+    </ol>
+  </section>
+
+  <div class="werkbank">
+    <form class="paneel invoer" id="invoer" novalidate>
+      <div class="veld">
+        <div class="label"><span>Foto's</span><em id="foto-teller">max. 10</em></div>
+        <label class="drop" id="drop" for="foto-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          <strong>Foto's toevoegen</strong>
+          <span>Klik of sleep. Liefst van meerdere kanten, met iets van bekende maat erop (tegels, deur, schuttingscherm).</span>
+        </label>
+        <input type="file" id="foto-input" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+
+      <div class="veld">
+        <label class="label" for="omschrijving"><span>De klus</span></label>
+        <div class="chips" id="chips" aria-label="Voorbeeldklussen">
+          <button type="button" class="chip" data-voorbeeld="schutting">Schutting</button>
+          <button type="button" class="chip" data-voorbeeld="overkapping">Overkapping</button>
+          <button type="button" class="chip" data-voorbeeld="tuinhuis">Tuinhuis</button>
+          <button type="button" class="chip" data-voorbeeld="terras">Terras</button>
+        </div>
+        <textarea id="omschrijving" placeholder="Bijv.: oude schutting achter (ca. 14 m) eruit, nieuwe hout-betonschutting 180 hoog met douglas planken en een poortje. Alles moet via de achterom."></textarea>
+        <input type="text" id="plaats" placeholder="Plaats van uitvoering (optioneel)" aria-label="Plaats van uitvoering">
+      </div>
+
+      <details class="uitklap">
+        <summary>Klantgegevens</summary>
+        <div class="rij">
+          <input type="text" id="k-naam" placeholder="Naam" aria-label="Naam klant">
+          <input type="text" id="k-adres" placeholder="Straat en huisnummer" aria-label="Adres klant">
+          <input type="text" id="k-pp" placeholder="Postcode en plaats" aria-label="Postcode en plaats klant">
+          <input type="email" id="k-email" placeholder="E-mail" aria-label="E-mail klant">
+          <input type="text" id="k-tel" placeholder="Telefoon" aria-label="Telefoon klant">
+        </div>
+      </details>
+
+      <details class="uitklap" id="bedrijf-blok" hidden>
+        <summary>Jouw bedrijf (op de PDF)</summary>
+        <div class="rij">
+          <input type="text" id="b-naam" placeholder="Bedrijfsnaam" aria-label="Bedrijfsnaam">
+          <input type="text" id="b-adres" placeholder="Adres" aria-label="Adres bedrijf">
+          <input type="text" id="b-pp" placeholder="Postcode en plaats" aria-label="Postcode en plaats bedrijf">
+          <input type="text" id="b-kvk" placeholder="KVK-nummer" aria-label="KVK-nummer">
+          <input type="text" id="b-btw" placeholder="Btw-id" aria-label="Btw-id">
+          <input type="text" id="b-contact" placeholder="Telefoon of e-mail" aria-label="Contactgegevens bedrijf">
+        </div>
+      </details>
+
+      <div class="veld" id="token-blok" hidden>
+        <label class="label" for="token"><span>Toegangscode</span></label>
+        <input type="password" id="token" autocomplete="current-password" placeholder="OFFERTE_TOKEN uit je .env">
+      </div>
+
+      <div class="veld">
+        <button type="submit" class="knop hoofd breed" id="maak">Maak offerte</button>
+        <p class="hint" id="maak-hint">Duurt meestal 1 à 3 minuten.</p>
+      </div>
+    </form>
+
+    <div class="uitvoer">
+      <section class="paneel bezig" id="bezig" hidden aria-live="polite">
+        <div class="bezig-kop">
+          <h2>Offerte wordt opgesteld</h2>
+          <span class="mono" id="klok">0:00</span>
+        </div>
+        <ol class="stappen" id="stappen">
+          <li data-stap="0"><span class="bol"></span>Foto's bekijken en maten schatten</li>
+          <li data-stap="1"><span class="bol"></span>Werkomschrijving opstellen</li>
+          <li data-stap="2"><span class="bol"></span>Materiaal en uren calculeren <span class="mono" id="regel-teller"></span></li>
+          <li data-stap="3"><span class="bol"></span>Uitgangspunten en vergunning nalopen</li>
+        </ol>
+        <div class="live-analyse" id="live-analyse"></div>
+        <div><button type="button" class="knop rand klein" id="stop" hidden>Stoppen</button></div>
+      </section>
+
+      <div class="melding" id="melding" hidden></div>
+
+      <article class="paneel vel" id="vel">
+        <div class="voorbeeld-lint" id="voorbeeld-lint">Voorbeeldofferte. Zo ziet een resultaat eruit; je eigen offerte verschijnt hier zodra je op "Maak offerte" klikt.</div>
+        <div class="vel-kop">
+          <div>
+            <div class="bedrijf" id="v-bedrijf"></div>
+            <input class="titel-invoer" id="v-titel" aria-label="Titel van de offerte">
+            <div class="pillen" id="v-pillen"></div>
+          </div>
+          <div class="stempel"><b>OFFERTE</b><span id="v-nummer"></span><br><span id="v-datum"></span></div>
+        </div>
+
+        <div class="vel-deel">
+          <h3>Wat GroenBestek op de foto's ziet</h3>
+          <p class="analyse" id="v-analyse"></p>
+        </div>
+
+        <div class="vel-deel">
+          <h3>Prijsspecificatie</h3>
+          <div class="tabel-scroll">
+            <table>
+              <colgroup><col><col style="width:82px"><col style="width:64px"><col style="width:100px"><col style="width:78px"><col style="width:104px"><col style="width:78px"><col style="width:34px"></colgroup>
+              <thead><tr><th>Omschrijving</th><th class="r">Aantal</th><th>Eenh.</th><th class="r">Prijs</th><th>Btw</th><th class="r">Totaal</th><th>Bron</th><th></th></tr></thead>
+              <tbody id="v-regels"></tbody>
+            </table>
+          </div>
+          <div class="acties"><button type="button" class="knop rand klein" id="regel-erbij">+ Regel toevoegen</button></div>
+          <div class="totalen"><dl id="v-totalen"></dl></div>
+        </div>
+
+        <div class="vel-deel">
+          <h3><label for="v-werk">Werkomschrijving voor de klant</label></h3>
+          <textarea id="v-werk" style="min-height:150px"></textarea>
+        </div>
+        <div class="vel-deel twee">
+          <div class="veld"><h3><label for="v-aannames">Uitgangspunten</label></h3><textarea id="v-aannames"></textarea></div>
+          <div class="veld"><h3><label for="v-uitsluitingen">Niet inbegrepen</label></h3><textarea id="v-uitsluitingen"></textarea></div>
+        </div>
+        <div class="vel-deel twee">
+          <div class="veld"><h3><label for="v-vergunning">Vergunning</label></h3><textarea id="v-vergunning" style="min-height:90px"></textarea></div>
+          <div class="veld"><h3><label for="v-vragen">Nog navragen of inmeten (niet op de PDF)</label></h3><textarea id="v-vragen" style="min-height:90px"></textarea></div>
+        </div>
+        <div class="vel-deel">
+          <div class="acties">
+            <button type="button" class="knop hoofd" id="pdf">PDF downloaden</button>
+            <button type="button" class="knop rand" id="opslaan">Wijzigingen bewaren</button>
+            <span class="hint" id="vel-status"></span>
+          </div>
+        </div>
+      </article>
+
+      <section class="paneel historie">
+        <h2>Eerdere offertes</h2>
+        <ul id="historie"><li class="hint">Nog geen offertes gemaakt.</li></ul>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+  const euro = (n) => '€ ' + (Number(n) || 0).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const getal = (n) => (Number(n) || 0).toLocaleString('nl-NL', { maximumFractionDigits: 2 });
+  const opslag = {
+    lees(k, d) { try { const v = localStorage.getItem('groenbestek:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    schrijf(k, v) { try { localStorage.setItem('groenbestek:' + k, JSON.stringify(v)); } catch {} },
+  };
+
+  // ---------- Voorbeeldklussen ----------
+  const VOORBEELDEN = {
+    schutting: 'Oude houten schutting achter in de tuin (ca. 14 m) moet eruit. Nieuwe hout-betonschutting van 180 cm hoog met antraciet betonpalen en douglas planken. Eén tuinpoort aan de kant van het steegje. Alles moet via de achterom.',
+    overkapping: 'Overkapping tegen de achtergevel, 4 x 3 m, douglas staanders en liggers, plat dak met EPDM en een goot met afvoer. Komt op het bestaande tegelterras.',
+    tuinhuis: 'Maatwerk tuinhuis van 3 x 2,5 m achter in de tuin met douglas rhombus gevelbekleding, plat EPDM-dak, één deur en een raam. Het oude schuurtje (ca. 2 x 2 m) moet eerst weg.',
+    terras: 'Gazon van ongeveer 5 x 6 m omzetten naar een terras met keramische tegels 60x60 op split, met opsluitbanden rondom. Grond afvoeren.',
+  };
+
+  // ---------- Voorbeeldofferte (getoond bij het openen) ----------
+  const r = (groep, soort, omschrijving, aantal, eenheid, prijs, toelichting, prijsbron = 'prijslijst') =>
+    ({ groep, soort, omschrijving, aantal, eenheid, prijs_per_eenheid: prijs, btw_percentage: 21, prijsbron, artikelcode: null, toelichting });
+  const VOORBEELD = {
+    id: 'voorbeeld', nummer: 'OFF-VOORBEELD', createdAt: new Date().toISOString(), voorbeeld: true,
+    klant: { naam: 'Fam. de Vries', adres: 'Lindelaan 12', postcode_plaats: '3815 AB Amersfoort', email: '', telefoon: '' },
+    offerte: {
+      titel: 'Hout-betonschutting achtertuin, 14 m1 met poort', type_klus: 'tuinklus',
+      fotoanalyse: 'Achtertuin met een verweerde grenen schutting van ca. 1,80 m hoog op houten palen; meerdere palen staan scheef. Lengte geschat op 14 m aan de hand van 23 tegels van 60 cm langs de schutting. Toegang via een smalle achterom (ca. 90 cm). Aan de rechterkant staat een conifeer tegen de erfgrens.',
+      werkomschrijving: 'Wij verwijderen de bestaande houten schutting en voeren het hout af.\n\nDaarna plaatsen wij een nieuwe hout-betonschutting van 180 cm hoog: antraciet betonpalen met onderplaten en daartussen douglas planken. In het laatste veld bij het steegje komt een tuinpoort met slot.\n\nNa afloop ruimen wij alles netjes op.',
+      regels: [
+        r('Sloop & afvoer', 'arbeid', 'Slopen en opruimen bestaande schutting', 14, 'm1', 14.5, '14 m1 bestaande schutting'),
+        r('Sloop & afvoer', 'materiaal', 'Afvoer sloophout en betonvoeten', 2, 'm3', 49.5, '14 m1 × ca. 0,15 m3'),
+        r('Schutting', 'materiaal', 'Betonpaal antraciet 10x10x280 cm', 9, 'stuk', 29.5, '8 velden van 1,84 m + 1'),
+        r('Schutting', 'materiaal', 'Betonnen onderplaat 184x26 cm', 7, 'stuk', 24.95, '7 velden, poortveld zonder onderplaat'),
+        r('Schutting', 'materiaal', 'Douglas plank onbehandeld 28x195 mm', 114, 'm1', 6.25, '7 velden × 8 planken × 1,84 m + 10%'),
+        r('Schutting', 'materiaal', 'Tuinpoort vuren op stalen frame incl. beslag', 1, 'stuk', 465, 'op verzoek klant'),
+        r('Schutting', 'arbeid', 'Plaatsen hout-betonschutting en poort', 15, 'uur', 52.5, '14 m1 × 0,8 u + 3,5 u poort'),
+        r('Algemeen', 'overig', 'Klein materiaal en bevestigingsmiddelen', 1, 'post', 74.5, '5% van het materiaal'),
+        r('Algemeen', 'overig', 'Voorrijkosten', 2, 'dag', 25, '2 werkdagen'),
+      ],
+      aannames: ['Lengte ca. 14 m1, hoogte 180 cm', 'Geen kabels of leidingen langs de erfgrens', 'Werkplek bereikbaar via de achterom (90 cm)'],
+      uitsluitingen: ['Snoeien of verwijderen van de conifeer', 'Beitsen of schilderen van het hout'],
+      vragen_aan_klant: ['Is de buurman akkoord met de nieuwe schutting op de erfgrens?', 'Moet de poort op slot met een cilinderslot?'],
+      vergunning_advies: 'Een erfafscheiding tot 2 m hoog achter de voorgevel is meestal vergunningsvrij. Controleer dit via de vergunningcheck op het Omgevingsloket.',
+      uitvoering: { werkdagen: 2, aantal_personen: 2 },
+      betrouwbaarheid: 'gemiddeld', betrouwbaarheid_toelichting: 'Lengte geschat aan de hand van tegels op de foto.',
+    },
+  };
+
+  // ---------- Staat ----------
+  const st = {
+    modus: 'laden',          // 'claude' | 'server' | 'uit'
+    demo: false,
+    tokenNodig: false,
+    sample: null,
+    downloads: null,
+    maxFotos: 10,
+    fotosNaarAI: true,
+    prijslijst: null,
+    fotos: [],               // {file, url}
+    huidig: structuredClone(VOORBEELD),
+    checks: {},
+    bezig: null,             // AbortController tijdens het maken
+  };
+
+  // ---------- Testronde ----------
+  function vink(naam) {
+    if (st.checks[naam]) return;
+    st.checks[naam] = true;
+    document.querySelector(`[data-check="${naam}"]`)?.classList.add('klaar');
+    const n = Object.keys(st.checks).length;
+    $('testronde-stand').textContent = n === 5 ? 'Alles werkt. Klaar!' : `${n} van 5 gedaan`;
+    document.querySelector(`[data-check="${naam}"] .bol`).textContent = '✓';
+  }
+
+  // ---------- Modus bepalen ----------
+  async function bepaalModus() {
+    if (window.claude && typeof window.claude.use === 'function') {
+      const sample = await window.claude.use('sample').catch(() => null);
+      if (sample) {
+        st.modus = 'claude';
+        st.sample = sample;
+        st.downloads = await window.claude.use('downloads').catch(() => null);
+        const lim = await sample.limits().catch(() => null);
+        st.fotosNaarAI = Boolean(lim?.images);
+        st.maxFotos = lim?.images?.maxCount ?? 10;
+        try { st.prijslijst = await (await fetch('prijslijst.json')).json(); } catch { st.prijslijst = null; }
+        return;
+      }
+    }
+    try {
+      const res = await fetch('/api/offerte/status');
+      if (res.ok) {
+        const s = await res.json();
+        st.modus = 'server';
+        st.demo = s.demo;
+        st.tokenNodig = s.tokenNodig;
+        st.bedrijfServer = s.bedrijf;
+        return;
+      }
+    } catch {}
+    st.modus = 'uit';
+  }
+
+  function toonModus() {
+    const m = $('modus');
+    const b = $('banner');
+    b.hidden = true;
+    if (st.modus === 'claude') {
+      m.className = 'modus live';
+      m.textContent = 'Live AI via je Claude-account';
+      $('bedrijf-blok').hidden = false;
+      if (!st.fotosNaarAI) {
+        b.hidden = false; b.className = 'banner demo';
+        b.innerHTML = "<span><b>Foto's kunnen in deze weergave niet naar de AI.</b> De offerte wordt dan alleen op je omschrijving gebaseerd.</span>";
+      }
+    } else if (st.modus === 'server' && st.demo) {
+      m.className = 'modus demo';
+      m.textContent = 'Demo-modus';
+      b.hidden = false; b.className = 'banner demo';
+      b.innerHTML = "<span><b>Demo-modus.</b> De AI wordt nagebootst: je foto's worden ontvangen maar niet bekeken, en de offerte komt uit de trefwoorden en maten in je omschrijving. Alle andere functies werken echt. Zet <span class=\"mono\">ANTHROPIC_API_KEY</span> in je .env voor echte offertes.</span>";
+    } else if (st.modus === 'server') {
+      m.className = 'modus live';
+      m.textContent = 'Live AI op je server';
+    } else {
+      m.className = 'modus uit';
+      m.textContent = 'Geen verbinding';
+      b.hidden = false; b.className = 'banner uit';
+      b.innerHTML = '<span><b>Geen AI beschikbaar.</b> Open deze pagina in Claude, of start je eigen server met <span class="mono">npm run demo</span> en ga naar <span class="mono">/groenbestek</span>.</span>';
+      $('maak').disabled = true;
+    }
+    $('token-blok').hidden = !(st.modus === 'server' && st.tokenNodig);
+    $('opslaan').hidden = false;
+    $('foto-teller').textContent = `max. ${st.maxFotos}`;
+  }
+
+  // ---------- Foto's ----------
+  function voegFotosToe(files) {
+    for (const f of files) {
+      if (!/^image\/(jpeg|png|webp|gif)$/.test(f.type)) { meld('fout', `${esc(f.name)} is geen JPG, PNG, WebP of GIF.`); continue; }
+      if (st.fotos.length >= st.maxFotos) { meld('fout', `Maximaal ${st.maxFotos} foto's.`); break; }
+      st.fotos.push({ file: f, url: URL.createObjectURL(f) });
+    }
+    toonFotos();
+  }
+  function toonFotos() {
+    $('thumbs').innerHTML = st.fotos.map((f, i) =>
+      `<div class="thumb"><img src="${f.url}" alt="Foto ${i + 1}"><span>${i + 1}</span><button type="button" data-weg="${i}" aria-label="Foto ${i + 1} verwijderen">×</button></div>`).join('');
+    if (st.fotos.length) vink('foto');
+  }
+  $('thumbs').addEventListener('click', (e) => {
+    const i = e.target.dataset?.weg;
+    if (i === undefined) return;
+    URL.revokeObjectURL(st.fotos[i].url);
+    st.fotos.splice(Number(i), 1);
+    toonFotos();
+  });
+  $('foto-input').addEventListener('change', (e) => { voegFotosToe(e.target.files); e.target.value = ''; });
+  ['dragenter', 'dragover'].forEach((t) => $('drop').addEventListener(t, (e) => { e.preventDefault(); $('drop').classList.add('over'); }));
+  ['dragleave', 'drop'].forEach((t) => $('drop').addEventListener(t, (e) => { e.preventDefault(); $('drop').classList.remove('over'); }));
+  $('drop').addEventListener('drop', (e) => voegFotosToe(e.dataTransfer.files));
+  document.addEventListener('paste', (e) => { const f = [...(e.clipboardData?.files || [])]; if (f.length) voegFotosToe(f); });
+
+  // Verklein naar max. 1568 px voor verzending naar de eigen server.
+  function naarDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const s = Math.min(1, 1568 / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = () => reject(new Error(`Kon ${file.name} niet lezen.`));
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  // ---------- Omschrijving ----------
+  $('chips').addEventListener('click', (e) => {
+    const k = e.target.dataset?.voorbeeld;
+    if (!k) return;
+    $('omschrijving').value = VOORBEELDEN[k];
+    vink('omschrijving');
+  });
+  $('omschrijving').addEventListener('input', () => { if ($('omschrijving').value.trim().length >= 15) vink('omschrijving'); });
+
+  const klantVelden = { naam: 'k-naam', adres: 'k-adres', postcode_plaats: 'k-pp', email: 'k-email', telefoon: 'k-tel' };
+  const bedrijfVelden = { naam: 'b-naam', adres: 'b-adres', postcode_plaats: 'b-pp', kvk: 'b-kvk', btw: 'b-btw', contact: 'b-contact' };
+  const leesVelden = (map) => Object.fromEntries(Object.entries(map).map(([k, id]) => [k, $(id).value.trim()]));
+  const vulVelden = (map, data) => Object.entries(map).forEach(([k, id]) => { $(id).value = data?.[k] || ''; });
+  vulVelden(bedrijfVelden, opslag.lees('bedrijf', {}));
+  Object.values(bedrijfVelden).forEach((id) => $(id).addEventListener('change', () => { opslag.schrijf('bedrijf', leesVelden(bedrijfVelden)); toonVel(); }));
+  $('token').value = opslag.lees('token', '');
+  $('token').addEventListener('change', () => { opslag.schrijf('token', $('token').value); laadHistorie(); });
+
+  // ---------- Meldingen en voortgang ----------
+  function meld(soort, html) {
+    const m = $('melding');
+    if (!soort) { m.hidden = true; return; }
+    m.hidden = false; m.className = 'melding ' + soort; m.innerHTML = html;
+  }
+  function zetStap(n) {
+    document.querySelectorAll('#stappen li').forEach((li) => {
+      const i = Number(li.dataset.stap);
+      li.className = i < n ? 'klaar' : i === n ? 'actief' : '';
+    });
+  }
+  let klokTimer = null;
+  function startKlok() {
+    const t0 = Date.now();
+    const tik = () => { const s = Math.round((Date.now() - t0) / 1000); $('klok').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+    tik(); klokTimer = setInterval(tik, 1000);
+  }
+
+  // Lees de deels gestreamde JSON om te laten zien hoe ver de AI is.
+  function volgStroom(tekst) {
+    let stap = 0;
+    if (tekst.includes('"werkomschrijving"')) stap = 1;
+    if (tekst.includes('"regels"')) stap = 2;
+    if (tekst.includes('"aannames"')) stap = 3;
+    zetStap(stap);
+    const regels = tekst.split('"regels"')[1];
+    const n = regels ? (regels.match(/"prijs_per_eenheid"/g) || []).length : 0;
+    $('regel-teller').textContent = n ? `· ${n} regels` : '';
+    const m = /"fotoanalyse"\s*:\s*"((?:[^"\\]|\\.)*)/.exec(tekst);
+    if (m) { try { $('live-analyse').textContent = JSON.parse('"' + m[1].replace(/\\$/, '') + '"'); } catch {} }
+  }
+
+  // ---------- Offerte maken ----------
+  $('invoer').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (st.bezig) return;
+    const omschrijving = $('omschrijving').value.trim();
+    if (!st.fotos.length && !omschrijving) return meld('fout', "Voeg een foto toe of beschrijf de klus.");
+    if (st.modus === 'server' && st.tokenNodig && !$('token').value) return meld('fout', 'Vul je toegangscode in (OFFERTE_TOKEN uit je .env).');
+
+    meld(null);
+    st.bezig = new AbortController();
+    $('maak').disabled = true;
+    $('bezig').hidden = false;
+    $('live-analyse').textContent = '';
+    $('regel-teller').textContent = '';
+    $('stop').hidden = st.modus !== 'claude';
+    zetStap(0);
+    startKlok();
+    $('bezig').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const klant = leesVelden(klantVelden);
+    const plaats = $('plaats').value.trim();
+    try {
+      const record = st.modus === 'claude'
+        ? await maakViaClaude({ omschrijving, plaats, klant })
+        : await maakViaServer({ omschrijving, plaats, klant });
+      st.huidig = record;
+      toonVel();
+      vink('offerte');
+      meld('goed', `Offerte <b>${esc(record.nummer)}</b> staat klaar. Loop de regels na, vooral de geschatte prijzen, voordat je hem verstuurt.`);
+      laadHistorie();
+      $('vel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      if (err?.code !== 'cancelled') meld('fout', esc(foutTekst(err)));
+      else meld(null);
+    } finally {
+      clearInterval(klokTimer);
+      st.bezig = null;
+      $('maak').disabled = false;
+      $('bezig').hidden = true;
+    }
+  });
+  $('stop').addEventListener('click', () => st.bezig?.abort());
+
+  function foutTekst(err) {
+    const codes = {
+      not_granted: 'Je hebt GroenBestek geen toestemming gegeven om Claude te gebruiken. Herlaad de pagina om het opnieuw te proberen.',
+      sampling_disabled: 'Claude is niet beschikbaar voor dit account.',
+      rate_limited: 'Je hebt even te veel aanvragen gedaan. Probeer het over een paar minuten opnieuw.',
+      session_expired: 'Je bent uitgelogd bij Claude. Log opnieuw in en probeer het nog eens.',
+      image_rejected: "Een van de foto's wordt niet geaccepteerd. Gebruik een JPG of PNG kleiner dan 20 MB.",
+      images_unavailable: "Foto's kunnen in deze weergave niet naar Claude. Haal de foto's weg en probeer het met alleen een omschrijving.",
+      refused: 'Claude wilde deze aanvraag niet verwerken. Pas de omschrijving aan en probeer opnieuw.',
+      invalid_json: 'Het antwoord van de AI was onvolledig. Klik nog eens op "Maak offerte".',
+      prompt_too_large: 'De omschrijving is te lang. Maak hem korter.',
+    };
+    return codes[err?.code] || err?.message || 'Er ging iets mis. Probeer het opnieuw.';
+  }
+
+  async function maakViaServer({ omschrijving, plaats, klant }) {
+    const fotos = [];
+    for (const f of st.fotos) fotos.push(await naarDataUrl(f.file));
+    // De server stuurt geen tussenstanden; laat de stappen op tempo meelopen.
+    let stap = 0;
+    const t = setInterval(() => { if (stap < 3) zetStap(++stap); }, st.demo ? 700 : 25000);
+    try {
+      const res = await api('', { method: 'POST', body: JSON.stringify({ omschrijving, plaats, klant, fotos }) });
+      return await res.json();
+    } finally {
+      clearInterval(t);
+    }
+  }
+
+  async function api(pad, opties = {}) {
+    const res = await fetch('/api/offerte' + pad, {
+      ...opties,
+      headers: { 'Content-Type': 'application/json', 'x-offerte-token': $('token').value, ...(opties.headers || {}) },
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || `De server gaf fout ${res.status}.`);
+    }
+    return res;
+  }
+
+  function maakPrompt({ omschrijving, plaats, aantalFotos }) {
+    const pl = st.prijslijst || { tarieven: {}, artikelen: [], normen_arbeid: [] };
+    return `Je bent de calculator van een Nederlands hoveniers- en timmerbedrijf. Stel een complete, realistische offerte op voor deze tuinklus op basis van ${aantalFotos ? `de ${aantalFotos} bijgevoegde foto('s) en ` : ''}de omschrijving.
+
+Werkwijze:
+1. ${aantalFotos ? "Bekijk elke foto. Beschrijf de huidige situatie: wat moet weg, ondergrond, hoogteverschillen, bereikbaarheid. Schat de maten met referenties op de foto (tegels 30x30 of 60x60 cm, deur ca. 2,1 m, schuttingscherm 180 cm breed, klinker 21x10,5 cm)." : 'Er zijn geen foto\'s: baseer je op de omschrijving en zet onzekere maten bij de aannames.'} Maten in de omschrijving gaan voor.
+2. Gebruik de prijzen en arbeidsnormen uit de prijslijst hieronder (prijsbron "prijslijst" met artikelcode). Staat iets er niet in, schat dan een realistische Nederlandse marktprijs excl. btw (prijsbron "schatting", artikelcode null).
+3. Reken hoeveelheden als een vakman: zaagverlies hout ca. 10%, tegels ca. 5%, palen elke 1,8 m plus één, poeren per staander, beitsen per laag. Zet de rekensom kort in "toelichting".
+4. Arbeid in uren (hoeveelheid × norm, afgerond op halve uren) tegen het uurtarief. Vergeet voorbereiding, sloop, opruimen en afvoer niet.
+5. Neem op waar van toepassing: voorrijkosten per werkdag, klein materiaal (${pl.tarieven.klein_materiaal_percentage ?? 5}% van het materiaal, aparte regel), afvoer, materieelhuur. Gebruik soort "stelpost" voor wat je echt niet kunt inschatten.
+6. Btw 21%, tenzij zeker anders.
+7. Reken zelf geen totalen uit.
+Schrijf de werkomschrijving voor de klant in de u-vorm. Wees eerlijk over onzekerheid via aannames, vragen_aan_klant en betrouwbaarheid. Benoem risico's die je ziet (kabels, wortels, asbestverdachte golfplaten).
+
+Vaste tarieven (excl. btw): ${JSON.stringify(pl.tarieven)}
+Prijslijst: ${JSON.stringify(pl.artikelen.map(({ code, naam, eenheid, prijs }) => ({ code, naam, eenheid, prijs })))}
+Arbeidsnormen: ${JSON.stringify(pl.normen_arbeid)}
+
+Omschrijving van de klus:
+${omschrijving || '(geen omschrijving, baseer je op de foto\'s)'}${plaats ? `\nPlaats: ${plaats}` : ''}
+
+Antwoord met alleen één JSON-object, velden in deze volgorde:
+{"titel": string, "type_klus": "tuinklus"|"timmerwerk"|"tuinhuis"|"overkapping"|"combinatie", "fotoanalyse": string, "werkomschrijving": string, "regels": [{"groep": string, "soort": "materiaal"|"arbeid"|"materieel"|"overig"|"stelpost", "omschrijving": string, "aantal": number, "eenheid": string, "prijs_per_eenheid": number, "btw_percentage": 21|9|0, "prijsbron": "prijslijst"|"schatting", "artikelcode": string|null, "toelichting": string|null}], "aannames": [string], "uitsluitingen": [string], "vragen_aan_klant": [string], "vergunning_advies": string, "uitvoering": {"werkdagen": number, "aantal_personen": number}, "betrouwbaarheid": "hoog"|"gemiddeld"|"laag", "betrouwbaarheid_toelichting": string}`;
+  }
+
+  async function maakViaClaude({ omschrijving, plaats, klant }) {
+    const metFotos = st.fotosNaarAI && st.fotos.length > 0;
+    const data = await st.sample.json(maakPrompt({ omschrijving, plaats, aantalFotos: metFotos ? st.fotos.length : 0 }), {
+      images: metFotos ? st.fotos.map((f) => f.file) : undefined,
+      modelTier: 'complex',
+      cache: false,
+      signal: st.bezig.signal,
+      onText: ({ text }) => volgStroom(text),
+    });
+    const offerte = normaliseer(data);
+    const record = { id: 'off-' + Date.now(), nummer: volgendNummer(), createdAt: new Date().toISOString(), klant, offerte };
+    bewaarLokaal(record);
+    return record;
+  }
+
+  // Controleer en repareer wat de AI teruggeeft, zodat de pagina er altijd mee kan rekenen.
+  function normaliseer(d) {
+    if (!d || typeof d !== 'object' || !Array.isArray(d.regels) || !d.regels.length) {
+      throw new Error('De AI gaf geen bruikbare offerte terug. Klik nog eens op "Maak offerte".');
+    }
+    const tekst = (v) => (v == null ? '' : String(v));
+    const lijst = (v) => (Array.isArray(v) ? v.map(tekst).filter(Boolean) : []);
+    const soorten = ['materiaal', 'arbeid', 'materieel', 'overig', 'stelpost'];
+    return {
+      titel: tekst(d.titel) || 'Offerte tuinwerk',
+      type_klus: tekst(d.type_klus) || 'tuinklus',
+      fotoanalyse: tekst(d.fotoanalyse),
+      werkomschrijving: tekst(d.werkomschrijving),
+      regels: d.regels.map((x) => ({
+        groep: tekst(x.groep) || 'Overig',
+        soort: soorten.includes(x.soort) ? x.soort : 'overig',
+        omschrijving: tekst(x.omschrijving),
+        aantal: Number(x.aantal) || 0,
+        eenheid: tekst(x.eenheid) || 'stuk',
+        prijs_per_eenheid: Number(x.prijs_per_eenheid) || 0,
+        btw_percentage: [21, 9, 0].includes(Number(x.btw_percentage)) ? Number(x.btw_percentage) : 21,
+        prijsbron: x.prijsbron === 'prijslijst' ? 'prijslijst' : 'schatting',
+        artikelcode: x.artikelcode ? tekst(x.artikelcode) : null,
+        toelichting: x.toelichting ? tekst(x.toelichting) : null,
+      })),
+      aannames: lijst(d.aannames),
+      uitsluitingen: lijst(d.uitsluitingen),
+      vragen_aan_klant: lijst(d.vragen_aan_klant),
+      vergunning_advies: tekst(d.vergunning_advies),
+      uitvoering: { werkdagen: Number(d.uitvoering?.werkdagen) || 1, aantal_personen: Number(d.uitvoering?.aantal_personen) || 2 },
+      betrouwbaarheid: ['hoog', 'gemiddeld', 'laag'].includes(d.betrouwbaarheid) ? d.betrouwbaarheid : 'gemiddeld',
+      betrouwbaarheid_toelichting: tekst(d.betrouwbaarheid_toelichting),
+    };
+  }
+
+  function volgendNummer() {
+    const jaar = new Date().getFullYear();
+    let c = opslag.lees('teller', { jaar, volgende: 1 });
+    if (c.jaar !== jaar) c = { jaar, volgende: 1 };
+    const nummer = `OFF-${jaar}-${String(c.volgende).padStart(4, '0')}`;
+    opslag.schrijf('teller', { jaar, volgende: c.volgende + 1 });
+    return nummer;
+  }
+  function bewaarLokaal(record) {
+    const alle = opslag.lees('offertes', []).filter((x) => x.id !== record.id);
+    alle.unshift(record);
+    opslag.schrijf('offertes', alle.slice(0, 30));
+  }
+
+  // ---------- Totalen ----------
+  function totalen(o) {
+    const regels = o.regels.map((x) => ({ ...x, totaal: round2(x.aantal * x.prijs_per_eenheid) }));
+    const subtotaal = round2(regels.reduce((s, x) => s + x.totaal, 0));
+    const per = {};
+    regels.forEach((x) => { per[x.btw_percentage] = (per[x.btw_percentage] || 0) + x.totaal; });
+    const btw = Object.entries(per).map(([p, g]) => ({ percentage: Number(p), grondslag: round2(g), bedrag: round2(g * p / 100) })).sort((a, b) => b.percentage - a.percentage);
+    const totaal = round2(subtotaal + btw.reduce((s, b) => s + b.bedrag, 0));
+    const deel = (f) => (subtotaal ? Math.round(regels.filter(f).reduce((s, x) => s + x.totaal, 0) / subtotaal * 100) : 0);
+    return { regels, subtotaal, btw, totaal, arbeidPct: deel((x) => x.soort === 'arbeid'), schattingPct: deel((x) => x.prijsbron === 'schatting') };
+  }
+
+  // ---------- Offertevel tonen en bewerken ----------
+  function bedrijfsnaam() {
+    if (st.modus === 'server') return st.bedrijfServer || '';
+    return leesVelden(bedrijfVelden).naam || 'Jouw bedrijf';
+  }
+
+  function toonVel() {
+    const { offerte: o, nummer, createdAt, voorbeeld } = st.huidig;
+    $('voorbeeld-lint').hidden = !voorbeeld;
+    $('v-bedrijf').textContent = bedrijfsnaam();
+    $('v-titel').value = o.titel;
+    $('v-nummer').textContent = nummer;
+    $('v-datum').textContent = new Date(createdAt).toLocaleDateString('nl-NL');
+    $('v-analyse').textContent = o.fotoanalyse || '—';
+    $('v-werk').value = o.werkomschrijving;
+    $('v-aannames').value = o.aannames.join('\n');
+    $('v-uitsluitingen').value = o.uitsluitingen.join('\n');
+    $('v-vragen').value = o.vragen_aan_klant.join('\n');
+    $('v-vergunning').value = o.vergunning_advies;
+    $('vel-status').textContent = '';
+    toonRegels();
+  }
+
+  function toonRegels() {
+    const o = st.huidig.offerte;
+    const t = totalen(o);
+    const subPerGroep = {};
+    t.regels.forEach((x) => { subPerGroep[x.groep] = (subPerGroep[x.groep] || 0) + x.totaal; });
+    let vorige = null;
+    $('v-regels').innerHTML = o.regels.map((x, i) => {
+      const kop = x.groep !== vorige
+        ? `<tr class="groep"><td colspan="6"><input data-groep="${esc(x.groep)}" value="${esc(x.groep)}" aria-label="Naam van de groep"></td><td colspan="2" class="r"><span class="sub">${euro(subPerGroep[x.groep])}</span></td></tr>`
+        : '';
+      vorige = x.groep;
+      return kop + `<tr data-i="${i}">
+        <td><input data-f="omschrijving" value="${esc(x.omschrijving)}" aria-label="Omschrijving">${x.toelichting ? `<div class="toel">${esc(x.toelichting)}</div>` : ''}</td>
+        <td><input class="num" data-f="aantal" inputmode="decimal" value="${invoerGetal(x.aantal)}" aria-label="Aantal"></td>
+        <td><input data-f="eenheid" value="${esc(x.eenheid)}" aria-label="Eenheid"></td>
+        <td><input class="num" data-f="prijs_per_eenheid" inputmode="decimal" value="${invoerGetal(x.prijs_per_eenheid, 2)}" aria-label="Prijs per eenheid"></td>
+        <td><select data-f="btw_percentage" aria-label="Btw">${[21, 9, 0].map((p) => `<option value="${p}"${p === x.btw_percentage ? ' selected' : ''}>${p}%</option>`).join('')}</select></td>
+        <td class="totaal r" data-totaal>${euro(x.aantal * x.prijs_per_eenheid)}</td>
+        <td><span class="bron ${x.prijsbron}">${x.prijsbron === 'prijslijst' ? 'lijst' : 'schatting'}</span></td>
+        <td><button type="button" class="weg" data-weg-regel="${i}" aria-label="Regel verwijderen">×</button></td>
+      </tr>`;
+    }).join('');
+    toonTotalen(t);
+  }
+
+  function toonTotalen(t = totalen(st.huidig.offerte)) {
+    const o = st.huidig.offerte;
+    $('v-totalen').innerHTML =
+      `<dt>Totaal excl. btw</dt><dd>${euro(t.subtotaal)}</dd>` +
+      t.btw.map((b) => `<dt>Btw ${b.percentage}%</dt><dd>${euro(b.bedrag)}</dd>`).join('') +
+      `<dt class="eind">Totaal incl. btw</dt><dd class="eind">${euro(t.totaal)}</dd>`;
+    $('v-pillen').innerHTML = [
+      `<span class="pil ${o.betrouwbaarheid}" title="${esc(o.betrouwbaarheid_toelichting)}">Betrouwbaarheid ${o.betrouwbaarheid}</span>`,
+      `<span class="pil">${getal(o.uitvoering.werkdagen)} werkdag(en) · ${getal(o.uitvoering.aantal_personen)} man</span>`,
+      `<span class="pil">Arbeid ${t.arbeidPct}%</span>`,
+      `<span class="pil ${t.schattingPct > 30 ? 'let-op' : ''}">Geschatte prijzen ${t.schattingPct}%</span>`,
+    ].join('');
+  }
+
+  // "1.234,5" (Nederlands) en "52.5" (punt als decimaalteken) worden allebei goed gelezen.
+  const leesGetal = (v) => {
+    const s = String(v).trim();
+    return Number(s.includes(',') ? s.replace(/\./g, '').replace(',', '.') : s) || 0;
+  };
+  const invoerGetal = (n, dec = 0) => (Number(n) || 0).toLocaleString('nl-NL', { useGrouping: false, minimumFractionDigits: dec, maximumFractionDigits: 2 });
+  $('v-regels').addEventListener('input', (e) => {
+    const tr = e.target.closest('tr[data-i]');
+    const f = e.target.dataset.f;
+    if (!tr || !f) return;
+    const x = st.huidig.offerte.regels[Number(tr.dataset.i)];
+    if (f === 'aantal' || f === 'prijs_per_eenheid') {
+      x[f] = leesGetal(e.target.value);
+      if (f === 'prijs_per_eenheid') { x.prijsbron = 'schatting'; x.artikelcode = null; }
+    } else if (f === 'btw_percentage') {
+      x[f] = Number(e.target.value);
+    } else {
+      x[f] = e.target.value;
+    }
+    tr.querySelector('[data-totaal]').textContent = euro(x.aantal * x.prijs_per_eenheid);
+    toonTotalen();
+    if (!st.huidig.voorbeeld) vink('aangepast');
+  });
+  $('v-regels').addEventListener('change', (e) => {
+    const oud = e.target.dataset.groep;
+    if (oud !== undefined) {
+      const nieuw = e.target.value.trim() || oud;
+      st.huidig.offerte.regels.forEach((x) => { if (x.groep === oud) x.groep = nieuw; });
+      if (!st.huidig.voorbeeld) vink('aangepast');
+      return toonRegels();
+    }
+    if (e.target.dataset.f === 'prijs_per_eenheid') toonRegels();
+  });
+  $('v-regels').addEventListener('click', (e) => {
+    const i = e.target.dataset?.wegRegel;
+    if (i === undefined) return;
+    st.huidig.offerte.regels.splice(Number(i), 1);
+    toonRegels();
+    if (!st.huidig.voorbeeld) vink('aangepast');
+  });
+  $('regel-erbij').addEventListener('click', () => {
+    const regels = st.huidig.offerte.regels;
+    regels.push({ groep: regels.at(-1)?.groep || 'Overig', soort: 'overig', omschrijving: 'Nieuwe regel', aantal: 1, eenheid: 'post',
+      prijs_per_eenheid: 0, btw_percentage: 21, prijsbron: 'schatting', artikelcode: null, toelichting: null });
+    toonRegels();
+    const inputs = $('v-regels').querySelectorAll('input[data-f="omschrijving"]');
+    inputs[inputs.length - 1]?.select();
+  });
+
+  function verzamel() {
+    const lijst = (id) => $(id).value.split('\n').map((s) => s.trim()).filter(Boolean);
+    Object.assign(st.huidig.offerte, {
+      titel: $('v-titel').value.trim() || st.huidig.offerte.titel,
+      werkomschrijving: $('v-werk').value,
+      aannames: lijst('v-aannames'),
+      uitsluitingen: lijst('v-uitsluitingen'),
+      vragen_aan_klant: lijst('v-vragen'),
+      vergunning_advies: $('v-vergunning').value,
+    });
+    const klant = leesVelden(klantVelden);
+    if (Object.values(klant).some(Boolean)) st.huidig.klant = klant;
+  }
+
+  async function bewaar() {
+    verzamel();
+    if (st.huidig.voorbeeld) return;
+    if (st.modus === 'server') {
+      const res = await api('/' + st.huidig.id, { method: 'PUT', body: JSON.stringify({ offerte: st.huidig.offerte, klant: st.huidig.klant }) });
+      st.huidig = await res.json();
+    } else {
+      bewaarLokaal(st.huidig);
+    }
+  }
+
+  $('opslaan').addEventListener('click', async () => {
+    try {
+      await bewaar();
+      $('vel-status').textContent = st.huidig.voorbeeld ? 'De voorbeeldofferte wordt niet bewaard.' : 'Bewaard.';
+      laadHistorie();
+    } catch (err) { $('vel-status').textContent = err.message; }
+  });
+
+  // ---------- PDF ----------
+  $('pdf').addEventListener('click', async () => {
+    const knop = $('pdf');
+    knop.disabled = true;
+    $('vel-status').textContent = 'PDF maken…';
+    try {
+      await bewaar();
+      if (st.modus === 'server' && !st.huidig.voorbeeld) {
+        const blob = await (await api('/' + st.huidig.id + '/pdf')).blob();
+        const url = URL.createObjectURL(blob);
+        const a = Object.assign(document.createElement('a'), { href: url, download: `Offerte-${st.huidig.nummer}.pdf` });
+        document.body.append(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+        $('vel-status').textContent = 'PDF gedownload.';
+      } else {
+        const blob = await maakPdfInBrowser(st.huidig);
+        const naam = `Offerte-${st.huidig.nummer}.pdf`;
+        if (st.downloads) {
+          await st.downloads.save({ filename: naam, data: blob });
+          $('vel-status').textContent = 'PDF opgeslagen.';
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = Object.assign(document.createElement('a'), { href: url, download: naam });
+          document.body.append(a); a.click(); a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          $('vel-status').textContent = 'PDF gedownload.';
+        }
+      }
+      vink('pdf');
+      laadHistorie();
+    } catch (err) {
+      $('vel-status').textContent = err?.code === 'declined' ? 'Download geannuleerd.' : (err?.message || 'De PDF kon niet worden gemaakt.');
+    } finally {
+      knop.disabled = false;
+    }
+  });
+
+  let jspdfLaden = null;
+  function laadJsPdf() {
+    if (window.jspdf) return Promise.resolve(window.jspdf);
+    jspdfLaden ??= new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.onload = () => resolve(window.jspdf);
+      s.onerror = () => { jspdfLaden = null; reject(new Error('De PDF-module kon niet laden. Controleer je internetverbinding.')); };
+      document.head.append(s);
+    });
+    return jspdfLaden;
+  }
+
+  async function maakPdfInBrowser(rec) {
+    const { jsPDF } = await laadJsPdf();
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const o = rec.offerte;
+    const t = totalen(o);
+    const L = 50, R = 545, ONDER = 790;
+    const bedrijf = st.modus === 'server' ? { naam: st.bedrijfServer } : leesVelden(bedrijfVelden);
+    let y = 60;
+    const nieuw = (h) => { if (y + h > ONDER) { doc.addPage(); y = 60; return true; } return false; };
+    const lettertype = (stijl, grootte, kleur = 20) => { doc.setFont('helvetica', stijl); doc.setFontSize(grootte); doc.setTextColor(kleur); };
+    const alinea = (tekst, breedte = R - L, x = L) => {
+      for (const regel of doc.splitTextToSize(tekst, breedte)) { nieuw(14); doc.text(regel, x, y); y += 13; }
+    };
+    const kop = (tekst) => { nieuw(40); y += 14; lettertype('bold', 11, 30); doc.text(tekst, L, y); y += 16; lettertype('normal', 9.5); };
+
+    lettertype('bold', 18, 30); doc.text(bedrijf.naam || 'Jouw bedrijf', L, y);
+    lettertype('normal', 9, 110);
+    let yb = y + 14;
+    for (const regel of [bedrijf.adres, bedrijf.postcode_plaats, bedrijf.kvk && `KVK: ${bedrijf.kvk}`, bedrijf.btw && `Btw-id: ${bedrijf.btw}`, bedrijf.contact].filter(Boolean)) { doc.text(regel, L, yb); yb += 12; }
+    lettertype('bold', 16, 20); doc.text('Offerte', R, y, { align: 'right' });
+    lettertype('normal', 9.5, 60);
+    const datum = new Date(rec.createdAt);
+    const geldig = new Date(datum.getTime() + 30 * 864e5);
+    doc.text(`Offertenummer: ${rec.nummer}`, R, y + 16, { align: 'right' });
+    doc.text(`Datum: ${datum.toLocaleDateString('nl-NL')}`, R, y + 29, { align: 'right' });
+    doc.text(`Geldig tot: ${geldig.toLocaleDateString('nl-NL')}`, R, y + 42, { align: 'right' });
+    y = Math.max(yb, y + 50) + 14;
+
+    const k = rec.klant || {};
+    const klantRegels = [k.naam, k.adres, k.postcode_plaats, k.email, k.telefoon].filter(Boolean);
+    if (klantRegels.length) {
+      lettertype('bold', 10); doc.text('Aan', L, y); y += 13; lettertype('normal', 9.5);
+      klantRegels.forEach((x) => { doc.text(x, L, y); y += 12; });
+      y += 8;
+    }
+    lettertype('bold', 14, 30); alinea(o.titel); y += 2;
+    kop('Werkomschrijving'); alinea(o.werkomschrijving);
+
+    kop('Prijsspecificatie');
+    const tabelKop = () => {
+      lettertype('bold', 8.5, 100);
+      doc.text('Omschrijving', L, y); doc.text('Aantal', 330, y, { align: 'right' }); doc.text('Eenh.', 338, y);
+      doc.text('Prijs', 450, y, { align: 'right' }); doc.text('Totaal', R, y, { align: 'right' });
+      doc.setDrawColor(200); doc.line(L, y + 4, R, y + 4); y += 16; lettertype('normal', 9);
+    };
+    tabelKop();
+    const groepen = [];
+    t.regels.forEach((x) => { let g = groepen.find((q) => q.naam === x.groep); if (!g) groepen.push(g = { naam: x.groep, regels: [] }); g.regels.push(x); });
+    for (const g of groepen) {
+      if (nieuw(30)) tabelKop();
+      lettertype('bold', 9.5, 30); doc.text(g.naam, L, y); y += 13; lettertype('normal', 9);
+      for (const x of g.regels) {
+        const label = doc.splitTextToSize(x.soort === 'stelpost' ? `${x.omschrijving} (stelpost)` : x.omschrijving, 250);
+        if (nieuw(label.length * 11 + 4)) tabelKop();
+        doc.text(label, L + 8, y);
+        doc.text(getal(x.aantal), 330, y, { align: 'right' }); doc.text(x.eenheid, 338, y);
+        doc.text(euro(x.prijs_per_eenheid), 450, y, { align: 'right' }); doc.text(euro(x.totaal), R, y, { align: 'right' });
+        y += label.length * 11 + 3;
+      }
+      lettertype('italic', 8.5, 110);
+      doc.text(`Subtotaal ${g.naam.toLowerCase()}: ${euro(g.regels.reduce((s, x) => s + x.totaal, 0))}`, R, y, { align: 'right' });
+      y += 14; lettertype('normal', 9);
+    }
+    nieuw(30 + t.btw.length * 14);
+    doc.setDrawColor(200); doc.line(330, y, R, y); y += 14;
+    const totaalRegel = (label, bedrag, vet) => { lettertype(vet ? 'bold' : 'normal', vet ? 11 : 9.5, 20); doc.text(label, 450, y, { align: 'right' }); doc.text(euro(bedrag), R, y, { align: 'right' }); y += vet ? 16 : 13; };
+    totaalRegel('Totaal excl. btw', t.subtotaal);
+    t.btw.forEach((b) => totaalRegel(`Btw ${b.percentage}% over ${euro(b.grondslag)}`, b.bedrag));
+    totaalRegel('Totaal incl. btw', t.totaal, true);
+
+    kop('Planning');
+    alinea(`Geschatte uitvoeringsduur: ${getal(o.uitvoering.werkdagen)} werkdag(en) met ${getal(o.uitvoering.aantal_personen)} man, afhankelijk van het weer.`);
+    if (o.aannames.length) { kop('Uitgangspunten'); o.aannames.forEach((a) => alinea('•  ' + a)); }
+    if (o.uitsluitingen.length) { kop('Niet inbegrepen'); o.uitsluitingen.forEach((a) => alinea('•  ' + a)); }
+    if (o.vergunning_advies) { kop('Vergunning'); alinea(o.vergunning_advies); }
+    kop('Voorwaarden');
+    [`Deze offerte is geldig tot ${geldig.toLocaleDateString('nl-NL')}.`, 'Stelposten worden verrekend op basis van werkelijk gemaakte kosten.', 'Meer- en minderwerk wordt vooraf met u afgestemd en apart verrekend.'].forEach((a) => alinea('•  ' + a));
+
+    nieuw(90); y += 26;
+    lettertype('normal', 9.5, 30);
+    doc.text('Voor akkoord opdrachtgever:', L, y); doc.text(`Namens ${bedrijf.naam || 'opdrachtnemer'}:`, 320, y);
+    doc.setDrawColor(150); doc.line(L, y + 46, 250, y + 46); doc.line(320, y + 46, R, y + 46);
+    lettertype('normal', 8, 120); doc.text('Naam, datum en handtekening', L, y + 58);
+
+    const n = doc.getNumberOfPages();
+    for (let i = 1; i <= n; i++) { doc.setPage(i); lettertype('normal', 8, 150); doc.text(`${rec.nummer}  ·  pagina ${i} van ${n}`, (L + R) / 2, 815, { align: 'center' }); }
+    return doc.output('blob');
+  }
+
+  // ---------- Eerdere offertes ----------
+  async function laadHistorie() {
+    let lijst = [];
+    try {
+      if (st.modus === 'server') {
+        if (st.tokenNodig && !$('token').value) return;
+        lijst = await (await api('')).json();
+      } else if (st.modus === 'claude') {
+        lijst = opslag.lees('offertes', []).map((x) => ({ id: x.id, nummer: x.nummer, titel: x.offerte.titel, klant: x.klant?.naam, totaal: totalen(x.offerte).totaal }));
+      }
+    } catch (err) {
+      $('historie').innerHTML = `<li class="hint">${esc(err.message)}</li>`;
+      return;
+    }
+    $('historie').innerHTML = lijst.length
+      ? lijst.map((x) => `<li><button type="button" data-id="${esc(x.id)}"><span class="mono hint">${esc(x.nummer)}</span><span class="titel">${esc(x.titel)}${x.klant ? ' · ' + esc(x.klant) : ''}</span><span class="mono">${euro(x.totaal)}</span></button></li>`).join('')
+      : '<li class="hint">Nog geen offertes gemaakt.</li>';
+  }
+  $('historie').addEventListener('click', async (e) => {
+    const id = e.target.closest('button[data-id]')?.dataset.id;
+    if (!id) return;
+    try {
+      st.huidig = st.modus === 'server'
+        ? await (await api('/' + encodeURIComponent(id))).json()
+        : structuredClone(opslag.lees('offertes', []).find((x) => x.id === id));
+      vulVelden(klantVelden, st.huidig.klant);
+      toonVel();
+      $('vel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) { meld('fout', esc(err.message)); }
+  });
+
+  // ---------- Start ----------
+  toonVel();
+  bepaalModus().then(() => { toonModus(); toonVel(); laadHistorie(); });
+})();
+</script>

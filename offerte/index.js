@@ -5,10 +5,13 @@ const express = require('express');
 const { OfferteSchema, KlantSchema, berekenTotalen } = require('./schema');
 const { stelOfferteOp, AgentFout, Anthropic } = require('./agent');
 const { genereerOffertePdf } = require('./pdf');
+const { stelDemoOfferteOp } = require('./demo');
 
-// ---------- Offerte-agent: routes en opslag ----------
+// ---------- GroenBestek (offerte-agent): routes en opslag ----------
 // Alleen voor jezelf (de vakman): elke aanvraag kost API-tegoed, dus alle
 // routes vragen om OFFERTE_TOKEN, die je in .env / Render -> Environment zet.
+// Zonder ANTHROPIC_API_KEY (of met OFFERTE_DEMO=1) draait de demo-modus: de agent
+// wordt nagebootst, er zijn geen kosten en een toegangscode is dan optioneel.
 
 const MAX_FOTOS = 10;
 const TOEGESTANE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -47,10 +50,18 @@ function createOfferteRouter({ seller, dataDir }) {
     return nummer;
   }
 
+  const isDemo = () => process.env.OFFERTE_DEMO === '1' || !process.env.ANTHROPIC_API_KEY;
+
   router.use(express.json({ limit: '40mb' }));
+
+  // Zonder toegangscode: vertelt de pagina welke modus actief is.
+  router.get('/status', (req, res) => {
+    res.json({ demo: isDemo(), tokenNodig: Boolean(process.env.OFFERTE_TOKEN) || !isDemo(), bedrijf: seller.name });
+  });
 
   router.use((req, res, next) => {
     const token = process.env.OFFERTE_TOKEN;
+    if (!token && isDemo()) return next();
     if (!token) {
       return res.status(503).json({ error: 'De offerte-agent staat uit: zet OFFERTE_TOKEN in je .env.' });
     }
@@ -84,7 +95,7 @@ function createOfferteRouter({ seller, dataDir }) {
     }
 
     try {
-      const resultaat = await stelOfferteOp({
+      const resultaat = await (isDemo() ? stelDemoOfferteOp : stelOfferteOp)({
         omschrijving: String(omschrijving).slice(0, 5000),
         plaats: String(plaats).slice(0, 200),
         fotos: verwerkt,
